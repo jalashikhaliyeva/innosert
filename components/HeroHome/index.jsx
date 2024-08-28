@@ -52,13 +52,14 @@ function HeroHome() {
           rgba(0, 10, 51, 0.25) 29.5%,
           rgba(0, 10, 51, 0) 100%
         ), url(${slides[currentSlide].backgroundImage})`,
-        marginTop:"80px"
+        marginTop: "80px",
       }}
     >
       <Container>
         <div
           style={{ height: "461px" }}
           className="flex flex-col justify-center"
+          // style={{ transform: `translateX(-${currentSlide * 100}%)` }}
         >
           <h1 className="font-gilroy text-white text-5xl mb-6">
             {slides[currentSlide].title}

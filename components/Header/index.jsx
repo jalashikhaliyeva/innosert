@@ -7,6 +7,8 @@ import Container from "../Container";
 import LoginModal from "../Login";
 import RegisterModal from "../Register";
 import OTPmodal from "../OTPmodal";
+import EmailVerificationModal from "../EmailVerificationModal";
+import ResetPasswordModal from "../resetPasswordModal";
 
 const Header = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -15,6 +17,13 @@ const Header = () => {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
   const [isOTPModalOpen, setOTPModalOpen] = useState(false);
+  const [isEmailVerificationModalOpen, setIsEmailVerificationModalOpen] =
+    useState(false);
+
+  const [isEmailVerificationOpen, setEmailVerificationOpen] = useState(false);
+  const [emailForOTP, setEmailForOTP] = useState("");
+  const [isResetPasswordModalOpen, setIsResetPasswordModalOpen] =
+    useState(false); // New state for ResetPasswordModal
   const modalRef = useRef(null);
 
   const handleLoginModalOpen = () => {
@@ -26,8 +35,11 @@ const Header = () => {
 
   const handleRegisterModalClose = () => {
     setRegisterModalOpen(false);
-    // setOTPModalOpen(true);
   };
+  const handleOTPModalOpen = () => {
+    setOTPModalOpen(true);
+  };
+
   const handleOTPModalClose = () => {
     setOTPModalOpen(false);
   };
@@ -37,8 +49,25 @@ const Header = () => {
   };
   const handleRegisterSubmit = (e) => {
     e.preventDefault();
-    setRegisterModalOpen(false); // Close Register Modal
-    setOTPModalOpen(true); // Open OTP Modal
+    setRegisterModalOpen(false);
+    setOTPModalOpen(true);
+  };
+  const handleForgotPasswordClick = () => {
+    setLoginModalOpen(false); // Close the LoginModal
+    setIsEmailVerificationModalOpen(true); // Open the EmailVerificationModal
+  };
+  const handleBackToLogin = () => {
+    setIsEmailVerificationModalOpen(false); // Close the EmailVerificationModal
+    setLoginModalOpen(true); // Open the LoginModal
+  };
+  const handleOpenOTPModalAfterVerification = () => {
+    setIsEmailVerificationModalOpen(false); // Close the EmailVerificationModal
+    setOTPModalOpen(true); // Open the OTPModal
+  };
+
+  const handleOpenResetPasswordModal = () => {
+    setOTPModalOpen(false); // Close OTPModal
+    setIsResetPasswordModalOpen(true); // Open ResetPasswordModal
   };
 
   return (
@@ -341,6 +370,8 @@ const Header = () => {
             isOpen={isLoginModalOpen}
             onClose={() => setLoginModalOpen(false)}
             onOpenRegisterModal={handleRegisterModalOpen}
+            onOpenOTPModal={handleOTPModalOpen}
+            onForgotPasswordClick={handleForgotPasswordClick} // Pass the function here
           />
         </div>
       )}
@@ -362,8 +393,27 @@ const Header = () => {
             isOpen={isOTPModalOpen}
             onClose={handleOTPModalClose}
             onBack={handleBackToRegister} // Pass the back function
+            email={emailForOTP}
+            onOpenResetPasswordModal={handleOpenResetPasswordModal} 
           />
         </div>
+      )}
+      {isEmailVerificationModalOpen && (
+        <EmailVerificationModal
+          isOpen={isEmailVerificationModalOpen}
+          onClose={() => setIsEmailVerificationModalOpen(false)}
+          onBack={handleBackToLogin}
+          onOpenOTPModal={handleOpenOTPModalAfterVerification}
+          // onOpenOTPModal={() => setOTPModalOpen(true)}
+          setEmailForOTP={setEmailForOTP} // Pass the setter function
+        />
+      )}
+
+      {isResetPasswordModalOpen && (
+        <ResetPasswordModal
+          isOpen={isResetPasswordModalOpen}
+          onClose={() => setIsResetPasswordModalOpen(false)}
+        />
       )}
     </header>
   );

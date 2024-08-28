@@ -13,7 +13,7 @@ import OurAdvantagesSection from "@/components/OurAdvantagesSection";
 import Faq from "@/components/FaqSection";
 import Footer from "@/components/Footer";
 const OPTIONS = { loop: true };
-// const SLIDE_COUNT = 24;
+
 const slides = [
   {
     imageSrc: "/img/frontend.png",
