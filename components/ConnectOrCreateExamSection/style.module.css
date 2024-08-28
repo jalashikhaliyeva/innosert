@@ -1,0 +1,30 @@
+@keyframes move-left-right {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.movableSvg {
+  animation: move-left-right 1.3s infinite ease-in-out;
+  position: absolute;
+  top: 95px;
+  left: 150px;
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animatebounce {
+  animation: bounce 2s infinite;
+}

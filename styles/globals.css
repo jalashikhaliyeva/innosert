@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  CSS Reset
+*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+* {
+  margin: 0;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+}
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+#root,
+#__next {
+  isolation: isolate;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/fonts/Gilroy/Gilroy-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/fonts/Gilroy/Gilroy-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: url("/fonts/Gilroy/Gilroy-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+/* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"); */
+:root {
+  /* --fontPoppins: "Poppins", sans-serif; */
+  --fontGilroy: "Gilroy", sans-serif;
+  --normalFontWeight: normal;
+  --boldFontWeight: bold;
+  --buttonDefaultPrimary: #284cff;
+  --buttonHoverPrimary: #0025db;
+  --buttonPressedPrimary: #0020c2;
+  --buttonDisabledPrimary: #dfdfdf;
+  --buttonTextWhite: #ffffff;
+  --buttonWhiteHover: #f5f5f5;
+  --buttonWhitePressed: #ebebeb;
+  --buttonWhiteTextBlue: #203fdf;
+  --buttonTextDisabled: #a6a6a6;
+  --brandBlueDark: #2b3e4f;
+  --menuHoverColor: ;
+  --menuFontColorDefault: ;
+  --menuFontColorHover: ;
+  --mainSuccessColor: ;
+  --mainGrayFontColor: ;
+  --mainShadowBox: ;
+  --inputColorDefault: ;
+  --inputColorHover: ;
+  --inputColorDisabled: ;
+  --inputBorderColorDefault: ;
+  --inputBorderColorHover: ;
+  --inputBorderColorFocus: ;
+  --inputBorderColorError: ;
+  --inputBorderColorDisabled: ;
+  --bodyColor: #fafafa;
+  --boxAdvantageColor: #fafafa;
+  --buttonSecondaryDefault: #ebebeb;
+  --buttonSecondaryHover: #dfdfdf;
+  --buttonSecondaryPressed: #c1c1c1;
+  --buttonSecondaryDisabled: #fafafa;
+  --buttonTextSecondaryDisabled: #a6a6a6;
+  --buttonTextSecondaryDefault: #79797a;
+  --textSecondaryDefault: #000a33;
+  --neutralWhite: #ffffff;
+  --slidesBoxGray: #ebebeb;
+  --brandBlue: #4262ff;
+  --neutralWhiteButtonNextPrev: #fff;
+}
+
+body {
+  background-color: var(--bodyColor);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

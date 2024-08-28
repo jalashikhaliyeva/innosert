@@ -1,0 +1,62 @@
+.embla {
+  max-width: 126rem;
+  margin: auto;
+  --slide-height: 19rem;
+  --slide-spacing: 0.5rem;
+  --slide-size: 320px;
+  margin-top: 30px;
+  margin-bottom: 30px;
+}
+
+.embla__viewport {
+  overflow: hidden;
+}
+
+.embla__container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y pinch-zoom;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+
+.embla__slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: 0.5rem; 
+}
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 8px;
+  width: 300px;
+  height: 76px;
+  background-color: var(--slidesBoxGray);
+  border-radius: 10px;
+  /* box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); */
+  padding: 10px;
+  text-align: center;
+}
+
+.badge {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #ffcc00;
+  color: #333;
+  border-radius: 20px;
+  padding: 5px 10px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.text {
+  font-size: 16px;
+  color: var(--buttonTextSecondaryDefault);
+}
+
+.textBadge {
+  font-size: 12px;
+  color: #333;
+}

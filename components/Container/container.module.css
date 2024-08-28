@@ -1,0 +1,5 @@
+/* components/Container.module.css */
+.container {
+  max-width: 1350px;
+  margin: 0 auto;
+}
