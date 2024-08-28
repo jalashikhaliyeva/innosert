@@ -1,10 +1,12 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import { HiOutlineArrowLeft } from "react-icons/hi"; // Importing the back arrow icon
 
 export default function OTPmodal({ isOpen, onClose, onBack }) {
-  if (!isOpen) return null;
-
+  // All hooks should be called unconditionally here
   const inputRefs = useRef([]);
+
+  // Early return after all hooks
+  if (!isOpen) return null;
 
   const handleInputChange = (e, index) => {
     const value = e.target.value;
