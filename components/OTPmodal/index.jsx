@@ -14,8 +14,6 @@ export default function OTPmodal({
   const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to manage button disabled state
   const [timer, setTimer] = useState(0); // State to manage the timer
 
-  if (!isOpen) return null;
-
   const inputRefs = useRef([]);
 
   const handleInputChange = (e, index) => {
@@ -124,6 +122,8 @@ export default function OTPmodal({
       onClose();
     }
   };
+
+  if (!isOpen) return null;
 
   return (
     <>
