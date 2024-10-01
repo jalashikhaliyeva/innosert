@@ -16,7 +16,7 @@ import { getSettingInfo } from "@/services/getSettingInfo";
 import { HiOutlineMenu } from "react-icons/hi";
 import { IoMdArrowBack } from "react-icons/io";
 import LanguageSwitcher from "@/shared/LanguageSwitcher";
-import OTPModal from "../OTPModal";
+import OTPModal from "@/components/OTPModal";
 
 const Header = ({
   openRegisterModal,
