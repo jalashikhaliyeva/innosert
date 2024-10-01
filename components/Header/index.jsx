@@ -7,7 +7,6 @@ import { IoMdClose } from "react-icons/io"; // Import the close icon
 import Container from "../Container";
 import LoginModal from "../Login";
 import RegisterModal from "../Register";
-import OTPModal from "../OTPModal";
 import EmailVerificationModal from "../EmailVerificationModal";
 import ResetPasswordModal from "../resetPasswordModal";
 import Image from "next/image";
@@ -17,6 +16,7 @@ import { getSettingInfo } from "@/services/getSettingInfo";
 import { HiOutlineMenu } from "react-icons/hi";
 import { IoMdArrowBack } from "react-icons/io";
 import LanguageSwitcher from "@/shared/LanguageSwitcher";
+import OTPModal from "../OTPModal";
 
 const Header = ({
   openRegisterModal,
