@@ -2,27 +2,38 @@ import React from "react";
 import Container from "../Container";
 import style from "./style.module.css";
 import Button from "../Button";
+import Image from "next/image";
 
-function ConnectOrCreateExamSection() {
+function ConnectOrCreateExamSection({ title }) {
+  console.log(title, "title connect or create");
+  const modifiedTitle = title?.title
+    .replace("iştirak et", '<span class="text-brandBlue200 font-extralight">iştirak et</span>')
+    .replace("yarat", '<span class="text-brandBlue100 font-extralight">yarat</span>');
+
   return (
-    <div className="bg-grayBox py-14 mt-20">
+    <div  className="bg-grayBox pt-10 md:py-14 2xl:mt-20">
       <Container>
-        <div className="mt-14 flex justify-between gap-5">
-          <div className="flex flex-col justify-center w-[527px]">
-          <h2 className="mb-5 font-gilroy text-4xl font-medium leading-normal">
+        <div className="md:mt-14 flex flex-col lg:flex-row justify-between gap-5">
+          <div  className="flex flex-col justify-center w-full sm:w-[527px]">
+            {/* <h2 className="mb-5 font-gilroy text-4xl font-medium leading-normal">
           İmtahanda <span className="text-textHoverBlue"> iştirak et</span> və ya{" "}
           imtahan  <span className="text-textHoverBlue"> yarat</span>
-            </h2>
+            </h2> */}
+            <h2
+              className="mb-5 font-gilroy text-2xl sm:text-4xl font-medium leading-normal"
+              dangerouslySetInnerHTML={{ __html: modifiedTitle }}
+            ></h2>
             <p className="font-normal text-lg font-gilroy text-grayText">
-              Lorem ipsum dolor sit amet consectetur. Lorem consequat venenatis
-              nunc convallis.
+              {title.desc}
             </p>
           </div>
-          <div className="w-[37%]  bg-lightPurpleBg rounded-lg">
+          <div data-aos="zoom-in" className="  xl:w-[37%]  bg-lightPurpleBg rounded-lg">
             <div style={{ position: "relative", display: "inline-block" }}>
-              <img
+              <Image
+                width={272}
+                height={100}
                 className="w-[272px] rounded-b-md ml-14"
-                src="/img/halfCard.png"
+                src="/img/half-imtahancard.png"
                 alt="exam-card"
               />
               <svg
@@ -42,10 +53,10 @@ function ConnectOrCreateExamSection() {
               </svg>
             </div>
 
-            <div className="shadow-[0px_4px_8px_0px_rgba(93,97,114,0.08)] w-[234px] h-[142px] bg-white flex justify-center items-center rounded-lg mt-[50px] ml-[240px] mb-[33px] relative">
+            <div className="shadow-[0px_4px_8px_0px_rgba(93,97,114,0.08)] xl:w-[234px] h-[142px] px-2 bg-white flex justify-center items-center rounded-lg mt-[50px] ml-[240px] mb-[33px] relative">
               <Button
                 className="flex items-center justify-center relative"
-                color="var(--buttonHoverPrimary)"
+                color="var(--buttonDefaultPrimary)"
                 hoverColor="var(--buttonHoverPrimary)"
                 pressedColor="var(--buttonPressedPrimary)"
                 disabledColor="var(--buttonDisabledPrimary)"
@@ -60,10 +71,12 @@ function ConnectOrCreateExamSection() {
               >
                 Imtahan yarat
               </Button>
-              <img
+              <Image
+                width={200}
+                height={350}
                 src="/icon/arrowButtonDown.png"
-                alt=""
-                className={`${style.animatebounce} absolute top-[-130px] right-[-14px]`}
+                alt="arrowButtonDown"
+                className={`${style.animatebounce}  absolute top-[-110px] right-[-14px]`}
               />
             </div>
           </div>
@@ -74,3 +87,5 @@ function ConnectOrCreateExamSection() {
 }
 
 export default ConnectOrCreateExamSection;
+
+// w-[37%]

@@ -76,9 +76,9 @@ h6 {
   --fontGilroy: "Gilroy", sans-serif;
   --normalFontWeight: normal;
   --boldFontWeight: bold;
-  --buttonDefaultPrimary: #284cff;
-  --buttonHoverPrimary: #0025db;
-  --buttonPressedPrimary: #0020c2;
+  --buttonDefaultPrimary: #2B3E4F;
+  --buttonHoverPrimary: #19242E;
+  --buttonPressedPrimary: #121A21;
   --buttonDisabledPrimary: #dfdfdf;
   --buttonTextWhite: #ffffff;
   --buttonWhiteHover: #f5f5f5;
@@ -112,6 +112,7 @@ h6 {
   --neutralWhite: #ffffff;
   --slidesBoxGray: #ebebeb;
   --brandBlue: #4262ff;
+  --brandBlue500: #2B3E4F;
   --neutralWhiteButtonNextPrev: #fff;
 }
 

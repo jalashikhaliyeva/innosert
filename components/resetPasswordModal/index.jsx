@@ -21,6 +21,11 @@ export default function ResetPasswordModal({
   const [token, setToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
+  // Error states for form validation
+  const [emailError, setEmailError] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+
   useEffect(() => {
     const storedToken = localStorage.getItem("resetToken");
     console.log("Retrieved Token:", storedToken);
@@ -38,13 +43,28 @@ export default function ResetPasswordModal({
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!token) {
-      toast.error("Token təqdim edilmədi. Zəhmət olmasa yenidən cəhd edin.");
-      return;
+    let hasError = false;
+
+    // Basic form validation
+    if (!email) {
+      setEmailError("Email tələb olunur.");
+      hasError = true;
+    }
+
+    if (newPassword.length < 6) {
+      setNewPasswordError("Şifrə ən azı 6 simvoldan ibarət olmalıdır.");
+      hasError = true;
     }
 
     if (newPassword !== confirmPassword) {
-      toast.error("Şifrələr uyğun gəlmir. Zəhmət olmasa yenidən cəhd edin.");
+      setConfirmPasswordError("Şifrələr uyğun gəlmir.");
+      hasError = true;
+    }
+
+    if (hasError) return;
+
+    if (!token) {
+      toast.error("Token təqdim edilmədi. Zəhmət olmasa yenidən cəhd edin.");
       return;
     }
 
@@ -93,6 +113,13 @@ export default function ResetPasswordModal({
     }
   };
 
+  // Handle focus events to clear errors
+  const handleFocus = (field) => {
+    if (field === "email") setEmailError("");
+    if (field === "newPassword") setNewPasswordError("");
+    if (field === "confirmPassword") setConfirmPasswordError("");
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -106,71 +133,86 @@ export default function ResetPasswordModal({
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl"
         >
           &times;
         </button>
 
-   
-
-        <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-textHoverBlue">
+        <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-brandBlue500">
           Şifrənin bərpası
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-6 relative">
-            <GoMail className="text-2xl absolute left-3 top-1/2 transform -translate-y-1/2 text-grayTextinBox" />
+            <GoMail className="text-2xl absolute left-3 top-5 transform -translate-y-1/2 text-grayTextinBox" />
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-12 pr-3 py-2 border bg-grayTextColor border-inputBorder rounded-md text-base font-medium focus:outline-none focus:border-blue-500"
+              onFocus={() => handleFocus("email")}
+              className={`w-full pl-12 pr-3 py-2 border ${
+                emailError ? "border-red-500" : "border-inputBorder"
+              } bg-grayTextColor rounded-md text-base font-medium focus:outline-none focus:border-inputRingFocus`}
               placeholder="Email"
-              required
             />
+            {emailError && (
+              <p className="text-red-500 text-sm mt-1">{emailError}</p>
+            )}
           </div>
           <div className="mb-6 relative">
-            <HiOutlineLockClosed className="text-2xl absolute left-3 top-1/2 transform -translate-y-1/2 text-grayTextinBox" />
+            <HiOutlineLockClosed className="text-2xl absolute left-3 top-5 transform -translate-y-1/2 text-grayTextinBox" />
             <input
               type={showPassword ? "text" : "password"}
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
-              className="w-full pl-12 pr-10 py-2 border bg-grayTextColor border-inputBorder rounded-md text-base font-medium focus:outline-none focus:border-blue-500"
+              onFocus={() => handleFocus("newPassword")}
+              className={`w-full pl-12 pr-10 py-2 border ${
+                newPasswordError ? "border-red-500" : "border-inputBorder"
+              } bg-grayTextColor rounded-md text-base font-medium focus:outline-none focus:border-inputRingFocus`}
               placeholder="Yeni Şifrə"
-              required
             />
             {showPassword ? (
               <HiOutlineEyeOff
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-grayTextinBox cursor-pointer"
+                className="absolute right-3 top-5 transform -translate-y-1/2 text-grayTextinBox cursor-pointer"
                 onClick={togglePasswordVisibility}
               />
             ) : (
               <HiOutlineEye
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-grayTextinBox cursor-pointer"
+                className="absolute right-3 top-5 transform -translate-y-1/2 text-grayTextinBox cursor-pointer"
                 onClick={togglePasswordVisibility}
               />
+            )}
+            {newPasswordError && (
+              <p className="text-red-500 text-sm mt-1">{newPasswordError}</p>
             )}
           </div>
 
           <div className="mb-6 relative">
-            <HiOutlineLockClosed className="text-2xl absolute left-3 top-1/2 transform -translate-y-1/2 text-grayTextinBox" />
+            <HiOutlineLockClosed className="text-2xl absolute left-3 top-5 transform -translate-y-1/2 text-grayTextinBox" />
             <input
               type={showPassword ? "text" : "password"}
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
-              className=" w-full pl-12 pr-10 py-2 border bg-grayTextColor border-inputBorder rounded-md text-base font-medium focus:outline-none focus:border-blue-500"
+              onFocus={() => handleFocus("confirmPassword")}
+              className={`w-full pl-12 pr-10 py-2 border ${
+                confirmPasswordError ? "border-red-500" : "border-inputBorder"
+              } bg-grayTextColor rounded-md text-base font-medium focus:outline-none focus:border-inputRingFocus`}
               placeholder="Şifrəni Təsdiqlə"
-              required
             />
             {showPassword ? (
               <HiOutlineEyeOff
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-grayTextinBox cursor-pointer"
+                className="absolute right-3 top-5 transform -translate-y-1/2 text-grayTextinBox cursor-pointer"
                 onClick={togglePasswordVisibility}
               />
             ) : (
               <HiOutlineEye
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-grayTextinBox cursor-pointer"
+                className="absolute right-3 top-5 transform -translate-y-1/2 text-grayTextinBox cursor-pointer"
                 onClick={togglePasswordVisibility}
               />
+            )}
+            {confirmPasswordError && (
+              <p className="text-red-500 text-sm mt-1">
+                {confirmPasswordError}
+              </p>
             )}
           </div>
 
@@ -178,7 +220,7 @@ export default function ResetPasswordModal({
             <div>
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-base shadow-sm text-lg font-medium text-white bg-textHoverBlue hover:bg-buttonBlueHover active:bg-buttonPressedPrimary"
+                className="w-full rounded-md flex justify-center py-2 px-4 border border-transparent rounded-base shadow-sm text-lg font-medium text-white bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
               >
                 Şifrəni Bərpa Et
               </button>

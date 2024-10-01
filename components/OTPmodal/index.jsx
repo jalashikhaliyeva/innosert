@@ -3,7 +3,7 @@ import { HiOutlineArrowLeft } from "react-icons/hi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function OTPmodal({
+export default function OTPModal({
   isOpen,
   onClose,
   onBack,
@@ -141,7 +141,7 @@ export default function OTPmodal({
       />
 
       <div
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
         onClick={handleOutsideClick}
       >
         <div
@@ -150,22 +150,22 @@ export default function OTPmodal({
         >
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+            className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl"
           >
             &times;
           </button>
 
           <div className="flex items-center mb-6">
             <HiOutlineArrowLeft
-              className="text-2xl text-textHoverBlue cursor-pointer"
+              className="text-2xl text-buttonPrimaryDefault cursor-pointer"
               onClick={onBack}
             />
-            <span className="ml-2 font-gilroy text-lg text-textHoverBlue">
+            {/* <span className="ml-2 font-gilroy text-lg text-buttonPrimaryDefault">
               Geri
-            </span>
+            </span> */}
           </div>
 
-          <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-textHoverBlue">
+          <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-buttonPrimaryDefault">
             OTP
           </h2>
           <p className="text-center font-gilroy text-grayButtonText text-base mb-4">
@@ -181,7 +181,7 @@ export default function OTPmodal({
                     ref={(el) => (inputRefs.current[index] = el)}
                     type="text"
                     maxLength="1"
-                    className="size-10 text-center border bg-grayTextColor border-inputBorder rounded-md text-lg font-medium focus:outline-none focus:border-blue-500"
+                    className="size-10 text-center border bg-grayTextColor border-inputBorder rounded-md text-lg font-medium focus:outline-none focus:border-inputRingFocus"
                     onChange={(e) => handleInputChange(e, index)}
                     value={code[index] || ""}
                   />
@@ -192,7 +192,7 @@ export default function OTPmodal({
               <div>
                 <button
                   type="submit"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-textHoverBlue hover:bg-buttonBlueHover active:bg-buttonPressedPrimary"
+                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                 >
                   Təsdiqlə və daxil ol
                 </button>

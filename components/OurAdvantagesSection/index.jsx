@@ -5,15 +5,16 @@ import Slider from "../EmblaCarouselAdvantage/EmblaCarousel";
 const OPTIONS = { loop: true };
 // const SLIDE_COUNT = 24;
 
+function OurAdvantagesSection({ data }) {
+  // console.log(data, "OurAdvantagesSection data ");
 
-function OurAdvantagesSection() {
   return (
     <div className="bg-white pb-14">
       <Container>
-        <h2 className="pt-14 pb-10 font-gilroy text-textSecondaryDefault text-3xl font-medium">
+        <h2 className="pt-14 pb-10 font-gilroy text-textSecondaryDefault text-2xl md:text-3xl font-medium">
           Üstünlüklərimiz
         </h2>
-        <Slider />
+        <Slider data={data} />
       </Container>
     </div>
   );

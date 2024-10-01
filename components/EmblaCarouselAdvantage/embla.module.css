@@ -14,13 +14,23 @@
 
 .embla__slide {
   position: relative;
-  flex: 0 0 29%; 
+  flex: 0 0 79%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-
 }
 
+@media (min-width: 1024px) {
+  .embla__slide {
+    flex: 0 0 39%;
+  }
+}
+
+@media (min-width: 1280px) {
+  .embla__slide {
+    flex: 0 0 29%;
+  }
+}
 .embla__button {
   position: absolute;
   top: 50%;
@@ -32,7 +42,6 @@
   cursor: pointer;
 }
 
-
 .embla__button--prev {
   left: 10px;
   display: flex;
@@ -42,7 +51,6 @@
   background-color: var(--neutralWhiteButtonNextPrev);
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
 }
-
 
 .embla__button--next {
   right: 10px;
@@ -55,7 +63,6 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
-
 
 .embla__dots {
   display: flex;
@@ -75,8 +82,6 @@
 
 .embla__dot--selected {
   background-color: var(--brandBlueDark);
-
-
 }
 /* 
 .embla__progress {

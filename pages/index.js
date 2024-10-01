@@ -1,9 +1,8 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Header from "@/components/Header";
 import Container from "@/components/Container";
 import HeroHome from "@/components/HeroHome";
-import ReactDOM from "react-dom/client";
-import EmblaCarousel from "@/components//EmblaCarousel/EmblaCarousel";
+import EmblaCarousel from "@/components/EmblaCarousel/EmblaCarousel";
 import "@/components/EmblaCarousel/embla.module.css";
 import ShareCertificatesSection from "@/components/ShareCertificatesSection";
 import HowConnectToExamSection from "@/components/HowConnectToExamSection";
@@ -12,108 +11,158 @@ import HowtoCreateAnExamSection from "@/components/HowtoCreateAnExamSection";
 import OurAdvantagesSection from "@/components/OurAdvantagesSection";
 import Faq from "@/components/FaqSection";
 import Footer from "@/components/Footer";
+import Spinner from "@/components/Spinner";
+import withModalManagement from "@/shared/hoc/withModalManagement";
+import { useRouter } from "next/router";
+import { getLandingInfo } from "../services/getLandingInfo";
+import { getSettingInfo } from "../services/getSettingInfo";
+
 const OPTIONS = { loop: true };
 
-const slides = [
-  {
-    imageSrc: "/img/frontend.png",
-    text: "Frontend Development",
-  },
-  {
-    imageSrc: "/img/backend.png",
-    text: "Backend Development",
-  },
-  {
-    imageSrc: "/img/ux-ui.png",
-    text: "UX/UI Design",
-  },
-  {
-    imageSrc: "/img/digital-marketing.png",
-    text: "Digital Marketing",
-  },
-  {
-    imageSrc: "/img/data-science.png",
-    text: "Data Science",
-  },
-  {
-    imageSrc: "/img/machine-learning.png",
-    text: "Machine Learning",
-  },
-  {
-    imageSrc: "/img/mobile-development.png",
-    text: "Mobile App Development",
-  },
-  {
-    imageSrc: "/img/cloud-computing.png",
-    text: "Cloud Computing",
-  },
-  {
-    imageSrc: "/img/cybersecurity.png",
-    text: "Cybersecurity",
-  },
-  {
-    imageSrc: "/img/devops.png",
-    text: "DevOps Engineering",
-  },
-  {
-    imageSrc: "/img/project-management.png",
-    text: "Project Management",
-  },
-  {
-    imageSrc: "/img/seo.png",
-    text: "SEO Optimization",
-  },
-  {
-    imageSrc: "/img/graphic-design.png",
-    text: "Graphic Design",
-  },
-  {
-    imageSrc: "/img/content-writing.png",
-    text: "Content Writing",
-  },
-  {
-    imageSrc: "/img/blockchain.png",
-    text: "Blockchain Technology",
-  },
-  {
-    imageSrc: "/img/ai.png",
-    text: "Artificial Intelligence",
-  },
-  {
-    imageSrc: "/img/qa-testing.png",
-    text: "QA Testing",
-  },
-  {
-    imageSrc: "/img/software-engineering.png",
-    text: "Software Engineering",
-  },
-  {
-    imageSrc: "/img/database-management.png",
-    text: "Database Management",
-  },
-  {
-    imageSrc: "/img/it-support.png",
-    text: "IT Support",
-  },
-];
+function Home({ openRegisterModal, openLoginModal }) {
+  const faqRef = useRef(null);
+  const footerRef = useRef(null);
+  const certificateRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+  const [landingInfo, setLandingInfo] = useState(null);
+  const [settingInfo, setSettingInfo] = useState(null);
+  const router = useRouter();
 
-export default function Home() {
+  // Fetch data based on the current locale
+  const fetchData = async (locale) => {
+    try {
+      const landingData = await getLandingInfo(locale);
+      const settingData = await getSettingInfo(locale);
+
+      const mappedSlides = settingData.category?.map((item) => ({
+        imageSrc: item.image,
+        text: item.name,
+      }));
+
+      setLandingInfo(landingData);
+      setSettingInfo({
+        slides: mappedSlides,
+        map: settingData?.contact?.map,
+      });
+    } catch (error) {
+      console.error("Failed to fetch landing or setting info:", error);
+    }
+  };
+
+  useEffect(() => {
+    setMounted(true);
+    fetchData(router.locale); // Fetch data initially based on locale
+
+    if (typeof window !== "undefined" && router) {
+      const scrollToSection = () => {
+        const section = localStorage.getItem("scrollToSection");
+
+        if (section === "faq" && faqRef.current) {
+          faqRef.current.scrollIntoView({ behavior: "smooth" });
+        } else if (section === "contact" && footerRef.current) {
+          footerRef.current.scrollIntoView({ behavior: "smooth" });
+        } else if (section === "sertificate" && certificateRef.current) {
+          certificateRef.current.scrollIntoView({ behavior: "smooth" });
+        }
+
+        localStorage.removeItem("scrollToSection");
+      };
+
+      scrollToSection();
+      router.events.on("routeChangeComplete", scrollToSection);
+      return () => {
+        router.events.off("routeChangeComplete", scrollToSection);
+      };
+    }
+  }, [router]);
+
+  // Fetch data whenever the locale changes
+  useEffect(() => {
+    if (router.locale) {
+      fetchData(router.locale); // Re-fetch data when locale changes
+    }
+  }, [router.locale]);
+
+  if (!landingInfo || !settingInfo) {
+    return <Spinner />;
+  }
+
+  // Ensure mounted is true before using client-side-only code
+  if (!mounted) {
+    return <Spinner />; // Render nothing until the component has mounted on the client
+  }
+
   return (
     <main>
+      <Header
+        openRegisterModal={openRegisterModal}
+        scrollToFaq={() =>
+          faqRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+        scrollToFooter={() =>
+          footerRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+        scrollToCertificate={() =>
+          certificateRef.current.scrollIntoView({ behavior: "smooth" })
+        }
+      />
+
+      <HeroHome
+        openRegisterModal={openRegisterModal}
+        landingInfo={landingInfo?.slider}
+      />
+      <EmblaCarousel slides={settingInfo.slides} options={OPTIONS} />
+      <ShareCertificatesSection
+        openRegisterModal={openRegisterModal}
+        certificates={landingInfo.certificate}
+        title={landingInfo?.titles[0]}
+        ref={certificateRef}
+      />
+      <ConnectOrCreateExamSection title={landingInfo?.titles[1]} />
+      <HowConnectToExamSection ata={landingInfo?.about_participation} />
+      <HowtoCreateAnExamSection data={landingInfo?.about_exam} />
+      {landingInfo?.advantage && (
+        <OurAdvantagesSection data={landingInfo.advantage} />
+      )}
       <Container>
-        <Header />
+        <Faq ref={faqRef} faqs={landingInfo?.faqs} />
       </Container>
-      <HeroHome />
-      <EmblaCarousel slides={slides} options={OPTIONS} />
-      <ShareCertificatesSection />
-      <HowConnectToExamSection />
-      <ConnectOrCreateExamSection />
-      <HowtoCreateAnExamSection />
-      <OurAdvantagesSection />
-      <Faq />
-      <Container>
-        <Footer />
-      </Container>
+
+      <Footer ref={footerRef} />
     </main>
   );
 }
+
+// Fetch landing and setting info on server side
+export async function getServerSideProps(context) {
+  const lang = context.locale || "az"; // Get the language from the context locale
+  try {
+    const landingInfo = await getLandingInfo(lang);
+    const settingInfo = await getSettingInfo(lang);
+
+    const mappedSlides = settingInfo.category?.map((item) => ({
+      imageSrc: item.image,
+      text: item.name,
+    }));
+
+    return {
+      props: {
+        landingInfo,
+        settingInfo: {
+          slides: mappedSlides,
+          map: settingInfo?.contact?.map,
+        },
+      },
+    };
+  } catch (error) {
+    console.error("Failed to fetch landing or setting info:", error);
+    return {
+      props: {
+        landingInfo: null,
+        settingInfo: null,
+      },
+    };
+  }
+}
+
+export default withModalManagement(Home);

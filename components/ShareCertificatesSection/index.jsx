@@ -1,63 +1,80 @@
 import React from "react";
 import Container from "../Container";
 import Button from "../Button";
+import Image from "next/image";
 
-function ShareCertificatesSection() {
-  return (
-    <div className="bg-brandBlue relative overflow-hidden">
-      <Container>
-        <div className="relative flex flex-col justify-center h-[373px] w-[527px]">
-          <h2 className="text-white text-4xl mb-3.5">
-            Əldə etdiyin sertifikatları profildə paylaş
-          </h2>
-          <p className="text-grayTextColor text-lg mb-16 text-">
-            Lorem ipsum dolor sit amet consectetur. Lorem consequat venenatis
-            nunc convallis
-          </p>
-          <Button
-            color="var(--buttonTextWhite)"
-            hoverColor="var(--buttonWhiteHover)"
-            pressedColor="var(--buttonWhitePressed)"
-            disabledColor="var(--buttonSecondaryDisabled)"
-            textColor="var(--buttonWhiteTextBlue)"
-            disabledTextColor="var(--buttonTextSecondaryDisabled)"
-            width="199px"
-            height="48px"
-            borderRadius="8px"
-            fontFamily="var(--fontGilroy)"
-          >
-            Başla
-          </Button>
-        </div>
-      </Container>
-      <div
-        style={{
-          top: "50%",
-          right: "30%",
-          transform: "translateY(-50%)",
-        }}
-        className="absolute w-[300px] "
-      >
-        <div className="flex gap-3.5">
-          <img
-            src="/img/cert666.png"
-            alt=""
-            className="w-[293px] h-[242px] object-cover rounded-md"
-          />
-          <img
-            src="/img/certificate2.png"
-            alt=""
-            className="w-[293px] h-[242px] object-cover"
-          />
-          <img
-            src="/img/certificate33.png"
-            alt=""
-            className="w-[293px] h-[242px] object-cover"
-          />
+const ShareCertificatesSection = React.forwardRef(
+  ({ openRegisterModal, certificates, title }, ref) => {
+    console.log(certificates, "certificates certificates component");
+
+    return (
+      <div ref={ref} className="bg-blue200 relative overflow-hidden md:mt-14">
+        <Container>
+          <div className="relative flex flex-col justify-center h-[373px] w-[327px] sm:w-[527px]">
+            <h2
+              data-aos="fade-right"
+              className="text-white text-3xl sm:text-4xl lg:text-4xl mb-3.5"
+            >
+              {title.title}
+            </h2>
+            <p
+              data-aos="fade-right"
+              className="text-grayTextColor text-base whitespace-normal sm:text-lg mb-16"
+            >
+              {title.desc}
+            </p>
+            <div data-aos="fade-right" onClick={openRegisterModal}>
+              <Button
+                color="var(--buttonTextWhite)"
+                hoverColor="var(--buttonWhiteHover)"
+                pressedColor="var(--buttonWhitePressed)"
+                disabledColor="var(--buttonSecondaryDisabled)"
+                textColor="var(--brandBlue500)"
+                disabledTextColor="var(--buttonTextSecondaryDisabled)"
+                width="199px"
+                height="48px"
+                borderRadius="8px"
+                fontFamily="var(--fontGilroy)"
+                fontSize="20px"
+              >
+                Başla
+              </Button>
+            </div>
+          </div>
+        </Container>
+        <div
+          style={{
+            top: "50%",
+            transform: "translateY(-50%)",
+          }}
+          className="right-[20%] xl:right-[30%] 2xl:right-[25%] hidden sm:hidden md:hdden lg:block absolute w-[300px]"
+        >
+          <div className="flex gap-3.5 rounded-md">
+            {certificates?.map((cert, index) => (
+              <Image
+                key={cert.id}
+                width={293}
+                height={242}
+                src={cert.image}
+                alt={`Certificate ${index + 1}`}
+                className={`w-[293px] h-[242px] object-cover rounded-lg ${index > 0 ? 'opacity-20' : ''}`}
+                style={{
+                  margin: 0,
+                  padding: 0,
+                  width: "400px",
+                  height: "220px",
+                  objectFit: "cover",
+                  borderRadius: "8px",
+                  opacity: index > 0 ? 0.2 : 1, // 20% opacity for 2nd and 3rd images
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
+);
 
+ShareCertificatesSection.displayName = "ShareCertificatesSection";
 export default ShareCertificatesSection;

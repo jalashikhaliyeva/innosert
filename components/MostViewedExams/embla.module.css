@@ -1,0 +1,83 @@
+.embla {
+  position: relative;
+  width: 145%;
+  
+}
+
+.embla__viewport {
+  overflow: hidden;
+  /* Add padding to create the peeking effect */
+  padding: 0 20%;
+}
+
+.embla__container {
+  display: flex;
+  /* Negative margin to offset the padding */
+  margin: 0 -17%;
+}
+
+.embla__slide {
+  position: relative;
+  flex: 0 0 50%; /* Slides take up 50% of viewport */
+  min-width: 305px; /* Ensure slides are at least 200px wide */
+  /* height: 200px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.embla__slide__inner {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  transform-origin: center center;
+}
+
+.embla__button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: var(--neutralWhiteButtonNextPrev);
+  border: none;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.embla__button--prev {
+  left: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.embla__button--next {
+  right: 10px;
+  border-radius: 50%;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+}
+
+.embla__button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.embla__dots {
+  display: flex;
+  justify-content: center;
+  padding-top: 1rem;
+  margin-top: 20px;
+}
+
+.embla__dot {
+  width: 10px;
+  height: 10px;
+  background-color: #dfdfdf;
+  border-radius: 50%;
+  margin: 0 5px;
+  cursor: pointer;
+}
+
+.embla__dot--selected {
+  background-color: #888888;
+}

@@ -20,6 +20,7 @@ const Button = ({
   padding,
   fontFamily,
   fontSize, // Added fontSize prop
+  fontWeight, // Added fontWeight prop
   children,
   disabled,
 }) => {
@@ -36,6 +37,7 @@ const Button = ({
         padding: padding,
         fontFamily: fontFamily,
         fontSize: fontSize, // Applied fontSize
+        fontWeight: fontWeight, // Applied fontWeight
       }}
       onMouseEnter={(e) => {
         if (!disabled) {
@@ -90,6 +92,7 @@ Button.propTypes = {
   padding: PropTypes.string,
   fontFamily: PropTypes.string,
   fontSize: PropTypes.string, // Added fontSize to PropTypes
+  fontWeight: PropTypes.string, // Added fontWeight to PropTypes
   children: PropTypes.node.isRequired,
   disabled: PropTypes.bool,
 };

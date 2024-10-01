@@ -1,0 +1,42 @@
+/* components/Container.module.css */
+/* .container {
+  max-width: 1350px;
+  margin: 0 auto;
+} */
+
+.container {
+  max-width: 100%;
+  margin: auto;
+  /* background-color: aquamarine; */
+  /* padding: 0 16px; */
+}
+@media (min-width: 640px) {
+  .container {
+    max-width: 640px;
+  }
+}
+
+
+@media (min-width: 768px) {
+  .container {
+    max-width: 768px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container {
+    max-width: 800px;
+  }
+}
+
+@media (min-width: 1380px) {
+  .container {
+    max-width: 1100px;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container {
+    max-width: 1300px; 
+  }
+} 

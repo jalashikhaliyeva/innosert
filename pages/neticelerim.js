@@ -1,0 +1,34 @@
+import Breadcrumb from "@/components/Breadcrumb";
+import CardResult from "@/components/CardResult";
+import Container from "@/components/Container";
+import HeaderInternal from "@/components/HeaderInternal";
+import InternalContainer from "@/components/InternalContainer";
+import MyProfiles from "@/components/MyProfiles";
+import ProgressPieChart from "@/components/ProgressPieChart";
+import Sidebar from "@/components/Sidebar";
+import TitleNavigation from "@/components/TitleNavigation";
+import React from "react";
+
+function Neticelerim() {
+  return (
+    <>
+      <HeaderInternal />
+      <div className="flex">
+        <div className="w-[20%]">
+          <Sidebar />
+        </div>
+
+        <div className="w-[80%]">
+          <InternalContainer>
+            <Breadcrumb />
+            <TitleNavigation />
+            <CardResult />
+         
+          </InternalContainer>
+        </div>
+      </div>
+    </>
+  );
+}
+
+export default Neticelerim;

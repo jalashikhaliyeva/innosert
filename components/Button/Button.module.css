@@ -21,3 +21,17 @@
 .button:disabled {
   cursor: not-allowed;
 }
+
+
+@media (max-width: 640px) {
+  /* Styles for screens 640px and up */
+  .button { 
+    width: 130px;
+    height: 30px;
+  }
+}
+
+/* Medium devices (min-width: 768px) */
+@media (min-width: 768px) {
+  /* Styles for screens 768px and up */
+}

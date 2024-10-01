@@ -4,6 +4,7 @@ import { GoMail } from "react-icons/go";
 import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
 export default function EmailVerificationModal({
   isOpen,
   onClose,
@@ -15,6 +16,8 @@ export default function EmailVerificationModal({
   const inputRefs = useRef([]);
   const [email, setEmail] = useState("");
   const [hydrated, setHydrated] = useState(false);
+  const [emailError, setEmailError] = useState(false); // Track if email has an error
+  const [isFocused, setIsFocused] = useState(false); // Track if input is focused
 
   useEffect(() => {
     setHydrated(true);
@@ -23,15 +26,22 @@ export default function EmailVerificationModal({
   // Exit early if not hydrated or not open
   if (!isOpen || !hydrated) return null;
 
-  const handleInputChange = (e, index) => {
-    const value = e.target.value;
-    if (value.length === 1 && index < inputRefs.current.length - 1) {
-      inputRefs.current[index + 1].focus();
-    }
+  // Function to validate email format
+  const validateEmail = (email) => {
+    const emailPattern =
+      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    return emailPattern.test(email);
   };
 
   const handleVerifyEmail = async (e) => {
     e.preventDefault();
+
+    // Check if the email format is invalid
+    if (!validateEmail(email)) {
+      setEmailError(true); // Set error state
+      toast.error("Zəhmət olmasa düzgün email daxil edin.");
+      return; // Stop form submission
+    }
 
     try {
       const response = await fetch(
@@ -50,7 +60,7 @@ export default function EmailVerificationModal({
       const data = await response.json();
       if (response.ok && data?.status === true) {
         localStorage.setItem("resetToken", data.data.code); // Store the token in local storage
-        console.log(data.data.code, "data email veiryf");
+        console.log(data.data.code, "data email verify");
 
         console.log("Verification successful.");
         toast.success("E-poçt doğrulaması uğurla başa çatdı!");
@@ -79,7 +89,7 @@ export default function EmailVerificationModal({
 
   return (
     <div
-      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+      className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
       onClick={handleOutsideClick}
     >
       <div
@@ -88,19 +98,19 @@ export default function EmailVerificationModal({
       >
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl"
         >
           &times;
         </button>
 
         <div className="flex items-center mb-6">
           <HiOutlineArrowLeft
-            className="text-2xl text-textHoverBlue cursor-pointer"
+            className="text-2xl text-brandBlue500 cursor-pointer"
             onClick={onBack}
           />
         </div>
 
-        <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-textHoverBlue">
+        <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-brandBlue500">
           Email Doğrulama
         </h2>
         <p className="text-center font-gilroy text-grayButtonText text-base mb-4">
@@ -108,24 +118,46 @@ export default function EmailVerificationModal({
         </p>
         <form onSubmit={handleVerifyEmail}>
           <div className="mb-6 relative">
-            <GoMail className="text-2xl absolute left-3 top-1/2 transform -translate-y-1/2 text-grayTextinBox" />
+            <GoMail className="text-2xl absolute left-3 top-5 transform -translate-y-1/2 text-grayTextinBox" />
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-12 pr-3 py-2 border bg-grayTextColor border-inputBorder rounded-md text-base text-textSecondaryDefault font-medium focus:outline-none focus:border-blue-500"
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setEmailError(false); // Reset error when user types
+              }}
+              onFocus={() => {
+                setIsFocused(true); // Handle focus
+                setEmailError(false); // Remove error when focusing
+              }}
+              onBlur={() => setIsFocused(false)} // Remove focus state when input is blurred
+              className={`w-full pl-12 pr-3 py-2 border ${
+                emailError
+                  ? "border-red-500" // Error border color
+                  : isFocused
+                  ? "border-inputRingFocus" // Focus border color
+                  : "border-inputBorder"
+              } bg-grayTextColor rounded-md text-base text-textSecondaryDefault font-medium focus:outline-none ${
+                emailError
+                  ? "focus:border-red-500" // Focus state with error
+                  : "focus:border-inputRingFocus" // Normal focus border
+              }`}
               placeholder="Enter your email"
-              required
             />
+            {emailError && !isFocused && (
+              <p className="text-red-500 text-sm mt-1">
+                Zəhmət olmasa düzgün email daxil edin.
+              </p>
+            )}
           </div>
 
           <div className="flex flex-col gap-3">
             <div>
               <button
                 type="submit"
-                className="w-full font-gilroy flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-textHoverBlue hover:bg-buttonBlueHover active:bg-buttonPressedPrimary"
+                className="w-full font-gilroy flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
               >
-                Verify and Continue
+                Təsdiq edin
               </button>
             </div>
           </div>

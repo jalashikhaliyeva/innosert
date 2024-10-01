@@ -1,8 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { FcGoogle } from "react-icons/fc";
-import { FaLinkedin } from "react-icons/fa";
-import { FaFacebook } from "react-icons/fa";
+import { FaLinkedin, FaFacebook } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -11,46 +10,55 @@ import {
   HiOutlineEye,
   HiOutlineEyeOff,
 } from "react-icons/hi";
-import EmailVerificationModal from "../EmailVerificationModal";
 
 export default function LoginModal({
   isOpen,
   onClose,
   onOpenRegisterModal,
-  onOpenOTPModal,
   onForgotPasswordClick,
 }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [inputError, setInputError] = useState(false);
+  const [focusedInput, setFocusedInput] = useState(null); // State to track focused input
+  const [loading, setLoading] = useState(false); // New state for loading
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      handleSubmit(e);
+    }
+  };
   const handleOutsideClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
     }
   };
 
-  // const handleOpenRegister = () => {
-  //   onClose(() => onOpenRegisterModal());
-  // };
   const handleOpenRegister = () => {
-    onClose(); // Close the LoginModal first
-    onOpenRegisterModal(); // Then open the RegisterModal
+    onClose();
+    onOpenRegisterModal();
   };
 
   const handleForgotPasswordClick = () => {
-    if (onClose) onClose(); // Check if onClose is defined before calling it
-    if (onForgotPasswordClick) onForgotPasswordClick(); // Open the EmailVerificationModal
+    if (onClose) onClose();
+    if (onForgotPasswordClick) onForgotPasswordClick();
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    if (!email || !password) {
+      setInputError(true);
+      toast.error("Zəhmət olmasa bütün sahələri doldurun.");
+      return;
+    }
+    setInputError(false);
+    setLoading(true);
     try {
       const response = await fetch(
         "https://innocert-admin.markup.az/api/login",
@@ -68,31 +76,41 @@ export default function LoginModal({
       }
 
       const data = await response.json();
-      console.log("Form login response:", data);
-
       if (data?.data?.token) {
         localStorage.setItem("token", data?.data?.token);
-        console.log(data?.data?.token, "token success");
         if (data.message === "successful login") {
           toast.success("Uğurla daxil oldunuz!");
           setTimeout(() => {
             router.push("/home");
-          }, 800); // Adjust the delay as needed (2000ms = 2 seconds)
+          }, 800);
         }
       } else {
-        toast.error("Daxil olma uğursuz oldu. Zəhmət olmasa yenidən cəhd edin.");
+        toast.error(
+          "Daxil olma uğursuz oldu. Zəhmət olmasa yenidən cəhd edin."
+        );
+        setEmail(""); // Clear the email field
+        setPassword(""); // Clear the password field
       }
     } catch (error) {
       console.error("Error logging in:", error);
       toast.warning("Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
+      setEmail(""); // Clear the email field
+      setPassword(""); // Clear the password field
+    } finally {
+      setLoading(false); // Set loading to false after login attempt
     }
+  };
+
+  const handleFocus = (input) => {
+    setFocusedInput(input);
+    setInputError(false); // Reset error when user focuses on the input
   };
 
   return (
     <>
       {isOpen && (
         <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50"
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[998]"
           onClick={handleOutsideClick}
         >
           <div
@@ -101,46 +119,72 @@ export default function LoginModal({
           >
             <button
               onClick={() => onClose()}
-              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800"
+              className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl"
             >
               &times;
             </button>
-            <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-textHoverBlue">
+            <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-brandBlue500">
               Innosertə xoş gəlmisən!
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-3">
                 <div className="relative">
-                  <GoMail className="text-2xl absolute top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
+                  <GoMail className="text-2xl absolute top-3 left-3 text-gray-400" />
                   <input
                     id="email"
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pl-12 pr-3 py-3 px-4 border bg-inputDefault border-inputBorder rounded-md shadow-sm focus:outline-none focus:ring-brandBlue focus:border-brandBlue sm:text-sm"
-                    required
+                    onFocus={() => handleFocus("email")}
+                    onKeyDown={handleKeyDown}
+                    className={`placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pl-12 pr-3 py-3 px-4 border ${
+                      inputError && !email
+                        ? "border-inputRingError"
+                        : focusedInput === "email"
+                        ? "border-inputRingFocus"
+                        : "border-inputBorder"
+                    } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
                     placeholder="Email"
                   />
+                  {/* Conditional rendering of the helper text */}
+                  {inputError && !email && (
+                    <p className="text-inputRingError text-sm mt-1">
+                      Email daxil edilməlidir.
+                    </p>
+                  )}
                 </div>
 
                 <div className="relative">
-                  <HiOutlineLockClosed className="absolute text-2xl top-1/2 left-3 transform -translate-y-1/2 text-gray-400" />
+                  <HiOutlineLockClosed className="absolute text-2xl top-3 left-3 text-gray-400" />
                   <input
                     id="password"
                     type={showPassword ? "text" : "password"}
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pl-12 pr-3 py-3 px-4 border bg-inputDefault border-inputBorder rounded-md shadow-sm focus:outline-none focus:ring-brandBlue focus:border-brandBlue sm:text-sm"
-                    required
+                    onFocus={() => handleFocus("password")}
+                    onKeyDown={handleKeyDown}
+                    className={`placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pl-12 pr-3 py-3 px-4 border ${
+                      inputError && !password
+                        ? "border-inputRingError"
+                        : focusedInput === "password"
+                        ? "border-inputRingFocus"
+                        : "border-inputBorder"
+                    } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
                     placeholder="Şifrə"
                   />
                   <button
                     type="button"
                     onClick={togglePasswordVisibility}
-                    className="text-xl absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-400 cursor-pointer"
+                    className="text-xl absolute top-3 right-3 text-gray-400 cursor-pointer"
                   >
                     {showPassword ? <HiOutlineEyeOff /> : <HiOutlineEye />}
                   </button>
+                  {/* Conditional rendering of the helper text */}
+                  {inputError && !password && (
+                    <p className="text-inputRingError text-sm mt-1">
+                      Şifrə daxil edilməlidir.
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -148,7 +192,7 @@ export default function LoginModal({
                 <div className="mt-3 mb-4">
                   <a
                     onClick={handleForgotPasswordClick}
-                    className="cursor-pointer font-normal text-brandBlue700 hover:text-blue-600 text-base font-gilroy"
+                    className="cursor-pointer font-normal text-brandBlue700 hover:text-brandBlue200 text-base font-gilroy"
                   >
                     Şifrəni unutmusan?
                   </a>
@@ -172,9 +216,40 @@ export default function LoginModal({
                 <div>
                   <button
                     type="submit"
-                    className="w-full flex font-gilroy justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-textHoverBlue hover:bg-buttonBlueHover active:bg-buttonPressedPrimary"
+                    className={`w-full flex font-gilroy justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white ${
+                      loading
+                        ? "bg-[#DFDFDF] cursor-not-allowed" // Disabled state with grey background
+                        : "bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
+                    }`}
+                    disabled={loading} // Disable the button when loading is true
                   >
-                    Daxil ol
+                    {loading ? (
+                      <div className="flex items-center justify-center">
+                        <svg
+                          className="animate-spin h-5 w-5 mr-3 text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                          ></path>
+                        </svg>
+                        Gözləyin...
+                      </div>
+                    ) : (
+                      "Daxil ol"
+                    )}
                   </button>
                 </div>
                 <div>
@@ -210,7 +285,7 @@ export default function LoginModal({
           </div>
         </div>
       )}
-           <ToastContainer
+      <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}

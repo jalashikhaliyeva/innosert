@@ -1,101 +1,108 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import useEmblaCarousel from "embla-carousel-react";
 import styles from "./style.module.css";
 import Container from "../Container";
 import Button from "../Button";
 
-const slides = [
-  {
-    title: "Biliyini Sertifikat ilə Təsdiqlə!",
-    description:
-      "Biliyini artır və rəsmi sertifikat ilə təsdiqlə. Hədəflərinə çatmaq üçün ilk addımı at.",
-    buttonText: "Başla",
-    backgroundImage: "/img/heroHome1.png", // Path to your first image
-  },
-  {
-    title: "Yenilənmiş Tədris Proqramları",
-    description:
-      "Ən son və müasir tədris proqramları ilə təhsilini inkişaf etdir. Öz biliyini yoxla və təkmilləşdir.",
-    buttonText: "Başla",
-    backgroundImage: "/img/hero999.jpg", // Path to your second image
-  },
-  {
-    title: "Beynəlxalq Sertifikatlar",
-    description:
-      "Beynəlxalq tanınmış sertifikatlarla bilik və bacarıqlarını qlobal səviyyədə təsdiqlə.",
-    buttonText: "Başla",
-    backgroundImage: "/img/hero333.avif", // Path to your third image
-  },
-];
-
-function HeroHome() {
+function HeroHome({ openRegisterModal, landingInfo }) {
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    speed: 5,
+    align: "center",
+    containScroll: "trimSnaps",
+  });
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 2000); // Change slide every 2 seconds
+  const slides = landingInfo.map((info) => ({
+    title: info.title,
+    description: info.desc.replace(/<[^>]+>/g, ""),
+    buttonText: info.button_text,
+    backgroundImage: info.image,
+  }));
 
-    return () => clearInterval(interval); // Clear the interval on component unmount
-  }, []);
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setCurrentSlide(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    emblaApi.on("select", onSelect);
+
+    const autoplay = () => {
+      if (!emblaApi) return;
+      emblaApi.scrollNext();
+    };
+
+    const autoplayInterval = setInterval(autoplay, 4000);
+    return () => clearInterval(autoplayInterval);
+  }, [emblaApi, onSelect]);
 
   const handleDotClick = (index) => {
-    setCurrentSlide(index);
+    if (emblaApi) emblaApi.scrollTo(index);
   };
 
   return (
-    <div
-      className={styles.heroHome}
-      style={{
-        backgroundImage: `linear-gradient(
-          90deg,
-          rgba(0, 10, 51, 0.5) 0%,
-          rgba(0, 10, 51, 0.25) 29.5%,
-          rgba(0, 10, 51, 0) 100%
-        ), url(${slides[currentSlide].backgroundImage})`,
-        marginTop: "80px",
-      }}
-    >
-      <Container>
-        <div
-          style={{ height: "461px" }}
-          className="flex flex-col justify-center"
-          // style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-        >
-          <h1 className="font-gilroy text-white text-5xl mb-6">
-            {slides[currentSlide].title}
-          </h1>
-          <p className="text-lg font-gilroy text-white mb-9">
-            {slides[currentSlide].description}
-          </p>
-          <div className={styles.dotsContainer}>
-            {slides.map((_, index) => (
-              <div
-                key={index}
-                className={`${styles.dot} ${
-                  index === currentSlide ? styles.activeDot : ""
-                }`}
-                onClick={() => handleDotClick(index)}
-              ></div>
-            ))}
+    <div className={styles.heroSlider} ref={emblaRef}>
+      <div className={styles.embla__container}>
+        {slides.map((slide, index) => (
+          <div className={styles.embla__slide} key={index}>
+            <div
+              className={styles.slideContent}
+              style={{
+                backgroundImage: `linear-gradient(
+                  90deg,
+                  rgba(0, 10, 51, 0.5) 0%,
+                  rgba(0, 10, 51, 0.25) 29.5%,
+                  rgba(0, 10, 51, 0) 100%
+                ), url(${slide.backgroundImage})`,
+              }}
+            >
+              <div className={styles.textContainer}>
+                <Container>
+                  <h1 className="text-2xl  sm:text-3xl md:text-4xl lg:text-5xl font-gilroy font-medium leading-7 sm:leading-10 md:leading-10 lg:leading-10 pb-6">
+                    {slide.title}
+                  </h1>
+                  <p className="  sm:text-lg md:text-lg  font-gilroy text-md font-normal tracking-036 pb-9">
+                    {slide.description}
+                  </p>
+
+                  <div onClick={openRegisterModal}>
+                    <Button
+                      color="var(--buttonDefaultPrimary)"
+                      hoverColor="var(--buttonHoverPrimary)"
+                      pressedColor="var(--buttonPressedPrimary)"
+                      disabledColor="var(--buttonDisabledPrimary)"
+                      textColor="var(--buttonTextWhite)"
+                      hoverTextColor="var(--buttonTextWhite)"
+                      disabledTextColor="var(--buttonTextDisabled)"
+                      width="179px"
+                      height="48px"
+                      borderRadius="8px"
+                      fontFamily="var(--fontGilroy)"
+                      fontSize="20px"
+                    >
+                      {slide.buttonText}
+                    </Button>
+                  </div>
+                </Container>
+              </div>
+            </div>
           </div>
-          <Button
-            color="var(--buttonDefaultPrimary)"
-            hoverColor="var(--buttonHoverPrimary)"
-            pressedColor="var(--buttonPressedPrimary)"
-            disabledColor="var(--buttonDisabledPrimary)"
-            textColor="var(--buttonTextWhite)"
-            hoverTextColor="var(--buttonTextWhite)"
-            disabledTextColor="var(--buttonTextDisabled)"
-            width="179px"
-            height="48px"
-            borderRadius="8px"
-            fontFamily="var(--fontGilroy)"
-            fontSize="20px"
-          >
-            {slides[currentSlide].buttonText}
-          </Button>
-        </div>
-      </Container>
+        ))}
+      </div>
+      <div className={styles.dotContainer}>
+        {slides.map((_, index) => (
+          <button
+            key={index}
+            className={`${styles.dot} ${
+              currentSlide === index ? styles.active : ""
+            }`}
+            onClick={() => handleDotClick(index)}
+          />
+        ))}
+      </div>
     </div>
   );
 }

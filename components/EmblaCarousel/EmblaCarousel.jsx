@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import AutoScroll from "embla-carousel-auto-scroll";
 import styles from "./embla.module.css";
+import Image from "next/image";
 
 const EmblaCarousel = (props) => {
   const { slides, options } = props;
@@ -21,12 +22,14 @@ const EmblaCarousel = (props) => {
           {slides?.map((slide, index) => (
             <div className={styles.embla__slide} key={index}>
               <div className={styles.box}>
-                <img
-                src="/img/BadgeSlide.png"
+                <Image
+                  width={55}
+                  height={55}
+                  src={slide?.imageSrc}
                   alt="Banner Logo"
-                  className={styles.bannerLogo}
+                  style={{ width: "55px", height: "55px", objectFit: "cover" }}
                 />
-                <div className={styles.text}>{slide.text}</div> 
+                <div className={styles.text}>{slide.text}</div>
               </div>
             </div>
           ))}
