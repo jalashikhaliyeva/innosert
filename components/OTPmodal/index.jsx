@@ -3,7 +3,7 @@ import { HiOutlineArrowLeft } from "react-icons/hi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export default function OTPModal({
+export default function OTPmodal({
   isOpen,
   onClose,
   onBack,
