@@ -7,7 +7,7 @@ import { IoMdClose } from "react-icons/io"; // Import the close icon
 import Container from "../Container";
 import LoginModal from "../Login";
 import RegisterModal from "../Register";
-import OTPmodal from "../OTPModal";
+import OTPModal from "../OTPModal";
 import EmailVerificationModal from "../EmailVerificationModal";
 import ResetPasswordModal from "../resetPasswordModal";
 import Image from "next/image";
@@ -498,7 +498,7 @@ const Header = ({
 
       {isOTPModalOpen && (
         <div ref={modalRef}>
-          <OTPmodal
+          <OTPModal
             isOpen={isOTPModalOpen}
             onClose={handleOTPModalClose}
             onBack={handleBackToRegister} // Pass the back function
