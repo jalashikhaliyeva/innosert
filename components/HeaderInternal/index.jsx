@@ -208,7 +208,6 @@ const HeaderInternal = () => {
                 }`}
               >
                 <ul className="p-2 divide-y divide-gray-200">
-                  import Link from 'next/link';
                   <li className="mb-2">
                     <Link href="/hesablarim" passHref>
                       <p className="cursor-pointer flex items-center w-full px-4 py-2 rounded-lg text-textSecondaryDefault hover:bg-gray-100">
