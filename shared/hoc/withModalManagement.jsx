@@ -3,7 +3,8 @@ import RegisterModal from "@/components/Register";
 import LoginModal from "@/components/Login";
 import EmailVerificationModal from "@/components/EmailVerificationModal";
 import ResetPasswordModal from "@/components/resetPasswordModal";
-import OTPmodal from "@/components/OTPmodal";
+import OTP from "@/components/OTP";
+
 
 const withModalManagement = (WrappedComponent) => {
   return function WithModalManagement(props) {
@@ -61,7 +62,7 @@ const withModalManagement = (WrappedComponent) => {
         )}
 
         {isOTPModalOpen && (
-          <OTPmodal
+          <OTP
             isOpen={isOTPModalOpen}
             onClose={() => setOTPModalOpen(false)}
             onBack={() => {

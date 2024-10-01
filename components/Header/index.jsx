@@ -16,7 +16,7 @@ import { getSettingInfo } from "@/services/getSettingInfo";
 import { HiOutlineMenu } from "react-icons/hi";
 import { IoMdArrowBack } from "react-icons/io";
 import LanguageSwitcher from "@/shared/LanguageSwitcher";
-import OTPmodal from "@/components/OTPmodal";
+import OTP from "../OTP";
 
 const Header = ({
   openRegisterModal,
@@ -498,7 +498,7 @@ const Header = ({
 
       {isOTPModalOpen && (
         <div ref={modalRef}>
-          <OTPmodal
+          <OTP
             isOpen={isOTPModalOpen}
             onClose={handleOTPModalClose}
             onBack={handleBackToRegister} // Pass the back function
