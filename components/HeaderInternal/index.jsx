@@ -209,15 +209,15 @@ const HeaderInternal = () => {
               >
                 <ul className="p-2 divide-y divide-gray-200">
                   <li className="mb-2">
-                    <p
+                    <a
                       href="/hesablarim"
-                      className="flex items-center w-full px-4 py-2 rounded-lg text-textSecondaryDefault hover:bg-gray-100"
+                      className="cursor-pointer flex items-center w-full px-4 py-2 rounded-lg text-textSecondaryDefault hover:bg-gray-100"
                     >
                       <FaRegCircleUser className="size-5 mr-2 fill-grayText" />
                       <span className="text-lg font-gilroy font-normal leading-6 text-textSecondaryDefault">
                         Hesab
                       </span>
-                    </p>
+                    </a>
                   </li>
 
                   <li className="mb-2">
