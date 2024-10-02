@@ -153,7 +153,7 @@ function Sidebar() {
                 onClick={toggleCompanyDropdown}
               >
                 <RiBuildingLine className="size-6 fill-grayText" />
-                
+
                 <p className="text-lg font-gilroy font-normal leading-6 text-grayText">
                   Şirkət seç
                 </p>
@@ -162,7 +162,6 @@ function Sidebar() {
                 ) : (
                   <FiChevronDown className="ml-2 text-grayText" />
                 )}
-        
               </div>
             </div>
 
@@ -194,8 +193,8 @@ function Sidebar() {
           </div>
         )}
       </div>
- {/* Menu Items */}
- <nav className="mt-10">
+      {/* Menu Items */}
+      <nav className="mt-10">
         <ul className="mx-4">
           <li className="mb-4">
             <Link

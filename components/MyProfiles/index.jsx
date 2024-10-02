@@ -22,7 +22,7 @@ function MyProfiles() {
   const [lastName, setLastName] = useState("");
   const [mobile, setMobile] = useState("");
   const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
   const formRef = useRef(null);
   const [formHeight, setFormHeight] = useState("0px");
   const [companyVOEN, setCompanyVOEN] = useState("");
@@ -196,13 +196,21 @@ function MyProfiles() {
 
         if (response.ok) {
           const userData = await response.json();
+          console.log(userData, "userData");
+
           setUser(userData);
           setUsername(userData.data.username || "");
           setEmail(userData.data.email || "");
           setFirstName(userData.data.first_name || "");
           setLastName(userData.data.last_name || "");
           setMobile(userData.data.mobile || "");
-          setImagePreview(userData.data.image || "");
+          // setImagePreview(userData.data.image || "");
+          const userImage = userData.data.image;
+          if (!userImage || userImage === "https://innocert-admin.markup.az") {
+            setImagePreview(null); // No image available
+          } else {
+            setImagePreview(userImage);
+          }
         } else {
           toast.error("Failed to fetch user data.");
         }
@@ -215,6 +223,12 @@ function MyProfiles() {
     // fetchCompanies();
   }, []);
 
+  const getImageSrc = () => {
+    if (!imagePreview) {
+      return "/img/defaultUser.png";
+    }
+    return imagePreview;
+  };
   useEffect(() => {
     if (isFormOpen) {
       setFormHeight(`${formRef.current.scrollHeight}px`);
@@ -331,7 +345,6 @@ function MyProfiles() {
         // Automatically close the form and show the companies list
         setIsCreatingCompany(false); // Close the company creation form
         setShowCompanies(true); // Show the companies list
-
         // Reset form fields after successful creation
         setCompanyVOEN("");
         setCompanyName("");
@@ -1005,3 +1018,4 @@ function MyProfiles() {
 }
 
 export default MyProfiles;
+
