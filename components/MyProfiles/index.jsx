@@ -271,12 +271,14 @@ function MyProfiles() {
   const handleCompanyCreate = async (e) => {
     e.preventDefault();
     const userToken = localStorage.getItem("token");
-  
+
     if (!userToken) {
-      toast.error("İstifadəçi autentifikasiya edilməyib. Zəhmət olmasa, daxil olun.");
+      toast.error(
+        "İstifadəçi autentifikasiya edilməyib. Zəhmət olmasa, daxil olun."
+      );
       return;
     }
-  
+
     // Check for required fields
     if (
       !companyVOEN ||
@@ -290,9 +292,9 @@ function MyProfiles() {
       toast.error("Zəhmət olmasa, bütün sahələri doldurun.");
       return;
     }
-  
+
     setLoadingCompanyCreation(true); // Start loading
-  
+
     try {
       const formData = new FormData();
       formData.append("voen", companyVOEN);
@@ -301,12 +303,12 @@ function MyProfiles() {
       formData.append("detail", companyDetail);
       formData.append("phone_number", companyPhoneNumber);
       formData.append("email", companyEmail);
-  
+
       // Append the image as "logo" if it exists
       if (companyImage) {
         formData.append("logo", companyImage); // Ensure this is a File object
       }
-  
+
       const companyResponse = await fetch(
         "https://innocert-admin.markup.az/api/company/create",
         {
@@ -317,19 +319,19 @@ function MyProfiles() {
           body: formData,
         }
       );
-  
+
       const responseData = await companyResponse.json();
-  
+
       if (companyResponse.ok) {
         toast.success("Şirkət uğurla yaradıldı!");
-  
+
         // Add the newly created company to the companies list
         setCompanies((prevCompanies) => [...prevCompanies, responseData.data]);
-  
+
         // Automatically close the form and show the companies list
         setIsCreatingCompany(false); // Close the company creation form
         setShowCompanies(true); // Show the companies list
-  
+
         // Reset form fields after successful creation
         setCompanyVOEN("");
         setCompanyName("");
@@ -349,11 +351,14 @@ function MyProfiles() {
       setLoadingCompanyCreation(false);
     }
   };
-  
+
   return (
     <div className="mt-6">
       <div className="mb-6">
-        <h2 data-aos="fade-right" className="text-2xl leading-8 font-gilroy font-medium">
+        <h2
+          data-aos="fade-right"
+          className="text-2xl leading-8 font-gilroy font-medium"
+        >
           {
             isCreatingCompany
               ? "Şirkət yarat" // If the company creation form is open
