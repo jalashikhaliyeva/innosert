@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { MdEqualizer, MdOutlineLogout } from "react-icons/md";
 import { CiBookmark } from "react-icons/ci";
@@ -8,79 +8,16 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import LogoutModal from "@/components/LogoutModal";
 import { RiBuildingLine } from "react-icons/ri";
 import Image from "next/image";
-import { useContext } from "react";
-import CompanyContext from "../../shared/context/CompanyContext";
+import CompanyContext from "@/shared/context/CompanyContext";
 import Link from "next/link";
+import { UserContext } from "@/shared/context/UserContext";
 
 function Sidebar() {
-  const [user, setUser] = useState(null);
-  const [activeCompanies, setActiveCompanies] = useState([]); // Only active companies
-  const [companyLogo, setCompanyLogo] = useState("");
+  const { user } = useContext(UserContext);
+  const { setSelectedCompany } = useContext(CompanyContext);
   const router = useRouter();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [mobile, setMobile] = useState("");
-  const [imagePreview, setImagePreview] = useState("");
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false); // Dropdown open state
-  const [firstCompany, setFirstCompany] = useState(null); // First created company
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const userToken = localStorage.getItem("token");
-
-      if (!userToken) {
-        alert("User is not authenticated. Please log in again.");
-        return;
-      }
-
-      try {
-        const response = await fetch(
-          "https://innocert-admin.markup.az/api/user",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const userData = await response.json();
-          console.log(userData, "userData");
-
-          setUser(userData);
-          setUsername(userData.data.username || "");
-          setEmail(userData.data.email || "");
-          setFirstName(userData.data.first_name || "");
-          setLastName(userData.data.last_name || "");
-          setMobile(userData.data.mobile || "");
-          setImagePreview(userData.data.image || "");
-
-          // Filter only active companies (exclude pending companies)
-          const activeCompaniesList = userData.data.companies.filter(
-            (company) => company.status == "1"
-          );
-          setActiveCompanies(activeCompaniesList);
-
-          // Set the first created company (based on creation order)
-          if (activeCompaniesList.length > 0) {
-            const firstCreatedCompany = activeCompaniesList[0];
-            setFirstCompany(firstCreatedCompany);
-            setCompanyLogo(firstCreatedCompany.logo); // Set logo for the first company
-          }
-        } else {
-          alert("Failed to fetch user data");
-        }
-      } catch (error) {
-        alert(`An error occurred: ${error.message}`);
-      }
-    };
-
-    fetchUserData();
-  }, []);
 
   // Function to open the logout modal
   const handleLogoutClick = () => {
@@ -98,52 +35,52 @@ function Sidebar() {
     return `${firstInitial}${lastInitial}`;
   };
 
-  // Navigate to the hesablarim/[id] page when clicking on the company div
-  // const handleCompanyClick = (companyId) => {
-  //   if (companyId) {
-  //     router.push(`/hesablarim/${companyId}/`);
-  //   }
-  // };
-
-  const { setSelectedCompany } = useContext(CompanyContext);
-
   const handleCompanyClick = (company) => {
     setSelectedCompany(company); // Set the selected company in context
     router.push(`/shirket-hesabi`);
   };
+
   // Toggle the dropdown open state
   const toggleCompanyDropdown = () => {
     setCompanyDropdownOpen((prevState) => !prevState);
   };
 
   // Helper function to determine if a menu item is active
-  // const isActive = (path) => router.pathname === path;
   const isActive = (path) => router.pathname.startsWith(path);
+
+  // Extract active companies if the user has the "Owner" role
+  const activeCompanies =
+    user?.data?.roles === "Owner"
+      ? user.data.companies.filter((company) => company.status === "1")
+      : [];
 
   return (
     <div className="fixed h-screen w-72 bg-white shadow-sm border mt-[88px]">
       <div className="p-4 mx-4 pt-8">
         {/* Profile Section */}
         <div className="flex items-center mb-2 pb-3 border-b border-buttonGhostPressed">
-          {imagePreview ? (
+          {!user?.data?.image ||
+          user.data.image === "https://innocert-admin.markup.az" ? (
+            <div className="w-16 h-16 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-2xl font-bold mr-4">
+              {generateInitials(user?.data?.first_name, user?.data?.last_name)}
+            </div>
+          ) : (
             <Image
               width={60}
               height={60}
-              src={imagePreview}
+              src={user.data.image}
               alt="Profile"
               className="w-16 h-16 rounded-full mr-4 object-cover"
             />
-          ) : (
-            <div className="w-16 h-16 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-2xl font-bold mr-4">
-              {generateInitials(firstName, lastName)}
-            </div>
           )}
+
           <div>
             <p className="font-gilroy text-base font-normal leading-6 flex">
-              {firstName} {lastName}
+              {user?.data?.first_name} {user?.data?.last_name}
             </p>
           </div>
         </div>
+
         {/* Company Dropdown Section */}
         {user?.data?.roles === "Owner" && activeCompanies.length > 0 && (
           <div className="mb-4">
@@ -158,7 +95,7 @@ function Sidebar() {
                   Şirkət seç
                 </p>
                 {companyDropdownOpen ? (
-                  <FiChevronUp className="ml-2  text-grayText" />
+                  <FiChevronUp className="ml-2 text-grayText" />
                 ) : (
                   <FiChevronDown className="ml-2 text-grayText" />
                 )}
@@ -174,7 +111,7 @@ function Sidebar() {
                     className="flex items-center mb-2 cursor-pointer border-b border-buttonGhostPressed pb-2 hover:bg-gray-100 rounded-lg"
                     onClick={() => handleCompanyClick(company)} // Navigate to company page
                   >
-                    {company.logo && (
+                    {company.logo ? (
                       <Image
                         width={40}
                         height={40}
@@ -182,6 +119,10 @@ function Sidebar() {
                         alt={company.name}
                         className="w-10 h-10 rounded-full mr-4 object-cover"
                       />
+                    ) : (
+                      <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-lg font-gilroy font-bold mr-4">
+                        {generateInitials(company.name, "")}
+                      </div>
                     )}
                     <p className="font-gilroy text-base font-normal leading-6 flex">
                       {company.name}
@@ -193,6 +134,7 @@ function Sidebar() {
           </div>
         )}
       </div>
+
       {/* Menu Items */}
       <nav className="mt-10">
         <ul className="mx-4">

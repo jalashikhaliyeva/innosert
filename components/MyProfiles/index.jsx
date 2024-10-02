@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { IoChevronDownSharp, IoChevronUpSharp } from "react-icons/io5";
 import { FaPlus } from "react-icons/fa";
 import { CiTrash } from "react-icons/ci";
@@ -8,9 +8,11 @@ import "react-phone-input-2/lib/style.css";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
+import { UserContext } from "@/shared/context/UserContext";
 
 function MyProfiles() {
-  const [user, setUser] = useState(null);
+  // const [user, setUser] = useState(null);
+  const { user, setUser, fetchUserData } = useContext(UserContext);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [companies, setCompanies] = useState([]);
@@ -103,15 +105,32 @@ function MyProfiles() {
       if (profileResponse.ok) {
         toast.success("Profil uğurla yeniləndi!");
 
+
+        // setUser((prevUser) => ({
+        //   ...prevUser,
+        //   username,
+        //   email,
+        //   first_name: firstName,
+        //   last_name: lastName,
+        //   mobile,
+        //   profilePicture: image ? profileData?.data?.image : imagePreview,
+        // }));
+
+        // MyProfiles.js (updated code)
         setUser((prevUser) => ({
           ...prevUser,
-          username,
-          email,
-          first_name: firstName,
-          last_name: lastName,
-          mobile,
-          profilePicture: image ? profileData?.data?.image : imagePreview,
+          data: {
+            ...prevUser.data,
+            username,
+            email,
+            first_name: firstName,
+            last_name: lastName,
+            mobile,
+            image: image ? profileData?.data?.image : imagePreview,
+          },
         }));
+        // Fetch updated user data from the server
+        fetchUserData();
 
         if (!imagePreview) {
           setImage(null);
@@ -436,7 +455,7 @@ function MyProfiles() {
                     {firstName} {lastName}
                   </h2>
                   <p className="text-gray-500 font-gilroy text-base font-normal leading-6">
-                    {user?.data.roles}
+                    {user?.data?.roles}
                   </p>
                 </div>
               </div>
@@ -1018,4 +1037,3 @@ function MyProfiles() {
 }
 
 export default MyProfiles;
-

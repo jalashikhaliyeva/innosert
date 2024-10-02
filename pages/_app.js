@@ -1,3 +1,4 @@
+// pages/_app.js
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import "@/styles/globals.css";
@@ -7,6 +8,8 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import i18n from "../locales/i18n";
 import CompanyContext from "../shared/context/CompanyContext";
+import { UserProvider } from "@/shared/context/UserContext";
+// import { UserProvider } from "../shared/contexts/UserContext"; 
 
 function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -62,7 +65,7 @@ function App({ Component, pageProps }) {
     const token = localStorage.getItem("token");
 
     // Define public routes that can be accessed without authentication
-    const publicRoutes = ["/", "/about"];
+    const publicRoutes = ["/", "/haqqimizda"];
 
     // Function to check if the current route is public
     const isPublicRoute = (pathname) => {
@@ -73,7 +76,7 @@ function App({ Component, pageProps }) {
       // Allow any route that starts with '/exams/'
       if (
         pathname.startsWith("/exams/") ||
-        pathname.startsWith("/sertifikatlarim/")
+        pathname.startsWith("/imtahanlar/")
       ) {
         return true;
       }
@@ -100,9 +103,13 @@ function App({ Component, pageProps }) {
   }
 
   return (
-    <CompanyContext.Provider value={{ selectedCompany, setSelectedCompany }}>
-      {loading ? <Spinner /> : <Component {...pageProps} />}
-    </CompanyContext.Provider>
+    // Wrap your application with the UserProvider
+    <UserProvider>
+      {/* If CompanyContext depends on UserContext, wrap it inside UserProvider */}
+      <CompanyContext.Provider value={{ selectedCompany, setSelectedCompany }}>
+        {loading ? <Spinner /> : <Component {...pageProps} />}
+      </CompanyContext.Provider>
+    </UserProvider>
   );
 }
 
