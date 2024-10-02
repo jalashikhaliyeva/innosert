@@ -14,6 +14,9 @@ import { UserContext } from "@/shared/context/UserContext";
 
 function Sidebar() {
   const { user } = useContext(UserContext);
+
+  console.log(user?.data?.roles, "user dta sidebar");
+
   const { setSelectedCompany } = useContext(CompanyContext);
   const router = useRouter();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
@@ -51,7 +54,7 @@ function Sidebar() {
   // Extract active companies if the user has the "Owner" role
   const activeCompanies =
     user?.data?.roles === "Owner"
-      ? user.data.companies.filter((company) => company.status === "1")
+      ? user.data.companies.filter((company) => company.status === 1)
       : [];
 
   return (

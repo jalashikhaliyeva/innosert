@@ -165,7 +165,7 @@ const Header = ({
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-bodyColor shadow-sm ">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-bodyColor shadow-createBox">
       <Container>
         <div className="flex justify-between items-center py-4 px-4">
           {/* Left section - logo */}
@@ -378,38 +378,45 @@ const Header = ({
                     >
                       <p
                         onClick={() => handleCategoryClick(category)}
-                        className="cursor-pointer block text-lg my-2 hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
+                        className="cursor-pointer block text-lg my-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
                       >
                         {category.name}
-                        <MdKeyboardArrowRight className="mt-1 ml-2" />
+                        {getSubcategories(category.name).length > 0 && (
+                          <MdKeyboardArrowRight className="mt-1 ml-2" />
+                        )}
                       </p>
 
                       {/* Submenu */}
-                      <div
-                        className={`absolute left-full top-0 mt-0 ml-1 bg-white rounded-lg shadow-lg w-48 z-20 transition-all duration-300 ease-in-out transform ${
-                          openSubmenu === category.name
-                            ? "opacity-100 translate-x-0"
-                            : "opacity-0 -translate-x-4 pointer-events-none"
-                        }`}
-                      >
-                        <ul className="text-lg divide-y divide-gray-100 py-2">
+                      {getSubcategories(category.name).length > 0 && (
+                        <div
+                          className={`absolute left-full top-0 mt-0 ml-1 bg-white rounded-lg shadow-lg w-48 z-20 transition-all duration-300 ease-in-out transform ${
+                            openSubmenu === category.name
+                              ? "opacity-100 translate-x-0"
+                              : "opacity-0 -translate-x-4 pointer-events-none"
+                          }`}
+                        >
                           {getSubcategories(category.name).map((sub) => (
-                            <li key={sub.id}>
-                              <p
-                                onClick={() =>
-                                  handleSubcategoryClick(
-                                    category.slug,
-                                    sub.slug
-                                  )
-                                }
-                                className="cursor-pointer block px-4 py-2 hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue"
-                              >
-                                {sub.name}
-                              </p>
-                            </li>
+                            <ul
+                              className="text-lg divide-y divide-gray-100 py-1"
+                              key={sub.id}
+                            >
+                              <li className="border-b border-gray-100">
+                                <p
+                                  onClick={() =>
+                                    handleSubcategoryClick(
+                                      category.slug,
+                                      sub.slug
+                                    )
+                                  }
+                                  className="cursor-pointer block px-4 py-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue"
+                                >
+                                  {sub.name}
+                                </p>
+                              </li>
+                            </ul>
                           ))}
-                        </ul>
-                      </div>
+                        </div>
+                      )}
                     </li>
                   ))}
                 </ul>

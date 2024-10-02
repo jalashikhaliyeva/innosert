@@ -1,6 +1,6 @@
 // components/HeaderInternal.jsx or .tsx
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Container from "../Container";
 import Image from "next/image";
 import { HiOutlineMenu } from "react-icons/hi";
@@ -14,8 +14,33 @@ import { MdKeyboardArrowRight, MdOutlineLogout } from "react-icons/md";
 import { useRouter } from "next/router";
 import LogoutModal from "@/components/LogoutModal";
 import Link from "next/link";
+import { UserContext } from "@/shared/context/UserContext";
+import { FiChevronDown, FiChevronUp } from "react-icons/fi";
+import { RiBuildingLine } from "react-icons/ri";
+import CompanyContext from "@/shared/context/CompanyContext";
 
 const HeaderInternal = () => {
+  const { user } = useContext(UserContext);
+  const { setSelectedCompany } = useContext(CompanyContext);
+  const router = useRouter();
+  // console.log(user?.data?.active_company?.logo, "HeaderInternal");
+  console.log(user, "active_company.logo");
+  const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
+
+  const toggleCompanyDropdown = () => {
+    setCompanyDropdownOpen(!companyDropdownOpen);
+  };
+
+  const handleCompanyClick = (company) => {
+    setSelectedCompany(company); // Set the selected company in context
+    router.push(`/shirket-hesabi`);
+  };
+
+  const activeCompanies =
+    user?.data?.roles === "Owner"
+      ? user.data.companies.filter((company) => company.status === 1)
+      : [];
+
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -68,7 +93,7 @@ const HeaderInternal = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-bodyColor shadow-sm z-30 font-gilroy">
+    <header className="fixed top-0 left-0 right-0 bg-bodyColor shadow-createBox z-30 font-gilroy">
       <Container>
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-16">
@@ -112,34 +137,39 @@ const HeaderInternal = () => {
                       : "opacity-0 -translate-y-4 pointer-events-none"
                   }`}
                 >
-                  <ul className="divide-y divide-gray-200">
-                    {categories.length > 0 ? (
-                      categories.map((category) => (
-                        <li
-                          key={category.id}
-                          className="relative group"
-                          onMouseEnter={() => setOpenSubmenu(category.name)}
-                          onMouseLeave={() => setOpenSubmenu(null)}
+                  <ul className="divide-y divide-gray-200 px-4">
+                    {categories?.map((category) => (
+                      <li
+                        key={category.id}
+                        className="relative group"
+                        onMouseEnter={() => setOpenSubmenu(category.name)}
+                        onMouseLeave={() => setOpenSubmenu(null)}
+                      >
+                        <p
+                          onClick={() => handleCategoryClick(category)}
+                          className="cursor-pointer block text-lg my-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
                         >
-                          <p
-                            onClick={() => handleCategoryClick(category)}
-                            className="cursor-pointer block text-lg my-2 hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
-                          >
-                            {category.name}
-                            <MdKeyboardArrowRight className="ml-2" />
-                          </p>
+                          {category.name}
+                          {getSubcategories(category.name).length > 0 && (
+                            <MdKeyboardArrowRight className="mt-1 ml-2" />
+                          )}
+                        </p>
 
-                          {/* Submenu */}
+                        {/* Submenu */}
+                        {getSubcategories(category.name).length > 0 && (
                           <div
-                            className={`absolute left-full top-0 mt-0 bg-white rounded-lg shadow-lg w-48 z-20 transition-all duration-300 ease-in-out transform ${
+                            className={`absolute left-full top-0 mt-0 ml-1 bg-white rounded-lg shadow-lg w-48 z-20 transition-all duration-300 ease-in-out transform ${
                               openSubmenu === category.name
                                 ? "opacity-100 translate-x-0"
                                 : "opacity-0 -translate-x-4 pointer-events-none"
                             }`}
                           >
-                            <ul className="text-lg divide-y divide-gray-100 py-2">
-                              {getSubcategories(category.name).map((sub) => (
-                                <li key={sub.id}>
+                            {getSubcategories(category.name).map((sub) => (
+                              <ul
+                                className="text-lg divide-y divide-gray-100 py-1"
+                                key={sub.id}
+                              >
+                                <li className="border-b border-gray-100">
                                   <p
                                     onClick={() =>
                                       handleSubcategoryClick(
@@ -147,19 +177,17 @@ const HeaderInternal = () => {
                                         sub.slug
                                       )
                                     }
-                                    className="cursor-pointer block px-4 py-2 hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue"
+                                    className="cursor-pointer block px-4 py-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue"
                                   >
                                     {sub.name}
                                   </p>
                                 </li>
-                              ))}
-                            </ul>
+                              </ul>
+                            ))}
                           </div>
-                        </li>
-                      ))
-                    ) : (
-                      <p className="p-4 text-gray-500">No categories found.</p>
-                    )}
+                        )}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
@@ -194,14 +222,14 @@ const HeaderInternal = () => {
               ref={userMenuRef}
             >
               {/* User Icon Section */}
-              <div className="bg-brandBlue500 p-4 rounded-lg flex gap-3 ml-4 cursor-pointer">
+              <div className="bg-brandBlue500 py-[10px] px-4 rounded-lg flex gap-3 ml-4 cursor-pointer">
                 <AiOutlineMenu className="size-6 fill-white" />
                 <FaRegCircleUser className="size-6 fill-white" />
               </div>
 
               {/* Dropdown Menu for User */}
               <div
-                className={`absolute right-0 top-full w-40 text-lg bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform ${
+                className={`absolute right-0 top-full w-48 text-lg bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform ${
                   isUserMenuOpen
                     ? "opacity-100 translate-y-0"
                     : "opacity-0 -translate-y-4 pointer-events-none"
@@ -213,11 +241,71 @@ const HeaderInternal = () => {
                       <p className="cursor-pointer flex items-center w-full px-4 py-2 rounded-lg text-textSecondaryDefault hover:bg-gray-100">
                         <FaRegCircleUser className="size-5 mr-2 fill-grayText" />
                         <span className="text-lg font-gilroy font-normal leading-6 text-textSecondaryDefault">
-                          Hesab
+                          Profilim
                         </span>
                       </p>
                     </Link>
                   </li>
+
+                  {/* Company Selection Dropdown */}
+                  {user?.data?.roles === "Owner" &&
+                    activeCompanies.length > 0 && (
+                      <div className="relative z-50">
+                        <div
+                          className="flex items-center space-x-1 mb-2 mt-2 px-4 py-2 cursor-pointer rounded-lg hover:bg-gray-100"
+                          onClick={toggleCompanyDropdown}
+                        >
+                          <RiBuildingLine className="size-[20px] fill-grayText" />
+                          <p className="text-md font-gilroy  font-normal leading-6 text-textSecondaryDefault">
+                            Şirkətlərim
+                          </p>
+                          {companyDropdownOpen ? (
+                            <FiChevronUp className="ml-2 text-grayText" />
+                          ) : (
+                            <FiChevronDown className="ml-2 text-grayText" />
+                          )}
+                        </div>
+
+                        {/* Dropdown menu for active companies */}
+                        {companyDropdownOpen && (
+                          <div className="relative w-full z-10 mt-2">
+                            {activeCompanies.map((company) => (
+                              <div
+                                key={company.slug}
+                                className="flex items-center cursor-pointer pb-2 px-4 py-2 hover:bg-gray-100 rounded-lg relative group"
+                                onClick={() => handleCompanyClick(company)}
+                              >
+                                {company.logo ? (
+                                  <Image
+                                    width={24}
+                                    height={24}
+                                    src={company.logo}
+                                    alt={company.name}
+                                    className="w-6 h-6 rounded-full mr-4 object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4 ">
+                                    {company.name[0]}
+                                  </div>
+                                )}
+                                <p
+                                  className="font-gilroy text-base font-normal leading-6 max-w-[100px] truncate"
+                                  title={company.name} // Tooltip with full company name
+                                >
+                                  {company.name}
+                                </p>
+
+                                {/* Custom tooltip */}
+                                <div className="absolute left-0 bottom-full mb-2 p-2 min-w-max bg-white shadow-lg border z-20 text-textSecondaryDefault text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                  {company.name}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    )}
+
                   <li className="mb-2">
                     <a
                       href="#"
