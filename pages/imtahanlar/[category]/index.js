@@ -25,7 +25,7 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
     const fetchedExams = [
       {
         id: "microsoft-office-specialist-excel-expert",
-        name: "Microsoft Office Specialist Excel Expert",
+        name: "Microsoft Office Specialist Excel Expert excel-expertexcel-expertexcel-expert",
         duration: "1 saat",
         questions: 30,
         paid: true,
@@ -588,8 +588,8 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
           <SortTitleExams category={category} />
           {/* Rendering only the current page of exams */}
           <ExamCard
-             openLoginModal={handleLoginOrRulesClick}
-             openRegisterModal={handleLoginOrRulesClick}
+            openLoginModal={handleLoginOrRulesClick}
+            openRegisterModal={handleLoginOrRulesClick}
             widthClass="w-[23.8%]"
             exams={paginateExams} // Display paginated exams
           />

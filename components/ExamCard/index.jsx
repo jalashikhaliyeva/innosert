@@ -38,8 +38,8 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
           <div
             style={{
               backgroundSize: "contain",
-              backgroundPosition: "center", 
-              backgroundRepeat: "no-repeat", 
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
             }}
             className="h-[250px] px-5 py-8 flex flex-col bg-[url('/img/backgroundCardNew.png')] border-2 border-buttonSecondaryDisabled"
           >
@@ -64,8 +64,10 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                   Handex
                 </h3>
               </div>
-              <p className="pt-2.5 font-gilroy text-xl leading-8 text-textSecondaryDefault font-medium">
-                {exam.name}
+              <p className="pt-2.5 font-gilroy  h-[90px] text-xl leading-8 text-textSecondaryDefault font-medium">
+                {exam.name.length > 40
+                  ? `${exam.name.substring(0, 40)}...`
+                  : exam.name}
               </p>
             </div>
             <div className="flex justify-end">
