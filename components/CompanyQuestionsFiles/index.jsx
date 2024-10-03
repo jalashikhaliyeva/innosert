@@ -326,8 +326,13 @@ const QuestionFiles = ({
                     </h3>
                   </div>
 
-                  <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium text-center truncate cursor-pointer max-w-[15ch] mx-auto">
-                    {`${file.year} • ${file.difficulty} • ${file.level} • ${file.creator}`}
+                  <div className="relative group">
+                    <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium text-center truncate cursor-pointer max-w-[15ch] mx-auto">
+                      {`${file.year} • ${file.difficulty} • ${file.level} • ${file.creator}`}
+                    </div>
+                    <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[999]">
+                      {`${file.year} • ${file.difficulty} • ${file.level} • ${file.creator}`}
+                    </div>
                   </div>
 
                   <div className="w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>

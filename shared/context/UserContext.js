@@ -12,7 +12,9 @@ function UserProvider({ children }) {
     const userToken = localStorage.getItem("token");
 
     if (!userToken) {
-      toast.error("User is not authenticated. Please log in again.");
+      // toast.error("User is not authenticated. Please log in again.");
+      console.log("User is not authenticated");
+      
       return;
     }
 

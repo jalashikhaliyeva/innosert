@@ -11,7 +11,7 @@
 .movableSvg {
   animation: move-left-right 1.3s infinite ease-in-out;
   position: absolute;
-  top: 95px;
+  top: 105px;
   left: 150px;
 }
 
