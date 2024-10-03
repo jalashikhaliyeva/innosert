@@ -1,0 +1,36 @@
+.scrollbaralwaysvisible {
+    overflow-y: scroll; /* Ensure scrolling */
+    scrollbar-width: thin; /* Thin scrollbar for Firefox */
+    scrollbar-color: #4F7291 #ebebeb; /* Thumb and track colors for Firefox */
+    height: 100%; /* Ensure it takes the full height of the element */
+}
+
+.scrollbaralwaysvisible::-webkit-scrollbar {
+    width: 6px; /* Thin scrollbar width for Chrome/Safari/Edge */
+}
+
+.scrollbaralwaysvisible::-webkit-scrollbar-track {
+    background: #ebebeb; /* Light gray track */
+}
+
+.scrollbaralwaysvisible::-webkit-scrollbar-thumb {
+    background-color: rgb(191, 56, 56); /* Scroll thumb color */
+    border-radius: 10px; /* Rounded thumb */
+    border: 2px solid #ebebeb; /* Adds spacing between the thumb and the track */
+}
+
+.scrollbaralwaysvisible::-webkit-scrollbar-thumb:hover {
+    background: #ebebeb; /* Darker thumb on hover */
+}
+
+.scrollbaralwaysvisible::-webkit-scrollbar-button {
+    background-color: #ebebeb; /* Gray scroll buttons (arrows) */
+    height: 12px; /* Size of the scroll arrow buttons */
+}
+
+.scrollbaralwaysvisible::-webkit-scrollbar-button:vertical:start:decrement,
+.scrollbaralwaysvisible::-webkit-scrollbar-button:vertical:end:increment {
+    background-color: #ebebeb; /* Color of the arrows */
+    border-radius: 50%; /* Round the arrow buttons */
+    height: 10px; /* Adjust height */
+}

@@ -55,6 +55,9 @@ module.exports = {
         brandBlue100: "#4F7291",
         brandBlue700: "#1D2935",
         blue200: "#486884",
+        blue50:"#F3F6FF",
+        blueB400:"#36F",
+        blueB500:"#2952CC",
         neutralWhite: "#FFFFFF",
         buttonBGresponsive: "#EAF1F5",
         inputBgDefault: "#FAFAFA",
@@ -92,6 +95,7 @@ module.exports = {
       boxShadow: {
         createBox: "0px 4px 8px 0px rgba(93, 97, 114, 0.08)",
         certificate: '0px 4px 8px 0px rgba(93, 97, 114, 0.08)',
+       shadow3: " 0px 12px 40px 0px rgba(113, 115, 123, 0.24)",
         hoverCertificate: "rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em"
       },
       lineHeight: {

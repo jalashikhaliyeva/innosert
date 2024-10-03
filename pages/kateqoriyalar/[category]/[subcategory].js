@@ -1,7 +1,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import withModalManagement from "@/shared/hoc/withModalManagement";
 import Spinner from "@/components/Spinner";
 import { getLandingInfo } from "@/services/getLandingInfo";
@@ -10,8 +10,12 @@ import Container from "@/components/Container";
 import ExamCard from "@/components/ExamCard";
 import SortTitleExams from "@/components/SortTitleExams";
 import HeaderInternal from "@/components/HeaderInternal";
+import { UserContext } from "@/shared/context/UserContext";
+import ExamRulesModal from "@/components/ExamRulesModal";
+import LoginModal from "@/components/Login";
 const SubcategoryPage = ({ openRegisterModal, openLoginModal }) => {
   const router = useRouter();
+  const { user } = useContext(UserContext);
   const { category, subcategory } = router.query;
   const faqRef = useRef(null);
   const footerRef = useRef(null);
@@ -20,6 +24,8 @@ const SubcategoryPage = ({ openRegisterModal, openLoginModal }) => {
   const [landingInfo, setLandingInfo] = useState(null);
   const [settingInfo, setSettingInfo] = useState(null);
   const [exams, setExams] = useState([]);
+  const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   useEffect(() => {
     // In a real application, you might fetch this data from an API
     const fetchedExams = [
@@ -123,6 +129,20 @@ const SubcategoryPage = ({ openRegisterModal, openLoginModal }) => {
   }
 
 
+  // Function to close both modals
+  const closeModals = () => {
+    setExamRulesModalOpen(false);
+    setLoginModalOpen(false);
+  };
+
+  const handleLoginOrRulesClick = () => {
+    if (user) {
+      setExamRulesModalOpen(true); // Open exam rules modal if logged in
+    } else {
+      setLoginModalOpen(true); // Open login modal if not logged in
+    }
+  };
+
 
   return (
     <div>
@@ -134,13 +154,20 @@ const SubcategoryPage = ({ openRegisterModal, openLoginModal }) => {
         <Container>
           <SortTitleExams category={subcategory} />
           <ExamCard
-            openLoginModal={openLoginModal} // Pass it here
-            openRegisterModal={openRegisterModal}
+           openLoginModal={handleLoginOrRulesClick}
+           openRegisterModal={handleLoginOrRulesClick}
             widthClass="w-[23.8%]"
             exams={exams}
           />
         </Container>
       </section>
+
+         {/* Modals */}
+         {isExamRulesModalOpen && <ExamRulesModal onClose={closeModals} />}
+      {isLoginModalOpen && (
+        <LoginModal isOpen={isLoginModalOpen} onClose={closeModals} />
+      )}
+            <Footer ref={footerRef} />
     </div>
   );
 };

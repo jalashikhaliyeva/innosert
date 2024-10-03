@@ -20,11 +20,11 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [phone, setPhone] = useState("+994");
+  const [mobile, setMobile] = useState("+994");
   const [showPassword, setShowPassword] = useState(false);
   const [inputError, setInputError] = useState(false);
-  const [focusedInput, setFocusedInput] = useState(null); // State to track focused input
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [focusedInput, setFocusedInput] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
@@ -48,11 +48,18 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
     }
   };
 
+  // const handlePhoneChange = (e) => {
+  //   const phoneValue = e.target.value;
+  //   if (phoneValue.startsWith("+994")) {
+  //     setMobile(phoneValue);
+  //   }
+  // };
   const handlePhoneChange = (e) => {
     const phoneValue = e.target.value;
-    if (phoneValue.startsWith("+994")) {
-      setPhone(phoneValue);
-    }
+
+    // Remove all spaces from the mobile number
+    const formattedMobile = phoneValue.replace(/\s+/g, "");
+    setMobile(formattedMobile); // Set mobile without spaces
   };
 
   const handleFocus = (input) => {
@@ -62,8 +69,12 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (!firstName || !lastName || !email || !password || !phone) {
+    console.log(firstName, "firstName");
+    console.log(lastName, "lastName");
+    console.log(email, "email");
+    console.log(password, "password");
+    console.log(mobile, "mobile");
+    if (!firstName || !lastName || !email || !password || !mobile) {
       setInputError(true);
       toast.error("Zəhmət olmasa bütün sahələri doldurun.");
       return;
@@ -71,22 +82,27 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
     setLoading(true);
 
     try {
-      const data = await postRegisterData(firstName, lastName, email, password);
+      // Pass the mobile number to the API
+      const data = await postRegisterData(
+        firstName,
+        lastName,
+        email,
+        password,
+        mobile
+      );
+
       console.log("Server response:", data);
 
-      // Adjust this condition based on what the API returns
       if (data?.status === "success") {
         const token = data.data.access_token;
         localStorage.setItem("token", token);
 
-        // Show success toast and delay the modal close and redirection
         toast.success("Uğurla qeydiyyatdan keçdiniz!");
 
-        // Delay modal close and redirection to let the toast appear
         setTimeout(() => {
           onClose(); // Close the modal
-          router.push("/home"); // Navigate to home page after a slight delay
-        }, 2000); // Adjust delay to give enough time for the toast to display (e.g., 2 seconds)
+          router.push("/home");
+        }, 2000);
       } else {
         console.error("Validation error details:", data.message);
         toast.error(
@@ -97,7 +113,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
       console.error("Error during registration:", error);
       toast.warning("Qeydiyyat zamanı xəta baş verdi.");
     } finally {
-      setLoading(false); // Set loading to false after the process is finished
+      setLoading(false);
     }
   };
 
@@ -230,20 +246,20 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   <FiPhone className="text-2xl absolute top-3 left-3 text-gray-400" />
                   <InputMask
                     mask="+994 99 999 99 99"
-                    value={phone}
+                    value={mobile}
                     onChange={handlePhoneChange}
-                    onFocus={() => handleFocus("phone")}
+                    onFocus={() => handleFocus("mobile")}
                     onKeyDown={handleKeyDown}
                     className={`placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pl-12 pr-3 py-3 px-4 border ${
-                      inputError && !phone
+                      inputError && !mobile
                         ? "border-inputRingError"
-                        : focusedInput === "phone"
+                        : focusedInput === "mobile"
                         ? "border-inputRingFocus"
                         : "border-inputBorder"
                     } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
                     placeholder="Mobil nömrə"
                   />
-                  {inputError && !phone && (
+                  {inputError && !mobile && (
                     <p className="text-inputRingError text-sm mt-1">
                       Nömrə daxil edilməlidir.
                     </p>
@@ -273,10 +289,10 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                     type="submit"
                     className={`w-full flex font-gilroy justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white ${
                       loading
-                        ? "bg-buttonSecondaryDisabled cursor-not-allowed" // Disabled state with grey background
+                        ? "bg-buttonSecondaryDisabled cursor-not-allowed"
                         : "bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                     }`}
-                    disabled={loading} // Disable the button when loading is true
+                    disabled={loading}
                   >
                     {loading ? (
                       <div className="flex items-center justify-center">

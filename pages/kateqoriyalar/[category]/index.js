@@ -1,7 +1,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { useRouter } from "next/router";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import withModalManagement from "@/shared/hoc/withModalManagement";
 import Spinner from "@/components/Spinner";
 import { getLandingInfo } from "@/services/getLandingInfo";
@@ -10,9 +10,13 @@ import Container from "@/components/Container";
 import ExamCard from "@/components/ExamCard";
 import SortTitleExams from "@/components/SortTitleExams";
 import HeaderInternal from "@/components/HeaderInternal";
+import { UserContext } from "@/shared/context/UserContext";
+import ExamRulesModal from "@/components/ExamRulesModal";
+import LoginModal from "@/components/Login";
 
 function CategoryPage({ openRegisterModal, openLoginModal }) {
   const router = useRouter();
+  const { user } = useContext(UserContext);
   const { category } = router.query;
   const faqRef = useRef(null);
   const footerRef = useRef(null);
@@ -21,70 +25,72 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
   const [landingInfo, setLandingInfo] = useState(null);
   const [settingInfo, setSettingInfo] = useState(null);
   const [exams, setExams] = useState([]);
+  const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
 
   useEffect(() => {
     // In a real application, you might fetch this data from an API
     const fetchedExams = [
       {
-        id: 'microsoft-office-specialist-excel-expert',
-        name: 'Microsoft Office Specialist Excel Expert',
-        duration: '1 saat',
+        id: "microsoft-office-specialist-excel-expert",
+        name: "Microsoft Office Specialist Excel Expert",
+        duration: "1 saat",
         questions: 30,
         paid: true,
         price: 20,
       },
       {
-        id: 'certified-project-manager',
-        name: 'Certified Project Manager',
-        duration: '2 saat',
+        id: "certified-project-manager",
+        name: "Certified Project Manager",
+        duration: "2 saat",
         questions: 50,
         paid: false,
         price: 30,
       },
       {
-        id: 'advanced-graphic-design',
-        name: 'Advanced Graphic Design',
-        duration: '1.5 saat',
+        id: "advanced-graphic-design",
+        name: "Advanced Graphic Design",
+        duration: "1.5 saat",
         questions: 40,
         paid: true,
         price: 25,
       },
       {
-        id: 'full-stack-developer',
-        name: 'Full Stack Developer',
-        duration: '3 saat',
+        id: "full-stack-developer",
+        name: "Full Stack Developer",
+        duration: "3 saat",
         questions: 60,
         paid: false,
         price: 35,
       },
       {
-        id: 'data-science-specialist',
-        name: 'Data Science Specialist',
-        duration: '2.5 saat',
+        id: "data-science-specialist",
+        name: "Data Science Specialist",
+        duration: "2.5 saat",
         questions: 45,
         paid: true,
         price: 28,
       },
       {
-        id: 'digital-marketing-expert',
-        name: 'Digital Marketing Expert',
-        duration: '1.2 saat',
+        id: "digital-marketing-expert",
+        name: "Digital Marketing Expert",
+        duration: "1.2 saat",
         questions: 35,
         paid: false,
         price: 22,
       },
       {
-        id: 'cyber-security-analyst',
-        name: 'Cyber Security Analyst',
-        duration: '2 saat',
+        id: "cyber-security-analyst",
+        name: "Cyber Security Analyst",
+        duration: "2 saat",
         questions: 40,
         paid: true,
         price: 27,
       },
       {
-        id: 'cloud-computing-engineer',
-        name: 'Cloud Computing Engineer',
-        duration: '2.5 saat',
+        id: "cloud-computing-engineer",
+        name: "Cloud Computing Engineer",
+        duration: "2.5 saat",
         questions: 50,
         paid: false,
         price: 33,
@@ -126,6 +132,19 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
     return <Spinner />;
   }
 
+  // Function to close both modals
+  const closeModals = () => {
+    setExamRulesModalOpen(false);
+    setLoginModalOpen(false);
+  };
+
+  const handleLoginOrRulesClick = () => {
+    if (user) {
+      setExamRulesModalOpen(true); // Open exam rules modal if logged in
+    } else {
+      setLoginModalOpen(true); // Open login modal if not logged in
+    }
+  };
 
   // Ensure mounted is true before using client-side-only code
 
@@ -137,8 +156,8 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
         <Container>
           <SortTitleExams category={category} />
           <ExamCard
-            openLoginModal={openLoginModal} // Pass it here
-            openRegisterModal={openRegisterModal}
+            openLoginModal={handleLoginOrRulesClick}
+            openRegisterModal={handleLoginOrRulesClick}
             widthClass="w-[23.8%]"
             exams={exams}
           />
@@ -146,7 +165,11 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
       </section>
 
       {/* <h1 className="mt-36">{`Category: ${category}`}</h1> */}
-
+      {/* Modals */}
+      {isExamRulesModalOpen && <ExamRulesModal onClose={closeModals} />}
+      {isLoginModalOpen && (
+        <LoginModal isOpen={isLoginModalOpen} onClose={closeModals} />
+      )}
       <Footer ref={footerRef} />
     </main>
   );

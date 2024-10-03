@@ -1,7 +1,7 @@
 
 import { instanceAxios } from "@/shared/helpers/instanceAxios";
 
-export const postRegisterData = async (firstName, lastName, email, password) => {
+export const postRegisterData = async (firstName, lastName, email, password, mobile) => {
   try {
     const response = await instanceAxios({
       method: "POST",
@@ -14,6 +14,7 @@ export const postRegisterData = async (firstName, lastName, email, password) => 
         last_name: lastName,
         email: email,
         password: password,
+        mobile,
       },
     });
 

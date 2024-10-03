@@ -1,16 +1,29 @@
 // /components/ExamCard.js
 
 import Image from "next/image";
-import React from "react";
+import React, { useContext } from "react";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa6";
 import { useRouter } from "next/router";
+import { UserContext } from "@/shared/context/UserContext";
 
-function ExamCard({ widthClass, openLoginModal, exams }) {
+function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
   const router = useRouter();
+  const { user } = useContext(UserContext); // Get user from UserContext
 
   // Function to handle navigation to the detailed exam page
   const handleDetailClick = (id) => {
     router.push(`/etrafli/${encodeURIComponent(id)}`);
+  };
+
+  // Function to handle "Daxil ol" button click
+  const handleLoginOrRulesClick = () => {
+    if (user) {
+      // User is logged in, show Exam Rules Modal
+      openRegisterModal();
+    } else {
+      // User is not logged in, show Login Modal
+      openLoginModal();
+    }
   };
 
   return (
@@ -22,7 +35,14 @@ function ExamCard({ widthClass, openLoginModal, exams }) {
           className={`flex flex-col ${widthClass} bg-white justify-normal p-5 rounded-md border border-grayLineFooter`}
         >
           {/* Card Content */}
-          <div className="h-[250px] px-5 py-8 flex flex-col bg-[url('/img/certificare-frame.png')] border-2 border-buttonSecondaryDisabled">
+          <div
+            style={{
+              backgroundSize: "contain",
+              backgroundPosition: "center", 
+              backgroundRepeat: "no-repeat", 
+            }}
+            className="h-[250px] px-5 py-8 flex flex-col bg-[url('/img/backgroundCardNew.png')] border-2 border-buttonSecondaryDisabled"
+          >
             <div className="flex justify-end">
               <Image
                 src="/img/Badge.png"
@@ -87,7 +107,7 @@ function ExamCard({ widthClass, openLoginModal, exams }) {
             <div className="w-full flex flex-row gap-4 pt-3">
               {/* "Daxil ol" Button */}
               <button
-                onClick={openLoginModal}
+                onClick={handleLoginOrRulesClick}
                 className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
               >
                 Daxil ol
