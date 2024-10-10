@@ -192,8 +192,8 @@ function FilterCategories() {
               )}
               {/* Price Filter */}
               {(appliedFilters.minPrice || appliedFilters.maxPrice) && (
-                <div className="flex items-center gap-3 bg-buttonPrimaryDefault text-white rounded-full px-4 py-3 font-gilroy font-normal text-lg leading-6">
-                  <span>
+                <div className="flex items-center gap-3 font-gilroy bg-buttonPrimaryDefault text-white rounded-full px-4 py-3 font-gilroy font-normal text-lg leading-6">
+                  <span className="font-gilroy">
                     qiymət (
                     {appliedFilters.minPrice && `${appliedFilters.minPrice} ₼`}
                     {appliedFilters.minPrice && appliedFilters.maxPrice
@@ -206,7 +206,7 @@ function FilterCategories() {
                       removeFilter("minPrice");
                       removeFilter("maxPrice");
                     }}
-                    className="ml-2 text-xl text-white hover:text-gray-300 focus:outline-none flex items-center justify-center"
+                    className="ml-2 text-xl font-gilroy text-white hover:text-gray-300 focus:outline-none flex items-center justify-center"
                     aria-label="Remove Price Filter"
                   >
                     &times;
@@ -216,11 +216,11 @@ function FilterCategories() {
             </div>
           ) : (
             showCategories && (
-              <div className="flex-1 overflow-hidden relative" ref={emblaRef}>
-                <div className="flex gap-4">
+              <div className="flex-1 font-gilroy overflow-hidden relative" ref={emblaRef}>
+                <div className="flex font-gilroy gap-4">
                   {categories.map((category, index) => (
                     <div key={index} className="flex-none">
-                      <button className="flex items-center gap-3 bg-grayLineFooter text-grayButtonText rounded-full px-4 py-3 font-gilroy font-normal text-lg leading-6">
+                      <button className="flex font-gilroy items-center gap-3 bg-grayLineFooter text-grayButtonText rounded-full px-4 py-3 font-gilroy font-normal text-lg leading-6">
                         {category}
                       </button>
                     </div>
@@ -288,7 +288,7 @@ function FilterCategories() {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     placeholder="Min Price"
-                    className={`w-full border border-gray-300 rounded-md py-3 px-4 appearance-none hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus focus:outline-none ${
+                    className={`w-full border font-gilroy border-gray-300 rounded-md py-3 px-4 appearance-none hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus focus:outline-none ${
                       minPrice ? "text-black" : "text-[#B2B2B2]"
                     }`}
                     value={minPrice}
@@ -300,7 +300,7 @@ function FilterCategories() {
                       }
                     }}
                   />
-                  <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#B2B2B2]">
+                  <span className="absolute font-gilroy right-4 top-1/2 transform -translate-y-1/2 text-[#B2B2B2]">
                     AZN
                   </span>
                 </div>
@@ -312,7 +312,7 @@ function FilterCategories() {
                     inputMode="numeric"
                     pattern="[0-9]*"
                     placeholder="Max Price"
-                    className={`w-full border border-gray-300 rounded-md py-3 px-4 appearance-none hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus focus:outline-none ${
+                    className={`w-full border font-gilroy border-gray-300 rounded-md py-3 px-4 appearance-none hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus focus:outline-none ${
                       maxPrice ? "text-black" : "text-[#B2B2B2]"
                     }`}
                     value={maxPrice}
@@ -324,7 +324,7 @@ function FilterCategories() {
                       }
                     }}
                   />
-                  <span className="absolute right-4 top-1/2 transform -translate-y-1/2 text-[#B2B2B2]">
+                  <span className="absolute font-gilroy right-4 top-1/2 transform -translate-y-1/2 text-[#B2B2B2]">
                     AZN
                   </span>
                 </div>
@@ -343,7 +343,7 @@ function FilterCategories() {
                   onClick={() => setIsTimeDropdownOpen(!isTimeDropdownOpen)}
                 >
                   <span
-                    className={selectedTime ? "text-black" : "text-[#B2B2B2]"}
+                    className={selectedTime ? "text-black font-gilroy" : "text-[#B2B2B2] font-gilroy"}
                   >
                     {selectedTime || "Müddət seçin"}
                   </span>
@@ -362,7 +362,7 @@ function FilterCategories() {
 
                 {/* Dropdown Menu */}
                 {isTimeDropdownOpen && (
-                  <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-scroll time-dropdown-menu">
+                  <div className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-scroll time-dropdown-menu">
                     {timeOptions.map((timeOption, index) => (
                       <div
                         key={index}
@@ -388,7 +388,7 @@ function FilterCategories() {
               <div className="relative">
                 {/* Custom Dropdown Input */}
                 <div
-                  className={`w-full border border-gray-300 rounded-md py-3 px-4 cursor-pointer flex flex-wrap items-center dropdown-input hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus ${isCategoryDropdownOpen}`}
+                  className={`w-full border font-gilroy border-gray-300 rounded-md py-3 px-4 cursor-pointer flex flex-wrap items-center dropdown-input hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus ${isCategoryDropdownOpen}`}
                   onClick={() =>
                     setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
                   }
@@ -398,13 +398,13 @@ function FilterCategories() {
                       {selectedCategories.map((category, index) => (
                         <div
                           key={index}
-                          className="flex items-center bg-[#EBEBEB] text-black px-2 py-2 rounded-md mr-2 mb-1"
+                          className="flex font-gilroy items-center bg-[#EBEBEB] text-black px-2 py-2 rounded-md mr-2 mb-1"
                         >
                           <span className="font-gilroy text-base">
                             {category}
                           </span>
                           <button
-                            className="ml-1 text-xl text-black hover:text-gray-700 focus:outline-none flex items-center justify-center"
+                            className="ml-1 font-gilroy text-xl text-black hover:text-gray-700 focus:outline-none flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation(); // Prevent dropdown toggle
                               setSelectedCategories(
@@ -452,13 +452,13 @@ function FilterCategories() {
 
                 {/* Dropdown Menu */}
                 {isCategoryDropdownOpen && (
-                  <div className="absolute z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-[7.5rem] overflow-y-scroll category-dropdown">
+                  <div className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-[7.5rem] overflow-y-scroll category-dropdown">
                     {categories.map((category, index) => {
                       const isSelected = selectedCategories.includes(category);
                       return (
                         <div
                           key={index}
-                          className={`py-2 px-4 hover:bg-gray-100 cursor-pointer flex justify-between items-center ${
+                          className={`py-2 px-4 font-gilroy hover:bg-gray-100 cursor-pointer flex justify-between items-center ${
                             isSelected ? "bg-gray-100" : ""
                           }`}
                           onClick={() => {
@@ -478,7 +478,7 @@ function FilterCategories() {
                             }
                           }}
                         >
-                          <span className="text-black">{category}</span>
+                          <span className="text-black font-gilroy">{category}</span>
                           {isSelected && (
                             <svg
                               className="w-4 h-4 text-blue-500"
@@ -499,9 +499,9 @@ function FilterCategories() {
             </div>
 
             {/* Submit and Reset Buttons */}
-            <div className="w-full flex flex-row justify-between mt-6">
+            <div className="w-full flex font-gilroy flex-row justify-between mt-6">
               <button
-                className="w-full mr-2 font-gilroy text-lg font-normal text-textSecondaryDefault flex flex-row items-center justify-center gap-2"
+                className="w-full ml-2 font-gilroy  text-lg font-normal text-textSecondaryDefault flex flex-row items-center justify-center gap-2 "
                 onClick={() => {
                   setMinPrice("");
                   setMaxPrice("");
@@ -515,11 +515,11 @@ function FilterCategories() {
                   });
                 }}
               >
-                <RiLoopRightLine /> Filteri sıfırla
+                <RiLoopRightLine  /> Filteri sıfırla
               </button>
 
               <button
-                className="w-full ml-2 bg-buttonPrimaryDefault text-white py-3 rounded-md font-gilroy text-lg font-normal"
+                className="w-full ml-2 font-gilroy bg-buttonPrimaryDefault text-white py-3 rounded-md font-gilroy text-lg font-normal"
                 onClick={() => {
                   // Save filters and close modal
                   setAppliedFilters({

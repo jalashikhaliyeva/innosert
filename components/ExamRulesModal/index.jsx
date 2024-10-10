@@ -20,7 +20,7 @@ function ExamRulesModal({ onClose, onCancel }) {
       onClick={handleBackgroundClick}
       className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]"
     >
-      <div className="bg-boxGrayBodyColor rounded-3xl shadow-shadow3 p-6 w-96 ">
+      <div className="bg-boxGrayBodyColor rounded-3xl shadow-shadow3 p-[40px] w-[492px] ">
         {/* Icon */}
         <div className="flex justify-center mb-4">
           <div className="flex items-center justify-center w-16 h-16 rounded-full ">
@@ -51,12 +51,12 @@ function ExamRulesModal({ onClose, onCancel }) {
         <div
           className={`${styles.scrollbaralwaysvisible} text-base font-gilroy flex justify-center  text-grayButtonText  mt-3 overflow-y-scroll px-7`}
           style={{
-            maxHeight: "10rem",
+            maxHeight: "12rem",
           }}
         >
           <p>
             1. Düzgünləşdirilmiş məlumatlar – Bütün verilənlər düzgün və tam
-            şəkildə toplanmalıdır. <br></br>
+            şəkildə toplanmalıdır. <br></br> 
             2. Şəbəkə təhlükəsizliyi – Şəbəkə təhlükəsizliyinə riayət olunmalı
             və şifrələnmə istifadəsi vacibdir. <br></br>
             3. Doğrulama sistemi – İstifadəçilər daxil olduqda doğrulama
@@ -71,7 +71,7 @@ function ExamRulesModal({ onClose, onCancel }) {
         </div>
 
         {/* Buttons */}
-        <div className="flex items-center mt-4">
+        <div className="flex items-center mt-6">
           <input
             type="checkbox"
             id="termsCheckbox"

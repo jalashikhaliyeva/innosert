@@ -33,11 +33,20 @@ const HeaderInternal = () => {
 
   const handleCompanyClick = (company) => {
     setSelectedCompany(company); // Set the selected company in context
-    router.push(`/shirket-hesabi`);
+
+    if (user?.data?.roles === "Owner") {
+      router.push(`/shirket-hesabi`); // Redirect for Owner role
+    } else if (user?.data?.roles === "Teacher") {
+      router.push(`/muellim-hesabi`); // Redirect for Teacher role
+    }
   };
+  // const activeCompanies =
+  //   user?.data?.roles === "Owner"
+  //     ? user.data.companies.filter((company) => company.status === 1)
+  //     : [];
 
   const activeCompanies =
-    user?.data?.roles === "Owner"
+    user?.data?.roles === "Owner" || user?.data?.roles === "Teacher"
       ? user.data.companies.filter((company) => company.status === 1)
       : [];
 
@@ -212,7 +221,23 @@ const HeaderInternal = () => {
 
           <div className="relative hidden lg:flex items-center">
             <LanguageSwitcher />
-            <GoBell className="size-6 cursor-pointer" />
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 20 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M11.4407 17.4998C11.2942 17.7524 11.0839 17.962 10.8309 18.1078C10.5779 18.2535 10.291 18.3302 9.99902 18.3302C9.70704 18.3302 9.42018 18.2535 9.16717 18.1078C8.91415 17.962 8.70387 17.7524 8.55736 17.4998M14.999 6.6665C14.999 5.34042 14.4722 4.06865 13.5346 3.13097C12.5969 2.19329 11.3251 1.6665 9.99902 1.6665C8.67294 1.6665 7.40117 2.19329 6.46349 3.13097C5.52581 4.06865 4.99902 5.34042 4.99902 6.6665C4.99902 12.4998 2.49902 14.1665 2.49902 14.1665H17.499C17.499 14.1665 14.999 12.4998 14.999 6.6665Z"
+                stroke="#101828"
+                stroke-width="1.82293"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+
+            {/* <GoBell className="size-6 cursor-pointer" /> */}
 
             {/* User Icon Section and Dropdown */}
             <div
@@ -248,7 +273,8 @@ const HeaderInternal = () => {
                   </li>
 
                   {/* Company Selection Dropdown */}
-                  {user?.data?.roles === "Owner" &&
+                  {(user?.data?.roles === "Owner" ||
+                    user?.data?.roles === "Teacher") &&
                     activeCompanies.length > 0 && (
                       <div className="relative z-50">
                         <div

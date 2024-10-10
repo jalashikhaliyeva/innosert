@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BiSortAlt2 } from "react-icons/bi";
 
-function SortTitleExams({ category }) { // Accept the category prop
+function SortTitleExams({ category }) {
+  // Accept the category prop
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -51,17 +52,17 @@ function SortTitleExams({ category }) { // Accept the category prop
           }`}
           style={{ padding: "14px 20px", textAlign: "center" }}
         >
-          <ul className="divide-y divide-gray-200">
-            <li className="py-3 text-textSecondaryDefault text-lg font-gilroy leading-6 font-normal hover:bg-gray-50 hover:text-textHoverBlue cursor-pointer">
+          <ul className="divide-y divide-gray-200 px-4">
+            <li className="py-2 mx-2 rounded-xl text-textSecondaryDefault text-lg font-gilroy leading-6 font-normal hover:bg-gray-50 hover:text-textHoverBlue cursor-pointer">
               Ucuzdan bahaya
             </li>
-            <li className="py-3 text-textSecondaryDefault text-lg font-gilroy leading-6 font-normal hover:bg-gray-50 hover:text-textHoverBlue cursor-pointer">
+            <li className="py-2 mx-2 rounded-xl text-textSecondaryDefault text-lg font-gilroy leading-6 font-normal hover:bg-gray-50 hover:text-textHoverBlue cursor-pointer">
               Bahadan ucuza
             </li>
-            <li className="py-3 text-textSecondaryDefault text-lg font-gilroy leading-6 font-normal hover:bg-gray-50 hover:text-textHoverBlue cursor-pointer">
+            <li className="py-2 mx-2 rounded-xl text-textSecondaryDefault text-lg font-gilroy leading-6 font-normal hover:bg-gray-50 hover:text-textHoverBlue cursor-pointer">
               Yenidən köhnəyə
             </li>
-            <li className="py-3 text-textSecondaryDefault text-lg font-gilroy leading-6 font-normal hover:bg-gray-50 hover:text-textHoverBlue cursor-pointer">
+            <li className="py-2 mx-2 rounded-xl text-textSecondaryDefault text-lg font-gilroy leading-6 font-normal hover:bg-gray-50 hover:text-textHoverBlue cursor-pointer">
               Köhnədən yeniyə
             </li>
           </ul>

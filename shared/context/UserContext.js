@@ -14,21 +14,25 @@ function UserProvider({ children }) {
     if (!userToken) {
       // toast.error("User is not authenticated. Please log in again.");
       console.log("User is not authenticated");
-      
+
       return;
     }
 
     try {
-      const response = await fetch("https://innocert-admin.markup.az/api/user", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${userToken}`,
-        },
-      });
+      const response = await fetch(
+        "https://innocert-admin.markup.az/api/user",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
+        console.log(userData, "userData contect");
       } else {
         toast.error("Failed to fetch user data");
       }

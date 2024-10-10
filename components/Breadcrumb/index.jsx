@@ -5,7 +5,10 @@ const Breadcrumb = () => {
   const router = useRouter();
 
   // Use asPath to get the actual path with dynamic segments
-  const pathSegments = router.asPath.split("/").filter((segment) => segment);
+  const pathSegments = router.asPath
+    .split("/")
+    .filter((segment) => segment)
+    .map((segment) => decodeURIComponent(segment)); // Decode URL components
 
   // Mapping of paths to breadcrumb names
   const breadcrumbMapping = {
@@ -19,7 +22,8 @@ const Breadcrumb = () => {
     sertifikatlarim: "Sertifikatlarım",
     balansim: "Balansım",
     hesablarim: "Hesablarım",
-    'suallar-toplusu': "Sual Toplusu"
+    "suallar-toplusu": "Sual Toplusu",
+    "xeta-bildirisleri": "Xəta bildirişləri",
     // Add more mappings as needed
   };
 
@@ -28,7 +32,7 @@ const Breadcrumb = () => {
     // Replace hyphens with spaces and capitalize first letter of each word
     return segment
       .split("-")
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
 
@@ -74,14 +78,14 @@ const Breadcrumb = () => {
       <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
         /
       </span>
-      
+
       {/* Static profil link */}
       <Link href="/profil">
         <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
           Profil
         </span>
       </Link>
-      
+
       {/* Render dynamic breadcrumb items */}
       {breadcrumbItems}
     </div>

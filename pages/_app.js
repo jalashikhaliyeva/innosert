@@ -1,4 +1,3 @@
-// pages/_app.js
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import "@/styles/globals.css";
@@ -9,8 +8,12 @@ import "aos/dist/aos.css";
 import i18n from "../locales/i18n";
 import CompanyContext from "../shared/context/CompanyContext";
 import { UserProvider } from "@/shared/context/UserContext";
-// import { UserProvider } from "../shared/contexts/UserContext"; 
-
+import { SavedExamsProvider } from "@/shared/context/SavedExamsContext"; // Import SavedExamsProvider
+import "froala-editor/css/froala_style.min.css";
+import "froala-editor/css/froala_editor.pkgd.min.css";
+import "froala-editor/css/plugins/image.min.css";
+import "froala-editor/css/plugins/video.min.css";
+import "froala-editor/css/plugins/file.min.css";
 function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
@@ -18,7 +21,6 @@ function App({ Component, pageProps }) {
 
   // Initialize selectedCompany from localStorage if available
   useEffect(() => {
-    // On component mount, check if a company is stored in localStorage
     const storedCompany = localStorage.getItem("selectedCompany");
     if (storedCompany) {
       setSelectedCompany(JSON.parse(storedCompany));
@@ -26,7 +28,6 @@ function App({ Component, pageProps }) {
   }, []);
 
   useEffect(() => {
-    // When selectedCompany changes, update localStorage
     if (selectedCompany) {
       localStorage.setItem("selectedCompany", JSON.stringify(selectedCompany));
     } else {
@@ -64,20 +65,14 @@ function App({ Component, pageProps }) {
   useEffect(() => {
     const token = localStorage.getItem("token");
 
-    // Define public routes that can be accessed without authentication
     const publicRoutes = ["/", "/haqqimizda"];
 
-    // Function to check if the current route is public
     const isPublicRoute = (pathname) => {
       if (publicRoutes.includes(pathname)) {
         return true;
       }
 
-      // Allow any route that starts with '/exams/'
-      if (
-        pathname.startsWith("/exams/") ||
-        pathname.startsWith("/imtahanlar/")
-      ) {
+      if (pathname.startsWith("/exams/") || pathname.startsWith("/imtahanlar/")) {
         return true;
       }
 
@@ -103,12 +98,13 @@ function App({ Component, pageProps }) {
   }
 
   return (
-    // Wrap your application with the UserProvider
+    // Wrap the application with SavedExamsProvider and UserProvider
     <UserProvider>
-      {/* If CompanyContext depends on UserContext, wrap it inside UserProvider */}
-      <CompanyContext.Provider value={{ selectedCompany, setSelectedCompany }}>
-        {loading ? <Spinner /> : <Component {...pageProps} />}
-      </CompanyContext.Provider>
+      <SavedExamsProvider>
+        <CompanyContext.Provider value={{ selectedCompany, setSelectedCompany }}>
+          {loading ? <Spinner /> : <Component {...pageProps} />}
+        </CompanyContext.Provider>
+      </SavedExamsProvider>
     </UserProvider>
   );
 }

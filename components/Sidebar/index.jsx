@@ -15,7 +15,7 @@ import { UserContext } from "@/shared/context/UserContext";
 function Sidebar() {
   const { user } = useContext(UserContext);
 
-  console.log(user?.data?.roles, "user dta sidebar");
+  console.log(user?.data, "user data sidebaeee");
 
   const { setSelectedCompany } = useContext(CompanyContext);
   const router = useRouter();
@@ -40,9 +40,13 @@ function Sidebar() {
 
   const handleCompanyClick = (company) => {
     setSelectedCompany(company); // Set the selected company in context
-    router.push(`/shirket-hesabi`);
-  };
 
+    if (user?.data?.roles === "Owner") {
+      router.push(`/shirket-hesabi`); // Redirect for Owner role
+    } else if (user?.data?.roles === "Teacher") {
+      router.push(`/muellim-hesabi`); // Redirect for Teacher role
+    }
+  };
   // Toggle the dropdown open state
   const toggleCompanyDropdown = () => {
     setCompanyDropdownOpen((prevState) => !prevState);
@@ -53,17 +57,18 @@ function Sidebar() {
 
   // Extract active companies if the user has the "Owner" role
   const activeCompanies =
-    user?.data?.roles === "Owner"
+    user?.data?.roles === "Owner" || user?.data?.roles === "Teacher"
       ? user.data.companies.filter((company) => company.status === 1)
       : [];
 
+  // console.log(user?.data?.companies, "activeCompanies");
+
   return (
-    <div className="fixed h-screen w-72 bg-white shadow-sm border mt-[88px]">
+    <div className="fixed h-screen w-72 bg-white shadow-sm border mt-[80px]">
       <div className="p-4 mx-4 pt-8">
         {/* Profile Section */}
         <div className="flex items-center mb-2 pb-3 border-b border-buttonGhostPressed">
-          {!user?.data?.image ||
-          user.data.image === "https://innocert-admin.markup.az" ? (
+          {!user?.data?.image || user.data.image === null ? (
             <div className="w-16 h-16 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-2xl font-bold mr-4">
               {generateInitials(user?.data?.first_name, user?.data?.last_name)}
             </div>
@@ -85,57 +90,58 @@ function Sidebar() {
         </div>
 
         {/* Company Dropdown Section */}
-        {user?.data?.roles === "Owner" && activeCompanies.length > 0 && (
-          <div className="mb-4">
+        {(user?.data?.roles === "Owner" || user?.data?.roles === "Teacher") &&
+          activeCompanies.length > 0 && (
             <div className="mb-4">
-              <div
-                className="flex items-center space-x-4 py-2 pb-4 cursor-pointer rounded-lg border-b border-gray-200"
-                onClick={toggleCompanyDropdown}
-              >
-                <RiBuildingLine className="size-6 fill-grayText" />
+              <div className="mb-4">
+                <div
+                  className="flex items-center space-x-4 py-2 pb-4 cursor-pointer rounded-lg border-b border-gray-200"
+                  onClick={toggleCompanyDropdown}
+                >
+                  <RiBuildingLine className="size-6 fill-grayText" />
 
-                <p className="text-lg font-gilroy font-normal leading-6 text-grayText">
-                  Şirkət seç
-                </p>
-                {companyDropdownOpen ? (
-                  <FiChevronUp className="ml-2 text-grayText" />
-                ) : (
-                  <FiChevronDown className="ml-2 text-grayText" />
-                )}
+                  <p className="text-lg font-gilroy font-normal leading-6 text-grayText">
+                    Şirkət seç
+                  </p>
+                  {companyDropdownOpen ? (
+                    <FiChevronUp className="ml-2 text-grayText" />
+                  ) : (
+                    <FiChevronDown className="ml-2 text-grayText" />
+                  )}
+                </div>
               </div>
+
+              {/* Dropdown menu for active companies */}
+              {companyDropdownOpen && (
+                <div className="mt-2">
+                  {activeCompanies.map((company) => (
+                    <div
+                      key={company.slug}
+                      className="flex items-center mb-2 cursor-pointer border-b border-buttonGhostPressed pb-2 hover:bg-gray-100 rounded-lg"
+                      onClick={() => handleCompanyClick(company)} // Navigate to company page
+                    >
+                      {company.logo ? (
+                        <Image
+                          width={40}
+                          height={40}
+                          src={company.logo}
+                          alt={company.name}
+                          className="w-10 h-10 rounded-full mr-4 object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-lg font-gilroy font-bold mr-4">
+                          {generateInitials(company.name, "")}
+                        </div>
+                      )}
+                      <p className="font-gilroy text-base font-normal leading-6 flex">
+                        {company.name}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
-
-            {/* Dropdown menu for active companies */}
-            {companyDropdownOpen && (
-              <div className="mt-2">
-                {activeCompanies.map((company) => (
-                  <div
-                    key={company.slug}
-                    className="flex items-center mb-2 cursor-pointer border-b border-buttonGhostPressed pb-2 hover:bg-gray-100 rounded-lg"
-                    onClick={() => handleCompanyClick(company)} // Navigate to company page
-                  >
-                    {company.logo ? (
-                      <Image
-                        width={40}
-                        height={40}
-                        src={company.logo}
-                        alt={company.name}
-                        className="w-10 h-10 rounded-full mr-4 object-cover"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-lg font-gilroy font-bold mr-4">
-                        {generateInitials(company.name, "")}
-                      </div>
-                    )}
-                    <p className="font-gilroy text-base font-normal leading-6 flex">
-                      {company.name}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        )}
+          )}
       </div>
 
       {/* Menu Items */}

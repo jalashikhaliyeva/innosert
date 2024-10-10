@@ -9,6 +9,7 @@ import AddFolderModal from "@/components/AddFolderModal"; // Import the modal
 import DeleteModal from "@/components/DeleteModal";
 import EditFolderModal from "@/components/EditFolderModal";
 import DeleteFolderModal from "@/components/DeleteFolderModal";
+import TeacherSidebar from "@/components/TeacherSidebar";
 
 function SuallarToplusu() {
   const [viewMode, setViewMode] = useState("grid");
@@ -62,7 +63,7 @@ function SuallarToplusu() {
       <HeaderInternal />
       <div className="flex">
         <div className="w-[20%]">
-          <CompanySidebar />
+          <TeacherSidebar />
         </div>
 
         <div className="w-[80%]">

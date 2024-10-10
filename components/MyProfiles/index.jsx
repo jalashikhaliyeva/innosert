@@ -13,6 +13,8 @@ import { UserContext } from "@/shared/context/UserContext";
 function MyProfiles() {
   // const [user, setUser] = useState(null);
   const { user, setUser, fetchUserData } = useContext(UserContext);
+  console.log(user , " MyProfiles user teacher");
+  
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [companies, setCompanies] = useState([]);
@@ -176,6 +178,8 @@ function MyProfiles() {
             },
           }
         );
+        console.log(response, "response teacher");
+        
 
         if (response.ok) {
           const companiesData = await response.json();
@@ -183,10 +187,12 @@ function MyProfiles() {
 
           setCompanies(companiesData.data || []);
         } else {
-          alert("Failed to fetch companies");
+          console.log("Failed to fetch companies");
+        
         }
       } catch (error) {
-        alert(`An error occurred: ${error.message}`);
+        console.log(`An error occurred: ${error.message}`);
+        
       }
     };
 

@@ -76,9 +76,9 @@ h6 {
   --fontGilroy: "Gilroy", sans-serif;
   --normalFontWeight: normal;
   --boldFontWeight: bold;
-  --buttonDefaultPrimary: #2B3E4F;
-  --buttonHoverPrimary: #19242E;
-  --buttonPressedPrimary: #121A21;
+  --buttonDefaultPrimary: #2b3e4f;
+  --buttonHoverPrimary: #19242e;
+  --buttonPressedPrimary: #121a21;
   --buttonDisabledPrimary: #dfdfdf;
   --buttonTextWhite: #ffffff;
   --buttonWhiteHover: #f5f5f5;
@@ -112,7 +112,7 @@ h6 {
   --neutralWhite: #ffffff;
   --slidesBoxGray: #ebebeb;
   --brandBlue: #4262ff;
-  --brandBlue500: #2B3E4F;
+  --brandBlue500: #2b3e4f;
   --neutralWhiteButtonNextPrev: #fff;
 }
 
@@ -132,4 +132,39 @@ body {
   .text-balance {
     text-wrap: balance;
   }
+}
+
+/* Editor content background */
+.editor-custom-bg .fr-element {
+  background-color: #fafafa; /* Background for the text area */
+}
+
+/* Toolbar customization */
+.editor-toolbar-custom .fr-toolbar {
+  background-color: #fafafa; /* Background color for toolbar */
+  padding: 4px 4px; /* Adjust the padding to make the toolbar smaller */
+}
+
+.editor-toolbar-custom .fr-command {
+  font-size: 4px; /* Smaller font size for toolbar buttons */
+  padding: 6px 8px; /* Adjust button padding to make it more compact */
+}
+
+.editor-toolbar-custom .fr-command:hover {
+  background-color: #e0e0e0; /* Optional hover effect for toolbar buttons */
+}
+
+.fr-toolbar .fr-btn-grp {
+  display: inline-block;
+  margin: 0 !important;
+}
+
+.fr-second-toolbar:empty {
+  background-color: #fafafa;
+}
+
+.editor-custom-bg  .fr-box.fr-basic .fr-element {
+  font-family: var(--fontGilroy) !important;
+  color: var(--textSecondaryDefault);
+  font-size: 16px;
 }
