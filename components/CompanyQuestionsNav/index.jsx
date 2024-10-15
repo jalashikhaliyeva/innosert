@@ -5,7 +5,6 @@ import { VscListSelection } from "react-icons/vsc";
 import { FaPlus, FaTrash } from "react-icons/fa6";
 import { BsTrash3 } from "react-icons/bs";
 
-
 function CompanyQuestionsNav({
   viewMode,
   setViewMode,
@@ -14,7 +13,7 @@ function CompanyQuestionsNav({
   isCheckboxSelected,
   selectedFiles,
   openModal,
-  openDeleteModal
+  openDeleteModal,
 }) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
@@ -25,15 +24,16 @@ function CompanyQuestionsNav({
 
   return (
     <div className="flex justify-between relative font-gilroy">
-      <h1 data-aos="fade-right" className="text-2xl font-medium leading-8">
-        Suallar toplusu
-      </h1>
+      <h1 className="text-2xl font-medium leading-8">Sual Toplusu</h1>
 
       {/* Conditionally render based on checkbox selection */}
       {selectedFiles.length > 0 ? (
         // Show the delete section when a checkbox is selected
         <div className="flex flex-row gap-4">
-          <button   onClick={openDeleteModal}   className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed">
+          <button
+            onClick={openDeleteModal}
+            className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed"
+          >
             <BsTrash3 className="fill-white text-white" />
             Sil
           </button>
@@ -106,7 +106,10 @@ function CompanyQuestionsNav({
           </div>
 
           <div>
-            <button  onClick={openModal} className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary">
+            <button
+              onClick={openModal}
+              className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
+            >
               <FaPlus className="fill-white text-white" />
               Əlavə et
             </button>

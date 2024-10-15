@@ -17,7 +17,7 @@ function ReportSingleNavigationTitle() {
 
   return (
     <div className="flex justify-between items-center relative font-gilroy mb-5">
-      <h1 data-aos="fade-right" className="text-2xl font-medium leading-8">
+      <h1  className="text-2xl font-medium leading-8">
         &apos; {id} &apos; sualında xətalar
       </h1>
 

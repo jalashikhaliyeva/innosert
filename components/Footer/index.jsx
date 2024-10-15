@@ -116,7 +116,10 @@ const Footer = React.forwardRef((props, ref) => {
 
         <div className="flex flex-col md:flex-row justify-between border-t-[1px] pt-7 border-footerGrayText">
           <p className="text-inputBorder font-gilroy font-normal text-sm leading-6">
-            © 2024 İnnocert LLC - All rights reserved{" "}
+            © 2024 İnnocert LLC - All rights reserved
+          </p>
+
+          {/* <p className="text-inputBorder font-gilroy font-normal text-sm leading-6">
             <Link
               href="https://markup.az/"
               target="_blank"
@@ -124,8 +127,7 @@ const Footer = React.forwardRef((props, ref) => {
             >
               by Markup
             </Link>
-          </p>
-
+          </p> */}
           <p className="text-inputBorder font-gilroy font-normal text-sm leading-6">
             Help Center
           </p>

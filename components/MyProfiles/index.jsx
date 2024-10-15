@@ -394,7 +394,7 @@ function MyProfiles() {
     <div className="mt-6">
       <div className="mb-6">
         <h2
-          data-aos="fade-right"
+     
           className="text-2xl leading-8 font-gilroy font-medium"
         >
           {

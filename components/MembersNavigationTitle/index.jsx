@@ -6,7 +6,7 @@ import { BsTrash } from "react-icons/bs";
 function MembersNavigationTitle({ openModal, selectedRows, handleDeleteSelected,openDeleteModal,  }) {
   return (
     <div className="flex justify-between relative font-gilroy">
-      <h1 data-aos="fade-right" className="text-2xl font-medium leading-8">
+      <h1  className="text-2xl font-medium leading-8">
         Üzvlər
       </h1>
 

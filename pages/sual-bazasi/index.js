@@ -9,6 +9,8 @@ import AddFolderModal from "@/components/AddFolderModal"; // Import the modal
 import DeleteModal from "@/components/DeleteModal";
 import EditFolderModal from "@/components/EditFolderModal";
 import DeleteFolderModal from "@/components/DeleteFolderModal";
+import QuestionsTableCompany from "@/components/QuestionsTableCompany";
+import QuestionsNavigationCompany from "@/components/QuestionsNavigationCompany";
 
 function SualBazasi() {
   const [viewMode, setViewMode] = useState("grid");
@@ -68,24 +70,28 @@ function SualBazasi() {
         <div className="w-[80%]">
           <InternalContainer>
             <Breadcrumb />
-            <CompanyQuestionsNav
+            {/* <CompanyQuestionsNav
               viewMode={viewMode}
               setViewMode={setViewMode}
               sortOption={sortOption}
               setSortOption={setSortOption}
               isCheckboxSelected={isCheckboxSelected}
               selectedFiles={selectedFiles}
-              openModal={openModal} // Pass openModal function
-              openDeleteModal={openDeleteModal} // Modal for deleting
-            />
-            <QuestionFiles
+              openModal={openModal} 
+              openDeleteModal={openDeleteModal} 
+            /> */}
+
+            <QuestionsNavigationCompany
               viewMode={viewMode}
+              setViewMode={setViewMode}
               sortOption={sortOption}
-              selectedFiles={selectedFiles} // Pass the selected files array
-              setSelectedFiles={setSelectedFiles} // Pass the function to update selected files
-              openEditFolderModal={openEditFolderModal} // Pass the function
-              openDeleteFolderModal={openDeleteFolderModal} // Pass the function
+              setSortOption={setSortOption}
+              isCheckboxSelected={isCheckboxSelected}
+              selectedFiles={selectedFiles}
+              openModal={openModal}
+              openDeleteModal={openDeleteModal}
             />
+            <QuestionsTableCompany />
           </InternalContainer>
         </div>
       </div>

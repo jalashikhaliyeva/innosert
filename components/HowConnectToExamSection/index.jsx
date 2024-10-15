@@ -5,8 +5,9 @@ function HowConnectToExamSection(props) {
   console.log(props.ata, " ata HowConnectToExamSection");
 
   return (
-    <>
-      <h2 className="font-gilroy text-textSecondaryDefault text-2xl md:text-4xl font-medium text-center mt-20 mb-10">
+    <div  >
+      <h2 data-aos="fade-up"
+    data-aos-anchor-placement="center-bottom" className="font-gilroy text-textSecondaryDefault text-2xl md:text-4xl font-medium text-center mt-20 mb-10">
         Imtahanda necə iştirak edim?
       </h2>
       <Container>
@@ -40,7 +41,7 @@ function HowConnectToExamSection(props) {
           ))}
         </div>
       </Container>
-    </>
+    </div>
   );
 }
 

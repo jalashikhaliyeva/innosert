@@ -8,7 +8,6 @@ const titleMap = {
   "/suallar": "Suallar Toplusu",
   "/sertifikatlarim": "Sertifikatlarım",
   "/balansim": "Balansım",
-  
 };
 
 function TitleNavigation() {
@@ -19,7 +18,7 @@ function TitleNavigation() {
   const title = titleMap[path] || "TitleNavigation";
 
   return (
-    <div data-aos="fade-right" className="font-gilroy text-2xl font-medium leading-8 pb-6">
+    <div className="font-gilroy text-2xl font-medium leading-8 pb-6">
       {title}
     </div>
   );

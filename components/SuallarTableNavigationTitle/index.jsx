@@ -5,7 +5,7 @@ function SuallarTableNavigationTitle({ selectedRows, handleDelete,handleEdit }) 
   return (
     <div className="flex flex-row justify-between pb-6">
       <h2
-        data-aos="fade-right"
+       
         className="font-gilroy text-2xl font-medium leading-8 "
       >
         Sual toplusu

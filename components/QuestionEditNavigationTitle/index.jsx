@@ -20,7 +20,7 @@ function QuestionEditNavigationTitle({ selectedOption, setSelectedOption }) {
 
   return (
     <div className="flex justify-between relative font-gilroy">
-      <h1 data-aos="fade-right" className="text-2xl font-medium leading-8">
+      <h1  className="text-2xl font-medium leading-8">
         Sual
       </h1>
 

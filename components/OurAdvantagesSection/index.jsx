@@ -11,7 +11,8 @@ function OurAdvantagesSection({ data }) {
   return (
     <div className="bg-white pb-14">
       <Container>
-        <h2 className="pt-14 pb-10 font-gilroy text-textSecondaryDefault text-2xl md:text-3xl font-medium">
+        <h2   data-aos="fade-up"
+    data-aos-anchor-placement="center-bottom" className="pt-14 pb-10 font-gilroy text-textSecondaryDefault text-2xl md:text-3xl font-medium">
           Üstünlüklərimiz
         </h2>
         <Slider data={data} />

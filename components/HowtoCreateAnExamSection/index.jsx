@@ -12,10 +12,8 @@ function HowtoCreateAnExamSection({ data }) {
   return (
     <div className="py-8">
       <Container>
-        <h3
-          data-aos="fade-down"
-          className="font-gilroy text-textSecondaryDefault text-center font-medium text-2xl md:text-4xl pt-7 pb-10"
-        >
+        <h3  data-aos="fade-up"
+    data-aos-anchor-placement="center-bottom"  className="font-gilroy text-textSecondaryDefault text-center font-medium text-2xl md:text-4xl pt-7 pb-10">
           Imtahanı necə yaradım?
         </h3>
 

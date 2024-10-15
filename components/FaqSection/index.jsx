@@ -19,7 +19,7 @@ const Faq = React.forwardRef(({ faqs }, ref) => {
 
   return (
     <div className="pt-14" ref={ref}>
-      <h3 data-aos="flip-left" className="pb-10 text-center font-gilroy text-2xl  md:text-3xl font-medium text-textSecondaryDefault">
+      <h3 className="pb-10 text-center font-gilroy text-2xl  md:text-3xl font-medium text-textSecondaryDefault">
         Sualın var?
       </h3>
       <div className={styles.faqSection}>

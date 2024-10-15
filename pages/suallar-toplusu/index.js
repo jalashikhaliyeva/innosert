@@ -1,3 +1,5 @@
+// Teacher
+
 import React, { useState } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import CompanyQuestionsNav from "@/components/CompanyQuestionsNav";
@@ -10,6 +12,7 @@ import DeleteModal from "@/components/DeleteModal";
 import EditFolderModal from "@/components/EditFolderModal";
 import DeleteFolderModal from "@/components/DeleteFolderModal";
 import TeacherSidebar from "@/components/TeacherSidebar";
+import QuestionFilesTeacher from "@/components/QuestionFilesTeacher";
 
 function SuallarToplusu() {
   const [viewMode, setViewMode] = useState("grid");
@@ -72,14 +75,14 @@ function SuallarToplusu() {
             <CompanyQuestionsNav
               viewMode={viewMode}
               setViewMode={setViewMode}
-              sortOption={sortOption}
+              sortOption={sortOption}        
               setSortOption={setSortOption}
               isCheckboxSelected={isCheckboxSelected}
               selectedFiles={selectedFiles}
               openModal={openModal} // Pass openModal function
               openDeleteModal={openDeleteModal} // Modal for deleting
             />
-            <QuestionFiles
+            <QuestionFilesTeacher
               viewMode={viewMode}
               sortOption={sortOption}
               selectedFiles={selectedFiles} // Pass the selected files array

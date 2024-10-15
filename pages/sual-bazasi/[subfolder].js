@@ -9,6 +9,7 @@ import AddFolderModal from "@/components/AddFolderModal";
 import DeleteModal from "@/components/DeleteModal";
 import SubFolderCard from "@/components/SubFolderCard";
 import EditFolderModal from "@/components/EditFolderModal";
+import QuestionsNavigationCompany from "@/components/QuestionsNavigationCompany";
 
 function SubFolderSUallarToplusu() {
   const [subFolders, setSubFolders] = useState([]);
@@ -210,7 +211,18 @@ function SubFolderSUallarToplusu() {
         <div className="w-[80%]">
           <InternalContainer>
             <Breadcrumb />
-            <CompanyQuestionsNav
+            {/* <CompanyQuestionsNav
+              viewMode={viewMode}
+              setViewMode={setViewMode}
+              sortOption={sortOption}
+              setSortOption={setSortOption}
+              isCheckboxSelected={isCheckboxSelected}
+              selectedFiles={selectedFiles}
+              openModal={openModal}
+              openDeleteModal={openDeleteModal}
+            /> */}
+
+            <QuestionsNavigationCompany
               viewMode={viewMode}
               setViewMode={setViewMode}
               sortOption={sortOption}

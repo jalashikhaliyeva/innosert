@@ -54,38 +54,7 @@ function Home() {
         paid: false,
         price: 35,
       },
-      {
-        id: 'data-science-specialist',
-        name: 'Data Science Specialist',
-        duration: '2.5 saat',
-        questions: 45,
-        paid: true,
-        price: 28,
-      },
-      {
-        id: 'digital-marketing-expert',
-        name: 'Digital Marketing Expert',
-        duration: '1.2 saat',
-        questions: 35,
-        paid: false,
-        price: 22,
-      },
-      {
-        id: 'cyber-security-analyst',
-        name: 'Cyber Security Analyst',
-        duration: '2 saat',
-        questions: 40,
-        paid: true,
-        price: 27,
-      },
-      {
-        id: 'cloud-computing-engineer',
-        name: 'Cloud Computing Engineer',
-        duration: '2.5 saat',
-        questions: 50,
-        paid: false,
-        price: 33,
-      },
+    
     ];
 
     setExams(fetchedExams);

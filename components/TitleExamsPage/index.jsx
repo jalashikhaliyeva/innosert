@@ -11,10 +11,7 @@ function TitleExamsPage({ activeTab, setActiveTab }) {
   return (
     <div className="flex flex-col mb-6">
       <div className="flex flex-row justify-between">
-        <h2
-          data-aos="fade-right"
-          className="font-gilroy text-2xl font-medium leading-8 pb-6"
-        >
+        <h2 className="font-gilroy text-2xl font-medium leading-8 pb-6">
           İmtahanlarım
         </h2>
       </div>
@@ -50,9 +47,8 @@ function TitleExamsPage({ activeTab, setActiveTab }) {
         <FilterCategories
           isModalOpen={isFilterModalOpen}
           setIsModalOpen={setIsFilterModalOpen}
-          setAppliedFilterCount={setAppliedFilterCount} 
+          setAppliedFilterCount={setAppliedFilterCount}
         />
-
       </div>
     </div>
   );

@@ -35,9 +35,11 @@ const HeaderInternal = () => {
     setSelectedCompany(company); // Set the selected company in context
 
     if (user?.data?.roles === "Owner") {
-      router.push(`/shirket-hesabi`); // Redirect for Owner role
+      router.push(`/hesabatlar`);
+     // router.push(`/shirket-hesabi`); // Redirect for Owner role
     } else if (user?.data?.roles === "Teacher") {
-      router.push(`/muellim-hesabi`); // Redirect for Teacher role
+      router.push(`/suallar-toplusu`);
+     // router.push(`/muellim-hesabi`); // Redirect for Teacher role
     }
   };
   // const activeCompanies =
@@ -102,7 +104,7 @@ const HeaderInternal = () => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 bg-bodyColor shadow-createBox z-30 font-gilroy">
+    <header className="markup fixed top-0 left-0 right-0 bg-bodyColor shadow-createBox z-30 font-gilroy">
       <Container>
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center gap-16">

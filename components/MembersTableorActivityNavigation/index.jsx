@@ -1,7 +1,11 @@
 import React from "react";
 import { TbUsers } from "react-icons/tb";
 
-function MembersTableorActivityNavigation({ activeView, setActiveView }) {
+function MembersTableorActivityNavigation({
+  activeView,
+  setActiveView,
+  memberCount,
+}) {
   return (
     <>
       <div className="flex flex-row gap-4 mb-6 font-gilroy">
@@ -14,7 +18,7 @@ function MembersTableorActivityNavigation({ activeView, setActiveView }) {
           onClick={() => setActiveView("edit")}
         >
           <TbUsers className="size-6" />
-          Üzv siyahısı
+          Üzv siyahısı ({memberCount})
         </button>
         <button
           className={`flex items-center gap-2 text-lg px-4 py-3 rounded-lg font-gilroy font-normal leading-6 ${

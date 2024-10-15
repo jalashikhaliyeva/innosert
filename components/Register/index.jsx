@@ -20,15 +20,26 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // Added confirmPassword state
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [mobile, setMobile] = useState("+994");
   const [showPassword, setShowPassword] = useState(false);
+  // Added showConfirmPassword state
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [inputError, setInputError] = useState(false);
+  // Added passwordMismatchError state
+  const [passwordMismatchError, setPasswordMismatchError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
+  };
+
+  // Function to toggle visibility of confirm password
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
   };
 
   const handleOutsideClick = (e) => {
@@ -48,12 +59,6 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
     }
   };
 
-  // const handlePhoneChange = (e) => {
-  //   const phoneValue = e.target.value;
-  //   if (phoneValue.startsWith("+994")) {
-  //     setMobile(phoneValue);
-  //   }
-  // };
   const handlePhoneChange = (e) => {
     const phoneValue = e.target.value;
 
@@ -65,6 +70,9 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
   const handleFocus = (input) => {
     setFocusedInput(input);
     setInputError(false); // Reset error when user focuses on the input
+    if (input === "password" || input === "confirmPassword") {
+      setPasswordMismatchError(false); // Reset password mismatch error
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -73,10 +81,23 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
     console.log(lastName, "lastName");
     console.log(email, "email");
     console.log(password, "password");
+    console.log(confirmPassword, "confirmPassword");
     console.log(mobile, "mobile");
-    if (!firstName || !lastName || !email || !password || !mobile) {
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !password ||
+      !confirmPassword ||
+      !mobile
+    ) {
       setInputError(true);
       toast.error("Zəhmət olmasa bütün sahələri doldurun.");
+      return;
+    }
+    if (password !== confirmPassword) {
+      setPasswordMismatchError(true);
+      toast.error("Şifrələr uyğun deyil.");
       return;
     }
     setLoading(true);
@@ -220,7 +241,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                     onFocus={() => handleFocus("password")}
                     onKeyDown={handleKeyDown}
                     className={`placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pl-12 pr-3 py-3 px-4 border ${
-                      inputError && !password
+                      (inputError && !password) || passwordMismatchError
                         ? "border-inputRingError"
                         : focusedInput === "password"
                         ? "border-inputRingFocus"
@@ -238,6 +259,47 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   {inputError && !password && (
                     <p className="text-inputRingError text-sm mt-1">
                       Şifrə daxil edilməlidir.
+                    </p>
+                  )}
+                </div>
+
+                {/* Confirm Password Field */}
+                <div className="relative">
+                  <HiOutlineLockClosed className="absolute text-2xl top-3 left-3 text-gray-400" />
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    onFocus={() => handleFocus("confirmPassword")}
+                    onKeyDown={handleKeyDown}
+                    className={`placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pl-12 pr-3 py-3 px-4 border ${
+                      (inputError && !confirmPassword) || passwordMismatchError
+                        ? "border-inputRingError"
+                        : focusedInput === "confirmPassword"
+                        ? "border-inputRingFocus"
+                        : "border-inputBorder"
+                    } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
+                    placeholder="Şifrəni təkrar et"
+                  />
+                  <button
+                    type="button"
+                    onClick={toggleConfirmPasswordVisibility}
+                    className="text-xl absolute top-3 right-3 text-gray-400 cursor-pointer"
+                  >
+                    {showConfirmPassword ? (
+                      <HiOutlineEyeOff />
+                    ) : (
+                      <HiOutlineEye />
+                    )}
+                  </button>
+                  {inputError && !confirmPassword && (
+                    <p className="text-inputRingError text-sm mt-1">
+                      Şifrəni təkrar daxil edilməlidir.
+                    </p>
+                  )}
+                  {passwordMismatchError && (
+                    <p className="text-inputRingError text-sm mt-1">
+                      Şifrələr uyğun deyil.
                     </p>
                   )}
                 </div>
@@ -357,8 +419,8 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
         </div>
       )}
       <ToastContainer
-        position="top-right"
-        autoClose={5000}
+        position="top-center"
+        autoClose={6000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick

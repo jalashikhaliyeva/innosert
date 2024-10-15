@@ -15,7 +15,7 @@ function ImageSectionAbout(props) {
     >
       <Container>
         <div className="flex flex-col justify-center h-[300px] md:h-[400px] lg:h-[600px] object-cover">
-          <h1 data-aos="flip-up" className="font-gilroy text-3xl  sm:text-4xl  md:text-5xl  font-medium leading-lead55 text-grayBox">
+          <h1 className="font-gilroy text-3xl  sm:text-4xl  md:text-5xl  font-medium leading-lead55 text-grayBox">
           {props.aboutInfo?.about?.title}
           </h1>
         </div>

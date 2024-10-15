@@ -84,7 +84,6 @@ const ParentComponent = () => {
       amount: "145AZN",
     },
   ];
-  
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 5;
@@ -102,7 +101,6 @@ const ParentComponent = () => {
 
   return (
     <div className="w-full px-4 font-gilroy">
-
       {/* Added font-gilroy here */}
       {/* Buttons to toggle between views */}
       <div className="mb-5">
@@ -128,7 +126,7 @@ const ParentComponent = () => {
         <div className="w-full overflow-x-auto min-h-[400px] justify-between flex flex-col">
           <table className="min-w-full table-auto border-collapse">
             <thead>
-              <tr>
+              <tr >
                 <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
                   ID
                 </th>
@@ -148,7 +146,7 @@ const ParentComponent = () => {
             </thead>
             <tbody className="space-y-2.5">
               {paginatedData.map((item, index) => (
-                <tr key={index} className="even:bg-boxGrayBodyColor">
+                <tr  key={index} className="even:bg-boxGrayBodyColor hover:bg-gray-100">
                   <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
                     {item.id}
                   </td>
@@ -158,7 +156,13 @@ const ParentComponent = () => {
                   <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
                     {item.date}
                   </td>
-                  <td className="px-4 py-2.5 h-11 text-chartGreen font-gilroy">
+                  <td
+                    className={`px-4 py-2.5 h-11 font-gilroy ${
+                      item.status === "Ödənilib"
+                        ? "text-chartGreen"
+                        : "text-red-500"
+                    }`}
+                  >
                     {item.status}
                   </td>
                   <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">

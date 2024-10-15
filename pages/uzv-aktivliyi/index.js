@@ -1,9 +1,10 @@
+import React from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import CompanySidebar from "@/components/CompanySidebar";
 import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
-import SuallarTable from "@/components/SuallarTable";
-import SuallarTableNavigationTitle from "@/components/SuallarTableNavigationTitle";
+import MemberActivityQuestionOrExam from "@/components/MemberActivityQuestionOrExam";
+import MemberActivityName from "@/components/MemberActivityName";
 
 function UzvAktivliyi() {
   return (
@@ -17,7 +18,8 @@ function UzvAktivliyi() {
         <div className="w-[80%]">
           <InternalContainer>
             <Breadcrumb />
-            <h1>UzvAktivliyi</h1>
+            <MemberActivityName />
+            <MemberActivityQuestionOrExam />
           </InternalContainer>
         </div>
       </div>

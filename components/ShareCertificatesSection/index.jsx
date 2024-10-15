@@ -8,22 +8,23 @@ const ShareCertificatesSection = React.forwardRef(
     console.log(certificates, "certificates certificates component");
 
     return (
-      <div ref={ref} className="bg-blue200 relative overflow-hidden md:mt-14">
+      <div data-aos="fade-up"
+      data-aos-anchor-placement="center-bottom" ref={ref} className="bg-blue200 relative overflow-hidden md:mt-14">
         <Container>
           <div className="relative flex flex-col justify-center h-[373px] w-[327px] sm:w-[527px]">
             <h2
-              data-aos="fade-right"
+    
               className="text-white text-3xl sm:text-4xl lg:text-4xl mb-3.5"
             >
               {title.title}
             </h2>
             <p
-              data-aos="fade-right"
-              className="text-grayTextColor text-base whitespace-normal sm:text-lg mb-16"
+         
+              className="text-inputDefault text-base whitespace-normal sm:text-lg mb-12"
             >
               {title.desc}
             </p>
-            <div data-aos="fade-right" onClick={openRegisterModal}>
+            <div  onClick={openRegisterModal}>
               <Button
                 color="var(--buttonTextWhite)"
                 hoverColor="var(--buttonWhiteHover)"

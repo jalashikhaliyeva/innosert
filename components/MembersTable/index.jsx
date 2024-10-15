@@ -12,6 +12,7 @@ function MembersTable({
   setSelectedRows,
   handleDelete,
   handleEdit,
+  data,
 }) {
   const router = useRouter();
 
@@ -82,220 +83,6 @@ function MembersTable({
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
-  // Sample data for Azerbaijani members
-  const data = [
-    {
-      id: 1,
-      fullname: "Əli Həsənov",
-      email: "ali.hesenov@example.az",
-      mobile: "+994-50-123-45-67",
-      dateJoined: "2023-10-01",
-    },
-    {
-      id: 2,
-      fullname: "Leyla Məmmədova",
-      email: "leyla.mammadova@example.az",
-      mobile: "+994-55-987-65-43",
-      dateJoined: "2023-09-28",
-    },
-    {
-      id: 3,
-      fullname: "Taleh İbrahimov",
-      email: "taleh.ibrahimov@example.az",
-      mobile: "+994-70-456-78-90",
-      dateJoined: "2023-09-25",
-    },
-    {
-      id: 4,
-      fullname: "Nigar Əliyeva",
-      email: "nigar.aliyeva@example.az",
-      mobile: "+994-77-654-32-10",
-      dateJoined: "2023-09-20",
-    },
-    {
-      id: 5,
-      fullname: "Kamran Quliyev",
-      email: "kamran.quliyev@example.az",
-      mobile: "+994-51-234-56-78",
-      dateJoined: "2023-09-15",
-    },
-    {
-      id: 6,
-      fullname: "Aytən Rzayeva",
-      email: "ayten.rzayeva@example.az",
-      mobile: "+994-50-345-67-89",
-      dateJoined: "2023-09-10",
-    },
-    {
-      id: 7,
-      fullname: "Rəşad Hüseynov",
-      email: "reshad.huseynov@example.az",
-      mobile: "+994-55-876-54-32",
-      dateJoined: "2023-09-05",
-    },
-    {
-      id: 8,
-      fullname: "Zeynəb Musayeva",
-      email: "zeyneb.musayeva@example.az",
-      mobile: "+994-70-765-43-21",
-      dateJoined: "2023-08-30",
-    },
-    {
-      id: 9,
-      fullname: "Orxan Vəliyev",
-      email: "orxan.veliyev@example.az",
-      mobile: "+994-77-543-21-98",
-      dateJoined: "2023-08-25",
-    },
-    {
-      id: 10,
-      fullname: "Günay Qasımova",
-      email: "gunay.qasimova@example.az",
-      mobile: "+994-51-654-32-89",
-      dateJoined: "2023-08-20",
-    },
-    {
-      id: 11,
-      fullname: "Emin İsmayılov",
-      email: "emin.ismayilov@example.az",
-      mobile: "+994-50-567-89-01",
-      dateJoined: "2023-08-15",
-    },
-    {
-      id: 12,
-      fullname: "Fidan Abbasova",
-      email: "fidan.abbasova@example.az",
-      mobile: "+994-55-876-54-21",
-      dateJoined: "2023-08-10",
-    },
-    {
-      id: 13,
-      fullname: "Elvin Rəhimov",
-      email: "elvin.rehimov@example.az",
-      mobile: "+994-70-543-32-19",
-      dateJoined: "2023-08-05",
-    },
-    {
-      id: 14,
-      fullname: "Gülşən Kərimova",
-      email: "gulshem.kerimova@example.az",
-      mobile: "+994-77-654-21-90",
-      dateJoined: "2023-07-30",
-    },
-    {
-      id: 15,
-      fullname: "Vüsal Əhmədov",
-      email: "vusal.ehmedov@example.az",
-      mobile: "+994-51-765-43-21",
-      dateJoined: "2023-07-25",
-    },
-    {
-      id: 16,
-      fullname: "Aysel Quliyeva",
-      email: "aysel.quliyeva@example.az",
-      mobile: "+994-50-876-54-32",
-      dateJoined: "2023-07-20",
-    },
-    {
-      id: 17,
-      fullname: "İlqar Həsənli",
-      email: "ilqar.hesenli@example.az",
-      mobile: "+994-55-987-65-43",
-      dateJoined: "2023-07-15",
-    },
-    {
-      id: 18,
-      fullname: "Xədicə Nəsrullayeva",
-      email: "xədicə.nəsrullayeva@example.az",
-      mobile: "+994-70-123-45-67",
-      dateJoined: "2023-07-10",
-    },
-    {
-      id: 19,
-      fullname: "Cavid Hüseynov",
-      email: "cavid.huseynov@example.az",
-      mobile: "+994-77-234-56-78",
-      dateJoined: "2023-07-05",
-    },
-    {
-      id: 20,
-      fullname: "Ramil Abdullayev",
-      email: "ramil.abdullayev@example.az",
-      mobile: "+994-51-345-67-89",
-      dateJoined: "2023-07-01",
-    },
-    {
-      id: 21,
-      fullname: "Səbinə İsmayılova",
-      email: "sebina.ismayilova@example.az",
-      mobile: "+994-50-456-78-90",
-      dateJoined: "2023-06-28",
-    },
-    {
-      id: 22,
-      fullname: "Murad Qasımov",
-      email: "murad.qasimov@example.az",
-      mobile: "+994-55-567-89-01",
-      dateJoined: "2023-06-25",
-    },
-    {
-      id: 23,
-      fullname: "Aynur Babayeva",
-      email: "aynur.babayeva@example.az",
-      mobile: "+994-70-654-32-10",
-      dateJoined: "2023-06-20",
-    },
-    {
-      id: 24,
-      fullname: "Tural Əliyev",
-      email: "tural.aliyev@example.az",
-      mobile: "+994-77-543-21-09",
-      dateJoined: "2023-06-15",
-    },
-    {
-      id: 25,
-      fullname: "Nurlan Quliyev",
-      email: "nurlan.quliyev@example.az",
-      mobile: "+994-51-765-43-21",
-      dateJoined: "2023-06-10",
-    },
-    {
-      id: 26,
-      fullname: "Əsmər Məmmədova",
-      email: "esmer.mammadova@example.az",
-      mobile: "+994-50-876-54-32",
-      dateJoined: "2023-06-05",
-    },
-    {
-      id: 27,
-      fullname: "Elgün Rəsulov",
-      email: "elgun.resulov@example.az",
-      mobile: "+994-55-987-65-43",
-      dateJoined: "2023-06-01",
-    },
-    {
-      id: 28,
-      fullname: "Gülnarə Muradova",
-      email: "gulnare.muradova@example.az",
-      mobile: "+994-70-123-45-67",
-      dateJoined: "2023-05-28",
-    },
-    {
-      id: 29,
-      fullname: "Fərid Əhmədli",
-      email: "farid.ehmedli@example.az",
-      mobile: "+994-77-234-56-78",
-      dateJoined: "2023-05-25",
-    },
-    {
-      id: 30,
-      fullname: "Samir Nəsirov",
-      email: "samir.nesirov@example.az",
-      mobile: "+994-51-345-67-89",
-      dateJoined: "2023-05-20",
-    },
-  ];
 
   // Function to handle checkbox change
   const handleCheckboxChange = (id) => {
@@ -702,7 +489,7 @@ function MembersTable({
               paginatedData.map((item) => (
                 <tr
                   key={item.id}
-                  className="bg-tableBgDefault border-b border-borderTableCel"
+                  className="bg-tableBgDefault border-b border-borderTableCel hover:bg-gray-100"
                 >
                   <td className="px-4 py-3">
                     <input
@@ -751,7 +538,7 @@ function MembersTable({
                   <td className="px-4 py-3">
                     <div className="flex items-end justify-end">
                       <FaTrashCan
-                     onClick={() => openDeleteModal(item)} 
+                        onClick={() => openDeleteModal(item)}
                         className="mx-2 cursor-pointer text-red400"
                       />
                     </div>

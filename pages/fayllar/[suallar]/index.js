@@ -1,3 +1,5 @@
+// company side
+
 import Breadcrumb from "@/components/Breadcrumb";
 import CompanySidebar from "@/components/CompanySidebar";
 import HeaderInternal from "@/components/HeaderInternal";

@@ -192,7 +192,7 @@ function CompanySidebar() {
             </Link>
           </li>
 
-          <li className="mb-2">
+          {/* <li className="mb-2">
             <Link
               href={`/shirket-hesabi`}
               className={`flex items-center space-x-4 px-4 py-2 rounded-lg ${
@@ -202,7 +202,7 @@ function CompanySidebar() {
               }`}
             >
               <FaRegCircleUser className="size-6" />{" "}
-              {/* Removed fill-color logic */}
+           
               <span
                 className={`text-lg font-gilroy font-normal leading-6 ${
                   isActive("/shirket-hesabi")
@@ -213,24 +213,24 @@ function CompanySidebar() {
                 Hesab
               </span>
             </Link>
-          </li>
-
+          </li> */}
+{/* 
           <li className="mb-2">
             <a
               href="/logout"
               className="flex items-center space-x-4 px-4 py-2 text-grayButtonText hover:bg-gray-100 rounded-lg"
               onClick={(e) => {
-                e.preventDefault(); // Prevent default navigation
-                handleLogoutClick(); // Show modal
+                e.preventDefault(); 
+                handleLogoutClick(); 
               }}
             >
               <MdOutlineLogout className="size-6" />{" "}
-              {/* Removed fill-color logic */}
+          
               <span className="text-lg font-gilroy font-normal leading-6">
                 Çıxış
               </span>
             </a>
-          </li>
+          </li> */}
         </ul>
       </nav>
 

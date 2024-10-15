@@ -24,6 +24,11 @@ const Breadcrumb = () => {
     hesablarim: "Hesablarım",
     "suallar-toplusu": "Sual Toplusu",
     "xeta-bildirisleri": "Xəta bildirişləri",
+    uzvler: "Üzvlər",
+    "uzv-aktivliyi": "Üzv aktivliyi",
+    "sual-bazasi":"Sual bazası",
+    "umumi-imtahanlar": "İmtahanlar",
+    "imtahan-detallari": "İmtahan detalları"
     // Add more mappings as needed
   };
 

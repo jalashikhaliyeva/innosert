@@ -1,3 +1,5 @@
+// Teacher
+
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -7,8 +9,9 @@ import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
 import AddFolderModal from "@/components/AddFolderModal";
 import DeleteModal from "@/components/DeleteModal";
-import SubFolderCard from "@/components/SubFolderCard";
+import SubFolderCardTeacher from "@/components/SubFolderCardTeacher";
 import EditFolderModal from "@/components/EditFolderModal";
+import TeacherSidebar from "@/components/TeacherSidebar";
 
 function SubFolderSUallarToplusu() {
   const [subFolders, setSubFolders] = useState([]);
@@ -204,7 +207,7 @@ function SubFolderSUallarToplusu() {
       <HeaderInternal />
       <div className="flex">
         <div className="w-[20%]">
-          <CompanySidebar />
+          <TeacherSidebar />
         </div>
 
         <div className="w-[80%]">
@@ -222,7 +225,7 @@ function SubFolderSUallarToplusu() {
             />
 
             {/* Render the SubFolderCard component and pass necessary props */}
-            <SubFolderCard
+            <SubFolderCardTeacher
               subFolders={subFolders}
               viewMode={viewMode}
               selectedFiles={selectedFiles}

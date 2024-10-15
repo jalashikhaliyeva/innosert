@@ -42,9 +42,11 @@ function Sidebar() {
     setSelectedCompany(company); // Set the selected company in context
 
     if (user?.data?.roles === "Owner") {
-      router.push(`/shirket-hesabi`); // Redirect for Owner role
+      router.push(`/hesabatlar`);
+     // router.push(`/shirket-hesabi`); // Redirect for Owner role
     } else if (user?.data?.roles === "Teacher") {
-      router.push(`/muellim-hesabi`); // Redirect for Teacher role
+      // router.push(`/muellim-hesabi`); // Redirect for Teacher role
+      router.push(`/suallar-toplusu`); // Redirect for Teacher role
     }
   };
   // Toggle the dropdown open state
@@ -258,13 +260,13 @@ function Sidebar() {
               </span>
             </Link>
           </li>
-          <li className="mb-4">
+          {/* <li className="mb-4">
             <a
               href="/logout"
               className="flex items-center space-x-4 px-4 py-2 text-grayText hover:bg-gray-100 rounded-lg"
               onClick={(e) => {
-                e.preventDefault(); // Prevent default navigation
-                handleLogoutClick(); // Show modal
+                e.preventDefault(); 
+                handleLogoutClick(); 
               }}
             >
               <MdOutlineLogout className="size-6 fill-grayText" />
@@ -272,7 +274,7 @@ function Sidebar() {
                 Çıxış
               </span>
             </a>
-          </li>
+          </li> */}
         </ul>
       </nav>
 

@@ -12,6 +12,9 @@ module.exports = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      backdropBlur: {
+        'custom': '20.067px', // Custom blur value
+      },
       fontFamily: {
         gilroy: ["Gilroy", "sans-serif"],
       },
@@ -104,7 +107,8 @@ module.exports = {
         redLow :"#FFE1E2",
         linkBlue: "#4361EE",
         errorButtonTable:"#E7515A",
-        succesButtonTable:"#00AB55"
+        succesButtonTable:"#00AB55",
+        purple200:"#E7EAFE"
         
       },
       letterSpacing: {

@@ -11,10 +11,10 @@ const AboutSection = ({ aboutInfo }) => {
   return (
     <div>
       {/* First Section: Biz kimik? */}
-      <div  className="w-full">
+      <div className="w-full">
         <Container>
-          <div data-aos="fade-right" className="flex flex-col md:flex-row py-16">
-            <h2  className="text-2xl  sm:text-3xl font-gilroy font-medium leading-normal text-textSecondaryDefault md:w-1/3">
+          <div className="flex flex-col md:flex-row py-16">
+            <h2 className="text-2xl  sm:text-3xl font-gilroy font-medium leading-normal text-textSecondaryDefault md:w-1/3">
               {aboutInfo.details[0]?.title}
             </h2>
             <div
@@ -26,9 +26,9 @@ const AboutSection = ({ aboutInfo }) => {
       </div>
 
       {/* Second Section: Missiyamız */}
-      <div  className="w-full bg-brandBlue500 text-white py-16">
+      <div className="w-full bg-brandBlue500 text-white py-16">
         <Container>
-          <div data-aos="fade-left" className="flex flex-col md:flex-row">
+          <div className="flex flex-col md:flex-row">
             <h2 className="text-2xl  sm:text-3xl  font-medium font-gilroy md:w-1/3">
               {aboutInfo.details[1]?.title}
             </h2>
@@ -41,9 +41,9 @@ const AboutSection = ({ aboutInfo }) => {
       </div>
 
       {/* Third Section: Dəyərlərimiz */}
-      <div  className="w-full bg-[#F5F5F5]">
+      <div className="w-full bg-[#F5F5F5]">
         <Container>
-          <div data-aos="fade-right" className="flex flex-col md:flex-row py-16">
+          <div className="flex flex-col md:flex-row py-16">
             <h2 className="text-2xl  sm:text-3xl  font-medium font-gilroy text-brandBlue500 md:w-1/3">
               {aboutInfo.details[2]?.title}
             </h2>
