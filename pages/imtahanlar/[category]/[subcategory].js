@@ -310,43 +310,34 @@ const SubcategoryPage = ({
           />
           {pageCount > 1 && (
             <ReactPaginate
-              previousLabel={
-                <span
-                  className={`${currentPage === 0 ? "cursor-not-allowed" : ""}`}
-                >
-                  {"<"}
-                </span>
-              }
-              nextLabel={
-                <span
-                  className={`${
-                    currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
-                  }`}
-                >
-                  {">"}
-                </span>
-              }
+              previousLabel={"<"}
+              nextLabel={">"}
               breakLabel={"..."}
               pageCount={pageCount}
               marginPagesDisplayed={2}
-              pageRangeDisplayed={2}
+              pageRangeDisplayed={5}
               onPageChange={handlePageClick}
-              forcePage={currentPage}
-              containerClassName={"flex justify-center mt-8 space-x-2"}
-              pageClassName={`px-3 py-1 bg-gray-200 font-gilroy rounded cursor-pointer hover:bg-gray-300`} // Added hover effect and ensured the entire box is clickable
-              activeClassName={"bg-blue-500 font-gilroy text-white"} // Style for active page
-              previousClassName={`${
-                currentPage === 0
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "cursor-pointer"
-              }`}
-              nextClassName={`${
-                currentPage === pageCount - 1
-                  ? "text-gray-400 cursor-not-allowed"
-                  : "cursor-pointer"
-              }`}
-              breakClassName={"px-3 py-1"}
-              disabledClassName={"text-gray-400  cursor-not-allowed"}
+              containerClassName="flex justify-center items-center gap-2 w-full"
+              pageClassName="inline-block" // Minimal styling on li elements
+              pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
+              activeClassName="" // Remove active styles from li elements
+              activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
+              previousClassName={currentPage === 0 ? "text-gray-300" : ""}
+              previousLinkClassName={
+                currentPage === 0 ? "cursor-not-allowed" : ""
+              }
+              previousLinkStyle={
+                currentPage === 0 ? { cursor: "not-allowed" } : {}
+              }
+              nextClassName={
+                currentPage === pageCount - 1 ? "text-gray-300" : ""
+              }
+              nextLinkClassName={
+                currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
+              }
+              nextLinkStyle={
+                currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
+              }
             />
           )}
         </Container>

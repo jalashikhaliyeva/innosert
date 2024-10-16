@@ -15,7 +15,6 @@ function Uzvler() {
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeView, setActiveView] = useState("edit");
 
-
   const data = [
     {
       id: 1,
@@ -283,7 +282,7 @@ function Uzvler() {
             <MembersTableorActivityNavigation
               activeView={activeView}
               setActiveView={setActiveView}
-              memberCount={memberCount} 
+              memberCount={memberCount}
             />
 
             {activeView === "edit" ? (

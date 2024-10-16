@@ -126,7 +126,7 @@ const ParentComponent = () => {
         <div className="w-full overflow-x-auto min-h-[400px] justify-between flex flex-col">
           <table className="min-w-full table-auto border-collapse">
             <thead>
-              <tr >
+              <tr>
                 <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
                   ID
                 </th>
@@ -146,7 +146,10 @@ const ParentComponent = () => {
             </thead>
             <tbody className="space-y-2.5">
               {paginatedData.map((item, index) => (
-                <tr  key={index} className="even:bg-boxGrayBodyColor hover:bg-gray-100">
+                <tr
+                  key={index}
+                  className="even:bg-boxGrayBodyColor hover:bg-gray-100"
+                >
                   <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
                     {item.id}
                   </td>
@@ -184,15 +187,11 @@ const ParentComponent = () => {
                 marginPagesDisplayed={2}
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
-                containerClassName={
-                  "flex justify-center items-center gap-2 w-full"
-                }
-                pageClassName={
-                  "bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
-                }
-                activeClassName={
-                  "bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
-                }
+                containerClassName="flex justify-center items-center gap-2 w-full"
+                pageClassName="inline-block" // Minimal styling on li elements
+                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
+                activeClassName="" // Remove active styles from li elements
+                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
                 previousClassName={currentPage === 0 ? "text-gray-300" : ""}
                 previousLinkClassName={
                   currentPage === 0 ? "cursor-not-allowed" : ""

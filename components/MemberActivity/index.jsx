@@ -77,13 +77,19 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
 
   const filteredData = data
     .filter((item) => {
-      if (publishedQuestionsFilter && item.publishedQuestions < parseInt(publishedQuestionsFilter)) {
+      if (
+        publishedQuestionsFilter &&
+        item.publishedQuestions < parseInt(publishedQuestionsFilter)
+      ) {
         return false;
       }
       return true;
     })
     .filter((item) => {
-      if (publishedExamsFilter && item.publishedExams < parseInt(publishedExamsFilter)) {
+      if (
+        publishedExamsFilter &&
+        item.publishedExams < parseInt(publishedExamsFilter)
+      ) {
         return false;
       }
       return true;
@@ -126,7 +132,7 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                Üzv adı
+                  Üzv adı
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "fullName" && (
@@ -163,13 +169,14 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
                 className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
                 onClick={() =>
                   setOpenFilter(
-                    openFilter === "publishedQuestions" ? null : "publishedQuestions"
+                    openFilter === "publishedQuestions"
+                      ? null
+                      : "publishedQuestions"
                   )
                 }
               >
                 <div className="flex items-center gap-4">
-               
-                Paylaşılan sual sayı 
+                  Paylaşılan sual sayı
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "publishedQuestions" && (
@@ -182,7 +189,9 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
                       type="number"
                       placeholder="Minimum questions"
                       value={publishedQuestionsFilter}
-                      onChange={(e) => setPublishedQuestionsFilter(e.target.value)}
+                      onChange={(e) =>
+                        setPublishedQuestionsFilter(e.target.value)
+                      }
                       className="border rounded px-2 py-1 w-full"
                     />
                     <button
@@ -203,7 +212,7 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                Paylaşılan imtahan sayı 
+                  Paylaşılan imtahan sayı
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "publishedExams" && (
@@ -287,15 +296,30 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
                 nextLabel={">"}
                 breakLabel={"..."}
                 pageCount={pageCount}
-                marginPagesDisplayed={1}
-                pageRangeDisplayed={2}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
-                containerClassName={"flex items-center space-x-2"}
-                pageClassName={"px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"}
-                activeClassName={"bg-blue-500 text-white"}
-                previousClassName={"cursor-pointer"}
-                nextClassName={"cursor-pointer"}
-                disabledClassName={"text-gray-400 cursor-not-allowed"}
+                containerClassName="flex justify-center items-center gap-2 w-full"
+                pageClassName="inline-block" // Minimal styling on li elements
+                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
+                activeClassName="" // Remove active styles from li elements
+                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
+                previousClassName={currentPage === 0 ? "text-gray-300" : ""}
+                previousLinkClassName={
+                  currentPage === 0 ? "cursor-not-allowed" : ""
+                }
+                previousLinkStyle={
+                  currentPage === 0 ? { cursor: "not-allowed" } : {}
+                }
+                nextClassName={
+                  currentPage === pageCount - 1 ? "text-gray-300" : ""
+                }
+                nextLinkClassName={
+                  currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
+                }
+                nextLinkStyle={
+                  currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
+                }
               />
             </div>
           )}

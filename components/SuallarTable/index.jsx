@@ -436,17 +436,17 @@ function SuallarTable({
   const handleClick = (item) => {
     // Ensure router is ready before using query parameters
     if (!router.isReady) return;
-  
+
     // Extract firstDynamicParam from the URL query (assuming it's part of the dynamic route)
     const { firstDynamicParam } = router.query;
-    
+
     // Extract secondDynamicParam from the clicked item's title or name
     const secondDynamicParam = item.title || item.name; // replace with actual field based on the item's structure
-  
+
     // Now navigate to the desired route using these dynamic parameters
     router.push(`/fayllar/${firstDynamicParam}/${secondDynamicParam}`);
   };
-  
+
   // State declarations
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(15); // Default items per page set to 15
@@ -1038,7 +1038,10 @@ function SuallarTable({
                     />
                   </td>
                   <td className="px-4 py-2">{item.id}</td>
-                  <td  onClick={handleClick}  className="px-4 py-2 relative group cursor-pointer">
+                  <td
+                    onClick={handleClick}
+                    className="px-4 py-2 relative group cursor-pointer"
+                  >
                     {item.title.length > 49
                       ? item.title.substring(0, 49) + "..."
                       : item.title}
@@ -1116,17 +1119,30 @@ function SuallarTable({
                 nextLabel={">"}
                 breakLabel={"..."}
                 pageCount={pageCount}
-                marginPagesDisplayed={1}
-                pageRangeDisplayed={2}
+                marginPagesDisplayed={2}
+                pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
-                containerClassName={"flex items-center space-x-2"}
-                pageClassName={
-                  "px-3 py-1 bg-gray-200 rounded hover:bg-gray-300 cursor-pointer"
+                containerClassName="flex justify-center items-center gap-2 w-full"
+                pageClassName="inline-block" // Minimal styling on li elements
+                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
+                activeClassName="" // Remove active styles from li elements
+                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
+                previousClassName={currentPage === 0 ? "text-gray-300" : ""}
+                previousLinkClassName={
+                  currentPage === 0 ? "cursor-not-allowed" : ""
                 }
-                activeClassName={"bg-blue-500 text-white"}
-                previousClassName={"cursor-pointer"}
-                nextClassName={"cursor-pointer"}
-                disabledClassName={"text-gray-400 cursor-not-allowed"}
+                previousLinkStyle={
+                  currentPage === 0 ? { cursor: "not-allowed" } : {}
+                }
+                nextClassName={
+                  currentPage === pageCount - 1 ? "text-gray-300" : ""
+                }
+                nextLinkClassName={
+                  currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
+                }
+                nextLinkStyle={
+                  currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
+                }
               />
             </div>
           )}

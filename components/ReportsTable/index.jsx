@@ -170,24 +170,26 @@ const ReportsTable = () => {
               marginPagesDisplayed={2}
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}
-              containerClassName={
-                "flex justify-center items-center gap-2 w-full"
-              }
-              pageClassName={
-                "bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
-              }
-              activeClassName={
-                "bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
-              }
+              containerClassName="flex justify-center items-center gap-2 w-full"
+              pageClassName="inline-block" // Minimal styling on li elements
+              pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
+              activeClassName="" // Remove active styles from li elements
+              activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
               previousClassName={currentPage === 0 ? "text-gray-300" : ""}
               previousLinkClassName={
                 currentPage === 0 ? "cursor-not-allowed" : ""
+              }
+              previousLinkStyle={
+                currentPage === 0 ? { cursor: "not-allowed" } : {}
               }
               nextClassName={
                 currentPage === pageCount - 1 ? "text-gray-300" : ""
               }
               nextLinkClassName={
                 currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
+              }
+              nextLinkStyle={
+                currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
               }
             />
           </div>

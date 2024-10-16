@@ -100,8 +100,8 @@ const YuklemelerimTable = () => {
           </tbody>
         </table>
       </div>
-    {/* Pagination Component */}
-    <div className="flex justify-center mt-4">
+      {/* Pagination Component */}
+      <div className="flex justify-center mt-4">
         <ReactPaginate
           previousLabel={"<"}
           nextLabel={">"}
@@ -111,17 +111,27 @@ const YuklemelerimTable = () => {
           pageRangeDisplayed={5}
           onPageChange={handlePageClick}
           containerClassName="flex justify-center items-center gap-2"
-          pageClassName="bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
-          activeClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
-          previousClassName={currentPage === 0 ? "text-gray-300" : ""}
-          previousLinkClassName={currentPage === 0 ? "cursor-not-allowed" : ""}
-          previousLinkStyle={currentPage === 0 ? { cursor: "not-allowed" } : {}}
-          nextClassName={currentPage === pageCount - 1 ? "text-gray-300" : ""}
-          nextLinkClassName={currentPage === pageCount - 1 ? "cursor-not-allowed" : ""}
-          nextLinkStyle={currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}}
+          // Remove styles from li elements
+          pageClassName=""
+          activeClassName=""
+          previousClassName=""
+          nextClassName=""
+          // Apply styles to a elements
+          pageLinkClassName="bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy block"
+          activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy block"
+          previousLinkClassName={`${
+            currentPage === 0 ? "cursor-not-allowed text-gray-300" : ""
+          } bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy block`}
+          nextLinkClassName={`${
+            currentPage === pageCount - 1
+              ? "cursor-not-allowed text-gray-300"
+              : ""
+          } bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy block`}
+          // Remove inline styles (if any) for previous and next links
+          previousLinkStyle={{}}
+          nextLinkStyle={{}}
         />
       </div>
-
       {/* Total Amount on Top of Button with 17px Gap */}
       <div className="flex justify-end items-center mt-6 relative">
         <div className="absolute top-[-37px] text-center px-9 text-2xl font-bold text-textSecondaryDefault font-gilroy">
