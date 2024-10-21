@@ -444,7 +444,8 @@ function SuallarTable({
     const secondDynamicParam = item.title || item.name; // replace with actual field based on the item's structure
 
     // Now navigate to the desired route using these dynamic parameters
-    router.push(`/fayllar/${firstDynamicParam}/${secondDynamicParam}`);
+    // router.push(`/fayllar/${firstDynamicParam}/${secondDynamicParam}`);
+    router.push(`/qovluq/${firstDynamicParam}/${secondDynamicParam}`);
   };
 
   // State declarations

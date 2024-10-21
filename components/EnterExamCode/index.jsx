@@ -3,9 +3,9 @@ import { FiLock } from "react-icons/fi";
 
 function EnterExamCode() {
   return (
-    <div className="w-[50%]   h-full flex justify-end">
+    <div className=" lg:w-[50%]   h-full flex justify-end">
       {/* Added h-screen and items-center to vertically center the content */}
-      <div className="bg-[url('/img/CodeEnter.png')] bg-no-repeat bg-cover bg-center w-[400px] h-full px-8 py-14 rounded-xl flex flex-col items-center">
+      <div className="bg-[url('/img/CodeEnter.png')] bg-no-repeat bg-cover bg-center w-full lg:w-[400px] h-full px-8 py-14 rounded-xl flex flex-col items-center">
         {/* Removed justify-center since it's not needed with flex-col and items-center */}
         <h5 className="font-gilroy text-2xl font-medium leading-8 text-inputBgDefault pb-3 text-center w-auto">
           {/* Added text-center and w-auto */}

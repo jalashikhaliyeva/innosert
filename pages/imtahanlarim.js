@@ -96,11 +96,11 @@ function Imtahanlarim() {
     <>
       <HeaderInternal />
       <div className="flex">
-        <div className="w-[20%]">
+        <div className="hidden md:block  md:w-[20%]">
           <Sidebar />
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
             {/* <TitleNavigation /> */}

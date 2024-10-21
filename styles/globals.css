@@ -163,8 +163,26 @@ body {
   background-color: #fafafa;
 }
 
-.editor-custom-bg  .fr-box.fr-basic .fr-element {
+.editor-custom-bg .fr-box.fr-basic .fr-element {
   font-family: var(--fontGilroy) !important;
   color: var(--textSecondaryDefault);
   font-size: 16px;
+}
+
+.swiper-slide {
+  width: 270px !important;
+}
+
+.custom-bullet {
+  background-color: gray; /* Gray color for non-active bullets */
+  opacity: 1;
+  width: 10px;
+  height: 10px;
+  display: inline-block;
+  border-radius: 50%;
+  margin: 0 4px;
+}
+
+.custom-bullet-active {
+  background-color: darkgray; /* Dark gray color for active bullet */
 }

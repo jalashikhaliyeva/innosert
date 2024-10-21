@@ -13,8 +13,8 @@ import { UserContext } from "@/shared/context/UserContext";
 function MyProfiles() {
   // const [user, setUser] = useState(null);
   const { user, setUser, fetchUserData } = useContext(UserContext);
-  console.log(user , " MyProfiles user teacher");
-  
+  console.log(user, " MyProfiles user teacher");
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [companies, setCompanies] = useState([]);
@@ -107,7 +107,6 @@ function MyProfiles() {
       if (profileResponse.ok) {
         toast.success("Profil uğurla yeniləndi!");
 
-
         // setUser((prevUser) => ({
         //   ...prevUser,
         //   username,
@@ -179,7 +178,6 @@ function MyProfiles() {
           }
         );
         console.log(response, "response teacher");
-        
 
         if (response.ok) {
           const companiesData = await response.json();
@@ -188,11 +186,9 @@ function MyProfiles() {
           setCompanies(companiesData.data || []);
         } else {
           console.log("Failed to fetch companies");
-        
         }
       } catch (error) {
         console.log(`An error occurred: ${error.message}`);
-        
       }
     };
 
@@ -325,7 +321,8 @@ function MyProfiles() {
       !companyAddress ||
       !companyPhoneNumber ||
       !companyDetail ||
-      !companyEmail
+      !companyEmail ||
+      !companyImage
     ) {
       setInputError(true);
       toast.error("Zəhmət olmasa, bütün sahələri doldurun.");
@@ -393,10 +390,7 @@ function MyProfiles() {
   return (
     <div className="mt-6">
       <div className="mb-6">
-        <h2
-     
-          className="text-2xl leading-8 font-gilroy font-medium"
-        >
+        <h2 className="text-2xl leading-8 font-gilroy font-medium">
           {
             isCreatingCompany
               ? "Şirkət yarat" // If the company creation form is open
@@ -406,10 +400,10 @@ function MyProfiles() {
           }
         </h2>
       </div>
-      <div className="flex justify-between">
+      <div className="flex flex-col md:flex-row justify-between">
         {!isCreatingCompany && (
           <>
-            <div className="flex flex-row gap-2">
+            <div className="flex flex-row gap-2 mb-3 md:mb-0">
               <button
                 className={`text-base px-4 py-2 h-10 rounded-lg font-normal font-gilroy leading-6 ${
                   !showCompanies ? "bg-blue100 text-blue400" : "text-neutral700"
@@ -429,7 +423,7 @@ function MyProfiles() {
             </div>
             <button
               onClick={toggleModal}
-              className="bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
+              className="bg-buttonPrimaryDefault w-[44%] md:w-[13%]  hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
             >
               <FaPlus className="mt-1 mr-2" /> Şirkət yarat
             </button>
@@ -441,7 +435,7 @@ function MyProfiles() {
         !showCompanies ? (
           // Profile section
           <div>
-            <div className="flex justify-between items-center p-6 mt-4 bg-bodyColor rounded-3xl border px-14 ">
+            <div className="flex justify-between items-center p-6 mt-4 bg-bodyColor rounded-3xl border px-4 md:px-14 ">
               <div className="flex items-center ">
                 {imagePreview ? (
                   <Image
@@ -457,20 +451,34 @@ function MyProfiles() {
                   </div>
                 )}
                 <div>
-                  <h2 className="text-xl font-medium font-gilroy leading-8 text-textSecondaryDefault">
+                  <h2 className="text-base md:text-xl font-medium font-gilroy leading-4 md:leading-8 text-textSecondaryDefault">
                     {firstName} {lastName}
                   </h2>
-                  <p className="text-gray-500 font-gilroy text-base font-normal leading-6">
-                    {user?.data?.roles}
+                  <p className="text-gray-500 font-gilroy text-xs md:text-base font-normal leading-6">
+                    {user?.data?.roles
+                      ?.split(" ")
+                      .map((role) => {
+                        switch (role.trim()) {
+                          case "Teacher":
+                            return "Müəllim";
+                          case "Student":
+                            return "İstifadəçi";
+                          case "Owner":
+                            return "Sahibkar";
+                          default:
+                            return role;
+                        }
+                      })
+                      .join(" ; ")}{" "}
                   </p>
                 </div>
               </div>
               <div>
                 <button
                   onClick={toggleForm}
-                  className="text-textSecondaryDefault font-gilroy text-base leading-6 font-normal cursor-pointer flex items-center px-4 py-2"
+                  className="text-textSecondaryDefault font-gilroy text-xs md:text-base leading-6 font-normal cursor-pointer flex items-center px-4 py-2"
                 >
-                  Məlumatlar
+                  <span className="hidden sm:block">Məlumatlar</span>
                   <span className="ml-2">
                     {isFormOpen ? (
                       <IoChevronUpSharp className="size-3" />
@@ -799,9 +807,9 @@ function MyProfiles() {
       ) : (
         // Company creation form
 
-        <div className="flex bg-bodyColor border w-[100%]">
-          <div className="w-[40%] flex flex-col items-center justify-center p-4">
-            {companyImagePreview ? (
+        <div className="flex bg-bodyColor border w-[100%] flex-col md:flex-row">
+          <div className="w-full md:w-[40%] flex flex-col items-center justify-center p-4">
+            {companyImagePreview ? ( 
               <div className="relative w-full flex items-center">
                 <div className="w-[80%]">
                   <Image
@@ -830,7 +838,6 @@ function MyProfiles() {
               </button>
             </div>
 
-            {/* Hidden file input */}
             <input
               type="file"
               accept="image/*"
@@ -838,10 +845,16 @@ function MyProfiles() {
               className="hidden"
               id="companyImageInput"
             />
+            {/* Conditional red helper text when the image is not uploaded */}
+            {!companyImage && inputError && (
+              <p className="text-inputRingError text-sm mt-2">
+                Zəhmət olmasa şəkil yükləyin.
+              </p>
+            )}
           </div>
 
           <form
-            className="w-[60%] p-8 rounded-lg"
+            className="w-full md:w-[60%] p-8 rounded-lg"
             onSubmit={handleCompanyCreate}
           >
             <div className="mb-4">

@@ -6,23 +6,19 @@ import GeneralInfo from "../GeneralInfo";
 import { FaPen } from "react-icons/fa";
 import { TbArrowsSort } from "react-icons/tb";
 import { LuSearch } from "react-icons/lu";
-
+import { useRouter } from "next/router";
 function ExamDetailsTabGroup() {
   const [activeTab, setActiveTab] = useState("general");
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-
+  const router = useRouter();
   const [selectedRows, setSelectedRows] = useState([]);
   const sortMenuRef = useRef(null);
   const handleDelete = () => {
-    // Logic for deleting selected rows
     console.log("Rows to delete:", selectedRows);
-    // You can implement actual delete logic here based on selectedRows
   };
 
   const handleEdit = () => {
-    // Logic for editing selected rows
     console.log("Rows to edit:", selectedRows);
-    // You can implement actual edit logic here based on selectedRows
   };
 
   const renderTabContent = () => {
@@ -78,7 +74,7 @@ function ExamDetailsTabGroup() {
           <button
             className="flex items-center justify-center gap-4 py-3 px-4 h-11 text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary font-gilroy"
             onClick={() => {
-              console.log("Redakte et clicked");
+              router.push("/imtahan-redakte"); // Redirect to edit page
             }}
           >
             <FaPen />

@@ -4,13 +4,16 @@ import { useState, useEffect, useRef, useContext } from "react";
 import Container from "../Container";
 import Image from "next/image";
 import { HiOutlineMenu } from "react-icons/hi";
-import { FaRegCircleUser } from "react-icons/fa6";
+import { TbBell } from "react-icons/tb";
+import { IoMdClose } from "react-icons/io"; // Import close icon
+import { LuSearch } from "react-icons/lu";
 import { AiOutlineMenu } from "react-icons/ai";
 import { CiSearch } from "react-icons/ci";
 import { GoBell } from "react-icons/go";
 import LanguageSwitcher from "@/shared/LanguageSwitcher";
 import { getSettingInfo } from "@/services/getSettingInfo";
-import { MdKeyboardArrowRight, MdOutlineLogout } from "react-icons/md";
+import { MdOutlineLogout } from "react-icons/md";
+import { MdKeyboardArrowRight, MdKeyboardArrowDown } from "react-icons/md";
 import { useRouter } from "next/router";
 import LogoutModal from "@/components/LogoutModal";
 import Link from "next/link";
@@ -18,15 +21,42 @@ import { UserContext } from "@/shared/context/UserContext";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { RiBuildingLine } from "react-icons/ri";
 import CompanyContext from "@/shared/context/CompanyContext";
+import { FaRegCircleUser } from "react-icons/fa6";
 
 const HeaderInternal = () => {
   const { user } = useContext(UserContext);
   const { setSelectedCompany } = useContext(CompanyContext);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // New state for mobile menu
   const router = useRouter();
+
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false); // Categories submenu state
+  const [openCategory, setOpenCategory] = useState(null);
+  const [isImtahanlarDropdownOpen, setIsImtahanlarDropdownOpen] =
+    useState(false);
   // console.log(user?.data?.active_company?.logo, "HeaderInternal");
   console.log(user, "active_company.logo");
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
+  const [showOnlyCategories, setShowOnlyCategories] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState(null); // Track the currently selected category
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
 
+  const hideTimeout = useRef(null);
+
+  const handleNotificationMouseEnter = () => {
+    clearTimeout(hideTimeout.current); // Clear any existing timeout
+    setIsNotificationOpen(true);
+  };
+
+  const handleNotificationMouseLeave = () => {
+    // Set a delay before closing the dropdown
+    hideTimeout.current = setTimeout(() => {
+      setIsNotificationOpen(false);
+    }, 100); // Adjust delay as needed
+  };
+  const showSearch =
+    router.pathname === "/home" ||
+    // router.pathname === "/kateqoriyalar" ||
+    router.pathname.startsWith("/kateqoriyalar/");
   const toggleCompanyDropdown = () => {
     setCompanyDropdownOpen(!companyDropdownOpen);
   };
@@ -36,16 +66,47 @@ const HeaderInternal = () => {
 
     if (user?.data?.roles === "Owner") {
       router.push(`/hesabatlar`);
-     // router.push(`/shirket-hesabi`); // Redirect for Owner role
+      // router.push(`/shirket-hesabi`); // Redirect for Owner role
     } else if (user?.data?.roles === "Teacher") {
       router.push(`/suallar-toplusu`);
-     // router.push(`/muellim-hesabi`); // Redirect for Teacher role
+      // router.push(`/muellim-hesabi`); // Redirect for Teacher role
     }
   };
+  const handleLoginModalOpen = () => {
+    // Implement login modal opening logic
+  };
+
+  const handleClick = (route) => {
+    router.push(route);
+  };
+  const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false);
+
+  // Toggle language dropdown visibility
+  const toggleLanguageDropdown = () => {
+    setIsLanguageDropdownOpen(!isLanguageDropdownOpen);
+  };
+
+  // Handle language change logic
+  const handleLanguageChange = (lang) => {
+    // Replace this with your language-switching logic
+    console.log(`Switched to ${lang}`);
+    setIsLanguageDropdownOpen(false); // Close dropdown after selection
+  };
+
   // const activeCompanies =
   //   user?.data?.roles === "Owner"
   //     ? user.data.companies.filter((company) => company.status === 1)
   //     : [];
+
+  const handleDropdownToggle = () => {
+    setIsImtahanlarDropdownOpen(!isImtahanlarDropdownOpen);
+  };
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen); // Toggle menu visibility
+    setShowOnlyCategories(false); // Reset to show logo when menu is closed
+    setOpenSubmenu(null); // Reset any open submenus
+    setIsImtahanlarDropdownOpen(false); // Close the category dropdown
+  };
 
   const activeCompanies =
     user?.data?.roles === "Owner" || user?.data?.roles === "Teacher"
@@ -55,6 +116,7 @@ const HeaderInternal = () => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [categories, setCategories] = useState([]);
+  const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
   const { push } = useRouter();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -67,6 +129,15 @@ const HeaderInternal = () => {
 
   const handleCloseLogoutModal = () => {
     setShowLogoutModal(false); // Close the logout modal
+  };
+  const handleExamClick = (category) => {
+    if (openSubmenu === category.id) {
+      setOpenSubmenu(null);
+    } else {
+      setOpenSubmenu(category.id);
+      // Redirect to category page
+      push(`/kateqoriyalar/${category.slug}`);
+    }
   };
 
   // Fetch categories and subcategories
@@ -91,30 +162,55 @@ const HeaderInternal = () => {
     fetchCategories();
   }, []);
 
+  const openRegisterModal = () => {
+    // Implement register modal opening logic
+  };
+  const handleCategoryExpand = (categoryId) => {
+    // Toggle the visibility of subcategories for the clicked category
+    setOpenCategory(openCategory === categoryId ? null : categoryId);
+  };
   const handleCategoryClick = (category) => {
     push(`/kateqoriyalar/${category.slug}`);
+    setShowOnlyCategories(false);
   };
 
+  const handleBackToCategories = () => {
+    setShowOnlyCategories(true); // Show categories
+    setCurrentCategory(null); // Reset the current category
+  };
   const handleSubcategoryClick = (categorySlug, subcategorySlug) => {
     push(`/kateqoriyalar/${categorySlug}/${subcategorySlug}`);
   };
 
-  const getSubcategories = (categoryName) => {
-    return subCategories.filter((sub) => sub.category_id === categoryName);
+  const getSubcategories = (categoryId) => {
+    return subCategories.filter((sub) => sub.category_id === categoryId);
   };
 
+  // const handleSubmenuToggle = (category) => {
+  //   setOpenSubmenu(openSubmenu === category.id ? null : category.id);
+  // };
+  const handleSubmenuToggle = (category) => {
+    setOpenSubmenu(openSubmenu === category ? null : category);
+  };
+  const handleCategoriesToggle = (e) => {
+    e.preventDefault();
+    setShowOnlyCategories(true); // Show only categories
+    setIsImtahanlarDropdownOpen(!isImtahanlarDropdownOpen); // Toggle category dropdown
+  };
+
+  const handleBackButtonClick = () => {
+    setShowOnlyCategories(false); // Show the full menu
+    setIsImtahanlarDropdownOpen(false); // Close the category dropdown
+  };
   return (
     <header className="markup fixed top-0 left-0 right-0 bg-bodyColor shadow-createBox z-30 font-gilroy">
       <Container>
-        <div className="flex justify-between items-center py-4">
-          <div className="flex items-center gap-16">
+        {/* mobile and tablet menu start */}
+        <div className="flex justify-between items-center py-4 lg:hidden">
+          {!showOnlyCategories ? (
             <Link href="/home">
               <Image
-                style={{
-                  objectFit: "cover",
-                  width: "120px",
-                  height: "30px",
-                }}
+                style={{ objectFit: "cover", width: "120px", height: "30px" }}
                 className="cursor-pointer"
                 src="/logo/dark-logo-innosert.png"
                 alt="dark-logo-innosert"
@@ -122,179 +218,81 @@ const HeaderInternal = () => {
                 height={32}
               />
             </Link>
+          ) : (
+            <button
+              onClick={handleBackButtonClick}
+              className="text-lg font-gilroy font-normal text-blue-600"
+            >
+              &larr; Geri
+            </button>
+          )}
 
-            <nav className="hidden lg:flex items-center gap-6">
-              {/* Categories Dropdown */}
-              <div
-                className="relative"
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => {
-                  setDropdownOpen(false);
-                  setOpenSubmenu(null);
-                }}
-              >
-                <button
-                  className="text-textSecondaryDefault text-lg inline-flex items-center font-medium focus:outline-none text-center py-3 hover:text-textHoverBlue"
-                  type="button"
-                >
-                  Kateqoriyalar
-                </button>
-
-                {/* Dropdown Menu */}
+          <div className="lg:hidden flex-grow flex justify-end">
+            {isMenuOpen ? (
+              <IoMdClose
+                size={34}
+                className="cursor-pointer bg-buttonBGresponsive p-2 text-2xl rounded-md"
+                onClick={toggleMenu}
+              />
+            ) : (
+              <div className="flex gap-3 items-center">
+                <LuSearch size={24} />
                 <div
-                  className={`absolute z-10 text-lg bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-80 transition-all duration-300 ease-in-out transform ${
-                    isDropdownOpen
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 -translate-y-4 pointer-events-none"
-                  }`}
+                  onClick={toggleMenu}
+                  className="bg-buttonPrimaryDefault p-2 rounded-md flex items-center gap-2"
                 >
-                  <ul className="divide-y divide-gray-200 px-4">
-                    {categories?.map((category) => (
-                      <li
-                        key={category.id}
-                        className="relative group"
-                        onMouseEnter={() => setOpenSubmenu(category.name)}
-                        onMouseLeave={() => setOpenSubmenu(null)}
-                      >
-                        <p
-                          onClick={() => handleCategoryClick(category)}
-                          className="cursor-pointer block text-lg my-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
-                        >
-                          {category.name}
-                          {getSubcategories(category.name).length > 0 && (
-                            <MdKeyboardArrowRight className="mt-1 ml-2" />
-                          )}
-                        </p>
-
-                        {/* Submenu */}
-                        {getSubcategories(category.name).length > 0 && (
-                          <div
-                            className={`absolute left-full top-0 mt-0 ml-1 bg-white rounded-lg shadow-lg w-48 z-20 transition-all duration-300 ease-in-out transform ${
-                              openSubmenu === category.name
-                                ? "opacity-100 translate-x-0"
-                                : "opacity-0 -translate-x-4 pointer-events-none"
-                            }`}
-                          >
-                            {getSubcategories(category.name).map((sub) => (
-                              <ul
-                                className="text-lg divide-y divide-gray-100 py-1"
-                                key={sub.id}
-                              >
-                                <li className="border-b border-gray-100">
-                                  <p
-                                    onClick={() =>
-                                      handleSubcategoryClick(
-                                        category.slug,
-                                        sub.slug
-                                      )
-                                    }
-                                    className="cursor-pointer block px-4 py-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue"
-                                  >
-                                    {sub.name}
-                                  </p>
-                                </li>
-                              </ul>
-                            ))}
-                          </div>
-                        )}
-                      </li>
-                    ))}
-                  </ul>
+                  <HiOutlineMenu
+                    size={20}
+                    className="cursor-pointer text-white"
+                  />
+                  <FaRegCircleUser
+                    size={20}
+                    className="cursor-pointer text-white"
+                  />
                 </div>
               </div>
-
-              <p className="cursor-pointer font-medium text-lg text-textSecondaryDefault py-3 hover:text-textHoverBlue">
-                Bloq
-              </p>
-
-              {/* Search */}
-              <div className="flex items-center bg-bodyColor border border-inputBorder rounded-full mx-20 px-4 py-2 focus-within:border-inputRingFocus">
-                <CiSearch className="text-inputPlaceholderText size-6" />
-                <input
-                  type="text"
-                  placeholder="Imtahan axtar"
-                  className="ml-2 text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
-                />
-              </div>
-            </nav>
+            )}
           </div>
 
-          {/* Right section with hover dropdown (User Menu) */}
-
-          <div className="relative hidden lg:flex items-center">
-            <LanguageSwitcher />
-            <svg
-              width="20"
-              height="20"
-              viewBox="0 0 20 20"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M11.4407 17.4998C11.2942 17.7524 11.0839 17.962 10.8309 18.1078C10.5779 18.2535 10.291 18.3302 9.99902 18.3302C9.70704 18.3302 9.42018 18.2535 9.16717 18.1078C8.91415 17.962 8.70387 17.7524 8.55736 17.4998M14.999 6.6665C14.999 5.34042 14.4722 4.06865 13.5346 3.13097C12.5969 2.19329 11.3251 1.6665 9.99902 1.6665C8.67294 1.6665 7.40117 2.19329 6.46349 3.13097C5.52581 4.06865 4.99902 5.34042 4.99902 6.6665C4.99902 12.4998 2.49902 14.1665 2.49902 14.1665H17.499C17.499 14.1665 14.999 12.4998 14.999 6.6665Z"
-                stroke="#101828"
-                stroke-width="1.82293"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-
-            {/* <GoBell className="size-6 cursor-pointer" /> */}
-
-            {/* User Icon Section and Dropdown */}
-            <div
-              className="relative"
-              onMouseEnter={() => setIsUserMenuOpen(true)}
-              onMouseLeave={() => setIsUserMenuOpen(false)}
-              ref={userMenuRef}
-            >
-              {/* User Icon Section */}
-              <div className="bg-brandBlue500 py-[10px] px-4 rounded-lg flex gap-3 ml-4 cursor-pointer">
-                <AiOutlineMenu className="size-6 fill-white" />
-                <FaRegCircleUser className="size-6 fill-white" />
-              </div>
-
-              {/* Dropdown Menu for User */}
-              <div
-                className={`absolute right-0 top-full w-48 text-lg bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform ${
-                  isUserMenuOpen
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 -translate-y-4 pointer-events-none"
-                }`}
-              >
-                <ul className="p-2 divide-y divide-gray-200">
-                  <li className="mb-2">
-                    <Link href="/hesablarim" passHref>
-                      <p className="cursor-pointer flex items-center w-full px-4 py-2 rounded-lg text-textSecondaryDefault hover:bg-gray-100">
-                        <FaRegCircleUser className="size-5 mr-2 fill-grayText" />
-                        <span className="text-lg font-gilroy font-normal leading-6 text-textSecondaryDefault">
-                          Profilim
-                        </span>
-                      </p>
-                    </Link>
+          {/* Categories Menu */}
+          <div
+            className={`absolute top-14 left-0 w-full h-[850px] bg-white shadow-lg rounded-xl p-4 transition-all duration-300 ease-in-out transform ${
+              isMenuOpen
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 -translate-y-4 pointer-events-none"
+            }`}
+          >
+            <ul className="flex px-4 flex-col divide-y divide-gray-200">
+              {!showOnlyCategories ? (
+                <>
+                  <li
+                    onClick={() => handleClick("/hesablarim")}
+                    className="py-4 flex items-center gap-3 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
+                  >
+                    <FaRegCircleUser /> Profilim
                   </li>
 
-                  {/* Company Selection Dropdown */}
+                  {/* Company List for Owners and Teachers */}
                   {(user?.data?.roles === "Owner" ||
                     user?.data?.roles === "Teacher") &&
                     activeCompanies.length > 0 && (
-                      <div className="relative z-50">
+                      <div className="relative mt-2">
                         <div
-                          className="flex items-center space-x-1 mb-2 mt-2 px-4 py-2 cursor-pointer rounded-lg hover:bg-gray-100"
+                          className="flex items-center space-x-1 justify-between py-4 cursor-pointer rounded-lg"
                           onClick={toggleCompanyDropdown}
                         >
-                          <RiBuildingLine className="size-[20px] fill-grayText" />
-                          <p className="text-md font-gilroy  font-normal leading-6 text-textSecondaryDefault">
-                            Şirkətlərim
-                          </p>
+                          <div className="flex gap-3">
+                            <RiBuildingLine className="size-[20px] fill-textSecondaryDefault" />
+                            <p className="text-lg font-gilroy font-normal leading-6 text-textSecondaryDefault">
+                              Şirkətlərim
+                            </p>
+                          </div>
                           {companyDropdownOpen ? (
                             <FiChevronUp className="ml-2 text-grayText" />
                           ) : (
-                            <FiChevronDown className="ml-2 text-grayText" />
+                            <MdKeyboardArrowRight className="ml-2 text-grayText" />
                           )}
                         </div>
-
-                        {/* Dropdown menu for active companies */}
                         {companyDropdownOpen && (
                           <div className="relative w-full z-10 mt-2">
                             {activeCompanies.map((company) => (
@@ -312,21 +310,16 @@ const HeaderInternal = () => {
                                     className="w-6 h-6 rounded-full mr-4 object-cover"
                                   />
                                 ) : (
-                                  <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4 ">
+                                  <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4">
                                     {company.name[0]}
                                   </div>
                                 )}
                                 <p
-                                  className="font-gilroy text-base font-normal leading-6 max-w-[100px] truncate"
-                                  title={company.name} // Tooltip with full company name
+                                  className="font-gilroy text-base font-normal leading-6 max-w-[300px] truncate"
+                                  title={company.name}
                                 >
                                   {company.name}
                                 </p>
-
-                                {/* Custom tooltip */}
-                                <div className="absolute left-0 bottom-full mb-2 p-2 min-w-max bg-white shadow-lg border z-20 text-textSecondaryDefault text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                  {company.name}
-                                </div>
                               </div>
                             ))}
                           </div>
@@ -334,26 +327,427 @@ const HeaderInternal = () => {
                       </div>
                     )}
 
-                  <li className="mb-2">
-                    <a
-                      href="#"
-                      className="flex items-center w-full mt-2 px-4 py-2 text-textSecondaryDefault hover:bg-gray-100 rounded-lg"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        handleLogoutClick();
-                      }}
-                    >
-                      <MdOutlineLogout className="size-5 mr-2 fill-grayText" />
-                      <span className="text-lg font-gilroy font-light leading-6">
-                        Çıxış
-                      </span>
-                    </a>
+                  <li
+                    onClick={handleCategoriesToggle}
+                    className="flex py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue justify-between"
+                  >
+                    Kateqoriyalar
+                    {isImtahanlarDropdownOpen ? (
+                      <IoMdClose className="mt-1 fill-arrowButtonGray" />
+                    ) : (
+                      <MdKeyboardArrowRight className="mt-1 fill-arrowButtonGray" />
+                    )}
                   </li>
-                </ul>
+
+                  <li
+                    onClick={() => handleClick("/bloq")}
+                    className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
+                  >
+                    Bloq
+                  </li>
+
+                  <li
+                    onClick={toggleLanguageDropdown}
+                    className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
+                  >
+                    AZ
+                    {isLanguageDropdownOpen && (
+                      <ul className="absolute left-0 top-full w-full text-lg bg-white shadow-lg rounded-lg overflow-hidden z-50 transition-all duration-300 ease-in-out transform">
+                        <li
+                          onClick={() => handleLanguageChange("EN")}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        >
+                          EN
+                        </li>
+                        <li
+                          onClick={() => handleLanguageChange("RU")}
+                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                        >
+                          RU
+                        </li>
+                      </ul>
+                    )}
+                  </li>
+
+                  <li
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLogoutClick();
+                    }}
+                    className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
+                  >
+                    Çixis
+                  </li>
+                </>
+              ) : (
+                // Show only categories
+                <>
+                  {categories.map((category) => (
+                    <li
+                      key={category.id}
+                      className="py-4 cursor-pointer flex flex-col justify-between items-start text-lg font-gilroy font-normal hover:text-textHoverBlue"
+                    >
+                      <div className="flex justify-between items-center w-full">
+                        <span onClick={() => handleCategoryClick(category)}>
+                          {category.name}
+                        </span>
+                        <MdKeyboardArrowRight
+                          onClick={() => handleSubmenuToggle(category.name)}
+                          className="mt-1 fill-arrowButtonGray cursor-pointer size-6"
+                        />
+                      </div>
+
+                      {openSubmenu === category.name && (
+                        <ul className="pl-4 mt-2">
+                          {subCategories
+                            .filter((sub) => sub.category_id === category.name)
+                            .map((sub) => (
+                              <li
+                                key={sub.id}
+                                className="mb-2"
+                                onClick={() =>
+                                  handleSubcategoryClick(
+                                    category.slug,
+                                    sub.slug
+                                  )
+                                }
+                              >
+                                {sub.name}
+                              </li>
+                            ))}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </>
+              )}
+            </ul>
+          </div>
+        </div>
+        {/* mobile and tablet menu end */}
+        {/* web header  start*/}
+        <div className="hidden lg:block">
+          <div className="flex justify-between items-center py-4">
+            <div className="flex  items-center gap-16">
+              <Link href="/home">
+                <Image
+                  style={{
+                    objectFit: "cover",
+                    width: "120px",
+                    height: "30px",
+                  }}
+                  className="cursor-pointer"
+                  src="/logo/dark-logo-innosert.png"
+                  alt="dark-logo-innosert"
+                  width={100}
+                  height={32}
+                />
+              </Link>
+
+              <nav className="hidden lg:flex items-center gap-6">
+                {/* Categories Dropdown */}
+                <div
+                  className="relative"
+                  onMouseEnter={() => setDropdownOpen(true)}
+                  onMouseLeave={() => {
+                    setDropdownOpen(false);
+                    setOpenSubmenu(null);
+                  }}
+                >
+                  <button
+                    className="text-textSecondaryDefault text-lg inline-flex items-center font-medium focus:outline-none text-center py-3 hover:text-textHoverBlue"
+                    type="button"
+                  >
+                    Kateqoriyalar
+                  </button>
+
+                  {/* Dropdown Menu */}
+                  <div
+                    className={`absolute z-10 text-lg bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-80 transition-all duration-300 ease-in-out transform ${
+                      isDropdownOpen
+                        ? "opacity-100 translate-y-0"
+                        : "opacity-0 -translate-y-4 pointer-events-none"
+                    }`}
+                  >
+                    <ul className="divide-y divide-gray-200 px-4">
+                      {categories?.map((category) => (
+                        <li
+                          key={category.id}
+                          className="relative group"
+                          onMouseEnter={() => setOpenSubmenu(category.name)}
+                          onMouseLeave={() => setOpenSubmenu(null)}
+                        >
+                          <p
+                            onClick={() => handleCategoryClick(category)}
+                            className="cursor-pointer block text-lg my-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
+                          >
+                            {category.name}
+                            {getSubcategories(category.name).length > 0 && (
+                              <MdKeyboardArrowRight className="mt-1 ml-2" />
+                            )}
+                          </p>
+
+                          {/* Submenu */}
+                          {getSubcategories(category.name).length > 0 && (
+                            <div
+                              className={`absolute left-full top-0 mt-0 ml-1 bg-white rounded-lg shadow-lg w-48 z-20 transition-all duration-300 ease-in-out transform ${
+                                openSubmenu === category.name
+                                  ? "opacity-100 translate-x-0"
+                                  : "opacity-0 -translate-x-4 pointer-events-none"
+                              }`}
+                            >
+                              {getSubcategories(category.name).map((sub) => (
+                                <ul
+                                  className="text-lg divide-y divide-gray-100 py-1"
+                                  key={sub.id}
+                                >
+                                  <li className="border-b border-gray-100">
+                                    <p
+                                      onClick={() =>
+                                        handleSubcategoryClick(
+                                          category.slug,
+                                          sub.slug
+                                        )
+                                      }
+                                      className="cursor-pointer block px-4 py-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue"
+                                    >
+                                      {sub.name}
+                                    </p>
+                                  </li>
+                                </ul>
+                              ))}
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <p className="cursor-pointer font-medium text-lg text-textSecondaryDefault py-3 hover:text-textHoverBlue">
+                  Bloq
+                </p>
+
+                {/* Search */}
+                {showSearch && (
+                  <div className="flex items-center bg-bodyColor border border-inputBorder rounded-full mx-20 px-4 py-2 focus-within:border-inputRingFocus">
+                    <CiSearch className="text-inputPlaceholderText size-6" />
+                    <input
+                      type="text"
+                      placeholder="Imtahan axtar"
+                      className="ml-2 text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
+                    />
+                  </div>
+                )}
+              </nav>
+            </div>
+
+            {/* Right section with hover dropdown (User Menu) */}
+
+            <div className="relative hidden lg:flex items-center">
+              <LanguageSwitcher />
+              <div
+                className="relative"
+                onMouseEnter={handleNotificationMouseEnter}
+                onMouseLeave={handleNotificationMouseLeave}
+              >
+                <TbBell className="size-5 cursor-pointer" />
+
+                <div
+                  className={`absolute font-gilroy right-0 mt-2 w-[560px] bg-white shadow-lg rounded-lg py-3 px-5 z-50 transition-all duration-300 ease-in-out transform ${
+                    isNotificationOpen
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 -translate-y-4 pointer-events-none"
+                  }`}
+                >
+                  <h2 className="font-medium text-lg mb-2 pb-2 text-center border-b">
+                    Bildirişlər
+                  </h2>
+                  <ul className="divide-y divide-gray-200">
+                    <li className="py-2 flex justify-between items-center pb-2">
+                      <div className="flex">
+                        <span className="h-2 w-4 bg-blue-500 rounded-full mt-2 mr-2"></span>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-medium text-green900">
+                            &apos;Data&apos;
+                          </span>
+                          imtahanı ilə bağlı bildirdiyiniz xətaya baxıldı.
+                          Bildirişiniz müsbət dəyərləndirildi,
+                          <a
+                            onClick={() => router.push("/neticelerim")}
+                            className="text-blue-600 underline mx-1 cursor-pointer"
+                          >
+                            Nəticələrim
+                          </a>
+                          bölməsindən balınıza baxa bilərsiniz.
+                        </p>
+                      </div>
+                      <span className="text-gray-400 ml-2 font-gilroy text-sm whitespace-nowrap">
+                        2 gün əvvəl
+                      </span>
+                    </li>
+                    <li className="py-2 flex justify-between items-center pb-2">
+                      <div className="flex">
+                        <span className="h-2 w-4 bg-blue-500 rounded-full mt-2 mr-2"></span>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-medium text-green900">
+                            &apos;Data&apos;
+                          </span>
+                          imtahanı ilə bağlı bildirdiyiniz xətaya baxıldı.
+                          Bildirişiniz müsbət dəyərləndirildi,
+                          <a
+                            onClick={() => router.push("/neticelerim")}
+                            className="text-blue-600 underline mx-1 cursor-pointer"
+                          >
+                            Nəticələrim
+                          </a>
+                          bölməsindən balınıza baxa bilərsiniz.
+                        </p>
+                      </div>
+                      <span className="text-gray-400 ml-2 font-gilroy text-sm whitespace-nowrap">
+                        2 gün əvvəl
+                      </span>
+                    </li>
+                    <li className="py-2 flex justify-between items-center pb-2">
+                      <div className="flex">
+                        <span className="h-2 w-4 bg-blue-500 rounded-full mt-2 mr-2"></span>
+                        <p className="text-sm text-gray-700">
+                          <span className="font-medium text-green900">
+                            &apos;Data&apos;
+                          </span>
+                          imtahanı ilə bağlı bildirdiyiniz xətaya baxıldı.
+                          Bildirişiniz müsbət dəyərləndirildi,
+                          <a
+                            onClick={() => router.push("/neticelerim")}
+                            className="text-blue-600 underline mx-1 cursor-pointer"
+                          >
+                            Nəticələrim
+                          </a>
+                          bölməsindən balınıza baxa bilərsiniz.
+                        </p>
+                      </div>
+                      <span className="text-gray-400 ml-2 font-gilroy text-sm whitespace-nowrap">
+                        2 gün əvvəl
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <div
+                className="relative"
+                onMouseEnter={() => setIsUserMenuOpen(true)}
+                onMouseLeave={() => setIsUserMenuOpen(false)}
+                ref={userMenuRef}
+              >
+                {/* User Icon Section */}
+                <div className="bg-brandBlue500 py-[10px] px-4 rounded-lg flex gap-3 ml-4 cursor-pointer">
+                  <AiOutlineMenu className="size-6 fill-white" />
+                  <FaRegCircleUser className="size-6 fill-white" />
+                </div>
+
+                {/* Dropdown Menu for User */}
+                <div
+                  className={`absolute right-0 top-full w-48 text-lg bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform ${
+                    isUserMenuOpen
+                      ? "opacity-100 translate-y-0"
+                      : "opacity-0 -translate-y-4 pointer-events-none"
+                  }`}
+                >
+                  <ul className="p-2 divide-y divide-gray-200">
+                    <li className="mb-2">
+                      <Link href="/hesablarim" passHref>
+                        <p className="cursor-pointer flex items-center w-full px-4 py-2 rounded-lg text-textSecondaryDefault hover:bg-gray-100">
+                          <FaRegCircleUser className="size-5 mr-2 fill-grayText" />
+                          <span className="text-lg font-gilroy font-normal leading-6 text-textSecondaryDefault">
+                            Profilim
+                          </span>
+                        </p>
+                      </Link>
+                    </li>
+
+                    {/* Company Selection Dropdown */}
+                    {(user?.data?.roles === "Owner" ||
+                      user?.data?.roles === "Teacher") &&
+                      activeCompanies.length > 0 && (
+                        <div className="relative z-50">
+                          <div
+                            className="flex items-center space-x-1 mb-2 mt-2 px-4 py-2 cursor-pointer rounded-lg hover:bg-gray-100"
+                            onClick={toggleCompanyDropdown}
+                          >
+                            <RiBuildingLine className="size-[20px] fill-grayText" />
+                            <p className="text-md font-gilroy  font-normal leading-6 text-textSecondaryDefault">
+                              Şirkətlərim
+                            </p>
+                            {companyDropdownOpen ? (
+                              <FiChevronUp className="ml-2 text-grayText" />
+                            ) : (
+                              <FiChevronDown className="ml-2 text-grayText" />
+                            )}
+                          </div>
+
+                          {/* Dropdown menu for active companies */}
+                          {companyDropdownOpen && (
+                            <div className="relative w-full z-10 mt-2">
+                              {activeCompanies.map((company) => (
+                                <div
+                                  key={company.slug}
+                                  className="flex items-center cursor-pointer pb-2 px-4 py-2 hover:bg-gray-100 rounded-lg relative group"
+                                  onClick={() => handleCompanyClick(company)}
+                                >
+                                  {company.logo ? (
+                                    <Image
+                                      width={24}
+                                      height={24}
+                                      src={company.logo}
+                                      alt={company.name}
+                                      className="w-6 h-6 rounded-full mr-4 object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4 ">
+                                      {company.name[0]}
+                                    </div>
+                                  )}
+                                  <p
+                                    className="font-gilroy text-base font-normal leading-6 max-w-[100px] truncate"
+                                    title={company.name} // Tooltip with full company name
+                                  >
+                                    {company.name}
+                                  </p>
+
+                                  {/* Custom tooltip */}
+                                  <div className="absolute left-0 bottom-full mb-2 p-2 min-w-max bg-white shadow-lg border z-20 text-textSecondaryDefault text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                    {company.name}
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                    <li className="mb-2">
+                      <a
+                        href="#"
+                        className="flex items-center w-full mt-2 px-4 py-2 text-textSecondaryDefault hover:bg-gray-100 rounded-lg"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleLogoutClick();
+                        }}
+                      >
+                        <MdOutlineLogout className="size-5 mr-2 fill-grayText" />
+                        <span className="text-lg font-gilroy font-light leading-6">
+                          Çıxış
+                        </span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        {/* web header  end*/}
       </Container>
       {/* Logout Modal */}
       <LogoutModal show={showLogoutModal} onClose={handleCloseLogoutModal} />

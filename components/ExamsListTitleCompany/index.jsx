@@ -8,6 +8,7 @@ function ExamsListTitleCompany({
   setSortOption,
   selectedFiles,
   openDeleteModal,
+  selectedExams,
 }) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
@@ -35,7 +36,10 @@ function ExamsListTitleCompany({
     if (sortMenuRef.current && !sortMenuRef.current.contains(event.target)) {
       setIsSortMenuOpen(false);
     }
-    if (filterMenuRef.current && !filterMenuRef.current.contains(event.target)) {
+    if (
+      filterMenuRef.current &&
+      !filterMenuRef.current.contains(event.target)
+    ) {
       setIsFilterMenuOpen(false);
     }
   };
@@ -51,7 +55,8 @@ function ExamsListTitleCompany({
     <div className="flex justify-between relative font-gilroy px-2">
       <h1 className="text-2xl font-medium leading-8">Suallar toplusu</h1>
 
-      {selectedFiles.length > 0 ? (
+      {selectedExams.length > 0 ? (
+        // Show delete button when files are selected
         <div className="flex flex-row gap-4">
           <button
             onClick={openDeleteModal}
@@ -62,6 +67,7 @@ function ExamsListTitleCompany({
           </button>
         </div>
       ) : (
+        // Show search, filter, and sort options when no files are selected
         <div className="flex flex-row gap-4">
           <div className="flex items-center bg-bodyColor border border-inputBorder rounded-lg px-3 py-2 focus-within:border-inputRingFocus overflow-hidden z-10 hover:bg-inputBgHover">
             <LuSearch className="text-inputPlaceholderText size-6 flex-shrink-0" />

@@ -7,12 +7,12 @@ import ExamsListTitleCompany from "@/components/ExamsListTitleCompany";
 import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
 import React, { useState } from "react";
-
 function UmumiImtahanlar() {
   const [viewMode, setViewMode] = useState("grid");
   const [sortOption, setSortOption] = useState("Son Yaradilan");
   const [isCheckboxSelected, setIsCheckboxSelected] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState([]); // Track selected files
+  const [selectedExams, setSelectedExams] = useState([]); // Moved here
 
   // Function to open the modal
   const openModal = () => {
@@ -39,12 +39,17 @@ function UmumiImtahanlar() {
               setViewMode={setViewMode}
               sortOption={sortOption}
               setSortOption={setSortOption}
+              selectedExams={selectedExams}
               isCheckboxSelected={isCheckboxSelected}
               selectedFiles={selectedFiles}
               openModal={openModal} // Pass openModal function
               openDeleteModal={openDeleteModal} // Modal for deleting
             />
-            <ExamsListCompany />
+            <ExamsListCompany
+              selectedExams={selectedExams} // Pass selectedExams here
+              setSelectedExams={setSelectedExams} // Pass setSelectedExams here
+              sortOption={sortOption}
+            />
           </InternalContainer>
         </div>
       </div>

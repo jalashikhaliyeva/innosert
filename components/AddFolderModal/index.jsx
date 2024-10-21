@@ -32,7 +32,7 @@ function AddFolderModal({ closeModal }) {
 
   // Handle key press (Enter) to submit the form
   const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleSubmit(e);
     }
   };
@@ -40,7 +40,10 @@ function AddFolderModal({ closeModal }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div className="fixed inset-0 bg-black opacity-50" onClick={closeModal}></div>
+      <div
+        className="fixed inset-0 bg-black opacity-50"
+        onClick={closeModal}
+      ></div>
 
       {/* Modal Content */}
       <div className="bg-boxGrayBodyColor z-50 p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[400px]">

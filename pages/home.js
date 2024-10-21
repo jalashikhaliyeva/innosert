@@ -85,7 +85,7 @@ function Home() {
         <FilterCategories />
         <TitleCategoryExams />
         <ExamCard   openLoginModal={handleLoginOrRulesClick}
-            openRegisterModal={handleLoginOrRulesClick}  exams={exams} widthClass="w-[23.8%]" />
+            openRegisterModal={handleLoginOrRulesClick}  exams={exams} widthClass="w-[77%] md:w-[23.8%]" />
         <TitleCategoryExams />
         <ExamCard   openLoginModal={handleLoginOrRulesClick}
             openRegisterModal={handleLoginOrRulesClick}  exams={exams} widthClass="w-[23.8%]" />

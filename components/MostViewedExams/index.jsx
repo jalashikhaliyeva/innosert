@@ -10,7 +10,7 @@ function MostViwedExams() {
   ];
 
   return (
-    <div className="w-[40%] ">
+    <div className="hidden lg:block w-[40%] ">
       <h3 className="font-gilroy text-3xl leading-normal font-medium pb-8">Ən çox baxılan imtahanlar</h3>
       <Slider data={data} />
     </div>

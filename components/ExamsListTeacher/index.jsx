@@ -6,6 +6,7 @@ import { BsTrash } from "react-icons/bs";
 
 const ExamsListTeacher = ({
   exams,
+  showTeacherName,
   viewMode,
   sortOption,
   setSelectedExams,
@@ -151,6 +152,16 @@ const ExamsListTeacher = ({
     });
   };
 
+  // const handleCheckboxChange = (examSlug, isChecked) => {
+  //   setSelectedExams((prevSelectedExams) => {
+  //     if (isChecked) {
+  //       return [...prevSelectedExams, examSlug];
+  //     } else {
+  //       return prevSelectedExams.filter((slug) => slug !== examSlug);
+  //     }
+  //   });
+  // };
+
   // ExamsListTeacher.jsx
   const handleExamClick = (exam) => {
     if (exam.folder) {
@@ -206,7 +217,7 @@ const ExamsListTeacher = ({
   return (
     <div className="py-6">
       {viewMode === "grid" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {sortedExams.map((exam, index) => (
             <div
               key={exam.slug}
@@ -305,12 +316,12 @@ const ExamsListTeacher = ({
                     </div>
                     <div className="relative group ">
                       <h3 className="text-lg font-gilroy  leading-7.5 text-brandBlue700 font-medium truncate max-w-xs">
-                        {exam.name.length > 8
-                          ? `${exam.name.slice(0, 8)}...`
+                        {exam.name.length > 14
+                          ? `${exam.name.slice(0, 14)}...`
                           : exam.name}
                       </h3>
 
-                      {exam.name.length > 8 && (
+                      {exam.name.length > 14 && (
                         <span className="absolute left-0 bottom-full mb-2  hidden group-hover:block bg-white border text-black text-xs rounded px-2 py-1 whitespace-nowrap">
                           {exam.name}
                         </span>
@@ -346,17 +357,40 @@ const ExamsListTeacher = ({
                       ))}
                     </div>
                   ) : (
-                    <div className="text-arrowButtonGray font-gilroy">
-                      {exam.questions} sual
+                    <div className="text-arrowButtonGray !text-base font-gilroy">
+                      {exam.questions} sual | {formatDate(exam.date)}
                     </div>
                   )}
 
                   <div className="w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
 
-                  <div className="text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
-                    {formatDate(exam.date)}
-                  </div>
+                  <div className="text-sm leading-normal font-gilroy font-medium text-arrowButtonGray"></div>
                 </p>
+
+                <p className="flex gap-2 items-center text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
+                  {exam.date}
+                </p>
+                {/* {showTeacherName && (
+                  <p className="flex gap-2 items-center text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
+                    <svg
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <rect width="24" height="24" rx="12" fill="#EDEFFD" />
+                      <path
+                        d="M16.364 16.909C16.364 16.1478 16.364 15.7672 16.27 15.4575C16.0585 14.7602 15.5128 14.2145 14.8155 14.0029C14.5058 13.909 14.1252 13.909 13.364 13.909H10.6367C9.8755 13.909 9.49489 13.909 9.18519 14.0029C8.48788 14.2145 7.9422 14.7602 7.73067 15.4575C7.63672 15.7672 7.63672 16.1478 7.63672 16.909M14.4549 9.54537C14.4549 10.901 13.356 11.9999 12.0004 11.9999C10.6447 11.9999 9.54581 10.901 9.54581 9.54537C9.54581 8.18976 10.6447 7.09082 12.0004 7.09082C13.356 7.09082 14.4549 8.18976 14.4549 9.54537Z"
+                        stroke="#2826A7"
+                        stroke-width="1.09091"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                    </svg>
+                    John Doe
+                  </p>
+                )} */}
               </div>
             </div>
           ))}

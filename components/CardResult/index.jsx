@@ -3,8 +3,8 @@ import ProgressPieChart from "../ProgressPieChart";
 
 function CardResult() {
   return (
-    <div className="flex flex-row flex-wrap gap-4">
-    <div className="p-5 w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
+    <div className="flex flex-row flex-wrap gap-4 mb-10">
+    <div className="p-5 w-full md:w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
       <div className="flex flex-row items-center gap-2">
         <img
           className="size-10 object-contain "
@@ -60,7 +60,7 @@ function CardResult() {
         </button> */}
       </div>
     </div>
-    <div className="p-5 w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
+    <div className="p-5 w-full md:w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
       <div className="flex flex-row items-center gap-2">
         <img
           className="size-10 object-contain "
@@ -116,7 +116,7 @@ function CardResult() {
         </button> */}
       </div>
     </div>
-    <div className="p-5 w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
+    <div className="p-5 w-full md:w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
       <div className="flex flex-row items-center gap-2">
         <img
           className="size-10 object-contain "
@@ -172,7 +172,7 @@ function CardResult() {
         </button> */}
       </div>
     </div>
-    <div className="p-5 w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
+    <div className="p-5 w-full md:w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
       <div className="flex flex-row items-center gap-2">
         <img
           className="size-10 object-contain "

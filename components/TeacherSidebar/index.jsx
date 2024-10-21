@@ -69,7 +69,10 @@ function TeacherSidebar() {
   const isActive = (path) => {
     const currentPath = router.pathname;
     // Mark 'Suallar Toplusu' as active when on /suallar-toplusu or any /fayllar/[dynamic] path
-    if (path === "/suallar-toplusu" && currentPath.startsWith("/fayllar/")) {
+    if (path === "/suallar-toplusu" && (currentPath.startsWith("/fayllar/") || currentPath.startsWith("/qovluq/"))) {
+      return true;
+    }
+    if (path === "/imtahanlar-siyahisi" && (currentPath.startsWith("/imtahanlar-siyahisi") || currentPath.startsWith("/imtahan-detallari"))) {
       return true;
     }
     return currentPath.startsWith(path);
@@ -161,6 +164,7 @@ function TeacherSidebar() {
               </span>
             </Link>
           </li>
+          <hr className="border-t border-gray-200 mb-2" />
           <li className="mb-2">
             <Link
               href={`/bildirilen-xetalar`}

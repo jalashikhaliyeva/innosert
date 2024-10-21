@@ -17,7 +17,7 @@ function TitleExamsPage({ activeTab, setActiveTab }) {
       </div>
 
       {/* Toggle Buttons */}
-      <div className="flex flex-row justify-between">
+      <div className="flex flex-col md:flex-row justify-between">
         <div className="flex flex-row gap-2">
           <button
             className={`flex items-center gap-2 text-lg px-4 py-2 h-10 rounded-lg font-normal font-gilroy leading-6 ${

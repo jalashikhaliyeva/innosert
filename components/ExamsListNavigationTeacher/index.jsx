@@ -6,6 +6,7 @@ import { VscListSelection } from "react-icons/vsc";
 import { FaPlus } from "react-icons/fa6";
 import { BsTrash3 } from "react-icons/bs";
 import { FaSort } from "react-icons/fa";
+import AddExamModal from "../AddExamModal";
 
 function ExamsListNavigationTeacher({
   viewMode,
@@ -127,6 +128,8 @@ function ExamsListNavigationTeacher({
           </button>
         </div>
       )}
+   
+
     </div>
   );
 }

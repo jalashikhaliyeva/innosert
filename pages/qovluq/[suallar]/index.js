@@ -6,12 +6,14 @@ import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
 import SuallarTable from "@/components/SuallarTable";
 import SuallarTableNavigationTitle from "@/components/SuallarTableNavigationTitle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DeleteModal from "@/components/DeleteModal"; // Import DeleteModal
 import EditFolderModal from "@/components/EditFolderModal";
 import TeacherSidebar from "@/components/TeacherSidebar";
+import { UserContext } from "@/shared/context/UserContext";
 
 function ImtahanSUallariTable() {
+  const { user } = useContext(UserContext);
   const [selectedRows, setSelectedRows] = useState([]);
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -45,7 +47,8 @@ function ImtahanSUallariTable() {
       <HeaderInternal />
       <div className="flex">
         <div className="w-[20%]">
-          <TeacherSidebar />
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
 
         <div className="w-[80%]">

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { IoWarningOutline } from "react-icons/io5";
 import styles from "./stye.module.css";
+
 function ExamRulesModal({ onClose, onCancel }) {
   const handleBackgroundClick = (e) => {
     // Check if the user clicked outside the modal (by comparing the target and currentTarget)
     if (e.target === e.currentTarget) {
-        onClose(); ; // Trigger the cancel action if clicked outside
+      onClose(); // Trigger the cancel action if clicked outside
     }
   };
 
@@ -20,7 +21,7 @@ function ExamRulesModal({ onClose, onCancel }) {
       onClick={handleBackgroundClick}
       className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]"
     >
-      <div className="bg-boxGrayBodyColor rounded-3xl shadow-shadow3 p-[40px] w-[492px] ">
+      <div className="bg-boxGrayBodyColor rounded-3xl shadow-shadow3 p-[40px] w-[492px] mx-4 md:mx-0 ">
         {/* Icon */}
         <div className="flex justify-center mb-4">
           <div className="flex items-center justify-center w-16 h-16 rounded-full ">
@@ -47,7 +48,6 @@ function ExamRulesModal({ onClose, onCancel }) {
         </h3>
 
         {/* Description */}
-
         <div
           className={`${styles.scrollbaralwaysvisible} text-base font-gilroy flex justify-center  text-grayButtonText  mt-3 overflow-y-scroll px-7`}
           style={{
@@ -56,7 +56,7 @@ function ExamRulesModal({ onClose, onCancel }) {
         >
           <p>
             1. Düzgünləşdirilmiş məlumatlar – Bütün verilənlər düzgün və tam
-            şəkildə toplanmalıdır. <br></br> 
+            şəkildə toplanmalıdır. <br></br>
             2. Şəbəkə təhlükəsizliyi – Şəbəkə təhlükəsizliyinə riayət olunmalı
             və şifrələnmə istifadəsi vacibdir. <br></br>
             3. Doğrulama sistemi – İstifadəçilər daxil olduqda doğrulama
@@ -70,7 +70,7 @@ function ExamRulesModal({ onClose, onCancel }) {
           </p>
         </div>
 
-        {/* Buttons */}
+        {/* Checkbox */}
         <div className="flex items-center mt-6">
           <input
             type="checkbox"
@@ -87,6 +87,7 @@ function ExamRulesModal({ onClose, onCancel }) {
           </label>
         </div>
 
+        {/* Info Button */}
         <button
           onClick={onCancel}
           className="flex gap-4 items-center  mt-6 w-full py-2 px-4  bg-blue50 border border-blueB400 text-blueB500 text-sm font-medium rounded-lg  cursor-default"
@@ -108,10 +109,17 @@ function ExamRulesModal({ onClose, onCancel }) {
           </svg>
           Imtahan şərtlərini diqqətlə oxuyun
         </button>
+
+        {/* Action Button */}
         <div className="mt-6 flex justify-between">
           <button
             onClick={onCancel}
-            className="w-full py-2 px-4  bg-buttonSecondaryDefault text-gray-700 rounded-lg hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed focus:outline-none"
+            className={`w-full py-2 px-4  text-white rounded-lg hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary focus:outline-none ${
+              isChecked
+                ? "bg-buttonPrimaryDefault cursor-pointer"
+                : "bg-inputBorder cursor-not-allowed hover:bg-inputBorder !text-grayText70 active:bg-inputBorder"
+            }`}
+            disabled={!isChecked}
             style={{ fontFamily: "Gilroy" }}
           >
             İmtahana başla

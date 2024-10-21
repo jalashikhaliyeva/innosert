@@ -93,7 +93,7 @@ function CertificateDetail({ certificate }) {
           onClick={closeModal}
         >
           <div
-            className="bg-white p-5 rounded-lg"
+            className="bg-white p-5 rounded-lg m-5 md:m-0"
             onClick={(e) => e.stopPropagation()} // Prevent modal from closing when clicking inside
           >
             <div>

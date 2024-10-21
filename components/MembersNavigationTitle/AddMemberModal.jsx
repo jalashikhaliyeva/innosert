@@ -1,6 +1,6 @@
 import { addMemberToCompany } from "@/services/addMemberToCompany";
 import React, { useContext, useState } from "react";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import CompanyContext from "@/shared/context/CompanyContext";
 
 import { toast, ToastContainer } from "react-toastify";
@@ -12,7 +12,7 @@ function AddMemberModal({ closeModal }) {
   const [loading, setLoading] = useState(false);
   const { selectedCompany } = useContext(CompanyContext);
   console.log(selectedCompany.id, "selectedCompany add member modal");
-  
+
   // Email validation function
   const isValidEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -29,15 +29,19 @@ function AddMemberModal({ closeModal }) {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await addMemberToCompany(email, token,selectedCompany.id);
+      const response = await addMemberToCompany(
+        email,
+        token,
+        selectedCompany.id
+      );
       console.log("User added successfully:", response);
 
-      toast.success("İstifadəçi uğurla əlavə olundu!");  // Show success toast
+      toast.success("İstifadəçi uğurla əlavə olundu!"); // Show success toast
       setLoading(false);
       closeModal();
     } catch (error) {
       console.error("Failed to add user:", error);
-      toast.warning("İstifadəçini əlavə etmək alınmadı, yenidən cəhd edin!");  // Show error toast
+      toast.warning("İstifadəçini əlavə etmək alınmadı, yenidən cəhd edin!"); // Show error toast
       setLoading(false);
     }
   };
@@ -93,7 +97,7 @@ function AddMemberModal({ closeModal }) {
       ></div>
 
       {/* Modal Content */}
-      <div className="bg-boxGrayBodyColor z-50 p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[400px]">
+      <div className="bg-boxGrayBodyColor z-50 p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[400px] w-[500px]">
         {/* Close Button */}
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 focus:outline-none"
@@ -134,6 +138,25 @@ function AddMemberModal({ closeModal }) {
           } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
           placeholder="Email daxil edin..."
         />
+
+        <div className="border border-blue400 text-sm py-2 px-6 flex gap-3 items-center text-blueB500 font-gilroy font-normal leading-5 rounded-lg bg-blue50">
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              fill-rule="evenodd"
+              clip-rule="evenodd"
+              d="M8 0C3.58 0 0 3.58 0 8C0 12.42 3.58 16 8 16C12.42 16 16 12.42 16 8C16 3.58 12.42 0 8 0ZM9 3V5H7V3H9ZM6 12V13H10V12H9V6H6V7H7V12H6Z"
+              fill="#3366FF"
+            />
+          </svg>
+          Yalnız qeydiyyatdan keçmiş istifadəçilərin e-poçt ünvanı əlavə edilə
+          bilər.
+        </div>
 
         {/* Helper Text */}
         {inputError && (!email || !isValidEmail(email)) && (
@@ -181,8 +204,8 @@ function AddMemberModal({ closeModal }) {
           )}
         </button>
       </div>
-        {/* Toast container to show toast messages */}
-        <ToastContainer />
+      {/* Toast container to show toast messages */}
+      <ToastContainer />
     </div>
   );
 }

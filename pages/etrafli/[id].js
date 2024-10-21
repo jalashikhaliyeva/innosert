@@ -17,18 +17,17 @@ function ExamName() {
       <HeaderInternal />
       <Container>
         <BreadcrumbHome />
-        <div className="flex gap-8 flex-row w-full">
-          <div className="w-[50%]">
+        <div className="flex flex-col gap-8 md:flex-row w-full">
+          <div className="w-full md:w-[50%]">
             <CompanyLogoName />
             <CategoryTagsAbout />
             <ExamTitleDescription />
             <JoinButtonandPriceExam />
           </div>
-          <div className="w-[50%] flex justify-end">
+          <div className="w-full md:w-[50%] flex justify-end">
             <CertificateExampleAbout />
           </div>
         </div>
-
         <ExamDetails />
       </Container>
       <Footer />

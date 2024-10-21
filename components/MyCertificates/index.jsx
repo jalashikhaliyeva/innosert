@@ -137,7 +137,7 @@ function MyCertificates() {
   ];
 
   return (
-    <div className="flex flex-wrap w-full gap-5">
+    <div className="flex flex-wrap w-full gap-5 mb-10">
       {certificates.map((cert) => (
         <div
           key={cert.id}

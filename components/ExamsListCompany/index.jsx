@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ExamsListTeacher from "@/components/ExamsListTeacher";
+import CompanyContext from "@/shared/context/CompanyContext";
 
-function ExamListCompany({ viewMode, sortOption }) {
+function ExamListCompany({
+  viewMode,
+  sortOption,
+  selectedExams,
+  setSelectedExams,
+}) {
+  const { selectedCompany } = useContext(CompanyContext);
   // Use the same exams data as in SubExamsListTeacher
   const examsData = [
     {
@@ -59,13 +66,10 @@ function ExamListCompany({ viewMode, sortOption }) {
       questions: 15,
       url: "/exams/history-quiz",
     },
- 
-
-
   ];
-  
+
   // State to manage selected exams
-  const [selectedExams, setSelectedExams] = useState([]);
+  //   const [selectedExams, setSelectedExams] = useState([]);
 
   return (
     <div>
@@ -77,6 +81,7 @@ function ExamListCompany({ viewMode, sortOption }) {
         openDeleteExamModal={() => {}}
         selectedExams={selectedExams}
         setSelectedExams={setSelectedExams}
+        showTeacherName={!!selectedCompany}
       />
     </div>
   );

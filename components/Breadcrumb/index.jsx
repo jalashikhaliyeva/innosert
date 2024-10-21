@@ -26,9 +26,10 @@ const Breadcrumb = () => {
     "xeta-bildirisleri": "Xəta bildirişləri",
     uzvler: "Üzvlər",
     "uzv-aktivliyi": "Üzv aktivliyi",
-    "sual-bazasi":"Sual bazası",
+    "sual-bazasi": "Sual bazası",
     "umumi-imtahanlar": "İmtahanlar",
-    "imtahan-detallari": "İmtahan detalları"
+    "imtahan-detallari": "İmtahan detalları",
+    "imtahan-redakte": "İmtahan redaktə",
     // Add more mappings as needed
   };
 
@@ -85,7 +86,7 @@ const Breadcrumb = () => {
       </span>
 
       {/* Static profil link */}
-      <Link href="/profil">
+      <Link href="/hesablarim">
         <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
           Profil
         </span>

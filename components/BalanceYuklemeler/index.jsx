@@ -57,7 +57,7 @@ const YuklemelerimTable = () => {
   }, 0);
 
   return (
-    <div className="w-full overflow-x-auto px-4 font-gilroy">
+    <div className="w-full overflow-x-auto md:px-4 font-gilroy">
       {" "}
       {/* Added font-gilroy here */}
       <div className="relative" style={{ minHeight: "240px" }}>
@@ -133,7 +133,7 @@ const YuklemelerimTable = () => {
         />
       </div>
       {/* Total Amount on Top of Button with 17px Gap */}
-      <div className="flex justify-end items-center mt-6 relative">
+      <div className="flex justify-end items-center mt-24 md:mt-6 relative ">
         <div className="absolute top-[-37px] text-center px-9 text-2xl font-bold text-textSecondaryDefault font-gilroy">
           {totalAmount} AZN
         </div>

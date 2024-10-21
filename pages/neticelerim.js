@@ -1,6 +1,7 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import CardResult from "@/components/CardResult";
 import Container from "@/components/Container";
+import Footer from "@/components/Footer";
 import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
 import MyProfiles from "@/components/MyProfiles";
@@ -14,19 +15,21 @@ function Neticelerim() {
     <>
       <HeaderInternal />
       <div className="flex">
-        <div className="w-[20%]">
+        <div className="hidden md:block  md:w-[20%]">
           <Sidebar />
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
             <TitleNavigation />
             <CardResult />
-         
           </InternalContainer>
+          
         </div>
+       
       </div>
+
     </>
   );
 }

@@ -100,7 +100,7 @@ const ParentComponent = () => {
   );
 
   return (
-    <div className="w-full px-4 font-gilroy">
+    <div className="w-full md:px-4 font-gilroy">
       {/* Added font-gilroy here */}
       {/* Buttons to toggle between views */}
       <div className="mb-5">
@@ -123,62 +123,65 @@ const ParentComponent = () => {
       </div>
       {/* Conditionally render the table or Yükləmələrim based on the selected view */}
       {showTable ? (
-        <div className="w-full overflow-x-auto min-h-[400px] justify-between flex flex-col">
-          <table className="min-w-full table-auto border-collapse">
-            <thead>
-              <tr>
-                <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                  ID
-                </th>
-                <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                  Məlumat
-                </th>
-                <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                  Tarix
-                </th>
-                <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                  Status
-                </th>
-                <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                  Məbləğ
-                </th>
-              </tr>
-            </thead>
-            <tbody className="space-y-2.5">
-              {paginatedData.map((item, index) => (
-                <tr
-                  key={index}
-                  className="even:bg-boxGrayBodyColor hover:bg-gray-100"
-                >
-                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
-                    {item.id}
-                  </td>
-                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
-                    {item.info}
-                  </td>
-                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
-                    {item.date}
-                  </td>
-                  <td
-                    className={`px-4 py-2.5 h-11 font-gilroy ${
-                      item.status === "Ödənilib"
-                        ? "text-chartGreen"
-                        : "text-red-500"
-                    }`}
-                  >
-                    {item.status}
-                  </td>
-                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
-                    {item.amount}
-                  </td>
+        <div className="w-full flex flex-col min-h-[400px]">
+          {/* Make the table scrollable */}
+          <div className="overflow-x-auto overflow-y-auto ">
+            <table className="min-w-full table-auto border-collapse">
+              <thead>
+                <tr>
+                  <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
+                    ID
+                  </th>
+                  <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
+                    Məlumat
+                  </th>
+                  <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
+                    Tarix
+                  </th>
+                  <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
+                    Status
+                  </th>
+                  <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
+                    Məbləğ
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="space-y-2.5">
+                {paginatedData.map((item, index) => (
+                  <tr
+                    key={index}
+                    className="even:bg-boxGrayBodyColor hover:bg-gray-100"
+                  >
+                    <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                      {item.id}
+                    </td>
+                    <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                      {item.info}
+                    </td>
+                    <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                      {item.date}
+                    </td>
+                    <td
+                      className={`px-4 py-2.5 h-11 font-gilroy ${
+                        item.status === "Ödənilib"
+                          ? "text-chartGreen"
+                          : "text-red-500"
+                      }`}
+                    >
+                      {item.status}
+                    </td>
+                    <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                      {item.amount}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-          {/* Conditionally render pagination if more than 1 page */}
+          {/* Render pagination outside the scrollable area */}
           {pageCount > 1 && (
-            <div className="flex justify-center mt-10 pb-9">
+            <div className="flex justify-center mt-4 pb-9">
               <ReactPaginate
                 previousLabel={"<"}
                 nextLabel={">"}
@@ -188,25 +191,18 @@ const ParentComponent = () => {
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
                 containerClassName="flex justify-center items-center gap-2 w-full"
-                pageClassName="inline-block" // Minimal styling on li elements
-                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
-                activeClassName="" // Remove active styles from li elements
-                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
+                pageClassName="inline-block"
+                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
+                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
                 previousClassName={currentPage === 0 ? "text-gray-300" : ""}
                 previousLinkClassName={
                   currentPage === 0 ? "cursor-not-allowed" : ""
-                }
-                previousLinkStyle={
-                  currentPage === 0 ? { cursor: "not-allowed" } : {}
                 }
                 nextClassName={
                   currentPage === pageCount - 1 ? "text-gray-300" : ""
                 }
                 nextLinkClassName={
                   currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
-                }
-                nextLinkStyle={
-                  currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
                 }
               />
             </div>

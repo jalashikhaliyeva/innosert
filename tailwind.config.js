@@ -13,7 +13,7 @@ module.exports = {
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
       backdropBlur: {
-        'custom': '20.067px', // Custom blur value
+        custom: "20.067px", // Custom blur value
       },
       fontFamily: {
         gilroy: ["Gilroy", "sans-serif"],
@@ -47,6 +47,7 @@ module.exports = {
         buttonPrimaryHover: "#19242E",
         buttonPressedPrimary: "#121A21",
         buttonSecondaryDefault: "#ebebeb",
+        NeutralBlueN800: "#474D66",
         buttonSecondaryHover: "#dfdfdf",
         buttonSecondaryPressed: "#c1c1c1",
         buttonSecondaryDisabled: "#DFDFDF",
@@ -92,24 +93,24 @@ module.exports = {
         redLow: "#FFE1E2",
         violetLow: "#E6E0F5",
         orangeLow: "#FFECCB",
-        darkBlue400:"#000C3D",
-        green100:"#C2EFC7",
-        green500:"#30B83E",
-        green600:"#258E30",
-        green600Hover:"#207429",
-        green600Pressed:"#1A6522",
+        darkBlue400: "#000C3D",
+        green100: "#C2EFC7",
+        green500: "#30B83E",
+        green600: "#258E30",
+        green600Hover: "#207429",
+        green600Pressed: "#1A6522",
         brandBlue300: "#3D5870",
         inputDefaultLabel: "#404041",
-        mailBlue:"#007AFF",
-        tableCell:"#46474A",
-        greenMediumLight :"#C5FCC9",
-        greenMediumDark :"#21512A",
-        redLow :"#FFE1E2",
+        mailBlue: "#007AFF",
+        tableCell: "#46474A",
+        greenMediumLight: "#C5FCC9",
+        greenMediumDark: "#21512A",
+        redLow: "#FFE1E2",
         linkBlue: "#4361EE",
-        errorButtonTable:"#E7515A",
-        succesButtonTable:"#00AB55",
-        purple200:"#E7EAFE"
-        
+        errorButtonTable: "#E7515A",
+        succesButtonTable: "#00AB55",
+        purple200: "#E7EAFE",
+        green900:"#051407"
       },
       letterSpacing: {
         "036": "0.36px",
