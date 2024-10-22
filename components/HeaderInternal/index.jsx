@@ -1,10 +1,13 @@
 // components/HeaderInternal.jsx or .tsx
-
 import { useState, useEffect, useRef, useContext } from "react";
 import Container from "../Container";
+import { CiBookmark } from "react-icons/ci";
+import { PiCoin } from "react-icons/pi";
+import { PiCertificate } from "react-icons/pi";
 import Image from "next/image";
 import { HiOutlineMenu } from "react-icons/hi";
 import { TbBell } from "react-icons/tb";
+import { MdEqualizer } from "react-icons/md";
 import { IoMdClose } from "react-icons/io"; // Import close icon
 import { LuSearch } from "react-icons/lu";
 import { AiOutlineMenu } from "react-icons/ai";
@@ -22,14 +25,14 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { RiBuildingLine } from "react-icons/ri";
 import CompanyContext from "@/shared/context/CompanyContext";
 import { FaRegCircleUser } from "react-icons/fa6";
+import MobileLanguageSwitcher from "@/shared/MobileLanguageSwitcher";
 
 const HeaderInternal = () => {
   const { user } = useContext(UserContext);
   const { setSelectedCompany } = useContext(CompanyContext);
-  const [isMenuOpen, setIsMenuOpen] = useState(false); // New state for mobile menu
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const router = useRouter();
-
-  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false); // Categories submenu state
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
   const [isImtahanlarDropdownOpen, setIsImtahanlarDropdownOpen] =
     useState(false);
@@ -37,10 +40,17 @@ const HeaderInternal = () => {
   console.log(user, "active_company.logo");
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
   const [showOnlyCategories, setShowOnlyCategories] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState(null); // Track the currently selected category
-  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState(null);
 
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const hideTimeout = useRef(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const isSpecialPage =
+    router.pathname === "/home" ||
+    router.pathname === "/bloq" ||
+    router.pathname.startsWith("/etrafli") ||
+    router.pathname.startsWith("/kateqoriyalar");
 
   const handleNotificationMouseEnter = () => {
     clearTimeout(hideTimeout.current); // Clear any existing timeout
@@ -72,6 +82,7 @@ const HeaderInternal = () => {
       // router.push(`/muellim-hesabi`); // Redirect for Teacher role
     }
   };
+
   const handleLoginModalOpen = () => {
     // Implement login modal opening logic
   };
@@ -119,9 +130,66 @@ const HeaderInternal = () => {
   const [isCategoriesVisible, setIsCategoriesVisible] = useState(false);
   const [subCategories, setSubCategories] = useState([]);
   const { push } = useRouter();
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchValue, setSearchValue] = useState("");
+  const searchInputRef = useRef(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Add this line
   const userMenuRef = useRef(null);
+
+  // Function to handle search input visibility
+
+  const generateInitials = (firstName, lastName) => {
+    const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : "";
+    const lastInitial = lastName ? lastName.charAt(0).toUpperCase() : "";
+    return `${firstInitial}${lastInitial}`;
+  };
+  // Focus the search input when it appears
+  useEffect(() => {
+    if (isSearchOpen) {
+      searchInputRef.current.focus();
+      document.addEventListener("keydown", handleCloseSearch);
+      document.addEventListener("click", handleCloseSearch);
+    } else {
+      document.removeEventListener("keydown", handleCloseSearch);
+      document.removeEventListener("click", handleCloseSearch);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleCloseSearch);
+      document.removeEventListener("click", handleCloseSearch);
+    };
+  }, [isSearchOpen]);
+
+  // Function to handle search input visibility
+  const handleSearchIconClick = () => {
+    setIsSearchOpen(true);
+  };
+
+  // Function to close search input on click outside or "Enter" key
+  const handleCloseSearch = (e) => {
+    if (
+      e.key === "Enter" ||
+      (searchInputRef.current && !searchInputRef.current.contains(e.target))
+    ) {
+      setIsSearchOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isSearchOpen) {
+      document.addEventListener("keydown", handleCloseSearch);
+      document.addEventListener("click", handleCloseSearch);
+    } else {
+      document.removeEventListener("keydown", handleCloseSearch);
+      document.removeEventListener("click", handleCloseSearch);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleCloseSearch);
+      document.removeEventListener("click", handleCloseSearch);
+    };
+  }, [isSearchOpen]);
 
   const handleLogoutClick = () => {
     setShowLogoutModal(true); // Show the logout modal when the user clicks logout
@@ -205,54 +273,121 @@ const HeaderInternal = () => {
   return (
     <header className="markup fixed top-0 left-0 right-0 bg-bodyColor shadow-createBox z-30 font-gilroy">
       <Container>
-        {/* mobile and tablet menu start */}
+        {/* Mobile and tablet menu start */}
         <div className="flex justify-between items-center py-4 lg:hidden">
-          {!showOnlyCategories ? (
-            <Link href="/home">
-              <Image
-                style={{ objectFit: "cover", width: "120px", height: "30px" }}
-                className="cursor-pointer"
-                src="/logo/dark-logo-innosert.png"
-                alt="dark-logo-innosert"
-                width={100}
-                height={32}
-              />
-            </Link>
-          ) : (
-            <button
-              onClick={handleBackButtonClick}
-              className="text-lg font-gilroy font-normal text-blue-600"
-            >
-              &larr; Geri
-            </button>
-          )}
-
-          <div className="lg:hidden flex-grow flex justify-end">
-            {isMenuOpen ? (
-              <IoMdClose
-                size={34}
-                className="cursor-pointer bg-buttonBGresponsive p-2 text-2xl rounded-md"
-                onClick={toggleMenu}
-              />
-            ) : (
-              <div className="flex gap-3 items-center">
-                <LuSearch size={24} />
-                <div
-                  onClick={toggleMenu}
-                  className="bg-buttonPrimaryDefault p-2 rounded-md flex items-center gap-2"
+          {isSpecialPage ? (
+            <>
+              {/* Display logo or back button on the left */}
+              {!showOnlyCategories ? (
+                <Link href="/home">
+                  <Image
+                    style={{
+                      objectFit: "cover",
+                      width: "120px",
+                      height: "30px",
+                    }}
+                    className="cursor-pointer"
+                    src="/logo/dark-logo-innosert.png"
+                    alt="dark-logo-innosert"
+                    width={100}
+                    height={32}
+                  />
+                </Link>
+              ) : (
+                <button
+                  onClick={handleBackButtonClick}
+                  className="text-lg font-gilroy font-normal text-blue-600"
                 >
-                  <HiOutlineMenu
-                    size={20}
-                    className="cursor-pointer text-white"
+                  &larr; Geri
+                </button>
+              )}
+
+              {/* Menu toggle and avatar on the right */}
+              <div className="lg:hidden flex-grow flex justify-end">
+                {isMenuOpen ? (
+                  <IoMdClose
+                    size={34}
+                    className="cursor-pointer bg-buttonBGresponsive p-2 text-2xl rounded-md"
+                    onClick={toggleMenu}
                   />
-                  <FaRegCircleUser
-                    size={20}
-                    className="cursor-pointer text-white"
-                  />
-                </div>
+                ) : (
+                  <div className="flex gap-3 items-center">
+                    <LuSearch size={24} />
+                    <div
+                      onClick={toggleMenu}
+                      className="bg-buttonPrimaryDefault p-2 rounded-md flex items-center gap-2"
+                    >
+                      <HiOutlineMenu
+                        size={20}
+                        className="cursor-pointer text-white"
+                      />
+                      <FaRegCircleUser
+                        size={20}
+                        className="cursor-pointer text-white"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
+            </>
+          ) : (
+            <>
+              {/* Conditional rendering for other pages */}
+              {isMenuOpen ? (
+                <>
+                  {/* When the menu is open, display the logo and close button */}
+                  <Link href="/home">
+                    <Image
+                      style={{
+                        objectFit: "cover",
+                        width: "120px",
+                        height: "30px",
+                      }}
+                      className="cursor-pointer"
+                      src="/logo/dark-logo-innosert.png"
+                      alt="dark-logo-innosert"
+                      width={100}
+                      height={32}
+                    />
+                  </Link>
+
+                  <IoMdClose
+                    size={34}
+                    className="cursor-pointer bg-buttonBGresponsive p-2 text-2xl rounded-md"
+                    onClick={toggleMenu}
+                  />
+                </>
+              ) : (
+                <>
+                  {/* When the menu is closed, display the menu icon and SVG */}
+                  <HiOutlineMenu
+                    size={28}
+                    className="cursor-pointer text-white bg-buttonPrimaryDefault px-2 py-1 rounded-lg w-9 h-8"
+                    onClick={toggleMenu}
+                  />
+
+                  <svg
+                    onClick={() => handleClick("/hesablarim")}
+                    className="size-9"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect width="24" height="24" rx="12" fill="#EDEFFD" />
+                    <path
+                      d="M16.364 16.909C16.364 16.1478 16.364 15.7672 16.27 15.4575C16.0585 14.7602 15.5128 14.2145 14.8155 14.0029C14.5058 13.909 14.1252 13.909 13.364 13.909H10.6367C9.8755 13.909 9.49489 13.909 9.18519 14.0029C8.48788 14.2145 7.9422 14.7602 7.73067 15.4575C7.63672 15.7672 7.63672 16.1478 7.63672 16.909M14.4549 9.54537C14.4549 10.901 13.356 11.9999 12.0004 11.9999C10.6447 11.9999 9.54581 10.901 9.54581 9.54537C9.54581 8.18976 10.6447 7.09082 12.0004 7.09082C13.356 7.09082 14.4549 8.18976 14.4549 9.54537Z"
+                      stroke="#2826A7"
+                      strokeWidth="1.09091"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </>
+              )}
+            </>
+          )}
 
           {/* Categories Menu */}
           <div
@@ -264,121 +399,224 @@ const HeaderInternal = () => {
           >
             <ul className="flex px-4 flex-col divide-y divide-gray-200">
               {!showOnlyCategories ? (
-                <>
-                  <li
-                    onClick={() => handleClick("/hesablarim")}
-                    className="py-4 flex items-center gap-3 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
-                  >
-                    <FaRegCircleUser /> Profilim
-                  </li>
+                isSpecialPage ? (
+                  <>
+                    {/* Existing menu content for special pages */}
+                    <li
+                      onClick={() => handleClick("/hesablarim")}
+                      className="py-4 flex items-center gap-3 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
+                    >
+                      <FaRegCircleUser /> Profilim
+                    </li>
 
-                  {/* Company List for Owners and Teachers */}
-                  {(user?.data?.roles === "Owner" ||
-                    user?.data?.roles === "Teacher") &&
-                    activeCompanies.length > 0 && (
-                      <div className="relative mt-2">
-                        <div
-                          className="flex items-center space-x-1 justify-between py-4 cursor-pointer rounded-lg"
-                          onClick={toggleCompanyDropdown}
-                        >
-                          <div className="flex gap-3">
-                            <RiBuildingLine className="size-[20px] fill-textSecondaryDefault" />
-                            <p className="text-lg font-gilroy font-normal leading-6 text-textSecondaryDefault">
-                              Şirkətlərim
-                            </p>
+                    {/* Company List for Owners and Teachers */}
+                    {(user?.data?.roles === "Owner" ||
+                      user?.data?.roles === "Teacher") &&
+                      activeCompanies.length > 0 && (
+                        <div className="relative mt-2">
+                          <div
+                            className="flex items-center space-x-1 justify-between py-4 cursor-pointer rounded-lg"
+                            onClick={toggleCompanyDropdown}
+                          >
+                            <div className="flex gap-3">
+                              <RiBuildingLine className="size-[20px] fill-textSecondaryDefault" />
+                              <p className="text-lg font-gilroy font-normal leading-6 text-textSecondaryDefault">
+                                Şirkətlərim
+                              </p>
+                            </div>
+                            {companyDropdownOpen ? (
+                              <FiChevronUp className="ml-2 text-grayText" />
+                            ) : (
+                              <MdKeyboardArrowRight className="ml-2 text-grayText" />
+                            )}
                           </div>
-                          {companyDropdownOpen ? (
-                            <FiChevronUp className="ml-2 text-grayText" />
-                          ) : (
-                            <MdKeyboardArrowRight className="ml-2 text-grayText" />
+                          {companyDropdownOpen && (
+                            <div className="relative w-full z-10 mt-2">
+                              {activeCompanies.map((company) => (
+                                <div
+                                  key={company.slug}
+                                  className="flex items-center cursor-pointer pb-2 px-4 py-2 hover:bg-gray-100 rounded-lg relative group"
+                                  onClick={() => handleCompanyClick(company)}
+                                >
+                                  {company.logo ? (
+                                    <Image
+                                      width={24}
+                                      height={24}
+                                      src={company.logo}
+                                      alt={company.name}
+                                      className="w-6 h-6 rounded-full mr-4 object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4">
+                                      {company.name[0]}
+                                    </div>
+                                  )}
+                                  <p
+                                    className="font-gilroy text-base font-normal leading-6 max-w-[300px] truncate"
+                                    title={company.name}
+                                  >
+                                    {company.name}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
                           )}
                         </div>
-                        {companyDropdownOpen && (
-                          <div className="relative w-full z-10 mt-2">
-                            {activeCompanies.map((company) => (
-                              <div
-                                key={company.slug}
-                                className="flex items-center cursor-pointer pb-2 px-4 py-2 hover:bg-gray-100 rounded-lg relative group"
-                                onClick={() => handleCompanyClick(company)}
-                              >
-                                {company.logo ? (
-                                  <Image
-                                    width={24}
-                                    height={24}
-                                    src={company.logo}
-                                    alt={company.name}
-                                    className="w-6 h-6 rounded-full mr-4 object-cover"
-                                  />
-                                ) : (
-                                  <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4">
-                                    {company.name[0]}
-                                  </div>
-                                )}
-                                <p
-                                  className="font-gilroy text-base font-normal leading-6 max-w-[300px] truncate"
-                                  title={company.name}
-                                >
-                                  {company.name}
+                      )}
+
+                    <li
+                      onClick={handleCategoriesToggle}
+                      className="flex py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue justify-between"
+                    >
+                      Kateqoriyalar
+                      {isImtahanlarDropdownOpen ? (
+                        <IoMdClose className="mt-1 fill-arrowButtonGray" />
+                      ) : (
+                        <MdKeyboardArrowRight className="mt-1 fill-arrowButtonGray" />
+                      )}
+                    </li>
+
+                    <li
+                      onClick={() => handleClick("/bloq")}
+                      className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
+                    >
+                      Bloq
+                    </li>
+
+                    <MobileLanguageSwitcher />
+                    <li
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleLogoutClick();
+                      }}
+                      className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
+                    >
+                      Çixis
+                    </li>
+                  </>
+                ) : (
+                  <>
+                    <div
+                      onClick={() => handleClick("/hesablarim")}
+                      className="flex items-center mb-2 py-4"
+                    >
+                      {!user?.data?.image || user.data.image === null ? (
+                        <div className="w-12 h-12 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-2xl font-bold mr-4">
+                          {generateInitials(
+                            user?.data?.first_name,
+                            user?.data?.last_name
+                          )}
+                        </div>
+                      ) : (
+                        <Image
+                          width={50}
+                          height={50}
+                          src={user.data.image}
+                          alt="Profile"
+                          className="w-16 h-16 rounded-full mr-4 object-cover"
+                        />
+                      )}
+
+                      <div>
+                        <p className="font-gilroy text-base font-normal leading-6 flex">
+                          {user?.data?.first_name} {user?.data?.last_name}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Company Dropdown Section */}
+                    {(user?.data?.roles === "Owner" ||
+                      user?.data?.roles === "Teacher") &&
+                      activeCompanies.length > 0 && (
+                        <div className="">
+                          <div className="">
+                            <div
+                              className="flex items-center justify-between space-x-4 py-2 pb-4 cursor-pointer rounded-lg"
+                              onClick={toggleCompanyDropdown}
+                            >
+                              <div className="flex items-center gap-5">
+                                <RiBuildingLine className="size-6 fill-grayText" />
+                                <p className="text-lg font-gilroy font-normal leading-6 text-grayText">
+                                  Şirkət seç
                                 </p>
                               </div>
-                            ))}
+
+                              {companyDropdownOpen ? (
+                                <FiChevronUp className="ml-2 text-grayText" />
+                              ) : (
+                                <FiChevronDown className="ml-2 text-grayText" />
+                              )}
+                            </div>
                           </div>
-                        )}
-                      </div>
-                    )}
 
-                  <li
-                    onClick={handleCategoriesToggle}
-                    className="flex py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue justify-between"
-                  >
-                    Kateqoriyalar
-                    {isImtahanlarDropdownOpen ? (
-                      <IoMdClose className="mt-1 fill-arrowButtonGray" />
-                    ) : (
-                      <MdKeyboardArrowRight className="mt-1 fill-arrowButtonGray" />
-                    )}
-                  </li>
+                          {/* Dropdown menu for active companies */}
+                          {companyDropdownOpen && (
+                            <div className="mt-2">
+                              {activeCompanies.map((company) => (
+                                <div
+                                  key={company.slug}
+                                  className="flex items-center mb-2 cursor-pointer pb-2 hover:bg-gray-100 rounded-lg"
+                                  onClick={() => handleCompanyClick(company)}
+                                >
+                                  {company.logo ? (
+                                    <Image
+                                      width={20}
+                                      height={20}
+                                      src={company.logo}
+                                      alt={company.name}
+                                      className="w-8 h-8 rounded-full mr-4 object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-lg font-gilroy font-bold mr-4">
+                                      {generateInitials(company.name, "")}
+                                    </div>
+                                  )}
+                                  <p className="font-gilroy text-base font-normal leading-6 flex">
+                                    {company.name}
+                                  </p>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      )}
 
-                  <li
-                    onClick={() => handleClick("/bloq")}
-                    className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
-                  >
-                    Bloq
-                  </li>
+                    <li
+                      onClick={() => handleClick("/neticelerim")}
+                      className="py-4 cursor-pointer text-grayButtonText text-lg flex items-center gap-5 font-gilroy font-normal hover:text-textHoverBlue"
+                    >
+                      <MdEqualizer className="size-6 fill-grayButtonText" />
+                      Nəticələrim
+                    </li>
 
-                  <li
-                    onClick={toggleLanguageDropdown}
-                    className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
-                  >
-                    AZ
-                    {isLanguageDropdownOpen && (
-                      <ul className="absolute left-0 top-full w-full text-lg bg-white shadow-lg rounded-lg overflow-hidden z-50 transition-all duration-300 ease-in-out transform">
-                        <li
-                          onClick={() => handleLanguageChange("EN")}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        >
-                          EN
-                        </li>
-                        <li
-                          onClick={() => handleLanguageChange("RU")}
-                          className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                        >
-                          RU
-                        </li>
-                      </ul>
-                    )}
-                  </li>
+                    <li
+                      onClick={() => handleClick("/imtahanlarim")}
+                      className="py-4 cursor-pointer text-grayButtonText text-lg flex items-center gap-5 font-gilroy font-normal hover:text-textHoverBlue"
+                    >
+                      <CiBookmark className="size-6 fill-grayButtonText" />
+                      İmtahanlarım
+                    </li>
 
-                  <li
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handleLogoutClick();
-                    }}
-                    className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
-                  >
-                    Çixis
-                  </li>
-                </>
+                    <li
+                      onClick={() => handleClick("/neticelerim")}
+                      className="py-4 cursor-pointer text-grayButtonText text-lg flex items-center gap-5 font-gilroy font-normal hover:text-textHoverBlue"
+                    >
+                      <PiCoin className="size-6 fill-grayButtonText" />
+                      Balansım
+                    </li>
+
+                    <li
+                      onClick={() => handleClick("/hesablarim")}
+                      className="py-4 cursor-pointer text-grayButtonText text-lg flex items-center gap-5 font-gilroy font-normal hover:text-textHoverBlue"
+                    >
+                      <FaRegCircleUser className="size-6 fill-grayButtonText" />
+                      Hesablarım
+                    </li>
+                    <MobileLanguageSwitcher />
+
+                    {/* Add other menu items as needed */}
+                  </>
+                )
               ) : (
                 // Show only categories
                 <>
@@ -424,7 +662,8 @@ const HeaderInternal = () => {
             </ul>
           </div>
         </div>
-        {/* mobile and tablet menu end */}
+        {/* Mobile and tablet menu end */}
+
         {/* web header  start*/}
         <div className="hidden lg:block">
           <div className="flex justify-between items-center py-4">

@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { IoWarningOutline } from "react-icons/io5";
 import styles from "./stye.module.css";
+import { useRouter } from "next/router";
 
 function ExamRulesModal({ onClose, onCancel }) {
+  const router = useRouter(); // Initialize useRouter
   const handleBackgroundClick = (e) => {
     // Check if the user clicked outside the modal (by comparing the target and currentTarget)
     if (e.target === e.currentTarget) {
@@ -16,6 +18,11 @@ function ExamRulesModal({ onClose, onCancel }) {
     setIsChecked(!isChecked);
   };
 
+  const handleStartExam = () => {
+    if (isChecked) {
+      router.push("/imtahan-geri-sayim"); // Redirect to /imtahan-geri-sayim
+    }
+  };
   return (
     <div
       onClick={handleBackgroundClick}
@@ -113,7 +120,7 @@ function ExamRulesModal({ onClose, onCancel }) {
         {/* Action Button */}
         <div className="mt-6 flex justify-between">
           <button
-            onClick={onCancel}
+            onClick={handleStartExam}
             className={`w-full py-2 px-4  text-white rounded-lg hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary focus:outline-none ${
               isChecked
                 ? "bg-buttonPrimaryDefault cursor-pointer"

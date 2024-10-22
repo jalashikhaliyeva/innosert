@@ -58,6 +58,7 @@ module.exports = {
         brandBlue200: "#174F82",
         brandBlue100: "#4F7291",
         brandBlue700: "#1D2935",
+        brandBlue900: "#121A21",
         blue200: "#486884",
         blue50: "#F3F6FF",
         blueB400: "#36F",
@@ -82,6 +83,7 @@ module.exports = {
         errorButtonHover: "#D92626",
         errorButtonPressed: "#841515",
         red400: "#E34F4F",
+        red500: "#E03D3E",
         chartGreen: "#30B83E",
         chartRed: "#D92626",
         chartYellow: "#F6CF09",
@@ -110,7 +112,7 @@ module.exports = {
         errorButtonTable: "#E7515A",
         succesButtonTable: "#00AB55",
         purple200: "#E7EAFE",
-        green900:"#051407"
+        green900: "#051407",
       },
       letterSpacing: {
         "036": "0.36px",
@@ -119,6 +121,8 @@ module.exports = {
         createBox: "0px 4px 8px 0px rgba(93, 97, 114, 0.08)",
         certificate: "0px 4px 8px 0px rgba(93, 97, 114, 0.08)",
         shadow3: " 0px 12px 40px 0px rgba(113, 115, 123, 0.24)",
+        Cardshadow: "0px 4px 8px 0px rgba(16, 24, 64, 0.08)",
+        elevation3: "0px 12px 40px 0px rgba(113, 115, 123, 0.24)",
         hoverCertificate:
           "rgba(67, 71, 85, 0.27) 0px 0px 0.25em, rgba(90, 125, 188, 0.05) 0px 0.25em 1em",
       },

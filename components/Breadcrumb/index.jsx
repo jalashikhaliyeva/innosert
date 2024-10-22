@@ -74,7 +74,7 @@ const Breadcrumb = () => {
   });
 
   return (
-    <div className="flex flex-row gap-3 mt-32 mb-6">
+    <div className="flex flex-row gap-3  mb-6 mt-24 md:mt-32">
       {/* Static home link */}
       <Link href="/home">
         <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">

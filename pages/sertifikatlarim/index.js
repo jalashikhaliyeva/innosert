@@ -17,7 +17,7 @@ function Sertifikatlarim() {
           <Sidebar />
         </div>
 
-        <div  className="w-full md:w-[80%]">
+        <div className="w-full md:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
             <TitleNavigation />
