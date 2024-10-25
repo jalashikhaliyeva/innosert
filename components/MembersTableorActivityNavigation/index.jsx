@@ -8,9 +8,9 @@ function MembersTableorActivityNavigation({
 }) {
   return (
     <>
-      <div className="flex flex-row gap-4 mb-6 font-gilroy">
+      <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
         <button
-          className={`flex items-center gap-2 text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+          className={`flex items-center gap-2 text-base  lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
             activeView === "edit"
               ? "bg-blue100 text-blue400"
               : "text-neutral700"
@@ -21,7 +21,7 @@ function MembersTableorActivityNavigation({
           Üzv siyahısı ({memberCount})
         </button>
         <button
-          className={`flex items-center gap-2 text-lg px-4 py-3 rounded-lg font-gilroy font-normal leading-6 ${
+          className={`flex items-center gap-2 text-base  lg:text-lg px-4 py-3 rounded-lg font-gilroy font-normal leading-6 ${
             activeView === "preview"
               ? "bg-blue100 text-blue400"
               : "text-neutral700"

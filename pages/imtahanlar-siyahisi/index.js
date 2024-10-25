@@ -8,6 +8,7 @@ import ExamsListTeacher from "@/components/ExamsListTeacher";
 import AddExamModal from "@/components/AddExamModal";
 import DeleteModal from "@/components/DeleteModal";
 import EditExamModal from "@/components/EditExamModal";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 
 function ImtahanlarSiyahisi() {
   const exams = [
@@ -120,12 +121,17 @@ function ImtahanlarSiyahisi() {
 
   return (
     <>
-      <HeaderInternal />
+    <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <TeacherDashboardHeader />
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
+      <div className="hidden lg:block md:w-[20%]">
           <TeacherSidebar />
         </div>
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
             <ExamsListNavigationTeacher

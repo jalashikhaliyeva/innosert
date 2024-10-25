@@ -290,7 +290,7 @@ function AddQuestionModal({ onClose }) {
     >
       {/* Modal content */}
       <div
-        className="bg-white rounded-lg p-10 w-[960px] relative max-h-[790px] overflow-y-auto"
+        className="bg-white rounded-lg p-10 w-[960px] m-5 md:m-0 relative max-h-[790px] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-white z-20 ">

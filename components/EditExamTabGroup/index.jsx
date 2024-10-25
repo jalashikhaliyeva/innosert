@@ -16,7 +16,7 @@ function EditExamTabGroup() {
     switch (activeTab) {
       case "questions":
         return (
-          <div className="w-[80%] mx-auto">
+          <div className="md:w-[80%] w-full mx-auto">
             <Questions />
           </div>
         );
@@ -28,7 +28,7 @@ function EditExamTabGroup() {
   return (
     <div className="flex flex-col">
       {/* Tab buttons */}
-      <div className="flex justify-between">
+      <div className="flex flex-col sm:flex-row sm:justify-between">
         <div className="flex flex-row gap-2 mb-6 font-gilroy">
           <button
             className={`text-lg px-4 py-2 rounded-lg flex gap-2 items-center ${
@@ -43,7 +43,7 @@ function EditExamTabGroup() {
           </button>
 
           <button
-            className={`text-lg px-4 py-2 rounded-lg flex gap-2 items-center   ${
+            className={`text-lg px-4 py-2 rounded-lg flex gap-2 items-center ${
               activeTab === "questions"
                 ? "bg-blue100 text-blue400"
                 : "text-neutral700"
@@ -57,13 +57,15 @@ function EditExamTabGroup() {
 
         {/* Conditionally render the 'elave' button based on the active tab */}
         {activeTab === "questions" && (
-          <button
-            className="flex items-center justify-center gap-2 p-3 h-11 text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary whitespace-nowrap"
-            onClick={() => setIsModalOpen(true)} // Open the modal on click
-          >
-            <FaPlus className="text-white w-4 h-4" />
-            Sual əlavə et
-          </button>
+          <div className="flex justify-end mt-2 sm:mt-0 sm:flex-row w-full sm:w-auto">
+            <button
+              className="flex items-center justify-center gap-2 p-3 h-11 text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary whitespace-nowrap"
+              onClick={() => setIsModalOpen(true)} // Open the modal on click
+            >
+              <FaPlus className="text-white w-4 h-4" />
+              Sual əlavə et
+            </button>
+          </div>
         )}
       </div>
 

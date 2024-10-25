@@ -50,15 +50,18 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
     router.pathname.startsWith("/imtahanlar/");
   return (
     <>
- 
       <div className="block md:hidden">
         {/* Show Swiper only if not on '/imtahanlarim' page */}
         {!isMyExamsPage ? (
-          <Swiper
-            spaceBetween={16}
-            slidesPerView={1}
-            pagination={{ clickable: true }}
-          >
+        <Swiper
+        spaceBetween={16}
+        slidesPerView="auto" // Dynamically adjusts to the number of slides
+        pagination={{ clickable: true }}
+        centeredSlides={false}
+        loop={false}
+        loopFillGroupWithBlank={false}
+        slideToClickedSlide={true} // Allows precise navigation to clicked slides
+      >
             {exams.map((exam) => {
               const isSaved = savedExams.find(
                 (savedExam) => savedExam.id === exam.id

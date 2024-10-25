@@ -10,7 +10,7 @@ function DeleteMemberModal({ onCancel, onDelete }) {
       };
   return (
     <div onClick={handleBackgroundClick} className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]">
-      <div className="bg-white rounded-xl shadow-lg p-6 w-96 ">
+      <div className="bg-white rounded-xl shadow-lg p-6 w-96  m-8 lg:m-0 ">
         {/* Icon */}
         <div className="flex justify-center mb-4">
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-100">

@@ -301,209 +301,214 @@ function ReportTable({ selectedRows, setSelectedRows }) {
   };
 
   return (
-    <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white">
+    <div className="w-full p-4 font-gilroy border min-h-[400px] border-borderTableCel rounded bg-white">
       {/* Table */}
-      <div className="w-full overflow-x-auto min-h-[400px] flex flex-col relative">
-        <table className="min-w-full table-auto border-collapse border-borderTableCel">
-          <thead className="border-b border-borderTableCel">
-            <tr>
-              <th className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
-                #
-              </th>
-              {/* Sual başlığı */}
-              <th
-                className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={() =>
-                  setOpenFilter(
-                    openFilter === "questionTitle" ? null : "questionTitle"
-                  )
-                }
-              >
-                <div className="flex items-center gap-4">
-                  Sual başlığı
-                  <IoFunnelOutline />
-                </div>
-                {openFilter === "questionTitle" && (
-                  <div
-                    ref={questionTitleRef}
-                    className="absolute z-20 mt-2 bg-white border rounded shadow-2xl p-2 divide-y w-40"
-                  >
-                    <div
-                      className={`cursor-pointer hover:bg-gray-100 px-2 py-1 ${
-                        titleOrder === "asc" ? "bg-gray-200" : ""
-                      }`}
-                      onClick={() => {
-                        setTitleOrder("asc");
-                        setOpenFilter(null);
-                      }}
-                    >
-                      A-Z
-                    </div>
-                    <div
-                      className={`cursor-pointer hover:bg-gray-200 px-2 py-1 ${
-                        titleOrder === "desc" ? "bg-gray-200" : ""
-                      }`}
-                      onClick={() => {
-                        setTitleOrder("desc");
-                        setOpenFilter(null);
-                      }}
-                    >
-                      Z-A
-                    </div>
+      <div className="w-full flex flex-col relative">
+        <div className="overflow-x-auto">
+          <table className="min-w-full table-auto border-collapse border-borderTableCel">
+            <thead className="border-b border-borderTableCel">
+              <tr>
+                <th className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
+                  #
+                </th>
+                {/* Sual başlığı */}
+                <th
+                  className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                  onClick={() =>
+                    setOpenFilter(
+                      openFilter === "questionTitle" ? null : "questionTitle"
+                    )
+                  }
+                >
+                  <div className="flex items-center gap-4">
+                    Sual başlığı
+                    <IoFunnelOutline />
                   </div>
-                )}
-              </th>
-              {/* Bildirilən xəta sayı */}
-              <th
-                className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={() =>
-                  setOpenFilter(
-                    openFilter === "quantityOfReports"
-                      ? null
-                      : "quantityOfReports"
-                  )
-                }
-              >
-                <div className="flex items-center gap-4">
-                  Bildirilən xəta sayı
-                  <IoFunnelOutline />
-                </div>
-                {openFilter === "quantityOfReports" && (
-                  <div
-                    ref={quantityOfReportsRef}
-                    className="absolute z-20 mt-2 bg-white border rounded shadow p-2 w-60"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <input
-                      type="number"
-                      placeholder="Minimum xəta sayı"
-                      value={reportsFilter}
-                      onChange={(e) => setReportsFilter(e.target.value)}
-                      className="border rounded px-2 py-1 w-full"
-                    />
-                    <button
-                      className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-2 py-1 rounded w-full"
-                      onClick={() => setOpenFilter(null)}
+                  {openFilter === "questionTitle" && (
+                    <div
+                      ref={questionTitleRef}
+                      className="absolute z-20 mt-2 bg-white border rounded shadow-2xl p-2 divide-y w-40"
                     >
-                      Tətbiq et
-                    </button>
-                  </div>
-                )}
-              </th>
-              {/* Status */}
-              <th
-                className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={() =>
-                  setOpenFilter(openFilter === "status" ? null : "status")
-                }
-              >
-                <div className="flex items-center gap-4">
-                  Status
-                  <IoFunnelOutline />
-                </div>
-
-                {openFilter === "status" && (
-                  <div
-                    ref={statusRef}
-                    className="absolute left-0 z-20 mt-2 bg-white border rounded shadow p-2 w-60"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <div className="flex flex-col">
                       <div
                         className={`cursor-pointer hover:bg-gray-100 px-2 py-1 ${
-                          statusFilter === "Tamamlandı" ? "bg-gray-200" : ""
+                          titleOrder === "asc" ? "bg-gray-200" : ""
                         }`}
                         onClick={() => {
-                          setStatusFilter("Tamamlandı");
+                          setTitleOrder("asc");
                           setOpenFilter(null);
                         }}
                       >
-                        Tamamlandı
+                        A-Z
                       </div>
                       <div
-                        className={`cursor-pointer hover:bg-gray-100 px-2 py-1 ${
-                          statusFilter === "Gözlənilir" ? "bg-gray-200" : ""
+                        className={`cursor-pointer hover:bg-gray-200 px-2 py-1 ${
+                          titleOrder === "desc" ? "bg-gray-200" : ""
                         }`}
                         onClick={() => {
-                          setStatusFilter("Gözlənilir");
+                          setTitleOrder("desc");
                           setOpenFilter(null);
                         }}
                       >
-                        Gözlənilir
+                        Z-A
                       </div>
                     </div>
-                    <button
-                      className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-2 py-1 rounded w-full"
-                      onClick={() => setOpenFilter(null)}
-                    >
-                      Tətbiq et
-                    </button>
+                  )}
+                </th>
+                {/* Bildirilən xəta sayı */}
+                <th
+                  className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                  onClick={() =>
+                    setOpenFilter(
+                      openFilter === "quantityOfReports"
+                        ? null
+                        : "quantityOfReports"
+                    )
+                  }
+                >
+                  <div className="flex items-center gap-4">
+                    Bildirilən xəta sayı
+                    <IoFunnelOutline />
                   </div>
-                )}
-              </th>
-
-              <th className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer">
-                <button
-                  className="flex items-center gap-4"
-                  onClick={resetFilters}
+                  {openFilter === "quantityOfReports" && (
+                    <div
+                      ref={quantityOfReportsRef}
+                      className="absolute z-20 mt-2 bg-white border rounded shadow p-2 w-60"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <input
+                        type="number"
+                        placeholder="Minimum xəta sayı"
+                        value={reportsFilter}
+                        onChange={(e) => setReportsFilter(e.target.value)}
+                        className="border rounded px-2 py-1 w-full"
+                      />
+                      <button
+                        className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-2 py-1 rounded w-full"
+                        onClick={() => setOpenFilter(null)}
+                      >
+                        Tətbiq et
+                      </button>
+                    </div>
+                  )}
+                </th>
+                {/* Status */}
+                <th
+                  className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                  onClick={() =>
+                    setOpenFilter(openFilter === "status" ? null : "status")
+                  }
                 >
-                  {/* Yenilə */}
-                  <RiLoopLeftLine />
-                </button>
-              </th>
-            </tr>
-          </thead>
+                  <div className="flex items-center gap-4">
+                    Status
+                    <IoFunnelOutline />
+                  </div>
 
-          <tbody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((item) => (
-                <tr
-                  key={item.id}
-                  className="bg-tableBgDefault border-b border-borderTableCel hover:bg-headerTableCel"
-                >
-                  <td className="px-4 py-3">{item.id}</td>
+                  {openFilter === "status" && (
+                    <div
+                      ref={statusRef}
+                      className="absolute left-0 z-20 mt-2 bg-white border rounded shadow p-2 w-60"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <div className="flex flex-col">
+                        <div
+                          className={`cursor-pointer hover:bg-gray-100 px-2 py-1 ${
+                            statusFilter === "Tamamlandı" ? "bg-gray-200" : ""
+                          }`}
+                          onClick={() => {
+                            setStatusFilter("Tamamlandı");
+                            setOpenFilter(null);
+                          }}
+                        >
+                          Tamamlandı
+                        </div>
+                        <div
+                          className={`cursor-pointer hover:bg-gray-100 px-2 py-1 ${
+                            statusFilter === "Gözlənilir" ? "bg-gray-200" : ""
+                          }`}
+                          onClick={() => {
+                            setStatusFilter("Gözlənilir");
+                            setOpenFilter(null);
+                          }}
+                        >
+                          Gözlənilir
+                        </div>
+                      </div>
+                      <button
+                        className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-2 py-1 rounded w-full"
+                        onClick={() => setOpenFilter(null)}
+                      >
+                        Tətbiq et
+                      </button>
+                    </div>
+                  )}
+                </th>
+
+                <th className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer">
+                  <button
+                    className="flex items-center gap-4"
+                    onClick={resetFilters}
+                  >
+                    {/* Yenilə */}
+                    <RiLoopLeftLine />
+                  </button>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {paginatedData.length > 0 ? (
+                paginatedData.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="bg-tableBgDefault border-b border-borderTableCel hover:bg-headerTableCel"
+                  >
+                    <td className="px-4 py-3">{item.id}</td>
+                    <td
+                      onClick={() => handleDetailNavigation(item.slug)}
+                      className="flex items-center gap-3 px-4 py-3 relative group cursor-pointer !text-base text-tableCell"
+                    >
+                      {item.questionTitle}
+                    </td>
+                    <td className="px-4 py-3 !text-base">
+                      {item.quantityOfReports}
+                    </td>
+                    {/* Conditionally set the background color based on the status */}
+                    <td className="px-4 py-2">
+                      <div
+                        className={`text-gray200 !text-sm ${
+                          item.status === "Tamamlandı"
+                            ? "bg-greenMediumLight"
+                            : item.status === "Gözlənilir"
+                            ? "bg-redLow"
+                            : ""
+                        } rounded-md py-1 flex items-center justify-center w-[110px]`}
+                      >
+                        {item.status}
+                      </div>
+                    </td>
+
+                    <td className="px-4 py-3 text-linkBlue !text-base flex items-center sticky right-0 bg-white  z-10">
+                      <button onClick={() => handleDetailNavigation(item.slug)}>
+                        Bax &gt;
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
                   <td
-                    onClick={() => handleDetailNavigation(item.slug)}
-                    className="flex items-center gap-3 px-4 py-3 relative group cursor-pointer !text-base text-tableCell"
+                    colSpan="8"
+                    className="px-4 py-3 text-center text-gray-500"
                   >
-                    {item.questionTitle}
-                  </td>
-                  <td className="px-4 py-3 !text-base">
-                    {item.quantityOfReports}
-                  </td>
-                  {/* Conditionally set the background color based on the status */}
-                  <td className="px-4 py-2">
-                    <div
-                      className={`text-gray200 !text-sm ${
-                        item.status === "Tamamlandı"
-                          ? "bg-greenMediumLight"
-                          : item.status === "Gözlənilir"
-                          ? "bg-redLow"
-                          : ""
-                      } rounded-md py-1 flex items-center justify-center w-[110px]`}
-                    >
-                      {item.status}
-                    </div>
-                  </td>
-
-                  <td className="px-4 py-3 text-linkBlue !text-base flex items-center">
-                    <button onClick={() => handleDetailNavigation(item.slug)}>
-                      Bax &gt;
-                    </button>
+                    Nəticə tapılmadı.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8" className="px-4 py-3 text-center text-gray-500">
-                  Nəticə tapılmadı.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-        {/* Bottom Controls */}
-        <div className="flex justify-between items-center mt-5 pb-5">
+              )}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="flex lg:flex-row flex-col justify-between items-center mt-5 pb-5">
           {/* Items Per Page Selector */}
           <div className="flex items-center space-x-2">
             <label htmlFor="itemsPerPage" className="mr-2">
@@ -525,7 +530,7 @@ function ReportTable({ selectedRows, setSelectedRows }) {
 
           {/* Pagination */}
           {pageCount > 1 && (
-            <div>
+            <div className="flex justify-center mt-4 pb-9">
               <ReactPaginate
                 previousLabel={"<"}
                 nextLabel={">"}
@@ -535,25 +540,18 @@ function ReportTable({ selectedRows, setSelectedRows }) {
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
                 containerClassName="flex justify-center items-center gap-2 w-full"
-                pageClassName="inline-block" // Minimal styling on li elements
-                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
-                activeClassName="" // Remove active styles from li elements
-                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
+                pageClassName="inline-block"
+                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
+                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
                 previousClassName={currentPage === 0 ? "text-gray-300" : ""}
                 previousLinkClassName={
                   currentPage === 0 ? "cursor-not-allowed" : ""
-                }
-                previousLinkStyle={
-                  currentPage === 0 ? { cursor: "not-allowed" } : {}
                 }
                 nextClassName={
                   currentPage === pageCount - 1 ? "text-gray-300" : ""
                 }
                 nextLinkClassName={
                   currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
-                }
-                nextLinkStyle={
-                  currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
                 }
               />
             </div>

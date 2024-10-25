@@ -9,6 +9,7 @@ import MembersTable from "@/components/MembersTable";
 import MembersTableorActivityNavigation from "@/components/MembersTableorActivityNavigation";
 import MemberActivity from "@/components/MemberActivity"; // Assuming you have this component
 import DeleteMemberModal from "@/components/DeleteMemberModal";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 function Uzvler() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -261,13 +262,18 @@ function Uzvler() {
 
   return (
     <>
-      <HeaderInternal />
+      <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <OwnerDashboardHeader />
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
+        <div className="hidden lg:block md:w-[20%]">
           <CompanySidebar />
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
 

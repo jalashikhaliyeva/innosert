@@ -7,8 +7,8 @@ function ImtahanNeticeleri() {
   return (
     <>
       <ExamResultHeader />
-      <ExamEndSucces />
-      {/* <ExamEndFail /> */}
+      {/* <ExamEndSucces />  */}
+      <ExamEndFail />
     </>
   );
 }

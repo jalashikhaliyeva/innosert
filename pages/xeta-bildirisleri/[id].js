@@ -7,19 +7,25 @@ import ReportTable from "@/components/ReportTable";
 import ReportTitleNavigation from "@/components/ReportTitleNavigation";
 import ReportSingleNavigationTitle from "@/components/ReportSingleNavigationTitle";
 import ReportSingleTable from "@/components/ReportSingleTable";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 
 function ReportsSingle() {
   // Initialize state for selected rows
 
   return (
     <>
-      <HeaderInternal />
+     <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <OwnerDashboardHeader />
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
+      <div className="hidden lg:block md:w-[20%]">
           <CompanySidebar />
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
             <ReportSingleNavigationTitle />

@@ -3,43 +3,24 @@ import React, { useState } from "react";
 function EditQuestionDetails() {
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState([]);
-
   const [isTimeDropdownOpen, setIsTimeDropdownOpen] = useState(false);
   const [selectedTime, setSelectedTime] = useState("");
-
   const [isLevelDropdownOpen, setIsLevelDropdownOpen] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState("");
 
-  const categories = [
-    "Category 1",
-    "Category 2",
-    "Category 3",
-    // Add more categories as needed
-  ];
-
-  const timeOptions = [
-    "5 dəqiqə",
-    "10 dəqiqə",
-    "15 dəqiqə",
-    // Add more time options as needed
-  ];
-
-  const levelOptions = [
-    "Asan",
-    "Orta",
-    "Çətin",
-    // Add more level options as needed
-  ];
+  const categories = ["Category 1", "Category 2", "Category 3"];
+  const timeOptions = ["5 dəqiqə", "10 dəqiqə", "15 dəqiqə"];
+  const levelOptions = ["Asan", "Orta", "Çətin"];
 
   return (
-    <div className="flex flex-col bg-white justify-center p-10 rounded-lg mt-5 w-[75%] mx-auto ">
-      <h1 className="font-gilroy text-textSecondaryDefault text-2xl font-medium leading-8">
+    <div className="flex flex-col bg-white justify-center p-4 md:p-10 rounded-lg mt-5 w-full md:w-[75%] mx-auto">
+      <h1 className="font-gilroy text-textSecondaryDefault text-xl md:text-2xl font-medium leading-8 mb-4">
         Detallar
       </h1>
-      <div className="flex flex-row gap-6">
+      <div className="flex flex-col md:flex-row gap-4 md:gap-6">
         {/* Categories Dropdown */}
-        <div className="flex flex-col w-[45%]">
-          <p className="font-gilroy text-inputDefaultLabel text-lg font-normal tracking-036 mb-2">
+        <div className="flex flex-col w-full md:w-[45%]">
+          <p className="font-gilroy text-inputDefaultLabel text-base md:text-lg font-normal tracking-036 mb-2">
             Aid olduğu imtahan
           </p>
           <div className="mb-4">
@@ -60,7 +41,7 @@ function EditQuestionDetails() {
                         key={index}
                         className="flex font-gilroy items-center bg-[#EBEBEB] text-black px-2 py-0 rounded-md mr-2"
                       >
-                        <span className="font-gilroy text-base">
+                        <span className="font-gilroy text-sm md:text-base">
                           {category}
                         </span>
                         <button
@@ -125,14 +106,12 @@ function EditQuestionDetails() {
                         }`}
                         onClick={() => {
                           if (isSelected) {
-                            // Remove category
                             setSelectedCategories(
                               selectedCategories.filter(
                                 (item) => item !== category
                               )
                             );
                           } else {
-                            // Add category
                             setSelectedCategories([
                               ...selectedCategories,
                               category,
@@ -162,65 +141,10 @@ function EditQuestionDetails() {
             </div>
           </div>
         </div>
-        {/* End of Categories Dropdown */}
-
-        {/* Time Dropdown */}
-        {/* <div className="flex flex-col w-[25%]">
-          <p className="font-gilroy text-inputDefaultLabel text-lg font-normal tracking-036 mb-2">
-            Suala ayrılan vaxt
-          </p>
-          <div className="relative">
-          
-            <div
-              className="w-full border border-gray-300 rounded-md py-2.5 px-4 text-[#B2B2B2] cursor-pointer flex justify-between items-center hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus"
-              onClick={() => setIsTimeDropdownOpen(!isTimeDropdownOpen)}
-            >
-              <span
-                className={
-                  selectedTime
-                    ? "text-black font-gilroy"
-                    : "text-[#B2B2B2] font-gilroy"
-                }
-              >
-                {selectedTime || "Vaxt seçin"}
-              </span>
-              <svg
-                className={`w-4 h-4 transition-transform ${
-                  isTimeDropdownOpen ? "transform rotate-180" : ""
-                }`}
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path d="M19 9l-7 7-7-7" />
-              </svg>
-            </div>
-
-        
-            {isTimeDropdownOpen && (
-              <div className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto">
-                {timeOptions.map((timeOption, index) => (
-                  <div
-                    key={index}
-                    className="py-2 px-4 hover:bg-gray-100 cursor-pointer text-black"
-                    onClick={() => {
-                      setSelectedTime(timeOption);
-                      setIsTimeDropdownOpen(false);
-                    }}
-                  >
-                    {timeOption}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        </div> */}
-        {/* End of Time Dropdown */}
 
         {/* Level Dropdown */}
-        <div className="flex flex-col w-[50%]">
-          <p className="font-gilroy text-inputDefaultLabel text-lg font-normal tracking-036 mb-2">
+        <div className="flex flex-col w-full md:w-[50%]">
+          <p className="font-gilroy text-inputDefaultLabel text-base md:text-lg font-normal tracking-036 mb-2">
             Çətinlik dərəcəsi
           </p>
           <div className="relative">
@@ -253,7 +177,7 @@ function EditQuestionDetails() {
 
             {/* Dropdown Menu */}
             {isLevelDropdownOpen && (
-              <div className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto ">
+              <div className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-auto">
                 {levelOptions.map((levelOption, index) => (
                   <div
                     key={index}
@@ -270,7 +194,6 @@ function EditQuestionDetails() {
             )}
           </div>
         </div>
-        {/* End of Level Dropdown */}
       </div>
     </div>
   );

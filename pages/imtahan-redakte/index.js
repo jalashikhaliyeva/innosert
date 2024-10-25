@@ -6,11 +6,17 @@ import { UserContext } from "@/shared/context/UserContext";
 import Container from "@/components/Container";
 import ExamEditTitleNavigation from "@/components/ExamEditTitleNavigation";
 import EditExamTabGroup from "@/components/EditExamTabGroup";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 
 function ImtahanRedakte() {
   return (
     <>
-      <HeaderInternal />
+     <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <TeacherDashboardHeader />
+      </div>
       <Container>
         <Breadcrumb />
         <ExamEditTitleNavigation />

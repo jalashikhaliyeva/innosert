@@ -11,6 +11,8 @@ import DeleteModal from "@/components/DeleteModal"; // Import DeleteModal
 import EditFolderModal from "@/components/EditFolderModal";
 import TeacherSidebar from "@/components/TeacherSidebar";
 import { UserContext } from "@/shared/context/UserContext";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 
 function ImtahanSUallariTable() {
   const { user } = useContext(UserContext);
@@ -44,14 +46,20 @@ function ImtahanSUallariTable() {
   };
   return (
     <>
-      <HeaderInternal />
+      <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
+        <div className="hidden lg:block md:w-[20%]">
           {user?.data.roles === "Teacher" && <TeacherSidebar />}
           {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
             <SuallarTableNavigationTitle

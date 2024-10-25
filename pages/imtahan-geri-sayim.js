@@ -5,7 +5,7 @@ import React from "react";
 function PreExam() {
   return (
     <>
-      <ExamHeader />
+      {/* <ExamHeader /> */}
       <PreExamTimer />
     </>
   );

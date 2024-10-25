@@ -26,7 +26,7 @@ const Footer = React.forwardRef((props, ref) => {
   return (
     <div
       ref={ref}
-      className="bg-brandBlue700  flex-col justify-between py-8 my-t shadow-createBox"
+      className="bg-brandBlue700  flex-col justify-between py-8 my-t shadow-createBox mt-10"
     >
       <Container>
         <div className="flex justify-between border-b-[1px] border-footerGrayText pb-7">

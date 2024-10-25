@@ -241,11 +241,11 @@ const QuestionFilesTeacher = ({
   return (
     <div className="py-6">
       {viewMode === "grid" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {sortedFiles.map((file, index) => (
             <div
               key={file.slug}
-              className="relative flex flex-col p-6 rounded-[10px] border border-gray-100 bg-white shadow-createBox"
+              className="relative flex flex-col p-5  md:p-6 rounded-[10px] border border-gray-100 bg-white shadow-createBox"
             >
               <div className="flex w-full justify-between items-center mb-4">
                 <input
@@ -272,7 +272,7 @@ const QuestionFilesTeacher = ({
                   >
                     <ul>
                       <li
-                        className="flex items-center  gap-2  px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                        className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
                         onClick={() => {
                           openEditFolderModal(file);
                           setDropdownVisible(null); // Close the dropdown
@@ -282,7 +282,7 @@ const QuestionFilesTeacher = ({
                         Redaktə et
                       </li>
                       <li
-                        className="flex items-center  gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                        className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
                         onClick={() => {
                           openDeleteFolderModal(file);
                           setDropdownVisible(null); // Close the dropdown
@@ -335,7 +335,7 @@ const QuestionFilesTeacher = ({
                     </div>
                   </div>
 
-                  <div className="w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
+                  <div className="md:w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
 
                   <div className="text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
                     {formatDate(file.date)}
@@ -389,7 +389,7 @@ const QuestionFilesTeacher = ({
                   <h3 className="text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
                     {file.name}
                   </h3>
-                  <div className="text-sm font-gilroy text-gray300 font-medium">
+                  <div className="hidden md:block text-xs  md:text-sm font-gilroy text-gray300 font-medium">
                     {`${file.year} • ${file.difficulty} • ${file.level} • ${file.creator}`}
                   </div>
                   <div className="text-sm leading-normal font-gilroy font-medium text-gray90">

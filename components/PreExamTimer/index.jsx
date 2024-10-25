@@ -34,7 +34,7 @@ function PreExamTimer({ maxTime = 5 }) {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <h2 className="text-3xl mb-2 text-gray-700 font-gilroy font-medium">
+      <h2 className="md:text-3xl text-lg mb-2 text-gray-700 font-gilroy font-medium">
         İmtahanın başlamasına son
       </h2>
       <div className="relative w-64 h-64">

@@ -6,6 +6,7 @@ import TeacherSidebar from "@/components/TeacherSidebar";
 import { useRouter } from "next/router";
 import SubExamsListTeacher from "@/components/SubExamsListTeacher";
 import SubExamsListNavigationTeacher from "@/components/SubExamsListNavigationTeacher";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 
 function SubImtahan() {
   const router = useRouter();
@@ -32,12 +33,17 @@ function SubImtahan() {
 
   return (
     <>
-      <HeaderInternal />
+     <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <TeacherDashboardHeader />
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
+      <div className="hidden lg:block md:w-[20%]">
           <TeacherSidebar />
         </div>
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
             <SubExamsListNavigationTeacher

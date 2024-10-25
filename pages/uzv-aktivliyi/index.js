@@ -5,17 +5,23 @@ import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
 import MemberActivityQuestionOrExam from "@/components/MemberActivityQuestionOrExam";
 import MemberActivityName from "@/components/MemberActivityName";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 
 function UzvAktivliyi() {
   return (
     <>
-      <HeaderInternal />
+    <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <OwnerDashboardHeader />
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
+      <div className="hidden lg:block md:w-[20%]">
           <CompanySidebar />
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
             <MemberActivityName />

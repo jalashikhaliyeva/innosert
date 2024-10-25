@@ -11,8 +11,8 @@ function ExamFooter({ onNext }) {
 
   return (
     <>
-      <div className="flex !justify-end py-6 mt-auto bg-white shadow-Cardshadow">
-        <div className="flex gap-6 items-center mr-[100px]">
+      <div className="flex !justify-end p-5 lg:py-6 m-5 lg:m-0 mt-auto bg-white shadow-Cardshadow">
+        <div className="flex gap-6 items-center lg:mr-[100px]">
           {/* Open Modal on  */}
           <p
             onClick={openModal}

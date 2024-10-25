@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import WarningQuestion from "../WarningQuestion";
+
 function MultipleChoiceQuestion() {
   const [selectedOption, setSelectedOption] = useState(null);
 
@@ -15,14 +16,14 @@ function MultipleChoiceQuestion() {
   ];
 
   return (
-    <div className="py-10 px-40 mt-16  w-[75%] bg-white shadow-Cardshadow flex flex-col justify-center w-[75%] mx-auto rounded-lg">
+    <div className="py-6 px-4 sm:py-8 sm:px-8 md:py-10 md:px-20 mt-8 w-full sm:w-[90%] md:w-[75%] bg-white shadow-Cardshadow flex flex-col justify-center mx-auto rounded-lg">
       <WarningQuestion />
-      <h2 className="font-gilroy text-xl font-semibold leading-normal text-darkBlue400 mb-8">
+      <h2 className="font-gilroy text-lg sm:text-xl md:text-2xl font-semibold leading-normal text-darkBlue400 mb-6 sm:mb-8">
         Aşağıdakı verilmiş cavablardan hansılar Exceldə pəncərəsə bölməsinə
         aiddir?
       </h2>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-3 sm:gap-4">
         {options.map((option, index) => (
           <div
             key={index}
@@ -48,7 +49,7 @@ function MultipleChoiceQuestion() {
                   <span className="w-2 h-2 bg-brandBlue500 rounded-full"></span>
                 )}
               </span>
-              <span className="ml-3 font-gilroy">
+              <span className="ml-2 sm:ml-3 font-gilroy">
                 {String.fromCharCode(65 + index)})
               </span>
             </label>

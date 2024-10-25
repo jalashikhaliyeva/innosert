@@ -3,18 +3,19 @@ import Breadcrumb from "@/components/Breadcrumb";
 import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
 import TeacherSidebar from "@/components/TeacherSidebar";
-import CompanySidebar from "@/components/CompanySidebar"; 
+import CompanySidebar from "@/components/CompanySidebar";
 import AddExamModal from "@/components/AddExamModal";
 import DeleteModal from "@/components/DeleteModal";
 import EditExamModal from "@/components/EditExamModal";
 import ExamDetailsTabGroup from "@/components/ExamDetailsTabGroup";
 import { UserContext } from "@/shared/context/UserContext";
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 
 function ImtahanDetallari() {
-  const { user } = useContext(UserContext); 
+  const { user } = useContext(UserContext);
   // console.log(user.data.roles, "user imtahan detallari");
-  const router = useRouter(); 
+  const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAddExamModalOpen, setIsAddExamModalOpen] = useState(false);
   const [isEditExamModalOpen, setIsEditExamModalOpen] = useState(false);
@@ -34,13 +35,18 @@ function ImtahanDetallari() {
 
   return (
     <>
-      <HeaderInternal />
+      <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <TeacherDashboardHeader />
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
-        {user?.data.roles === "Teacher" && <TeacherSidebar />}
-        {user?.data.roles === "Owner" && <CompanySidebar />}
+        <div className="hidden lg:block md:w-[20%]">
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
             <ExamDetailsTabGroup />
@@ -50,7 +56,9 @@ function ImtahanDetallari() {
 
       {/* Modals */}
       {isAddExamModalOpen && <AddExamModal onClose={closeAddExamModal} />}
-      {isEditExamModalOpen && <EditExamModal exam={selectedExam} onClose={closeEditExamModal} />}
+      {isEditExamModalOpen && (
+        <EditExamModal exam={selectedExam} onClose={closeEditExamModal} />
+      )}
       {isDeleteModalOpen && <DeleteModal onClose={closeDeleteModal} />}
     </>
   );

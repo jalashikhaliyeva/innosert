@@ -2,86 +2,83 @@ import React from "react";
 
 function PreviewQuestionSection({ selectedOption }) {
   return (
-    <div className="py-10 px-40 bg-white shadow-createBox flex flex-col justify-center w-[75%] mx-auto rounded-lg">
+    <div className="py-10 px-6 md:px-20 lg:px-40 bg-white shadow-createBox flex flex-col justify-center w-full md:w-[85%] lg:w-[75%] mx-auto rounded-lg">
       {/* Render question title and conditionally render content based on selectedOption */}
-      <h2 className="font-gilroy text-xl font-semibold leading-normal text-darkBlue400 mb-8">
-        {/* You can customize this question text or fetch it from state */}
-        Aşağıdakı verilmiş cavablardan hansılar Exceldə pəncərəsə bölməsinə aiddir?
+      <h2 className="font-gilroy text-lg md:text-xl font-semibold leading-normal text-darkBlue400 mb-8">
+        Aşağıdakı verilmiş cavablardan hansılar Exceldə pəncərəsə bölməsinə
+        aiddir?
       </h2>
 
       {selectedOption === "Variantli sual" && (
-        //  <div className="py-10 px-40 bg-white shadow-createBox flex flex-col justify-center rounded-lg">
-        //  <h2 className="font-gilroy text-xl font-semibold leading-normal text-darkBlue400 mb-8">
-        //    Aşağıdakı verilmiş cavablardan hansılar Exceldə pəncərəsə bölməsinə
-        //    aiddir?
-        //  </h2>
-         <div className="flex flex-col gap-4">
-           <div className="flex items-center w-[50%] p-2 rounded-xl border border-green600 font-gilroy text-green600">
-             <label className="flex items-center">
-               <input
-                 type="radio"
-                 name="answer"
-                 className="hidden"
-                 checked
-                 readOnly
-               />
-               <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
-                 <span className="w-2 h-2 bg-brandBlue500 rounded-full"></span>
-               </span>
-               <span className="ml-3 font-gilroy">A)</span>
-             </label>
-             <span className="ml-2">Name box, Formula bar, Cell</span>
-           </div>
-           <div className="flex items-center w-[50%] p-2 rounded-xl border border-buttonGhostPressed font-gilroy text-buttonPressedPrimary">
-             <label className="flex items-center">
-               <input
-                 type="radio"
-                 name="answer"
-                 className="hidden"
-                 checked
-                 readOnly
-               />
-               <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
-                 {/* <span className="w-2 h-2 bg-brandBlue500 rounded-full"></span> */}
-               </span>
-               <span className="ml-3 font-gilroy">B)</span>
-             </label>
-             <span className="ml-2">Name box, Formula bar, Cell</span>
-           </div>
-           <div className="flex items-center w-[50%] p-2 rounded-xl border border-buttonGhostPressed font-gilroy text-buttonPressedPrimary">
-             <label className="flex items-center">
-               <input
-                 type="radio"
-                 name="answer"
-                 className="hidden"
-                 checked
-                 readOnly
-               />
-               <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
-                 {/* <span className="w-2 h-2 bg-brandBlue500 rounded-full"></span> */}
-               </span>
-               <span className="ml-3 font-gilroy">C)</span>
-             </label>
-             <span className="ml-2">Name box, Formula bar, Cell</span>
-           </div>
-           <div className="flex items-center w-[50%] p-2 rounded-xl border border-buttonGhostPressed font-gilroy text-buttonPressedPrimary">
-             <label className="flex items-center">
-               <input
-                 type="radio"
-                 name="answer"
-                 className="hidden"
-                 checked
-                 readOnly
-               />
-               <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
-                 {/* <span className="w-2 h-2 bg-brandBlue500 rounded-full"></span> */}
-               </span>
-               <span className="ml-3 font-gilroy">D)</span>
-             </label>
-             <span className="ml-2">Name box, Formula bar, Cell</span>
-           </div>
-         </div>
-    //    </div>
+        <div className="flex flex-col gap-4">
+          <div className="flex items-center w-full md:w-[70%] lg:w-[50%] p-2 rounded-xl border border-green600 font-gilroy text-green600">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="answer"
+                className="hidden"
+                checked
+                readOnly
+              />
+              <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
+                <span className="w-2 h-2 bg-brandBlue500 rounded-full"></span>
+              </span>
+              <span className="ml-3 font-gilroy">A)</span>
+            </label>
+            <span className="ml-2">Name box, Formula bar, Cell</span>
+          </div>
+
+          <div className="flex items-center w-full md:w-[70%] lg:w-[50%] p-2 rounded-xl border border-buttonGhostPressed font-gilroy text-buttonPressedPrimary">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="answer"
+                className="hidden"
+                checked
+                readOnly
+              />
+              <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
+                {/* Placeholder for radio check */}
+              </span>
+              <span className="ml-3 font-gilroy">B)</span>
+            </label>
+            <span className="ml-2">Palitra, Name box, Columns</span>
+          </div>
+
+          <div className="flex items-center w-full md:w-[70%] lg:w-[50%] p-2 rounded-xl border border-buttonGhostPressed font-gilroy text-buttonPressedPrimary">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="answer"
+                className="hidden"
+                checked
+                readOnly
+              />
+              <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
+                {/* Placeholder for radio check */}
+              </span>
+              <span className="ml-3 font-gilroy">C)</span>
+            </label>
+            <span className="ml-2">Cell, Accessories, Modul</span>
+          </div>
+
+          <div className="flex items-center w-full md:w-[70%] lg:w-[50%] p-2 rounded-xl border border-buttonGhostPressed font-gilroy text-buttonPressedPrimary">
+            <label className="flex items-center">
+              <input
+                type="radio"
+                name="answer"
+                className="hidden"
+                checked
+                readOnly
+              />
+              <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
+                {/* Placeholder for radio check */}
+              </span>
+              <span className="ml-3 font-gilroy">D)</span>
+            </label>
+            <span className="ml-2">Ribbon, Sazlama paneli</span>
+          </div>
+        </div>
       )}
 
       {selectedOption === "Açıq sual" && (

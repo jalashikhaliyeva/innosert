@@ -13,8 +13,8 @@ function GeneralInfo() {
         suspendisse velit ornare.Metus cursus velit molestie turpis pulvinar sit
         interdum pharetra.
       </p>
-      <div className="flex flex-row gap-8 mt-6">
-        <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center">
+      <div className="flex  flex-col lg:flex-row gap-8 mt-6">
+        <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">
           <h4 className="font-gilroy text-textSecondaryDefault tracking-036 text-lg">
             Ayrılan vaxt
           </h4>
@@ -22,7 +22,7 @@ function GeneralInfo() {
             60 san
           </p>
         </div>
-        <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center">
+        <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">
           <h4 className="font-gilroy text-textSecondaryDefault tracking-036 text-lg">
             Qiyməti
           </h4>
@@ -30,7 +30,7 @@ function GeneralInfo() {
             60$
           </p>
         </div>
-        <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center">
+        <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">
           <h4 className="font-gilroy text-textSecondaryDefault tracking-036 text-lg">
             İmtahan növü
           </h4>
@@ -38,7 +38,7 @@ function GeneralInfo() {
             Kod ilə ( MY13HS64 )
           </p>
         </div>
-        <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center">
+        <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">
           <h4 className="font-gilroy text-textSecondaryDefault tracking-036 text-lg">
             Kateqoriyalar
           </h4>

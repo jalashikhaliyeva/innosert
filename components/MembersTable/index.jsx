@@ -183,7 +183,8 @@ function MembersTable({
   return (
     <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white">
       {/* Table */}
-      <div className="w-full overflow-x-auto min-h-[400px] flex flex-col relative">
+      <div className="w-full min-h-[400px] flex flex-col relative">
+      <div className="overflow-x-auto overflow-y-auto ">
         <table className="min-w-full table-auto border-collapse border-borderTableCel">
           <thead className="border-b border-borderTableCel">
             <tr>
@@ -554,8 +555,9 @@ function MembersTable({
             )}
           </tbody>
         </table>
+        </div>
         {/* Bottom Controls */}
-        <div className="flex justify-between items-center mt-5 pb-5">
+        <div className="flex flex-col lg:flex-row justify-between items-center mt-5 pb-5">
           {/* Items Per Page Selector */}
           <div className="flex items-center space-x-2">
             <label htmlFor="itemsPerPage" className="mr-2">

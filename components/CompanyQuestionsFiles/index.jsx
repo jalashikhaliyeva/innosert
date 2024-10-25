@@ -335,7 +335,7 @@ const QuestionFiles = ({
                     </div>
                   </div>
 
-                  <div className="w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
+                  <div className="md:w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
 
                   <div className="text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
                     {formatDate(file.date)}

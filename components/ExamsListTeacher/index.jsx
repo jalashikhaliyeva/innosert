@@ -217,7 +217,7 @@ const ExamsListTeacher = ({
   return (
     <div className="py-6">
       {viewMode === "grid" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {sortedExams.map((exam, index) => (
             <div
               key={exam.slug}
@@ -315,7 +315,7 @@ const ExamsListTeacher = ({
                       )}
                     </div>
                     <div className="relative group ">
-                      <h3 className="text-lg font-gilroy  leading-7.5 text-brandBlue700 font-medium truncate max-w-xs">
+                      <h3 className="text-lg font-gilroy  leading-7.5 text-brandBlue700 font-medium truncate  md:max-w-xs max-w-[60px]">
                         {exam.name.length > 14
                           ? `${exam.name.slice(0, 14)}...`
                           : exam.name}
@@ -362,7 +362,7 @@ const ExamsListTeacher = ({
                     </div>
                   )}
 
-                  <div className="w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
+                  <div className="md:w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
 
                   <div className="text-sm leading-normal font-gilroy font-medium text-arrowButtonGray"></div>
                 </p>
@@ -449,11 +449,11 @@ const ExamsListTeacher = ({
                   )}
                 </div>
                 <div className="flex items-center w-full justify-between">
-                  <h3 className="text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
+                  <h3 className="text-sm md:text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
                     {exam.name}
                   </h3>
                   {!exam.folder && (
-                    <div className="text-sm font-gilroy text-gray300 font-medium">
+                    <div className="text-sm hidden md:block font-gilroy text-gray300 font-medium">
                       {`${exam.subject} • ${exam.level} • ${exam.difficulty}`}
                     </div>
                   )}

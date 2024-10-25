@@ -135,18 +135,18 @@ function GeneralInfoEditExam() {
   }
 
   return (
-    <div className="bg-white rounded-xl py-10 px-14 flex flex-col justify-center items-center w-[88%] m-auto">
-      <div className="flex flex-col gap-1">
+    <div className="bg-white rounded-xl py-10 px-6 sm:px-10 flex flex-col items-center w-full max-w-[90%] mx-auto">
+   <div className="flex flex-col gap-1 w-full">
         <h2 className="font-gilroy text-2xl leading-8 font-medium text-textSecondaryDefault mb-5">
           Detallar
         </h2>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 w-full">
           {/* First Textarea */}
-          <div>
+          <div className="w-full">
             <p className="font-gilroy text-xl text-gray200 mb-1">
               İmtahanın adı
             </p>
-            <div className="group flex py-3 px-4 items-center border border-buttonPrimaryDefault  hover:border-inputBorderHover rounded-lg w-[580px] bg-inputBgDefault hover:bg-inputBgHover ">
+            <div className="group flex py-3 px-4 items-center border border-buttonPrimaryDefault hover:border-inputBorderHover rounded-lg w-full bg-inputBgDefault hover:bg-inputBgHover">
               <FaPen className="text-gray200 mr-3 group-hover:text-gray800" />
               <textarea
                 ref={textareaRefs[0]}
@@ -160,11 +160,11 @@ function GeneralInfoEditExam() {
           </div>
 
           {/* Second Textarea */}
-          <div>
+          <div className="w-full"> 
             <p className="font-gilroy text-xl text-gray200 mb-1">
               İmtahan haqqında
             </p>
-            <div className="group flex py-3 px-4 items-center border border-buttonPrimaryDefault  hover:border-inputBorderHover rounded-lg w-[580px] bg-inputBgDefault hover:bg-inputBgHover">
+            <div className="group w-full flex py-3 px-4 items-center border border-buttonPrimaryDefault  hover:border-inputBorderHover rounded-lg w-[580px] bg-inputBgDefault hover:bg-inputBgHover">
               <FaPen className="text-gray200 mr-3 group-hover:text-gray800" />
               <textarea
                 ref={textareaRefs[1]}
@@ -178,11 +178,11 @@ function GeneralInfoEditExam() {
           </div>
 
           {/* Third Section - Category Dropdown */}
-          <div>
+          <div className="w-full">
             <p className="font-gilroy text-xl text-gray200 mb-1">Kateqoriya</p>
-            <div className="relative">
+            <div className="relative w-full">
               <div
-                className={`w-[580px] border font-gilroy border-gray-700 rounded-md py-3 px-4 cursor-pointer flex flex-wrap items-center bg-inputBgDefault dropdown-input hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus ${
+                className={`w-full border font-gilroy border-gray-700 rounded-md py-3 px-4 cursor-pointer flex flex-wrap items-center bg-inputBgDefault dropdown-input hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus ${
                   isCategoryDropdownOpen ? "border-inputRingFocus" : ""
                 }`}
                 onClick={() =>
@@ -194,7 +194,7 @@ function GeneralInfoEditExam() {
                     {selectedCategories.map((category, index) => (
                       <div
                         key={index}
-                        className="flex items-center bg-[#EBEBEB] text-black px-2 py-2 rounded-md mr-2 mb-1"
+                        className="flex !w-full items-center bg-[#EBEBEB] text-black px-2 py-2 rounded-md mr-2 mb-1"
                       >
                         <span>{category}</span>
                         <button
@@ -247,7 +247,7 @@ function GeneralInfoEditExam() {
               </div>
 
               {isCategoryDropdownOpen && (
-                <div className="absolute z-10 w-[580px] bg-inputBgDefault border border-gray-600 rounded-md mt-1 max-h-[7.5rem] overflow-y-scroll category-dropdown">
+                <div className="absolute z-10 w-full bg-inputBgDefault border border-gray-600 rounded-md mt-1 max-h-[7.5rem] overflow-y-scroll category-dropdown">
                   {categories.map((category, index) => {
                     const isSelected = selectedCategories.includes(category);
                     return (
@@ -292,9 +292,9 @@ function GeneralInfoEditExam() {
           </div>
 
           {/* Fourth Textarea */}
-          <div>
+          <div className="w-full">
             <p className="font-gilroy text-xl text-gray200">İmtahan qiyməti</p>
-            <div className="group flex py-3 px-4 items-center border border-buttonPrimaryDefault hover:border-inputBorderHover rounded-lg w-[580px] bg-inputBgDefault hover:bg-inputBgHover">
+            <div className="group flex w-full py-3 px-4 items-center border border-buttonPrimaryDefault hover:border-inputBorderHover rounded-lg bg-inputBgDefault hover:bg-inputBgHover">
               <FaPen className="text-gray200 mr-3 group-hover:text-gray800" />
               <textarea
                 ref={textareaRefs[3]}
@@ -307,7 +307,7 @@ function GeneralInfoEditExam() {
             </div>
           </div>
 
-          <div className="mt-8">
+          <div className="mt-8 w-full">
             <p className="font-medium leading-8 font-gilroy text-2xl text-textSecondaryDefault mb-5 flex items-center gap-3">
               Imtahan müddətinin təyin olunması
               <div className="relative inline-block z-20">

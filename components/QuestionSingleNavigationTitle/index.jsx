@@ -11,7 +11,7 @@ function QuestionSingleNavigationTitle() {
   };
 
   return (
-    <div className="flex justify-between relative font-gilroy">
+    <div className="flex justify-between relative font-gilroy mb-5 md:mb-0">
       <h1 className="text-2xl font-medium leading-8">
         Sual
       </h1>

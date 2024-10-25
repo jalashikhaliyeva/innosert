@@ -30,7 +30,7 @@ function ExamHeader() {
     <div className="bg-boxGrayBodyColor shadow-certificate py-5">
       <Container>
         <div className="flex items-center justify-between bg-boxGrayBodyColor">
-          <div>
+          <div className="hidden lg:block">
             <p className="font-gilroy text-brandBlue500 font-normal tracking-036 text-lg">
               Microsoft office specialist excel expert
             </p>
@@ -39,10 +39,10 @@ function ExamHeader() {
           <div className="flex gap-6 items-center">
             {/* First Column */}
             <div className="flex flex-col">
-              <h2 className="font-gilroy text-gray90 font-normal tracking-036 text-lg">
+              <h2 className="hidden lg:block font-gilroy text-gray90 font-normal tracking-036 :text-lg">
                 Sualın xalı
               </h2>
-              <p className="font-gilroy text-brandBlue500 text-2xl font-normal leading-normal">
+              <p className="font-gilroy text-brandBlue500 text-lg  lg:text-2xl font-normal leading-normal">
                 1 xal
               </p>
             </div>
@@ -54,10 +54,10 @@ function ExamHeader() {
 
             {/* Second Column */}
             <div className="flex flex-col">
-              <h2 className="font-gilroy text-gray90 font-normal tracking-036 text-lg">
+              <h2 className="hidden lg:block font-gilroy text-gray90 font-normal tracking-036 text-lg">
                 Sual sayı
               </h2>
-              <p className="font-gilroy text-brandBlue500 text-2xl font-normal leading-normal">
+              <p className="font-gilroy text-brandBlue500 text-lg  lg:text-2xl font-normal leading-normal">
                 1/20
               </p>
             </div>
@@ -71,7 +71,7 @@ function ExamHeader() {
             {!isCountdownPage && (
               <div className="flex gap-2 items-center">
                 <MdOutlineTimer
-                  className={`text-3xl ${
+                  className={`text-3xl hidden lg:block ${
                     time <= 15 ? "text-red-600" : "text-green600"
                   }`}
                 />

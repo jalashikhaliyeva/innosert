@@ -227,10 +227,9 @@ function EditQuestionSection({ selectedOption }) {
 
   return (
     <>
-      <div className="flex items-start py-10 bg-white justify-center rounded-lg w-[75%] mx-auto">
-        <form className="w-[42%]">
+      <div className="flex flex-col lg:flex-row items-start py-10 bg-white justify-center rounded-lg w-full mx-auto">
+        <form className="w-full lg:w-[42%] px-4">
           {/* Editor Section */}
-
           <h2 className="text-textSecondaryDefault leading-8 text-2xl font-gilroy font-medium mb-5">
             Sual
           </h2>
@@ -245,13 +244,13 @@ function EditQuestionSection({ selectedOption }) {
             </label>
             {!isEditingTitle ? (
               <textarea
-                className="p-4 border rounded-lg bg-boxGrayBodyColor font-gilroy border-arrowButtonGray cursor-pointer text-grayButtonText text-lg w-[350px] h-[150px]"
+                className="p-4 border rounded-lg bg-boxGrayBodyColor font-gilroy border-arrowButtonGray cursor-pointer text-grayButtonText text-lg w-full h-[150px]"
                 onClick={() => handleEditClick("title")}
               >
                 Sual başlığını əlavə edin
               </textarea>
             ) : (
-              <div style={{ width: "350px" }} ref={editorRefTitle}>
+              <div style={{ width: "100%" }} ref={editorRefTitle}>
                 <FroalaEditorComponent
                   tag="textarea"
                   config={{
@@ -282,7 +281,7 @@ function EditQuestionSection({ selectedOption }) {
                     heightMin: "100",
                     editorClass: "editor-custom-bg", // Apply custom class for editor area
                     toolbarSticky: false, // Disable sticky toolbar to allow custom size
-                    toolbarContainerClass: "editor-toolbar-custom", // Apply custom class for tool
+                    toolbarContainerClass: "editor-toolbar-custom", // Apply custom class for toolbar
                   }}
                 />
               </div>
@@ -299,13 +298,13 @@ function EditQuestionSection({ selectedOption }) {
             </label>
             {!isEditingCondition ? (
               <textarea
-                className="p-4 border rounded-lg bg-boxGrayBodyColor font-gilroy border-arrowButtonGray cursor-pointer text-grayButtonText text-lg h-[150px] w-[350px]"
+                className="p-4 border rounded-lg bg-boxGrayBodyColor font-gilroy border-arrowButtonGray cursor-pointer text-grayButtonText text-lg h-[150px] w-full"
                 onClick={() => handleEditClick("condition")}
               >
                 İstifadəçi təcrübəsinin əsas qurucusu və davamçısı kim sayılır?
               </textarea>
             ) : (
-              <div style={{ width: "350px" }} ref={editorRefCondition}>
+              <div style={{ width: "100%" }} ref={editorRefCondition}>
                 <FroalaEditorComponent
                   tag="textarea"
                   config={{
@@ -346,7 +345,7 @@ function EditQuestionSection({ selectedOption }) {
 
         {/* Conditionally render based on selectedOption */}
         {selectedOption === "Variantli sual" && (
-          <div className="flex flex-col gap-3 w-1/2">
+          <div className="flex flex-col gap-3 w-full lg:w-1/2 px-4">
             <h2 className="text-textSecondaryDefault leading-8 text-2xl font-gilroy font-medium mb-5">
               Cavablar
             </h2>
@@ -373,7 +372,7 @@ function EditQuestionSection({ selectedOption }) {
                   {!isEditingAnswers[answer.id] ? (
                     <input
                       type="text"
-                      className={`py-3 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-[460px] ${
+                      className={`py-3 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full ${
                         answer.correct
                           ? "border-green500 bg-green100"
                           : "border-arrowButtonGray bg-boxGrayBodyColor"
@@ -383,7 +382,7 @@ function EditQuestionSection({ selectedOption }) {
                     />
                   ) : (
                     <div
-                      style={{ width: "400px" }}
+                      style={{ width: "100%" }}
                       ref={(el) => {
                         if (el) {
                           answerRefs.current[answer.id] = el;
@@ -420,7 +419,7 @@ function EditQuestionSection({ selectedOption }) {
                           heightMin: "100",
                           editorClass: "editor-custom-bg", // Apply custom class for editor area
                           toolbarSticky: false, // Disable sticky toolbar to allow custom size
-                          toolbarContainerClass: "editor-toolbar-custom", // Apply custom class for tool
+                          toolbarContainerClass: "editor-toolbar-custom", // Apply custom class for toolbar
                         }}
                       />
                     </div>
@@ -439,7 +438,7 @@ function EditQuestionSection({ selectedOption }) {
             ))}
 
             <button
-              className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-[176px]"
+              className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-full lg:w-[176px]"
               onClick={handleAddVariant}
             >
               <FaPlus />
@@ -449,27 +448,27 @@ function EditQuestionSection({ selectedOption }) {
         )}
 
         {selectedOption === "Açıq sual" && (
-          <div className="flex flex-col gap-3 w-1/2">
+          <div className="flex flex-col gap-3 w-full lg:w-1/2 px-4">
             <h2 className="text-textSecondaryDefault leading-8 text-2xl font-gilroy font-medium mb-5">
               Cavab
             </h2>
             <div className="flex flex-col mb-4">
-            <label
-              htmlFor="editor"
-              className="mb-3 block font-gilroy text-xl leading-6 font-normal text-brandBlue300"
-            >
-             Düzgün cavab
-            </label>
+              <label
+                htmlFor="editor"
+                className="mb-3 block font-gilroy text-xl leading-6 font-normal text-brandBlue300"
+              >
+                Düzgün cavab
+              </label>
               <div className="flex items-center gap-2">
                 {!isEditingAciqSual ? (
                   <input
                     type="text"
-                    className="py-3 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-[460px] border-green500 bg-green100"
+                    className="py-3 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full border-green500 bg-green100"
                     placeholder="Cavabı əlavə edin"
                     onClick={() => handleEditClick("aciqSual")}
                   />
                 ) : (
-                  <div style={{ width: "460px" }} ref={aciqSualRef}>
+                  <div style={{ width: "100%" }} ref={aciqSualRef}>
                     <FroalaEditorComponent
                       tag="textarea"
                       config={{
@@ -511,7 +510,7 @@ function EditQuestionSection({ selectedOption }) {
         )}
 
         {selectedOption === "Kombinasiya sualı" && (
-          <div className="w-1/2">
+          <div className="w-full lg:w-1/2 px-4">
             {/* Render your Kombinasiya sualı component or content here */}
             <h2 className="text-textSecondaryDefault leading-8 text-2xl font-gilroy font-medium mb-5">
               Kombinasiya sualı bölməsi

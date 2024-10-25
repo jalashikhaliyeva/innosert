@@ -13,6 +13,7 @@ import EditFolderModal from "@/components/EditFolderModal";
 import DeleteFolderModal from "@/components/DeleteFolderModal";
 import TeacherSidebar from "@/components/TeacherSidebar";
 import QuestionFilesTeacher from "@/components/QuestionFilesTeacher";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 
 function SuallarToplusu() {
   const [viewMode, setViewMode] = useState("grid");
@@ -63,19 +64,24 @@ function SuallarToplusu() {
 
   return (
     <>
-      <HeaderInternal />
+      <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <TeacherDashboardHeader />
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
+        <div className="hidden lg:block md:w-[20%]">
           <TeacherSidebar />
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
             <CompanyQuestionsNav
               viewMode={viewMode}
               setViewMode={setViewMode}
-              sortOption={sortOption}        
+              sortOption={sortOption}
               setSortOption={setSortOption}
               isCheckboxSelected={isCheckboxSelected}
               selectedFiles={selectedFiles}

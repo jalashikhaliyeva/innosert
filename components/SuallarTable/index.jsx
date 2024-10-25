@@ -597,9 +597,10 @@ function SuallarTable({
 
   return (
     <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white">
-      {/* Table */}
       <div className="w-full overflow-x-auto min-h-[400px] flex flex-col relative">
-        <table className="min-w-full table-auto border-collapse border-borderTableCel">
+        {/* Table */}
+         <div className="overflow-y-auto">
+      <table className="min-w-full table-auto border-collapse">
           <thead className="border-b border-borderTableCel">
             <tr>
               <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
@@ -1067,7 +1068,7 @@ function SuallarTable({
                   <td className="px-4 py-2">{item.points}</td>
                   <td className="px-4 py-2">{item.time}</td>
                   <td className="px-4 py-2 !text-sm">{item.date}</td>
-                  <td className="px-4 py-2">
+                  <td className="sticky right-0 bg-white z-10 sm:static px-2  md:px-4 py-2">
                     <div className="flex items-center">
                       <BsTrash3
                         onClick={handleDelete}
@@ -1090,13 +1091,14 @@ function SuallarTable({
             )}
           </tbody>
         </table>
+        </div>
 
         {/* Bottom Controls */}
-        <div className="flex justify-between items-center mt-5 pb-5">
+        <div className="flex flex-col md:flex-row justify-between items-center mt-5 pb-5">
           {/* Items Per Page Selector */}
           <div className="flex items-center space-x-2">
             <label htmlFor="itemsPerPage" className="mr-2">
-              Sayfa başına soru:
+              Sehife başına sual:
             </label>
             <select
               id="itemsPerPage"
@@ -1112,9 +1114,9 @@ function SuallarTable({
             </select>
           </div>
 
-          {/* Pagination */}
-          {pageCount > 1 && (
-            <div>
+        {/* Render pagination outside the scrollable area */}
+        {pageCount > 1 && (
+            <div className="flex justify-center mt-4 pb-9">
               <ReactPaginate
                 previousLabel={"<"}
                 nextLabel={">"}
@@ -1124,25 +1126,18 @@ function SuallarTable({
                 pageRangeDisplayed={5}
                 onPageChange={handlePageClick}
                 containerClassName="flex justify-center items-center gap-2 w-full"
-                pageClassName="inline-block" // Minimal styling on li elements
-                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
-                activeClassName="" // Remove active styles from li elements
-                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
+                pageClassName="inline-block"
+                pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
+                activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
                 previousClassName={currentPage === 0 ? "text-gray-300" : ""}
                 previousLinkClassName={
                   currentPage === 0 ? "cursor-not-allowed" : ""
-                }
-                previousLinkStyle={
-                  currentPage === 0 ? { cursor: "not-allowed" } : {}
                 }
                 nextClassName={
                   currentPage === pageCount - 1 ? "text-gray-300" : ""
                 }
                 nextLinkClassName={
                   currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
-                }
-                nextLinkStyle={
-                  currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
                 }
               />
             </div>

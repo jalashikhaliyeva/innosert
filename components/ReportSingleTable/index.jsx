@@ -289,105 +289,109 @@ function ReportSingleTable() {
   );
 
   return (
-    <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white">
+    <div className="w-full p-4 font-gilroy border min-h-[400px] border-borderTableCel rounded bg-white">
       {/* Table */}
-      <div className="w-full overflow-x-auto min-h-[400px] flex flex-col relative">
-        <table className="min-w-full table-auto border-collapse border-borderTableCel">
-          <thead className="border-b border-borderTableCel">
-            <tr>
-              <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
-                #
-              </th>
-              <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
-                Bildirən şəxs
-              </th>
-              <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
-                Xəta növü
-              </th>
-              <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
-                Ətraflı
-              </th>
-              <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
-                Tarix
-              </th>
-              <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
-                Status
-              </th>
-            </tr>
-          </thead>
+      <div className="w-full flex flex-col relative">
+        <div className="overflow-x-auto">
+          <table className="min-w-full table-auto border-collapse border-borderTableCel">
+            <thead className="border-b border-borderTableCel">
+              <tr>
+                <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
+                  #
+                </th>
+                <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
+                  Bildirən şəxs
+                </th>
+                <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
+                  Xəta növü
+                </th>
+                <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
+                  Ətraflı
+                </th>
+                <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
+                  Tarix
+                </th>
+                <th className="px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault">
+                  Status
+                </th>
+              </tr>
+            </thead>
 
-          <tbody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((item) => (
-                <tr
-                  key={item.id}
-                  className="bg-tableBgDefault border-b border-borderTableCel hover:bg-headerTableCel"
-                >
-                  <td className="px-4 py-3">{item.id}</td>
-                  <td className="px-4 py-3">{item.reporter}</td>
-                  <td className="px-4 py-3">{item.errorType}</td>
-                  <td className="px-4 py-3 relative group">
-                    {item.details.length > 30
-                      ? `${item.details.substring(0, 30)}...`
-                      : item.details}
+            <tbody>
+              {paginatedData.length > 0 ? (
+                paginatedData.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="bg-tableBgDefault border-b border-borderTableCel hover:bg-headerTableCel"
+                  >
+                    <td className="px-4 py-3">{item.id}</td>
+                    <td className="px-4 py-3">{item.reporter}</td>
+                    <td className="px-4 py-3">{item.errorType}</td>
+                    <td className="px-4 py-3 relative group">
+                      {item.details.length > 30
+                        ? `${item.details.substring(0, 30)}...`
+                        : item.details}
 
-                    <span className="absolute hidden group-hover:block bg-white text-gray-800 border text-sm rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 z-10 whitespace-nowrap">
-                      {item.details}
-                    </span>
-                  </td>
-
-                  <td className="px-4 py-3">{item.date}</td>
-                  <td className="px-4 py-3">
-                    {modifiedItems[item.id] ? (
-                      <span
-                        style={{
-                          color:
-                            modifiedItems[item.id] === "Düzəliş edildi"
-                              ? "#30B83E"
-                              : "#E03D3E",
-                        }}
-                      >
-                        {modifiedItems[item.id]}
+                      <span className="absolute hidden group-hover:block bg-white text-gray-800 border text-sm rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 z-10 whitespace-nowrap">
+                        {item.details}
                       </span>
-                    ) : (
-                      <div className="flex items-center gap-2">
-                        <button
-                          className="text-white rounded-md py-1 px-4 bg-succesButtonTable"
-                          onClick={() => {
-                            setSelectedAction("Düzəliş edildi");
-                            setSelectedId(item.id);
-                            setIsModalOpen(true);
+                    </td>
+
+                    <td className="px-4 py-3">{item.date}</td>
+                    <td className="px-4 py-3">
+                      {modifiedItems[item.id] ? (
+                        <span
+                          style={{
+                            color:
+                              modifiedItems[item.id] === "Düzəliş edildi"
+                                ? "#30B83E"
+                                : "#E03D3E",
                           }}
                         >
-                          Düzəliş edildi
-                        </button>
-                        <button
-                          className="text-white rounded-md py-1 px-4 bg-errorButtonTable"
-                          onClick={() => {
-                            setSelectedAction("Xəta deyil");
-                            setSelectedId(item.id);
-                            setIsModalOpen(true);
-                          }}
-                        >
-                          Xəta deyil
-                        </button>
-                      </div>
-                    )}
+                          {modifiedItems[item.id]}
+                        </span>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <button
+                            className="text-white rounded-md py-1 px-4 bg-succesButtonTable"
+                            onClick={() => {
+                              setSelectedAction("Düzəliş edildi");
+                              setSelectedId(item.id);
+                              setIsModalOpen(true);
+                            }}
+                          >
+                            Düzəliş edildi
+                          </button>
+                          <button
+                            className="text-white rounded-md py-1 px-4 bg-errorButtonTable"
+                            onClick={() => {
+                              setSelectedAction("Xəta deyil");
+                              setSelectedId(item.id);
+                              setIsModalOpen(true);
+                            }}
+                          >
+                            Xəta deyil
+                          </button>
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="6"
+                    className="px-4 py-3 text-center text-gray-500"
+                  >
+                    Nəticə tapılmadı.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="6" className="px-4 py-3 text-center text-gray-500">
-                  Nəticə tapılmadı.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-
+              )}
+            </tbody>
+          </table>
+        </div>
         {/* Pagination and items per page controls */}
-        <div className="flex justify-between items-center mt-5 pb-5">
+        <div className="flex flex-col lg:flex-row justify-between items-center mt-5 pb-5">
           {/* Items per page */}
           <div className="flex items-center space-x-2">
             <label htmlFor="itemsPerPage" className="mr-2">

@@ -57,6 +57,13 @@ const HeaderInternal = () => {
     setIsNotificationOpen(true);
   };
 
+  function handleSearchKeyDown(event) {
+    if (event.key === "Enter") {
+      // Implement your search logic here
+      setIsSearchOpen(false);
+    }
+  }
+
   const handleNotificationMouseLeave = () => {
     // Set a delay before closing the dropdown
     hideTimeout.current = setTimeout(() => {
@@ -139,6 +146,30 @@ const HeaderInternal = () => {
 
   // Function to handle search input visibility
 
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        searchInputRef.current &&
+        !searchInputRef.current.contains(event.target)
+      ) {
+        setIsSearchOpen(false);
+      }
+    }
+
+    if (isSearchOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isSearchOpen]);
+
+  const handleDigerClick = () => {
+    router.push("/home"); // Navigate to /home page
+  };
   const generateInitials = (firstName, lastName) => {
     const firstInitial = firstName ? firstName.charAt(0).toUpperCase() : "";
     const lastInitial = lastName ? lastName.charAt(0).toUpperCase() : "";
@@ -598,7 +629,7 @@ const HeaderInternal = () => {
                     </li>
 
                     <li
-                      onClick={() => handleClick("/neticelerim")}
+                      onClick={() => handleClick("/balansim")}
                       className="py-4 cursor-pointer text-grayButtonText text-lg flex items-center gap-5 font-gilroy font-normal hover:text-textHoverBlue"
                     >
                       <PiCoin className="size-6 fill-grayButtonText" />
@@ -709,7 +740,7 @@ const HeaderInternal = () => {
                     }`}
                   >
                     <ul className="divide-y divide-gray-200 px-4">
-                      {categories?.map((category) => (
+                      {categories.slice(0, 5).map((category) => (
                         <li
                           key={category.id}
                           className="relative group"
@@ -759,10 +790,19 @@ const HeaderInternal = () => {
                           )}
                         </li>
                       ))}
+
+                      {/* "Digər" Item */}
+                      {categories.length > 5 && (
+                        <li
+                          className="cursor-pointer block text-lg my-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
+                          onClick={handleDigerClick} // Add click handler
+                        >
+                          Digər
+                        </li>
+                      )}
                     </ul>
                   </div>
                 </div>
-
                 <p className="cursor-pointer font-medium text-lg text-textSecondaryDefault py-3 hover:text-textHoverBlue">
                   Bloq
                 </p>

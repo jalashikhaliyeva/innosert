@@ -8,6 +8,7 @@ import InternalContainer from "@/components/InternalContainer";
 import ReportTableTeacher from "@/components/ReportTableTeacher";
 import ReportTitleNavigation from "@/components/ReportTitleNavigation";
 import TeacherSidebar from "@/components/TeacherSidebar";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 
 // Sample data
 const reportData = [
@@ -24,13 +25,18 @@ function BildirilenXetalar() {
 
   return (
     <>
-      <HeaderInternal />
+      <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        <TeacherDashboardHeader />
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
+        <div className="hidden lg:block md:w-[20%]">
           <TeacherSidebar />
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
             <ReportTitleNavigation />

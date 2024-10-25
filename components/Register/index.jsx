@@ -126,9 +126,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
         }, 2000);
       } else {
         console.error("Validation error details:", data.message);
-        toast.error(
-          `Qeydiyyat uğursuz oldu: ${data.message || "Naməlum xəta"}`
-        );
+        toast.error(`Qeydiyyat uğursuz oldu.`);
       }
     } catch (error) {
       console.error("Error during registration:", error);

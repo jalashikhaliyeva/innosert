@@ -19,17 +19,16 @@ function QuestionEditNavigationTitle({ selectedOption, setSelectedOption }) {
   };
 
   return (
-    <div className="flex justify-between relative font-gilroy">
-      <h1  className="text-2xl font-medium leading-8">
-        Sual
-      </h1>
+    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center relative font-gilroy">
+      {/* Left side: "Sual" and Dropdown */}
+      <div className="flex justify-between w-full sm:w-auto items-center gap-2">
+        <h1 className="text-2xl font-medium leading-8">Sual</h1>
 
-      <div className="flex gap-2">
         {/* Dropdown Menu */}
         <div className="relative">
           <button
             onClick={toggleDropdown}
-            className="flex items-center font-gilroy justify-center gap-2 py-3 px-4 h-11 text-black leading-6 rounded-md  whitespace-nowrap"
+            className="flex items-center font-gilroy justify-center gap-2 py-3 px-4 h-11 text-black leading-6 rounded-md whitespace-nowrap"
           >
             {selectedOption}
             {isDropdownOpen ? (
@@ -45,7 +44,7 @@ function QuestionEditNavigationTitle({ selectedOption, setSelectedOption }) {
                 : "opacity-0 -translate-y-4 pointer-events-none"
             }`}
           >
-            <ul className="p-2 font-gilroy ">
+            <ul className="p-2 font-gilroy">
               <li
                 className="py-2 border-b border-gray-200 hover:bg-gray-100 cursor-pointer font-gilroy"
                 onClick={() => handleOptionClick("Variantli sual")}
@@ -67,15 +66,18 @@ function QuestionEditNavigationTitle({ selectedOption, setSelectedOption }) {
             </ul>
           </div>
         </div>
+      </div>
 
+      {/* Right side: Buttons */}
+      <div className="flex gap-2 w-full mb-3 md:mb-0 sm:w-auto mt-2 sm:mt-0">
         {/* Delete Button */}
-        <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap">
+        <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap w-full sm:w-auto">
           <FaRegTrashAlt className="text-white w-4 h-4" />
           Sualı sil
         </button>
 
         {/* Save Button */}
-        <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-green600 hover:bg-green600Hover active:bg-green600Pressed whitespace-nowrap">
+        <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-green600 hover:bg-green600Hover active:bg-green600Pressed whitespace-nowrap w-full sm:w-auto">
           <FaRegCircleCheck className="text-white w-5 h-5" />
           Yadda saxla
         </button>
