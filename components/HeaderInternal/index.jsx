@@ -45,7 +45,8 @@ const HeaderInternal = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const hideTimeout = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
-
+  const { setSelectedCategory, setSelectedSubcategory } =
+    useContext(UserContext);
   const isSpecialPage =
     router.pathname === "/home" ||
     router.pathname === "/bloq" ||
@@ -244,12 +245,23 @@ const HeaderInternal = () => {
     const fetchCategories = async () => {
       try {
         const data = await getSettingInfo();
+
         const mainCategories = data?.category.filter(
           (cat) => cat.category_id === 0
         );
         const subCategories = data?.category.filter(
           (cat) => cat.category_id !== 0
         );
+
+        if (mainCategories.length > 0) {
+          setSelectedCategory(mainCategories);
+          // console.log(mainCategories, "mainCategories");
+        }
+        if (subCategories.length > 0) {
+          // console.log(subCategories, "subCategories");
+
+          setSelectedSubcategory(subCategories);
+        }
 
         setCategories(mainCategories || []);
         setSubCategories(subCategories || []);

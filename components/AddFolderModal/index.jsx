@@ -1,36 +1,52 @@
-import React, { useState } from "react";
+// AddFolderModal.jsx
 
-function AddFolderModal({ closeModal }) {
-  const [email, setEmail] = useState("");
+import React, { useState } from "react";
+import axios from "axios";
+
+function AddFolderModal({ closeModal, addNewFolder }) {
+  const [folderName, setFolderName] = useState("");
   const [inputError, setInputError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Handle button click to trigger loading and modal close
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email) {
-      setInputError(true); // Trigger error if input is empty
+    if (!folderName) {
+      setInputError(true);
       return;
     }
-    setLoading(true); // Set loading to true on submit
+    setLoading(true);
 
-    // Simulate a 3-second loading delay
-    setTimeout(() => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.post(
+        "https://innocert-admin.markup.az/api/folder/create/",
+        { name: folderName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data, "response add folder modal");
+
+      addNewFolder(response.data);
+      closeModal();
+    } catch (error) {
+      console.error("Error creating folder:", error);
+    } finally {
       setLoading(false);
-      closeModal(); // Close modal after loading
-    }, 1400);
+    }
   };
 
-  // Handle input change and reset error state when typing
   const handleInputChange = (e) => {
-    setEmail(e.target.value);
+    setFolderName(e.target.value);
     if (inputError && e.target.value) {
       setInputError(false);
     }
   };
 
-  // Handle key press (Enter) to submit the form
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSubmit(e);
@@ -39,15 +55,12 @@ function AddFolderModal({ closeModal }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
-      {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black opacity-50"
         onClick={closeModal}
       ></div>
 
-      {/* Modal Content */}
       <div className="bg-boxGrayBodyColor z-50 p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[400px]">
-        {/* Close Button */}
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 focus:outline-none"
           onClick={closeModal}
@@ -73,23 +86,22 @@ function AddFolderModal({ closeModal }) {
         </h2>
         <input
           type="text"
-          value={email}
+          value={folderName}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => setFocusedInput("email")}
+          onFocus={() => setFocusedInput("folderName")}
           onBlur={() => setFocusedInput(null)}
           className={`placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pr-3 py-3 px-4 border ${
-            inputError && !email
+            inputError && !folderName
               ? "border-inputRingError"
-              : focusedInput === "email"
+              : focusedInput === "folderName"
               ? "border-inputRingFocus"
               : "border-inputBorder"
           } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
           placeholder="Ad daxil edin..."
         />
 
-        {/* Helper Text */}
-        {inputError && !email && (
+        {inputError && !folderName && (
           <div className="text-red-600 text-sm -mt-4">
             Faylın adı mövcud olmalıdır.
           </div>
@@ -103,7 +115,7 @@ function AddFolderModal({ closeModal }) {
               ? "bg-[#DFDFDF] cursor-not-allowed"
               : "bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
           }`}
-          disabled={loading} // Disable the button when loading is true
+          disabled={loading}
         >
           {loading ? (
             <div className="flex items-center justify-center">

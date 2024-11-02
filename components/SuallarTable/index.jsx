@@ -599,498 +599,501 @@ function SuallarTable({
     <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white">
       <div className="w-full overflow-x-auto min-h-[400px] flex flex-col relative">
         {/* Table */}
-         <div className="overflow-y-auto">
-      <table className="min-w-full table-auto border-collapse">
-          <thead className="border-b border-borderTableCel">
-            <tr>
-              <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
-                <input
-                  type="checkbox"
-                  onChange={(e) =>
-                    setSelectedRows(
-                      e.target.checked ? data.map((row) => row.id) : []
-                    )
+        <div className="overflow-y-auto">
+          <table className="min-w-full table-auto border-collapse">
+            <thead className="border-b border-borderTableCel">
+              <tr>
+                <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
+                  <input
+                    type="checkbox"
+                    onChange={(e) =>
+                      setSelectedRows(
+                        e.target.checked ? data.map((row) => row.id) : []
+                      )
+                    }
+                  />
+                </th>
+                <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
+                  #
+                </th>
+                {/* Suallar Header */}
+                <th
+                  className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                  onClick={() =>
+                    setOpenFilter(openFilter === "suallar" ? null : "suallar")
                   }
-                />
-              </th>
-              <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
-                #
-              </th>
-              {/* Suallar Header */}
-              <th
-                className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={() =>
-                  setOpenFilter(openFilter === "suallar" ? null : "suallar")
-                }
-              >
-                <div className="flex items-center gap-4">
-                  Suallar
-                  <IoFunnelOutline />
-                </div>
-                {openFilter === "suallar" && (
-                  <div
-                    ref={dropdownRefs.suallar}
-                    className="absolute z-20 mt-2 bg-white border rounded shadow-2xl p-2 divide-y w-40"
-                    onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
-                  >
+                >
+                  <div className="flex items-center gap-4">
+                    Suallar
+                    <IoFunnelOutline />
+                  </div>
+                  {openFilter === "suallar" && (
                     <div
-                      className={`cursor-pointer hover:bg-gray-100 px-2 py-1 ${
-                        questionOrder === "asc" ? "bg-gray-200" : ""
-                      }`}
-                      onClick={() => {
-                        setQuestionOrder("asc");
-                        setOpenFilter(null);
-                      }}
+                      ref={dropdownRefs.suallar}
+                      className="absolute z-20 mt-2 bg-white border rounded shadow-2xl p-2 divide-y w-40"
+                      onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
                     >
-                      A-Z
-                    </div>
-                    <div
-                      className={`cursor-pointer hover:bg-gray-200 px-2 py-1 ${
-                        questionOrder === "desc" ? "bg-gray-200" : ""
-                      }`}
-                      onClick={() => {
-                        setQuestionOrder("desc");
-                        setOpenFilter(null);
-                      }}
-                    >
-                      Z-A
-                    </div>
-                  </div>
-                )}
-              </th>
-              {/* Səviyyə Header */}
-              <th
-                className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={() =>
-                  setOpenFilter(openFilter === "seviyye" ? null : "seviyye")
-                }
-              >
-                <div className="flex items-center gap-4">
-                  Səviyyə
-                  <IoFunnelOutline />
-                </div>
-                {openFilter === "seviyye" && (
-                  <div
-                    ref={dropdownRefs.seviyye}
-                    className="absolute z-20 mt-2 w-48 bg-white border rounded shadow-xl p-2"
-                    onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
-                  >
-                    <label className="block hover:bg-gray-100 px-2 py-1 rounded">
-                      <input
-                        className="mr-2"
-                        type="checkbox"
-                        // checked={selectedRows.includes(row.id)}
-                        // onChange={() => handleCheckboxChange(row.id)}
-                        checked={levelFilter.includes("Easy")}
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          setLevelFilter((prev) =>
-                            isChecked
-                              ? [...prev, "Easy"]
-                              : prev.filter((l) => l !== "Easy")
-                          );
+                      <div
+                        className={`cursor-pointer hover:bg-gray-100 px-2 py-1 ${
+                          questionOrder === "asc" ? "bg-gray-200" : ""
+                        }`}
+                        onClick={() => {
+                          setQuestionOrder("asc");
+                          setOpenFilter(null);
                         }}
-                      />
-                      Asan
-                    </label>
-                    <label className="block hover:bg-gray-100 px-2 py-1 rounded">
-                      <input
-                        className="mr-2"
-                        type="checkbox"
-                        // checked={selectedRows.includes(row.id)}
-                        // onChange={() => handleCheckboxChange(row.id)}
-                        checked={levelFilter.includes("Medium")}
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          setLevelFilter((prev) =>
-                            isChecked
-                              ? [...prev, "Medium"]
-                              : prev.filter((l) => l !== "Medium")
-                          );
-                        }}
-                      />
-                      Orta
-                    </label>
-                    <label className="block hover:bg-gray-100 px-2 py-1 rounded">
-                      <input
-                        className="mr-2"
-                        type="checkbox"
-                        // checked={selectedRows.includes(row.id)}
-                        // onChange={() => handleCheckboxChange(row.id)}
-                        checked={levelFilter.includes("Hard")}
-                        onChange={(e) => {
-                          const isChecked = e.target.checked;
-                          setLevelFilter((prev) =>
-                            isChecked
-                              ? [...prev, "Hard"]
-                              : prev.filter((l) => l !== "Hard")
-                          );
-                        }}
-                      />
-                      Çətin
-                    </label>
-                    <button
-                      className="mt-2 gap-1 font-gilroy text-textSecondaryBlue py-1 rounded flex items-center w-full justify-center"
-                      onClick={resetFilters}
-                    >
-                      <RiLoopLeftLine />
-                      Filteri Sifirla
-                    </button>
-                  </div>
-                )}
-              </th>
-              {/* Xal Header */}
-              <th
-                className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={() =>
-                  setOpenFilter(openFilter === "xal" ? null : "xal")
-                }
-              >
-                <div className="flex items-center gap-4">
-                  Xal
-                  <IoFunnelOutline />
-                </div>
-                {openFilter === "xal" && (
-                  <div
-                    ref={dropdownRefs.xal}
-                    className="absolute z-20 mt-2 bg-white  border rounded shadow p-2 w-60"
-                    onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
-                  >
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="number"
-                        placeholder="Minimum"
-                        value={pointsFilter.min}
-                        onChange={(e) =>
-                          setPointsFilter((prev) => ({
-                            ...prev,
-                            min: e.target.value,
-                          }))
-                        }
-                        className="hover:bg-inputBgHover  border rounded px-2 py-1 w-20"
-                      />
-                      <span>-</span>
-                      <input
-                        type="number"
-                        placeholder="Maksimum"
-                        value={pointsFilter.max}
-                        onChange={(e) =>
-                          setPointsFilter((prev) => ({
-                            ...prev,
-                            max: e.target.value,
-                          }))
-                        }
-                        className="border hover:bg-inputBgHover rounded px-2 py-1 w-20"
-                      />
-                    </div>
-                    <button
-                      className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-2 py-1 rounded w-full"
-                      onClick={() => setOpenFilter(null)}
-                    >
-                      Tətbiq et
-                    </button>
-                  </div>
-                )}
-              </th>
-              {/* Vaxt Header */}
-              <th
-                className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={() =>
-                  setOpenFilter(openFilter === "vaxt" ? null : "vaxt")
-                }
-              >
-                <div className="flex items-center gap-4 font-gilroy">
-                  Vaxt
-                  <IoFunnelOutline />
-                </div>
-                {openFilter === "vaxt" && (
-                  <div
-                    ref={dropdownRefs.vaxt}
-                    className="absolute z-20 mt-2 bg-white border rounded shadow p-2 w-60"
-                    onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
-                  >
-                    <div className="flex items-center space-x-2">
-                      <input
-                        type="number"
-                        placeholder="Minimum"
-                        value={timeFilter.min}
-                        onChange={(e) =>
-                          setTimeFilter((prev) => ({
-                            ...prev,
-                            min: e.target.value,
-                          }))
-                        }
-                        className="border rounded px-2 py-1 w-20 font-gilroy"
-                      />
-                      <span>-</span>
-                      <input
-                        type="number"
-                        placeholder="Maksimum"
-                        value={timeFilter.max}
-                        onChange={(e) =>
-                          setTimeFilter((prev) => ({
-                            ...prev,
-                            max: e.target.value,
-                          }))
-                        }
-                        className="border rounded px-2 py-1 w-20"
-                      />
-                    </div>
-                    <button
-                      className="mt-2  font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-2 py-1 rounded w-full"
-                      onClick={() => setOpenFilter(null)}
-                    >
-                      Tətbiq et
-                    </button>
-                  </div>
-                )}
-              </th>
-              {/* Tarix Header */}
-              <th
-                className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={() =>
-                  setOpenFilter(openFilter === "tarix" ? null : "tarix")
-                }
-              >
-                <div className="flex items-center gap-4">
-                  Tarix
-                  <IoFunnelOutline />
-                </div>
-                {openFilter === "tarix" && (
-                  <div
-                    ref={dropdownRefs.tarix}
-                    className="absolute mt-2 bg-white border rounded shadow-lg p-4 w-72 -ml-24"
-                    // style={{ left: "-74px" }}
-                    onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
-                  >
-                    <div className="flex flex-col space-y-4">
-                      {/* From Date */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Başlanğıc Tarix
-                        </label>
-                        <div className="flex space-x-2 mt-1">
-                          <select
-                            value={dateFilter.from.year}
-                            onChange={(e) =>
-                              setDateFilter((prev) => ({
-                                ...prev,
-                                from: {
-                                  ...prev.from,
-                                  year: e.target.value,
-                                },
-                              }))
-                            }
-                            className="border rounded px-2 py-1 w-1/3"
-                          >
-                            <option value="">İl</option>
-                            {years.map((year) => (
-                              <option key={year} value={year}>
-                                {year}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            value={dateFilter.from.month}
-                            onChange={(e) =>
-                              setDateFilter((prev) => ({
-                                ...prev,
-                                from: {
-                                  ...prev.from,
-                                  month: e.target.value,
-                                },
-                              }))
-                            }
-                            className="border rounded px-2 py-1 w-1/3"
-                          >
-                            <option value="">Ay</option>
-                            {months.map((month) => (
-                              <option key={month} value={month}>
-                                {month}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            value={dateFilter.from.day}
-                            onChange={(e) =>
-                              setDateFilter((prev) => ({
-                                ...prev,
-                                from: {
-                                  ...prev.from,
-                                  day: e.target.value,
-                                },
-                              }))
-                            }
-                            className="border rounded px-2 py-1 w-1/3"
-                          >
-                            <option value="">Gün</option>
-                            {days.map((day) => (
-                              <option key={day} value={day}>
-                                {day}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                      >
+                        A-Z
                       </div>
-                      {/* To Date */}
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700">
-                          Son Tarix
-                        </label>
-                        <div className="flex space-x-2 mt-1">
-                          <select
-                            value={dateFilter.to.year}
-                            onChange={(e) =>
-                              setDateFilter((prev) => ({
-                                ...prev,
-                                to: {
-                                  ...prev.to,
-                                  year: e.target.value,
-                                },
-                              }))
-                            }
-                            className="border rounded px-2 py-1 w-1/3"
-                          >
-                            <option value="">İl</option>
-                            {years.map((year) => (
-                              <option key={year} value={year}>
-                                {year}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            value={dateFilter.to.month}
-                            onChange={(e) =>
-                              setDateFilter((prev) => ({
-                                ...prev,
-                                to: {
-                                  ...prev.to,
-                                  month: e.target.value,
-                                },
-                              }))
-                            }
-                            className="border rounded px-2 py-1 w-1/3"
-                          >
-                            <option value="">Ay</option>
-                            {months.map((month) => (
-                              <option key={month} value={month}>
-                                {month}
-                              </option>
-                            ))}
-                          </select>
-                          <select
-                            value={dateFilter.to.day}
-                            onChange={(e) =>
-                              setDateFilter((prev) => ({
-                                ...prev,
-                                to: {
-                                  ...prev.to,
-                                  day: e.target.value,
-                                },
-                              }))
-                            }
-                            className="border rounded px-2 py-1 w-1/3"
-                          >
-                            <option value="">Gün</option>
-                            {days.map((day) => (
-                              <option key={day} value={day}>
-                                {day}
-                              </option>
-                            ))}
-                          </select>
-                        </div>
+                      <div
+                        className={`cursor-pointer hover:bg-gray-200 px-2 py-1 ${
+                          questionOrder === "desc" ? "bg-gray-200" : ""
+                        }`}
+                        onClick={() => {
+                          setQuestionOrder("desc");
+                          setOpenFilter(null);
+                        }}
+                      >
+                        Z-A
+                      </div>
+                    </div>
+                  )}
+                </th>
+                {/* Səviyyə Header */}
+                <th
+                  className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                  onClick={() =>
+                    setOpenFilter(openFilter === "seviyye" ? null : "seviyye")
+                  }
+                >
+                  <div className="flex items-center gap-4">
+                    Səviyyə
+                    <IoFunnelOutline />
+                  </div>
+                  {openFilter === "seviyye" && (
+                    <div
+                      ref={dropdownRefs.seviyye}
+                      className="absolute z-20 mt-2 w-48 bg-white border rounded shadow-xl p-2"
+                      onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
+                    >
+                      <label className="block hover:bg-gray-100 px-2 py-1 rounded">
+                        <input
+                          className="mr-2"
+                          type="checkbox"
+                          // checked={selectedRows.includes(row.id)}
+                          // onChange={() => handleCheckboxChange(row.id)}
+                          checked={levelFilter.includes("Easy")}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setLevelFilter((prev) =>
+                              isChecked
+                                ? [...prev, "Easy"]
+                                : prev.filter((l) => l !== "Easy")
+                            );
+                          }}
+                        />
+                        Asan
+                      </label>
+                      <label className="block hover:bg-gray-100 px-2 py-1 rounded">
+                        <input
+                          className="mr-2"
+                          type="checkbox"
+                          // checked={selectedRows.includes(row.id)}
+                          // onChange={() => handleCheckboxChange(row.id)}
+                          checked={levelFilter.includes("Medium")}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setLevelFilter((prev) =>
+                              isChecked
+                                ? [...prev, "Medium"]
+                                : prev.filter((l) => l !== "Medium")
+                            );
+                          }}
+                        />
+                        Orta
+                      </label>
+                      <label className="block hover:bg-gray-100 px-2 py-1 rounded">
+                        <input
+                          className="mr-2"
+                          type="checkbox"
+                          // checked={selectedRows.includes(row.id)}
+                          // onChange={() => handleCheckboxChange(row.id)}
+                          checked={levelFilter.includes("Hard")}
+                          onChange={(e) => {
+                            const isChecked = e.target.checked;
+                            setLevelFilter((prev) =>
+                              isChecked
+                                ? [...prev, "Hard"]
+                                : prev.filter((l) => l !== "Hard")
+                            );
+                          }}
+                        />
+                        Çətin
+                      </label>
+                      <button
+                        className="mt-2 gap-1 font-gilroy text-textSecondaryBlue py-1 rounded flex items-center w-full justify-center"
+                        onClick={resetFilters}
+                      >
+                        <RiLoopLeftLine />
+                        Filteri Sifirla
+                      </button>
+                    </div>
+                  )}
+                </th>
+                {/* Xal Header */}
+                <th
+                  className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                  onClick={() =>
+                    setOpenFilter(openFilter === "xal" ? null : "xal")
+                  }
+                >
+                  <div className="flex items-center gap-4">
+                    Xal
+                    <IoFunnelOutline />
+                  </div>
+                  {openFilter === "xal" && (
+                    <div
+                      ref={dropdownRefs.xal}
+                      className="absolute z-20 mt-2 bg-white  border rounded shadow p-2 w-60"
+                      onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
+                    >
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="number"
+                          placeholder="Minimum"
+                          value={pointsFilter.min}
+                          onChange={(e) =>
+                            setPointsFilter((prev) => ({
+                              ...prev,
+                              min: e.target.value,
+                            }))
+                          }
+                          className="hover:bg-inputBgHover  border rounded px-2 py-1 w-20"
+                        />
+                        <span>-</span>
+                        <input
+                          type="number"
+                          placeholder="Maksimum"
+                          value={pointsFilter.max}
+                          onChange={(e) =>
+                            setPointsFilter((prev) => ({
+                              ...prev,
+                              max: e.target.value,
+                            }))
+                          }
+                          className="border hover:bg-inputBgHover rounded px-2 py-1 w-20"
+                        />
                       </div>
                       <button
-                        className="mt-2  font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded w-full"
+                        className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-2 py-1 rounded w-full"
                         onClick={() => setOpenFilter(null)}
                       >
                         Tətbiq et
                       </button>
                     </div>
+                  )}
+                </th>
+                {/* Vaxt Header */}
+                <th
+                  className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                  onClick={() =>
+                    setOpenFilter(openFilter === "vaxt" ? null : "vaxt")
+                  }
+                >
+                  <div className="flex items-center gap-4 font-gilroy">
+                    Vaxt
+                    <IoFunnelOutline />
                   </div>
-                )}
-              </th>
-              <div>
-                <button
-                  className="flex items-center gap-4 relative px-4 py-2 text-left text-base flex-row font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                  onClick={resetFilters}
-                >
-                  {/* <RiLoopLeftLine /> */}
-                  Sıfırla
-                  <RiLoopLeftLine />
-                </button>
-              </div>
-              <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
-                {/* Əməliyyatlar */}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paginatedData.length > 0 ? (
-              paginatedData.map((item) => (
-                <tr
-                  key={item.id}
-                  className="bg-tableBgDefault border-b border-borderTableCel"
-                >
-                  <td className="px-4 py-2">
-                    <input
-                      type="checkbox"
-                      checked={selectedRows.includes(item.id)}
-                      onChange={() => handleCheckboxChange(item.id)}
-                    />
-                  </td>
-                  <td className="px-4 py-2">{item.id}</td>
-                  <td
-                    onClick={handleClick}
-                    className="px-4 py-2 relative group cursor-pointer"
-                  >
-                    {item.title.length > 49
-                      ? item.title.substring(0, 49) + "..."
-                      : item.title}
-
-                    {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black text-sm px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                      {item.title}
-                    </div>
-
-                    <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-blue-300 transition-all duration-300 group-hover:w-full"></span>
-                  </td>
-
-                  <td className="px-4 py-2">
+                  {openFilter === "vaxt" && (
                     <div
-                      className={`${
-                        levelColors[item.level]
-                      } rounded-md py-1 flex items-center justify-center`}
+                      ref={dropdownRefs.vaxt}
+                      className="absolute z-20 mt-2 bg-white border rounded shadow p-2 w-60"
+                      onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
                     >
-                      {item.level}
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="number"
+                          placeholder="Minimum"
+                          value={timeFilter.min}
+                          onChange={(e) =>
+                            setTimeFilter((prev) => ({
+                              ...prev,
+                              min: e.target.value,
+                            }))
+                          }
+                          className="border rounded px-2 py-1 w-20 font-gilroy"
+                        />
+                        <span>-</span>
+                        <input
+                          type="number"
+                          placeholder="Maksimum"
+                          value={timeFilter.max}
+                          onChange={(e) =>
+                            setTimeFilter((prev) => ({
+                              ...prev,
+                              max: e.target.value,
+                            }))
+                          }
+                          className="border rounded px-2 py-1 w-20"
+                        />
+                      </div>
+                      <button
+                        className="mt-2  font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-2 py-1 rounded w-full"
+                        onClick={() => setOpenFilter(null)}
+                      >
+                        Tətbiq et
+                      </button>
                     </div>
-                  </td>
-                  <td className="px-4 py-2">{item.points}</td>
-                  <td className="px-4 py-2">{item.time}</td>
-                  <td className="px-4 py-2 !text-sm">{item.date}</td>
-                  <td className="sticky right-0 bg-white z-10 sm:static px-2  md:px-4 py-2">
-                    <div className="flex items-center">
-                      <BsTrash3
-                        onClick={handleDelete}
-                        className="mx-2 size-5 cursor-pointer text-red400"
-                      />
-                      <VscEdit
-                        onClick={handleEdit}
-                        className="mx-2 size-5 cursor-pointer text-brandBlue400"
-                      />
+                  )}
+                </th>
+                {/* Tarix Header */}
+                <th
+                  className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                  onClick={() =>
+                    setOpenFilter(openFilter === "tarix" ? null : "tarix")
+                  }
+                >
+                  <div className="flex items-center gap-4">
+                    Tarix
+                    <IoFunnelOutline />
+                  </div>
+                  {openFilter === "tarix" && (
+                    <div
+                      ref={dropdownRefs.tarix}
+                      className="absolute mt-2 bg-white border rounded shadow-lg p-4 w-72 -ml-24"
+                      // style={{ left: "-74px" }}
+                      onClick={(e) => e.stopPropagation()} // Prevent click from closing the dropdown
+                    >
+                      <div className="flex flex-col space-y-4">
+                        {/* From Date */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Başlanğıc Tarix
+                          </label>
+                          <div className="flex space-x-2 mt-1">
+                            <select
+                              value={dateFilter.from.year}
+                              onChange={(e) =>
+                                setDateFilter((prev) => ({
+                                  ...prev,
+                                  from: {
+                                    ...prev.from,
+                                    year: e.target.value,
+                                  },
+                                }))
+                              }
+                              className="border rounded px-2 py-1 w-1/3"
+                            >
+                              <option value="">İl</option>
+                              {years.map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              value={dateFilter.from.month}
+                              onChange={(e) =>
+                                setDateFilter((prev) => ({
+                                  ...prev,
+                                  from: {
+                                    ...prev.from,
+                                    month: e.target.value,
+                                  },
+                                }))
+                              }
+                              className="border rounded px-2 py-1 w-1/3"
+                            >
+                              <option value="">Ay</option>
+                              {months.map((month) => (
+                                <option key={month} value={month}>
+                                  {month}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              value={dateFilter.from.day}
+                              onChange={(e) =>
+                                setDateFilter((prev) => ({
+                                  ...prev,
+                                  from: {
+                                    ...prev.from,
+                                    day: e.target.value,
+                                  },
+                                }))
+                              }
+                              className="border rounded px-2 py-1 w-1/3"
+                            >
+                              <option value="">Gün</option>
+                              {days.map((day) => (
+                                <option key={day} value={day}>
+                                  {day}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        {/* To Date */}
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700">
+                            Son Tarix
+                          </label>
+                          <div className="flex space-x-2 mt-1">
+                            <select
+                              value={dateFilter.to.year}
+                              onChange={(e) =>
+                                setDateFilter((prev) => ({
+                                  ...prev,
+                                  to: {
+                                    ...prev.to,
+                                    year: e.target.value,
+                                  },
+                                }))
+                              }
+                              className="border rounded px-2 py-1 w-1/3"
+                            >
+                              <option value="">İl</option>
+                              {years.map((year) => (
+                                <option key={year} value={year}>
+                                  {year}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              value={dateFilter.to.month}
+                              onChange={(e) =>
+                                setDateFilter((prev) => ({
+                                  ...prev,
+                                  to: {
+                                    ...prev.to,
+                                    month: e.target.value,
+                                  },
+                                }))
+                              }
+                              className="border rounded px-2 py-1 w-1/3"
+                            >
+                              <option value="">Ay</option>
+                              {months.map((month) => (
+                                <option key={month} value={month}>
+                                  {month}
+                                </option>
+                              ))}
+                            </select>
+                            <select
+                              value={dateFilter.to.day}
+                              onChange={(e) =>
+                                setDateFilter((prev) => ({
+                                  ...prev,
+                                  to: {
+                                    ...prev.to,
+                                    day: e.target.value,
+                                  },
+                                }))
+                              }
+                              className="border rounded px-2 py-1 w-1/3"
+                            >
+                              <option value="">Gün</option>
+                              {days.map((day) => (
+                                <option key={day} value={day}>
+                                  {day}
+                                </option>
+                              ))}
+                            </select>
+                          </div>
+                        </div>
+                        <button
+                          className="mt-2  font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded w-full"
+                          onClick={() => setOpenFilter(null)}
+                        >
+                          Tətbiq et
+                        </button>
+                      </div>
                     </div>
+                  )}
+                </th>
+                <div>
+                  <button
+                    className="flex items-center gap-4 relative px-4 py-2 text-left text-base flex-row font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                    onClick={resetFilters}
+                  >
+                    {/* <RiLoopLeftLine /> */}
+                    Sıfırla
+                    <RiLoopLeftLine />
+                  </button>
+                </div>
+                <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
+                  {/* Əməliyyatlar */}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {paginatedData.length > 0 ? (
+                paginatedData.map((item) => (
+                  <tr
+                    key={item.id}
+                    className="bg-tableBgDefault border-b border-borderTableCel"
+                  >
+                    <td className="px-4 py-2">
+                      <input
+                        type="checkbox"
+                        checked={selectedRows.includes(item.id)}
+                        onChange={() => handleCheckboxChange(item.id)}
+                      />
+                    </td>
+                    <td className="px-4 py-2">{item.id}</td>
+                    <td
+                      onClick={handleClick}
+                      className="px-4 py-2 relative group cursor-pointer"
+                    >
+                      {item.title.length > 49
+                        ? item.title.substring(0, 49) + "..."
+                        : item.title}
+
+                      {/* Tooltip */}
+                      <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black text-sm px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                        {item.title}
+                      </div>
+
+                      <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-blue-300 transition-all duration-300 group-hover:w-full"></span>
+                    </td>
+
+                    <td className="px-4 py-2">
+                      <div
+                        className={`${
+                          levelColors[item.level]
+                        } rounded-md py-1 flex items-center justify-center`}
+                      >
+                        {item.level}
+                      </div>
+                    </td>
+                    <td className="px-4 py-2">{item.points}</td>
+                    <td className="px-4 py-2">{item.time}</td>
+                    <td className="px-4 py-2 !text-sm">{item.date}</td>
+                    <td className="sticky right-0 bg-white z-10 sm:static px-2  md:px-4 py-2">
+                      <div className="flex items-center">
+                        <BsTrash3
+                          onClick={handleDelete}
+                          className="mx-2 size-5 cursor-pointer text-red400"
+                        />
+                        <VscEdit
+                          onClick={handleEdit}
+                          className="mx-2 size-5 cursor-pointer text-brandBlue400"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan="8"
+                    className="px-4 py-2 text-center text-gray-500"
+                  >
+                    Heç bir nəticə tapılmadı.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="8" className="px-4 py-2 text-center text-gray-500">
-                  Heç bir nəticə tapılmadı.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
         </div>
 
         {/* Bottom Controls */}
@@ -1114,8 +1117,8 @@ function SuallarTable({
             </select>
           </div>
 
-        {/* Render pagination outside the scrollable area */}
-        {pageCount > 1 && (
+          {/* Render pagination outside the scrollable area */}
+          {pageCount > 1 && (
             <div className="flex justify-center mt-4 pb-9">
               <ReactPaginate
                 previousLabel={"<"}

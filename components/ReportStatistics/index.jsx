@@ -3,7 +3,7 @@ import React from "react";
 function ReportStatistics() {
   return (
     <div className="flex flex-wrap gap-3">
-      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)]">
+      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)] lg:w-[19%]">
         <h4 className="font-gilroy text-grayButtonText font-medium text-base leading-6">
           Toplam gəlir
         </h4>
@@ -11,7 +11,7 @@ function ReportStatistics() {
           50$
         </h6>
       </div>
-      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)]">
+      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)] lg:w-[19%]">
         <h4 className="font-gilroy text-grayButtonText font-medium text-base leading-6">
           İştirakçı sayı
         </h4>
@@ -19,7 +19,7 @@ function ReportStatistics() {
           20
         </h6>
       </div>
-      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)]">
+      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)] lg:w-[19%]">
         <h4 className="font-gilroy text-grayButtonText font-medium text-base leading-6">
           İmatahnlar
         </h4>
@@ -27,7 +27,7 @@ function ReportStatistics() {
           70
         </h6>
       </div>
-      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)]">
+      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)] lg:w-[19%]">
         <h4 className="font-gilroy text-grayButtonText font-medium text-base leading-6">
           Sertifikatlar
         </h4>
@@ -35,7 +35,7 @@ function ReportStatistics() {
           34
         </h6>
       </div>
-      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)]">
+      <div className="border border-inputBorder p-6 rounded-2xl backdrop-blur-custom flex items-center flex-col w-full sm:w-[calc(50%-0.75rem)] lg:w-[19%]">
         <h4 className="font-gilroy text-grayButtonText font-medium text-base leading-6">
           Uğursuz ödənişıər
         </h4>

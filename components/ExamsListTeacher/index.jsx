@@ -1,8 +1,9 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { IoMdMore } from "react-icons/io";
 import { BsTrash } from "react-icons/bs";
+import { UserContext } from "@/shared/context/UserContext";
 
 const ExamsListTeacher = ({
   exams,
@@ -14,6 +15,8 @@ const ExamsListTeacher = ({
   selectedExams = [],
   openDeleteExamModal,
 }) => {
+  console.log(exams, "exams examst list teacher");
+  const { examDetailsSingle, setExamDetailsSingle } = useContext(UserContext);
   const router = useRouter();
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
@@ -28,7 +31,7 @@ const ExamsListTeacher = ({
     setTooltipText(null);
   };
 
-  // Similar useEffect to handle outside click for dropdown
+  // Handle outside click for dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -38,98 +41,27 @@ const ExamsListTeacher = ({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-  //   const exams = [
-  //     {
-  //       folder: true,
-  //       name: "Mathematics Exams",
-  //       slug: "mathematics-exams",
-  //       date: "2024-10-20",
-  //       exams: [
-  //         {
-  //           name: "Midterm",
-  //           slug: "midterm-exam",
-  //           date: "2024-10-01",
-  //           subject: "Mathematics",
-  //           level: "Orta",
-  //           difficulty: "Asan",
-  //           questions: 20,
-  //           url: "/exams/midterm",
-  //         },
-  //         {
-  //           name: "Pre Exam",
-  //           slug: "final-exam",
-  //           date: "2024-11-15",
-  //           subject: "Mathematics",
-  //           level: "Yüksək",
-  //           difficulty: "Çətin",
-  //           questions: 50,
-  //           url: "/exams/final",
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       folder: false,
-  //       name: "Physics Midterm Exam",
-  //       slug: "midterm-physics-exam",
-  //       date: "2024-10-10",
-  //       subject: "Physics",
-  //       level: "Orta",
-  //       difficulty: "Orta",
-  //       questions: 30,
-  //       url: "/exams/physics-midterm",
-  //     },
-  //     {
-  //       folder: true,
-  //       name: "Biology Exams",
-  //       slug: "biology-exams",
-  //       date: "2024-12-20",
-  //       exams: [
-  //         {
-  //           name: "Midterm Exam",
-  //           slug: "midterm-biology-exam",
-  //           date: "2024-10-05",
-  //           subject: "Biology",
-  //           level: "Orta",
-  //           difficulty: "Asan",
-  //           questions: 25,
-  //           url: "/exams/biology-midterm",
-  //         },
-  //         {
-  //           name: "Final Exam",
-  //           slug: "final-biology-exam",
-  //           date: "2024-12-10",
-  //           subject: "Biology",
-  //           level: "Yüksək",
-  //           difficulty: "Çətin",
-  //           questions: 50,
-  //           url: "/exams/biology-final",
-  //         },
-  //       ],
-  //     },
-  //     {
-  //       folder: true,
-  //       name: "Frontend",
-  //       slug: "frontend-exams",
-  //       date: "2023-12-23",
-  //       exams: [
-  //         {
-  //           name: "Final ",
-  //           slug: "final-frontend-exam",
-  //           date: "2024-10-05",
-  //           subject: "Frontend",
-  //           level: "Orta",
-  //           difficulty: "Asan",
-  //           questions: 45,
-  //           url: "/exams/frontend-final",
-  //         },
-  //       ],
-  //     },
-  //   ];
 
-  // Inside your component
+  // Combine exams and folders into a single array with a type field
+  const combinedItems = useMemo(() => {
+    const folders = (exams.folders || []).map((folder) => ({
+      ...folder,
+      type: "folder",
+      date: folder.created_at || folder.updated_at, // Assuming folders have a created_at or updated_at field
+    }));
 
-  const sortedExams = useMemo(() => {
-    const sorted = [...(exams || [])];
+    const examsList = (exams.exams || []).map((exam) => ({
+      ...exam,
+      type: "exam",
+      date: exam.date || exam.created_at, // Ensure exams have a date field for sorting
+    }));
+
+    return [...folders, ...examsList];
+  }, [exams]);
+
+  // Sorting combined items
+  const sortedItems = useMemo(() => {
+    const sorted = [...combinedItems];
     if (sortOption === "Son Yaradilan") {
       sorted.sort((a, b) => new Date(b.date) - new Date(a.date));
     } else if (sortOption === "Ilk Yaradilan") {
@@ -140,36 +72,30 @@ const ExamsListTeacher = ({
       sorted.sort((a, b) => b.name.localeCompare(a.name));
     }
     return sorted;
-  }, [exams, sortOption]);
+  }, [combinedItems, sortOption]);
 
-  const handleCheckboxChange = (examSlug, isChecked) => {
-    setSelectedExams((prevSelectedExams) => {
-      if (isChecked) {
-        return [...prevSelectedExams, examSlug];
-      } else {
-        return prevSelectedExams.filter((slug) => slug !== examSlug);
-      }
-    });
+  const handleCheckboxChange = (itemSlug, isChecked, type) => {
+    // Only handle selection for exams, not folders
+    if (type === "exam") {
+      setSelectedExams((prevSelectedExams) => {
+        if (isChecked) {
+          return [...prevSelectedExams, itemSlug];
+        } else {
+          return prevSelectedExams.filter((slug) => slug !== itemSlug);
+        }
+      });
+    }
+    // If you want to handle folder selection, implement it here
   };
-
-  // const handleCheckboxChange = (examSlug, isChecked) => {
-  //   setSelectedExams((prevSelectedExams) => {
-  //     if (isChecked) {
-  //       return [...prevSelectedExams, examSlug];
-  //     } else {
-  //       return prevSelectedExams.filter((slug) => slug !== examSlug);
-  //     }
-  //   });
-  // };
-
-  // ExamsListTeacher.jsx
-  const handleExamClick = (exam) => {
-    if (exam.folder) {
+  const handleItemClick = (item) => {
+    if (item.type === "folder") {
       // Navigate to the folder's exam list and pass the folder slug
-      router.push(`/imtahanlar-siyahisi/${exam.slug}`);
-    } else {
+      router.push(`/umumi-imtahanlar/${item.slug}`);
+    } else if (item.type === "exam") {
       // Navigate to the exam details
-      router.push(`/imtahan-detallari/`);
+
+      setExamDetailsSingle(item);
+      router.push(`/imtahan-detallari`); // Assuming you want to pass the exam slug
     }
   };
 
@@ -218,20 +144,26 @@ const ExamsListTeacher = ({
     <div className="py-6">
       {viewMode === "grid" ? (
         <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-          {sortedExams.map((exam, index) => (
+          {sortedItems.map((item, index) => (
             <div
-              key={exam.slug}
+              key={`${item.type}-${item.slug}`} // Ensure unique key by combining type and slug
               className="relative flex flex-col p-6 rounded-[10px] border border-gray-100 bg-white shadow-createBox"
             >
               <div className="flex w-full justify-between items-center mb-4">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-                  checked={selectedExams.includes(exam.slug)}
-                  onChange={(e) =>
-                    handleCheckboxChange(exam.slug, e.target.checked)
-                  }
-                />
+                {item.type === "exam" && (
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
+                    checked={selectedExams.includes(item.slug)}
+                    onChange={(e) =>
+                      handleCheckboxChange(
+                        item.slug,
+                        e.target.checked,
+                        item.type
+                      )
+                    }
+                  />
+                )}
                 <IoMdMore
                   className="text-inputBorder cursor-pointer"
                   onClick={(e) => {
@@ -247,26 +179,57 @@ const ExamsListTeacher = ({
                     className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10"
                   >
                     <ul>
-                      <li
-                        className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          openEditExamModal(exam);
-                          setDropdownVisible(null);
-                        }}
-                      >
-                        <CiEdit />
-                        Redaktə et
-                      </li>
-                      <li
-                        className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                        onClick={() => {
-                          openDeleteExamModal(exam);
-                          setDropdownVisible(null);
-                        }}
-                      >
-                        <BsTrash className="text-red-500" />
-                        İmtahanı sil
-                      </li>
+                      {item.type === "exam" && (
+                        <>
+                          <li
+                            className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                            onClick={() => {
+                              openEditExamModal(item);
+                              setDropdownVisible(null);
+                            }}
+                          >
+                            <CiEdit />
+                            Redaktə et
+                          </li>
+                          <li
+                            className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                            onClick={() => {
+                              openDeleteExamModal(item);
+                              setDropdownVisible(null);
+                            }}
+                          >
+                            <BsTrash className="text-red-500" />
+                            İmtahanı sil
+                          </li>
+                        </>
+                      )}
+                      {item.type === "folder" && (
+                        <>
+                          {/* Add folder-specific actions here if needed */}
+                          <li
+                            className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                            onClick={() => {
+                              // Example: Rename folder
+                              // openEditFolderModal(item);
+                              setDropdownVisible(null);
+                            }}
+                          >
+                            <CiEdit />
+                            Qovluğu redaktə et
+                          </li>
+                          <li
+                            className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                            onClick={() => {
+                              // Example: Delete folder
+                              openDeleteExamModal(item);
+                              setDropdownVisible(null);
+                            }}
+                          >
+                            <BsTrash className="text-red-500" />
+                            Qovluğu sil
+                          </li>
+                        </>
+                      )}
                     </ul>
                   </div>
                 )}
@@ -274,12 +237,12 @@ const ExamsListTeacher = ({
 
               <div
                 className="cursor-pointer"
-                onClick={() => handleExamClick(exam)}
+                onClick={() => handleItemClick(item)}
               >
                 <p className="flex flex-col w-full">
                   <div className="flex items-center space-x-2 mb-2">
                     <div className="text-yellow-500">
-                      {exam.folder ? (
+                      {item.type === "folder" ? (
                         // Folder Icon
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -299,7 +262,7 @@ const ExamsListTeacher = ({
                           />
                         </svg>
                       ) : (
-                        // File Icon (You can replace this with an exam icon)
+                        // Exam Icon
                         <svg
                           width="29"
                           height="28"
@@ -314,51 +277,58 @@ const ExamsListTeacher = ({
                         </svg>
                       )}
                     </div>
-                    <div className="relative group ">
-                      <h3 className="text-lg font-gilroy  leading-7.5 text-brandBlue700 font-medium truncate  md:max-w-xs max-w-[60px]">
-                        {exam.name.length > 14
-                          ? `${exam.name.slice(0, 14)}...`
-                          : exam.name}
+                    <div className="relative group">
+                      <h3 className="text-base font-gilroy leading-7.5 text-brandBlue700 font-medium truncate md:max-w-xs max-w-[60px]">
+                        {item.name.length > 14
+                          ? `${item.name.slice(0, 14)}...`
+                          : item.name}
                       </h3>
 
-                      {exam.name.length > 14 && (
-                        <span className="absolute left-0 bottom-full mb-2  hidden group-hover:block bg-white border text-black text-xs rounded px-2 py-1 whitespace-nowrap">
-                          {exam.name}
+                      {item.name.length > 14 && (
+                        <span className="absolute left-0 bottom-full mb-2 hidden group-hover:block bg-white border text-black text-xs rounded px-2 py-1 whitespace-nowrap">
+                          {item.name}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {exam.folder ? (
+                  {item.type === "folder" ? (
                     <div>
-                      {exam.exams.map((subExam, index) => (
-                        <span
-                          key={index}
-                          className="relative inline-block group text-arrowButtonGray"
-                          onMouseEnter={() => handleMouseEnter(subExam.name)}
-                          onMouseLeave={handleMouseLeave}
-                        >
-                          {exam.exams.length > 1 &&
-                          index === exam.exams.length - 1 &&
-                          subExam.name.length > 3 ? (
-                            <span>
-                              {subExam.name.slice(0, 3)}...
-                              {tooltipText === subExam.name && (
-                                <span className="absolute left-0 bottom-full mb-2 bg-white border text-black text-xs rounded px-2 py-1 whitespace-nowrap">
-                                  {subExam.name}
-                                </span>
-                              )}
-                            </span>
-                          ) : (
-                            <span>{subExam.name}</span>
-                          )}
-                          {index !== exam.exams.length - 1 && <span>, </span>}
-                        </span>
-                      ))}
+                      {item.exams && item.exams.length > 0 ? (
+                        item.exams.map((subExam, index) => (
+                          <span
+                            key={index}
+                            className="relative inline-block group text-arrowButtonGray"
+                            onMouseEnter={() => handleMouseEnter(subExam.name)}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {item.exams.length > 1 &&
+                            index === item.exams.length - 1 &&
+                            subExam.name.length > 3 ? (
+                              <span>
+                                {subExam.name.slice(0, 3)}...
+                                {tooltipText === subExam.name && (
+                                  <span className="absolute left-0 bottom-full mb-2 bg-white border text-black text-xs rounded px-2 py-1 whitespace-nowrap">
+                                    {subExam.name}
+                                  </span>
+                                )}
+                              </span>
+                            ) : (
+                              <span>{subExam.name}</span>
+                            )}
+                            {index !== item.exams.length - 1 && <span>, </span>}
+                          </span>
+                        ))
+                      ) : (
+                        <div className="text-arrowButtonGray !text-base font-gilroy">
+                          Bu qovluqda imtahan yoxdur.
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div className="text-arrowButtonGray !text-base font-gilroy">
-                      {exam.questions} sual | {formatDate(exam.date)}
+                      {item.count} sual
+                      {showTeacherName && ` | ${item.created_at}`}
                     </div>
                   )}
 
@@ -367,73 +337,79 @@ const ExamsListTeacher = ({
                   <div className="text-sm leading-normal font-gilroy font-medium text-arrowButtonGray"></div>
                 </p>
 
-                <p className="flex gap-2 items-center text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
-                  {exam.date}
-                </p>
-                {/* {showTeacherName && (
+                {!showTeacherName && item.type === "exam" && (
                   <p className="flex gap-2 items-center text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <rect width="24" height="24" rx="12" fill="#EDEFFD" />
-                      <path
-                        d="M16.364 16.909C16.364 16.1478 16.364 15.7672 16.27 15.4575C16.0585 14.7602 15.5128 14.2145 14.8155 14.0029C14.5058 13.909 14.1252 13.909 13.364 13.909H10.6367C9.8755 13.909 9.49489 13.909 9.18519 14.0029C8.48788 14.2145 7.9422 14.7602 7.73067 15.4575C7.63672 15.7672 7.63672 16.1478 7.63672 16.909M14.4549 9.54537C14.4549 10.901 13.356 11.9999 12.0004 11.9999C10.6447 11.9999 9.54581 10.901 9.54581 9.54537C9.54581 8.18976 10.6447 7.09082 12.0004 7.09082C13.356 7.09082 14.4549 8.18976 14.4549 9.54537Z"
-                        stroke="#2826A7"
-                        stroke-width="1.09091"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                      />
-                    </svg>
-                    John Doe
+                    {item.created_at}
                   </p>
-                )} */}
+                )}
+                {showTeacherName && item.type === "exam" && (
+                  <p className="flex gap-2 items-center text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
+                    {item.author_image ? (
+                      <img
+                        src={item.author_image}
+                        alt={`${item.author}'s profile`}
+                        className="w-6 h-6 rounded-full"
+                      />
+                    ) : (
+                      <div className="w-6 h-6 rounded-full flex items-center justify-center bg-[#EDEFFD] text-gray-600 font-medium">
+                        {item.author
+                          .split(" ")
+                          .map((namePart) => namePart[0])
+                          .join("")
+                          .toUpperCase()}
+                      </div>
+                    )}
+                    {item.author}
+                  </p>
+                )}
               </div>
             </div>
           ))}
         </div>
       ) : (
         <div className="flex flex-col gap-3">
-          {sortedExams.map((exam, index) => (
+          {sortedItems.map((item, index) => (
             <div
-              key={exam.slug}
+              key={`${item.type}-${item.slug}`} // Ensure unique key by combining type and slug
               className="cursor-pointer relative flex items-center p-5 rounded-[10px] border border-gray-100 bg-white shadow-createBox"
-              onClick={() => handleExamClick(exam)}
+              onClick={() => handleItemClick(item)}
             >
               <a className="flex items-center w-full">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-                  checked={selectedExams.includes(exam.slug)}
-                  onChange={(e) =>
-                    handleCheckboxChange(exam.slug, e.target.checked)
-                  }
-                />
+                {item.type === "exam" && (
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
+                    checked={selectedExams.includes(item.slug)}
+                    onChange={(e) =>
+                      handleCheckboxChange(
+                        item.slug,
+                        e.target.checked,
+                        item.type
+                      )
+                    }
+                  />
+                )}
                 <div className="text-yellow-500 mr-4">
-                  {exam.folder ? (
+                  {item.type === "folder" ? (
                     // Folder Icon
                     <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="28px"
-                      height="28px"
-                      viewBox="0 0 28 28"
+                      width="29"
+                      height="28"
+                      viewBox="0 0 29 28"
                       fill="none"
-                      aria-hidden="true"
+                      xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
-                        d="M23.333 7.00002H12.833L10.4997 4.66669H4.66634C3.38301 4.66669 2.33301 5.71669 2.33301 7.00002V11.6667H25.6663V9.33335C25.6663 8.05002 24.6163 7.00002 23.333 7.00002Z"
+                        d="M23.7344 6.99984H13.2344L10.901 4.6665H5.06771C3.78437 4.6665 2.73438 5.7165 2.73438 6.99984V11.6665H26.0677V9.33317C26.0677 8.04984 25.0177 6.99984 23.7344 6.99984Z"
                         fill="#FFA000"
                       />
                       <path
-                        d="M23.333 7H4.66634C3.38301 7 2.33301 8.05 2.33301 9.33333V21C2.33301 22.2833 3.38301 23.3333 4.66634 23.3333H23.333C24.6163 23.3333 25.6663 22.2833 25.6663 21V9.33333C25.6663 8.05 24.6163 7 23.333 7Z"
+                        d="M23.7344 7H5.06771C3.78437 7 2.73438 8.05 2.73438 9.33333V21C2.73438 22.2833 3.78437 23.3333 5.06771 23.3333H23.7344C25.0177 23.3333 26.0677 22.2833 26.0677 21V9.33333C26.0677 8.05 25.0177 7 23.7344 7Z"
                         fill="#FFCA28"
                       />
                     </svg>
                   ) : (
-                    // File Icon (You can replace this with an exam icon)
+                    // Exam Icon
                     <svg
                       width="29"
                       height="28"
@@ -449,16 +425,51 @@ const ExamsListTeacher = ({
                   )}
                 </div>
                 <div className="flex items-center w-full justify-between">
-                  <h3 className="text-sm md:text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
-                    {exam.name}
+                  <h3 className="text-sm w-[300px] md:text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
+                    {item.name}
                   </h3>
-                  {!exam.folder && (
-                    <div className="text-sm hidden md:block font-gilroy text-gray300 font-medium">
-                      {`${exam.subject} • ${exam.level} • ${exam.difficulty}`}
+
+                  {item.type === "folder" ? (
+                    <div className="w-[300px]">
+                      {item.exams && item.exams.length > 0 ? (
+                        item.exams.map((subExam, index) => (
+                          <span
+                            key={index}
+                            className="relative inline-block group text-arrowButtonGray"
+                            onMouseEnter={() => handleMouseEnter(subExam.name)}
+                            onMouseLeave={handleMouseLeave}
+                          >
+                            {item.exams.length > 1 &&
+                            index === item.exams.length - 1 &&
+                            subExam.name.length > 3 ? (
+                              <span>
+                                {subExam.name.slice(0, 3)}...
+                                {tooltipText === subExam.name && (
+                                  <span className="absolute left-0 bottom-full mb-2 bg-white border text-black text-xs rounded px-2 py-1 whitespace-nowrap">
+                                    {subExam.name}
+                                  </span>
+                                )}
+                              </span>
+                            ) : (
+                              <span>{subExam.name}</span>
+                            )}
+                            {index !== item.exams.length - 1 && <span>, </span>}
+                          </span>
+                        ))
+                      ) : (
+                        <div className="text-gray90 !text-base font-gilroy">
+                          Bu qovluqda imtahan yoxdur.
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="w-[270px] text-gray90 !text-base font-gilroy">
+                      {item.count} sual
                     </div>
                   )}
+
                   <div className="text-sm leading-normal font-gilroy font-medium text-gray90">
-                    {formatDate(exam.date)}
+                    {item.created_at}
                   </div>
                   <div
                     onClick={(e) => {
@@ -480,28 +491,60 @@ const ExamsListTeacher = ({
                         className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10"
                       >
                         <ul>
-                          <li
-                            className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openEditExamModal(exam);
-                              setDropdownVisible(null);
-                            }}
-                          >
-                            <CiEdit />
-                            Redaktə et
-                          </li>
-                          <li
-                            className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              openDeleteExamModal(exam);
-                              setDropdownVisible(null);
-                            }}
-                          >
-                            <BsTrash className="text-red-500" />
-                            İmtahanı sil
-                          </li>
+                          {item.type === "exam" && (
+                            <>
+                              <li
+                                className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openEditExamModal(item);
+                                  setDropdownVisible(null);
+                                }}
+                              >
+                                <CiEdit />
+                                Redaktə et
+                              </li>
+                              <li
+                                className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openDeleteExamModal(item);
+                                  setDropdownVisible(null);
+                                }}
+                              >
+                                <BsTrash className="text-red-500" />
+                                İmtahanı sil
+                              </li>
+                            </>
+                          )}
+                          {item.type === "folder" && (
+                            <>
+                              {/* Add folder-specific actions here if needed */}
+                              <li
+                                className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  // Example: Rename folder
+                                  // openEditFolderModal(item);
+                                  setDropdownVisible(null);
+                                }}
+                              >
+                                <CiEdit />
+                                Qovluğu redaktə et
+                              </li>
+                              <li
+                                className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  openDeleteExamModal(item);
+                                  setDropdownVisible(null);
+                                }}
+                              >
+                                <BsTrash className="text-red-500" />
+                                Qovluğu sil
+                              </li>
+                            </>
+                          )}
                         </ul>
                       </div>
                     )}

@@ -4,7 +4,7 @@ import { FaRegCircleCheck } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
-function ExamCreateTitleNavigation() {
+function ExamCreateTitleNavigation({ isFormValid, onSubmit, isSubmitting }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Variantli sual"); // Default option
   const dropdownRef = useRef(null); // Ref to the dropdown
@@ -36,22 +36,26 @@ function ExamCreateTitleNavigation() {
   return (
     <div className="flex flex-row justify-between pb-6">
       <h2 className="font-gilroy text-2xl font-medium leading-8 ">
-        İmtahan MOSE
+        İmtahan Yarat
       </h2>
 
       <div className="flex flex-row gap-2">
-     
-    
         <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap">
           <FaRegTrashAlt className="text-white w-4 h-4" />
-          
           İmtina
         </button>
 
-        <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-green600 hover:bg-green600Hover active:bg-green600Pressed whitespace-nowrap">
+        <button
+          onClick={onSubmit} // Attach onSubmit handler
+          disabled={!isFormValid || isSubmitting}
+          className={`flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md ${
+            isFormValid && !isSubmitting
+              ? "bg-green600 hover:bg-green600Hover active:bg-green600Pressed"
+              : "bg-gray-400 cursor-not-allowed"
+          } whitespace-nowrap`}
+        >
           <FaRegCircleCheck className="text-white w-5 h-5" />
-          
-          Paylaş
+          {isSubmitting ? "Paylaşılır..." : "Paylaş"}
         </button>
       </div>
     </div>

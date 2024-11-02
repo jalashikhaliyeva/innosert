@@ -1,223 +1,15 @@
+// Registrations.jsx
 import React, { useState, useEffect, useRef } from "react";
 import ReactPaginate from "react-paginate";
 import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
+import axios from "axios";
 
-function Registrations({ selectedRows, setSelectedRows }) {
-  const data = [
-    {
-      id: 1,
-      fullname: "John Doe",
-      mail: "john.doe@example.com",
-      price: 100,
-      date: "2022-02-12",
-    },
-    {
-      id: 2,
-      fullname: "Jane Smith",
-      mail: "jane.smith@example.com",
-      price: 150,
-      date: "2022-02-13",
-    },
-    {
-      id: 3,
-      fullname: "Alice Johnson",
-      mail: "alice.johnson@example.com",
-      price: 200,
-      date: "2022-02-14",
-    },
-    {
-      id: 4,
-      fullname: "Bob Williams",
-      mail: "bob.williams@example.com",
-      price: 120,
-      date: "2022-02-15",
-    },
-    {
-      id: 5,
-      fullname: "Michael Brown",
-      mail: "michael.brown@example.com",
-      price: 180,
-      date: "2022-02-16",
-    },
-    {
-      id: 6,
-      fullname: "Emily Davis",
-      mail: "emily.davis@example.com",
-      price: 210,
-      date: "2022-02-17",
-    },
-    {
-      id: 7,
-      fullname: "Christopher Miller",
-      mail: "chris.miller@example.com",
-      price: 190,
-      date: "2022-02-18",
-    },
-    {
-      id: 8,
-      fullname: "Sophia Garcia",
-      mail: "sophia.garcia@example.com",
-      price: 140,
-      date: "2022-02-19",
-    },
-    {
-      id: 9,
-      fullname: "James Wilson",
-      mail: "james.wilson@example.com",
-      price: 170,
-      date: "2022-02-20",
-    },
-    {
-      id: 10,
-      fullname: "Olivia Martinez",
-      mail: "olivia.martinez@example.com",
-      price: 160,
-      date: "2022-02-21",
-    },
-    {
-      id: 11,
-      fullname: "William Anderson",
-      mail: "william.anderson@example.com",
-      price: 220,
-      date: "2022-02-22",
-    },
-    {
-      id: 12,
-      fullname: "Mia Thomas",
-      mail: "mia.thomas@example.com",
-      price: 230,
-      date: "2022-02-23",
-    },
-    {
-      id: 13,
-      fullname: "David Jackson",
-      mail: "david.jackson@example.com",
-      price: 250,
-      date: "2022-02-24",
-    },
-    {
-      id: 14,
-      fullname: "Amelia White",
-      mail: "amelia.white@example.com",
-      price: 130,
-      date: "2022-02-25",
-    },
-    {
-      id: 15,
-      fullname: "Elijah Harris",
-      mail: "elijah.harris@example.com",
-      price: 240,
-      date: "2022-02-26",
-    },
-    {
-      id: 16,
-      fullname: "Isabella Clark",
-      mail: "isabella.clark@example.com",
-      price: 260,
-      date: "2022-02-27",
-    },
-    {
-      id: 17,
-      fullname: "Logan Rodriguez",
-      mail: "logan.rodriguez@example.com",
-      price: 170,
-      date: "2022-02-28",
-    },
-    {
-      id: 18,
-      fullname: "Emma Lewis",
-      mail: "emma.lewis@example.com",
-      price: 190,
-      date: "2022-03-01",
-    },
-    {
-      id: 19,
-      fullname: "Lucas Walker",
-      mail: "lucas.walker@example.com",
-      price: 180,
-      date: "2022-03-02",
-    },
-    {
-      id: 20,
-      fullname: "Charlotte Young",
-      mail: "charlotte.young@example.com",
-      price: 150,
-      date: "2022-03-03",
-    },
-    {
-      id: 21,
-      fullname: "Henry King",
-      mail: "henry.king@example.com",
-      price: 170,
-      date: "2022-03-04",
-    },
-    {
-      id: 22,
-      fullname: "Lily Wright",
-      mail: "lily.wright@example.com",
-      price: 130,
-      date: "2022-03-05",
-    },
-    {
-      id: 23,
-      fullname: "Benjamin Scott",
-      mail: "benjamin.scott@example.com",
-      price: 210,
-      date: "2022-03-06",
-    },
-    {
-      id: 24,
-      fullname: "Evelyn Hill",
-      mail: "evelyn.hill@example.com",
-      price: 160,
-      date: "2022-03-07",
-    },
-    {
-      id: 25,
-      fullname: "Daniel Green",
-      mail: "daniel.green@example.com",
-      price: 140,
-      date: "2022-03-08",
-    },
-    {
-      id: 26,
-      fullname: "Ava Adams",
-      mail: "ava.adams@example.com",
-      price: 230,
-      date: "2022-03-09",
-    },
-    {
-      id: 27,
-      fullname: "Jackson Baker",
-      mail: "jackson.baker@example.com",
-      price: 220,
-      date: "2022-03-10",
-    },
-    {
-      id: 28,
-      fullname: "Sofia Gonzalez",
-      mail: "sofia.gonzalez@example.com",
-      price: 200,
-      date: "2022-03-11",
-    },
-    {
-      id: 29,
-      fullname: "Sebastian Perez",
-      mail: "sebastian.perez@example.com",
-      price: 240,
-      date: "2022-03-12",
-    },
-    {
-      id: 30,
-      fullname: "Mason Turner",
-      mail: "mason.turner@example.com",
-      price: 250,
-      date: "2022-03-13",
-    },
-  ];
-
+function Registrations({ examSlug }) {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const router = useRouter();
 
   // State declarations
@@ -278,6 +70,50 @@ function Registrations({ selectedRows, setSelectedRows }) {
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  // Fetch registrations data from API
+  useEffect(() => {
+    const fetchRegistrations = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `https://innocert-admin.markup.az/api/exam/register/${examSlug}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Registrations API Response:", response.data);
+        setData(response.data.data || []); // Ensure data is an array
+      } catch (err) {
+        console.error("Error fetching registrations:", err);
+        setError("Failed to fetch registrations.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (examSlug) {
+      fetchRegistrations();
+    }
+  }, [examSlug]);
+
+  if (loading) {
+    return (
+      <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
+        <p>Loading registrations...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   // Filtering logic
   const filteredData = data
@@ -675,10 +511,13 @@ function Registrations({ selectedRows, setSelectedRows }) {
               ))
             ) : (
               <tr>
-                <td colSpan="5" className="px-4 py-2 text-center text-gray-500">
-                  No results found.
-                </td>
-              </tr>
+              <td colSpan="5" className="px-4 py-2 text-center text-gray-500">
+                {filteredData.length === 0
+                  ? "Qeydiyyat tapılmadı."
+                  : "Nəticə tapılmadı."}
+              </td>
+            </tr>
+            
             )}
           </tbody>
         </table>

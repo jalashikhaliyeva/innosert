@@ -7,13 +7,42 @@ import { FaPen } from "react-icons/fa";
 import { TbArrowsSort } from "react-icons/tb";
 import { LuSearch } from "react-icons/lu";
 import { useRouter } from "next/router";
+import TableComponent from "../CreateExamTabGroup/TableComponent";
+import axios from "axios";
 
-function ExamDetailsTabGroup() {
+function ExamDetailsTabGroup({ examDetailsSingle }) {
   const [activeTab, setActiveTab] = useState("general");
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
+  const [questions, setQuestions] = useState([]);
   const router = useRouter();
   const [selectedRows, setSelectedRows] = useState([]);
   const sortMenuRef = useRef(null);
+
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        console.log(examDetailsSingle.slug, "examDetailsSingle.name");
+
+        const response = await axios.get(
+          `https://innocert-admin.markup.az/api/exam/questions/${examDetailsSingle.slug}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("API Response:", response.data);
+        setQuestions(response.data.data);
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    if (examDetailsSingle.name) {
+      fetchQuestions();
+    }
+  }, []);
 
   const handleDelete = () => {
     console.log("Rows to delete:", selectedRows);
@@ -27,7 +56,8 @@ function ExamDetailsTabGroup() {
     switch (activeTab) {
       case "questions":
         return (
-          <Questions
+          <TableComponent
+            questions={questions}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}
             handleDelete={handleDelete}
@@ -35,56 +65,50 @@ function ExamDetailsTabGroup() {
           />
         );
       case "registrations":
-        return <Registrations />;
+        return <Registrations examSlug={examDetailsSingle.slug} />;
       case "results":
-        return <Results />;
+        return <Results examSlug={examDetailsSingle.slug} />;
       default:
-        return <GeneralInfo />;
+        return <GeneralInfo examDetailsSingle={examDetailsSingle} />;
     }
   };
 
   const handleSortOptionClick = (option) => {
     console.log(`Selected sort option: ${option}`);
-    setIsSortMenuOpen(false); // Close menu after selection
+    setIsSortMenuOpen(false);
   };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (sortMenuRef.current && !sortMenuRef.current.contains(event.target)) {
-        setIsSortMenuOpen(false); // Close the menu if clicked outside
+        setIsSortMenuOpen(false);
       }
     };
-
-    // Add event listener to detect clicks outside the sort menu
     document.addEventListener("mousedown", handleClickOutside);
 
     return () => {
-      // Clean up the event listener on component unmount
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [sortMenuRef]);
 
   return (
     <div className="flex flex-col p-4 sm:p-6">
-      <div className="flex flex-row justify-between  items-center mb-4 sm:mb-6">
+      <div className="flex flex-row justify-between items-center mb-4 sm:mb-6">
         <h2 className="font-gilroy text-xl sm:text-2xl font-medium leading-6 sm:leading-8">
           İmtahanlarım
         </h2>
-
-        {/* Conditionally render "Redaktə et" or "Search" and "Sort" */}
         {activeTab === "general" ? (
           <button
             className="flex items-center justify-center gap-2 py-2 px-3 sm:py-3 sm:px-4 h-10 sm:h-11 text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary font-gilroy"
             onClick={() => {
-              router.push("/imtahan-redakte"); // Redirect to edit page
+              router.push("/imtahan-redakte");
             }}
           >
             <FaPen />
             <span className="text-sm sm:text-base">Redaktə et</span>
           </button>
         ) : (
-          <div className="flex  flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 relative">
-            {/* Sort menu */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 relative">
             <div className="relative" ref={sortMenuRef}>
               <div
                 onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
@@ -95,7 +119,6 @@ function ExamDetailsTabGroup() {
                   Sırala
                 </p>
               </div>
-
               {isSortMenuOpen && (
                 <div className="py-3 px-4 absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-xl shadow-md z-20">
                   <ul className="divide-y divide-gray-200">
@@ -114,8 +137,6 @@ function ExamDetailsTabGroup() {
                 </div>
               )}
             </div>
-
-            {/* Search input with custom styling */}
             <div className="flex items-center w-[70%] md:w-full bg-bodyColor border border-inputBorder rounded-lg px-2 py-1 sm:px-3 sm:py-2 focus-within:border-inputRingFocus overflow-hidden z-10">
               <LuSearch className="text-inputPlaceholderText size-4 sm:size-6 flex-shrink-0" />
               <input
@@ -127,8 +148,6 @@ function ExamDetailsTabGroup() {
           </div>
         )}
       </div>
-
-      {/* Tab buttons */}
       <div className="flex flex-wrap sm:flex-row gap-2 sm:gap-4 mb-4 sm:mb-6">
         {[
           { label: "Ümumi məlumat", key: "general" },
@@ -149,8 +168,6 @@ function ExamDetailsTabGroup() {
           </button>
         ))}
       </div>
-
-      {/* Render the content based on the active tab */}
       <div className="mt-4">{renderTabContent()}</div>
     </div>
   );

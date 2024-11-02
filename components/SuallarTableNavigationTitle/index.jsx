@@ -30,3 +30,8 @@ function SuallarTableNavigationTitle({ selectedRows, handleDelete,handleEdit }) 
 }
 
 export default SuallarTableNavigationTitle;
+
+
+
+
+

@@ -14,10 +14,13 @@ import { UserContext } from "@/shared/context/UserContext";
 import { useContext } from "react";
 
 function ImtahanSualiSingle() {
-  const { user } = useContext(UserContext); 
+  const { user } = useContext(UserContext);
+  const { selectedQuestion } = useContext(UserContext);
+  console.log(selectedQuestion, "setSelectedQuestion");
+
   return (
     <>
-  <div className="hidden lg:block ">
+      <div className="hidden lg:block ">
         <HeaderInternal />
       </div>
       <div className="block  lg:hidden">
@@ -25,17 +28,17 @@ function ImtahanSualiSingle() {
         {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
       <div className="flex">
-      <div className="hidden lg:block md:w-[20%]">
-        {user?.data.roles === "Teacher" && <TeacherSidebar />}
-        {user?.data.roles === "Owner" && <CompanySidebar />}
+        <div className="hidden lg:block md:w-[20%]">
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
 
         <div className="w-full md:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
-            <QuestionSingleNavigationTitle />
-            <AboutQuestionBoxes />
-            <SingleQuestionInFolder />
+            <QuestionSingleNavigationTitle selectedQuestion={selectedQuestion} />
+            <AboutQuestionBoxes selectedQuestion={selectedQuestion} />
+            <SingleQuestionInFolder selectedQuestion={selectedQuestion} />
           </InternalContainer>
         </div>
       </div>

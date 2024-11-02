@@ -2,7 +2,7 @@ import React from "react";
 import { FaPen } from "react-icons/fa";
 import { useRouter } from "next/router"; // Import useRouter from Next.js
 
-function QuestionSingleNavigationTitle() {
+function QuestionSingleNavigationTitle({ selectedQuestion }) {
   const router = useRouter();
   const { push } = router;
 
@@ -12,9 +12,10 @@ function QuestionSingleNavigationTitle() {
 
   return (
     <div className="flex justify-between relative font-gilroy mb-5 md:mb-0">
-      <h1 className="text-2xl font-medium leading-8">
-        Sual
-      </h1>
+      <h1
+        className="text-2xl font-medium leading-8"
+        dangerouslySetInnerHTML={{ __html: selectedQuestion?.question }}
+      ></h1>
 
       <div>
         <button

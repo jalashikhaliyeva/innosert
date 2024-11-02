@@ -1,39 +1,66 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "react-toastify";
 
-function EditFolderModal({ closeModal }) {
-  const [email, setEmail] = useState("");
+function EditFolderModal({ folder, closeModal, onFolderUpdate }) {
+  const [folderName, setFolderName] = useState(folder?.name || "");
   const [inputError, setInputError] = useState(false);
-  const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  // Handle button click to trigger loading and modal close
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!email) {
-      setInputError(true); // Trigger error if input is empty
-      return;
+  useEffect(() => {
+    if (folder?.name) {
+      setFolderName(folder.name);
     }
-    setLoading(true); // Set loading to true on submit
+  }, [folder]);
 
-    // Simulate a 3-second loading delay
-    setTimeout(() => {
-      setLoading(false);
-      closeModal(); // Close modal after loading
-    }, 1400);
-  };
-
-  // Handle input change and reset error state when typing
   const handleInputChange = (e) => {
-    setEmail(e.target.value);
+    setFolderName(e.target.value);
     if (inputError && e.target.value) {
       setInputError(false);
     }
   };
 
-  // Handle key press (Enter) to submit the form
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       handleSubmit(e);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!folderName) {
+      setInputError(true);
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.post(
+        `https://innocert-admin.markup.az/api/folder/${folder.id}`,
+        { name: folderName },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("Folder name updated successfully!");
+        // Notify parent about the change
+        if (onFolderUpdate) {
+          onFolderUpdate({ ...folder, name: folderName });
+        }
+        closeModal(); // Close modal after update
+      }
+    } catch (error) {
+      toast.error("Failed to update folder name.");
+      console.error("Error updating folder:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -46,7 +73,7 @@ function EditFolderModal({ closeModal }) {
       ></div>
 
       {/* Modal Content */}
-      <div className="bg-boxGrayBodyColor z-50 p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[300px] m-5 md:m-0  md:min-w-[400px]">
+      <div className="bg-boxGrayBodyColor z-50 p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[300px] m-5 md:m-0 md:min-w-[400px]">
         {/* Close Button */}
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 focus:outline-none"
@@ -69,27 +96,21 @@ function EditFolderModal({ closeModal }) {
         </button>
 
         <h2 className="text-textSecondaryDefault text-2xl font-medium font-gilroy leading-8">
-        Faylın adını dəyiş
+          Faylın adını dəyiş
         </h2>
+
         <input
           type="text"
-          value={email}
+          value={folderName}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
-          onFocus={() => setFocusedInput("email")}
-          onBlur={() => setFocusedInput(null)}
           className={`placeholder-inputPlaceholderTe placeholder:text-base font-gilroy block w-full pr-3 py-3 px-4 border ${
-            inputError && !email
-              ? "border-inputRingError"
-              : focusedInput === "email"
-              ? "border-inputRingFocus"
-              : "border-inputBorder"
-          } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
+            inputError ? "border-inputRingError" : "border-inputBorder"
+          } bg-inputBgDefault rounded-md shadow-sm focus:outline-none`}
           placeholder="Ad daxil edin..."
         />
 
-        {/* Helper Text */}
-        {inputError && !email && (
+        {inputError && !folderName && (
           <div className="text-red-600 text-sm -mt-4">
             Faylın adı mövcud olmalıdır.
           </div>
@@ -101,37 +122,11 @@ function EditFolderModal({ closeModal }) {
           className={`w-full flex font-gilroy justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white ${
             loading
               ? "bg-[#DFDFDF] cursor-not-allowed"
-              : "bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
+              : "bg-buttonPrimaryDefault"
           }`}
-          disabled={loading} // Disable the button when loading is true
+          disabled={loading}
         >
-          {loading ? (
-            <div className="flex items-center justify-center">
-              <svg
-                className="animate-spin h-5 w-5 mr-3 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                ></path>
-              </svg>
-              Gözləyin...
-            </div>
-          ) : (
-            "Dəyiş"
-          )}
+          {loading ? "Gözləyin..." : "Dəyiş"}
         </button>
       </div>
     </div>

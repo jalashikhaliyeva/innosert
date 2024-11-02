@@ -1,0 +1,205 @@
+import { useState, useRef, useEffect } from "react";
+import { FaPlus } from "react-icons/fa6";
+import dynamic from "next/dynamic";
+import { IoCloseOutline } from "react-icons/io5";
+
+// Dynamically import FroalaEditorComponent with SSR disabled
+const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
+  ssr: false,
+});
+
+function VariantliSual() {
+  const [answers, setAnswers] = useState([
+    { id: 1, label: "A variantı", text: "", correct: false, isDefault: true },
+    { id: 2, label: "B variantı", text: "", correct: false, isDefault: true },
+    { id: 3, label: "C variantı", text: "", correct: false, isDefault: true },
+  ]);
+  const answerRefs = useRef({});
+  const [currentEditor, setCurrentEditor] = useState(null);
+
+  const handleAddVariant = () => {
+    setAnswers((prevAnswers) => {
+      const existingIds = prevAnswers.map((a) => a.id);
+      const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
+
+      const existingLabels = prevAnswers.map((a) => a.label.charAt(0));
+      let nextLabelCharCode = 65; // ASCII code for 'A'
+      while (existingLabels.includes(String.fromCharCode(nextLabelCharCode))) {
+        nextLabelCharCode++;
+      }
+      const nextLabelChar = String.fromCharCode(nextLabelCharCode);
+      const nextLabel = `${nextLabelChar} variantı`;
+
+      return [
+        ...prevAnswers,
+        {
+          id: nextId,
+          label: nextLabel,
+          text: "",
+          isDefault: false,
+          correct: false,
+        },
+      ];
+    });
+  };
+
+  const handleDeleteVariant = (id) => {
+    setAnswers((prevAnswers) =>
+      prevAnswers.filter((answer) => answer.id !== id)
+    );
+
+    if (answerRefs.current[id]) {
+      delete answerRefs.current[id];
+    }
+
+    if (currentEditor === `answer-${id}`) {
+      setCurrentEditor(null);
+    }
+  };
+
+  const handleAnswerEditClick = (id) => {
+    setCurrentEditor(`answer-${id}`);
+  };
+
+  // Handle click outside to close editors
+  useEffect(() => {
+    function handleClickOutside(event) {
+      const isEditorInput = event.target.closest("[data-editor-input]");
+      if (isEditorInput) return;
+
+      if (currentEditor && currentEditor.startsWith("answer-")) {
+        const id = parseInt(currentEditor.split("-")[1]);
+        if (
+          answerRefs.current[id] &&
+          !answerRefs.current[id].contains(event.target)
+        ) {
+          setCurrentEditor(null);
+        }
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [currentEditor]);
+
+  return (
+    <div className="flex flex-col gap-3 w-full lg:w-1/2 px-4">
+      <h2 className="text-textSecondaryDefault leading-8 text-2xl font-gilroy font-medium mb-5">
+        Cavablar
+      </h2>
+      {answers.map((answer) => (
+        <div key={answer.id} className="flex flex-col mb-4">
+          <div className="flex items-center mb-2">
+            <h2 className="font-gilroy text-xl leading-6 font-normal text-brandBlue300">
+              {answer.label}
+            </h2>
+            <input
+              type="checkbox"
+              checked={answer.correct || false}
+              onChange={() => handleCheckboxChange(answer.id)}
+              className="ml-2 mr-2"
+            />
+            {answer.correct && <span className="text-green600">Düz cavab</span>}
+            {/* Delete button for non-default variants */}
+            {!answer.isDefault && (
+              <button
+                className="ml-4 text-red-600 hover:text-red-800 text-2xl"
+                onClick={() => handleDeleteVariant(answer.id)}
+              >
+                <IoCloseOutline />
+              </button>
+            )}
+          </div>
+          <div className="flex items-center gap-2">
+            {currentEditor !== `answer-${answer.id}` ? (
+              // Non-edit mode: Show placeholder if no text
+              <div
+                className={`py-3 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full ${
+                  answer.correct
+                    ? "border-green500 bg-green100"
+                    : "border-arrowButtonGray bg-boxGrayBodyColor"
+                }`}
+                onClick={() => handleAnswerEditClick(answer.id)}
+                data-editor-input={`answer-${answer.id}`}
+              >
+                {answer.text ? (
+                  <span dangerouslySetInnerHTML={{ __html: answer.text }} />
+                ) : (
+                  <span className="text-placeholderGray">
+                    Variant mətnini əlavə edin
+                  </span>
+                )}
+              </div>
+            ) : (
+              // Edit mode: Froala editor with placeholder
+              <div
+                style={{ width: "100%" }}
+                ref={(el) => {
+                  if (el) {
+                    answerRefs.current[answer.id] = el;
+                  }
+                }}
+              >
+                <FroalaEditorComponent
+                  tag="textarea"
+                  config={{
+                    key: "YOUR_LICENSE_KEY",
+                    attribution: false,
+                    quickInsertTags: [],
+                    imageUpload: true,
+                    toolbarButtons: [
+                      "bold",
+                      "italic",
+                      "underline",
+                      "strikeThrough",
+                      "subscript",
+                      "superscript",
+                      "|",
+                      "insertImage",
+                      "insertVideo",
+                      "insertFile",
+                      "|",
+                      "undo",
+                      "redo",
+                    ],
+                    imageAllowedTypes: ["jpeg", "jpg", "png", "gif"],
+                    videoUpload: true,
+                    fileUpload: true,
+                    charCounterCount: false,
+                    wordCounterCount: false,
+                    heightMin: "100",
+                    editorClass: "editor-custom-bg",
+                    toolbarSticky: false,
+                    toolbarContainerClass: "editor-toolbar-custom",
+                    // placeholderText: "Variant mətnini əlavə edin",
+                  }}
+                  model={answer.text || ""}
+                  onModelChange={(model) => {
+                    setAnswers((prevAnswers) =>
+                      prevAnswers.map((ans) =>
+                        ans.id === answer.id ? { ...ans, text: model } : ans
+                      )
+                    );
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        </div>
+      ))}
+
+      <button
+        className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-full lg:w-[176px]"
+        onClick={handleAddVariant}
+      >
+        <FaPlus />
+        Variant əlavə et
+      </button>
+    </div>
+  );
+}
+
+export default VariantliSual;

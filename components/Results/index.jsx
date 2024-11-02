@@ -1,226 +1,19 @@
+// Results.jsx
 import React, { useState, useEffect, useRef } from "react";
 import ReactPaginate from "react-paginate";
 import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
+import axios from "axios";
 
-function Results({ selectedRows, setSelectedRows, handleDelete, handleEdit }) {
+function Results({ examSlug }) {
   const router = useRouter();
 
-  const data = [
-    {
-      id: 1,
-      name: "John Doe",
-      examDate: "2023-10-01",
-      completionDate: "2023-10-05",
-      result: "80",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      examDate: "2023-09-28",
-      completionDate: "2023-09-30",
-      result: "20",
-    },
-    {
-      id: 3,
-      name: "Alex Johnson",
-      examDate: "2023-10-02",
-      completionDate: "2023-10-06",
-      result: "95",
-    },
-    {
-      id: 4,
-      name: "Emily Davis",
-      examDate: "2023-09-29",
-      completionDate: "2023-10-01",
-      result: "45",
-    },
-    {
-      id: 5,
-      name: "Michael Brown",
-      examDate: "2023-10-03",
-      completionDate: "2023-10-07",
-      result: "60",
-    },
-    {
-      id: 6,
-      name: "Sarah Miller",
-      examDate: "2023-09-30",
-      completionDate: "2023-10-02",
-      result: "85",
-    },
-    {
-      id: 7,
-      name: "Chris Wilson",
-      examDate: "2023-10-04",
-      completionDate: "2023-10-08",
-      result: "70",
-    },
-    {
-      id: 8,
-      name: "Jessica Taylor",
-      examDate: "2023-10-05",
-      completionDate: "2023-10-09",
-      result: "90",
-    },
-    {
-      id: 9,
-      name: "David Anderson",
-      examDate: "2023-10-06",
-      completionDate: "2023-10-10",
-      result: "55",
-    },
-    {
-      id: 10,
-      name: "Sophia Martinez",
-      examDate: "2023-10-07",
-      completionDate: "2023-10-11",
-      result: "75",
-    },
-    {
-      id: 11,
-      name: "Daniel Moore",
-      examDate: "2023-09-27",
-      completionDate: "2023-09-29",
-      result: "68",
-    },
-    {
-      id: 12,
-      name: "Olivia Thomas",
-      examDate: "2023-09-25",
-      completionDate: "2023-09-27",
-      result: "92",
-    },
-    {
-      id: 13,
-      name: "Liam Garcia",
-      examDate: "2023-10-08",
-      completionDate: "2023-10-12",
-      result: "58",
-    },
-    {
-      id: 14,
-      name: "Emma Robinson",
-      examDate: "2023-09-26",
-      completionDate: "2023-09-28",
-      result: "84",
-    },
-    {
-      id: 15,
-      name: "James White",
-      examDate: "2023-09-24",
-      completionDate: "2023-09-26",
-      result: "50",
-    },
-    {
-      id: 16,
-      name: "Mia Hall",
-      examDate: "2023-10-09",
-      completionDate: "2023-10-13",
-      result: "93",
-    },
-    {
-      id: 17,
-      name: "Benjamin Allen",
-      examDate: "2023-09-23",
-      completionDate: "2023-09-25",
-      result: "76",
-    },
-    {
-      id: 18,
-      name: "Amelia Young",
-      examDate: "2023-09-22",
-      completionDate: "2023-09-24",
-      result: "62",
-    },
-    {
-      id: 19,
-      name: "Ethan Hernandez",
-      examDate: "2023-09-21",
-      completionDate: "2023-09-23",
-      result: "47",
-    },
-    {
-      id: 20,
-      name: "Ava King",
-      examDate: "2023-09-20",
-      completionDate: "2023-09-22",
-      result: "88",
-    },
-    {
-      id: 21,
-      name: "Lucas Wright",
-      examDate: "2023-10-10",
-      completionDate: "2023-10-14",
-      result: "91",
-    },
-    {
-      id: 22,
-      name: "Isabella Lopez",
-      examDate: "2023-09-19",
-      completionDate: "2023-09-21",
-      result: "69",
-    },
-    {
-      id: 23,
-      name: "Mason Gonzalez",
-      examDate: "2023-10-11",
-      completionDate: "2023-10-15",
-      result: "77",
-    },
-    {
-      id: 24,
-      name: "Charlotte Clark",
-      examDate: "2023-09-18",
-      completionDate: "2023-09-20",
-      result: "53",
-    },
-    {
-      id: 25,
-      name: "William Lewis",
-      examDate: "2023-10-12",
-      completionDate: "2023-10-16",
-      result: "89",
-    },
-    {
-      id: 26,
-      name: "Harper Walker",
-      examDate: "2023-09-17",
-      completionDate: "2023-09-19",
-      result: "81",
-    },
-    {
-      id: 27,
-      name: "Henry Lee",
-      examDate: "2023-10-13",
-      completionDate: "2023-10-17",
-      result: "66",
-    },
-    {
-      id: 28,
-      name: "Evelyn Scott",
-      examDate: "2023-09-16",
-      completionDate: "2023-09-18",
-      result: "73",
-    },
-    {
-      id: 29,
-      name: "Sebastian Green",
-      examDate: "2023-10-14",
-      completionDate: "2023-10-18",
-      result: "59",
-    },
-    {
-      id: 30,
-      name: "Abigail Adams",
-      examDate: "2023-09-15",
-      completionDate: "2023-09-17",
-      result: "67",
-    },
-  ];
-
   // State declarations
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [openFilter, setOpenFilter] = useState(null);
@@ -284,6 +77,50 @@ function Results({ selectedRows, setSelectedRows, handleDelete, handleEdit }) {
   const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
+
+  // Fetch results data from API
+  useEffect(() => {
+    const fetchResults = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `https://innocert-admin.markup.az/api/exam/result/${examSlug}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("Results API Response:", response.data);
+        setData(response.data.data || []); // Ensure data is an array
+      } catch (err) {
+        console.error("Error fetching results:", err);
+        setError("Nəticələr alınarkən səhv baş verdi.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (examSlug) {
+      fetchResults();
+    }
+  }, [examSlug]);
+
+  if (loading) {
+    return (
+      <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
+        <p>Yüklənir...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
 
   // Filtering logic
   const filteredData = data
@@ -467,7 +304,11 @@ function Results({ selectedRows, setSelectedRows, handleDelete, handleEdit }) {
                           >
                             <option value="">İl</option>
                             {years.map((year) => (
-                              <option key={year} value={year}>
+                              <option
+                                className="font-normal"
+                                key={year}
+                                value={year}
+                              >
                                 {year}
                               </option>
                             ))}
@@ -537,7 +378,11 @@ function Results({ selectedRows, setSelectedRows, handleDelete, handleEdit }) {
                           >
                             <option value="">İl</option>
                             {years.map((year) => (
-                              <option key={year} value={year}>
+                              <option
+                                className="font-normal"
+                                key={year}
+                                value={year}
+                              >
                                 {year}
                               </option>
                             ))}
@@ -711,7 +556,11 @@ function Results({ selectedRows, setSelectedRows, handleDelete, handleEdit }) {
                           >
                             <option value="">İl</option>
                             {years.map((year) => (
-                              <option key={year} value={year}>
+                              <option
+                                className="font-normal"
+                                key={year}
+                                value={year}
+                              >
                                 {year}
                               </option>
                             ))}

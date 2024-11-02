@@ -1,11 +1,17 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import AddFolderModal from "../AddFolderModal";
+import AddExamFolderModal from "../AddExamFolderModal";
+import AddExamSubFolderModal from "../AddExamSubFolderModal";
 
+
+// add exam or folder modal 
 function AddExamModal({ closeModal }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showFolderModal, setShowFolderModal] = useState(false); // State to control AddFolderModal visibility
   const router = useRouter(); // Initialize router
+  const { slug } = router.query;
+  const slugParam = Array.isArray(slug) ? slug[slug.length - 1] : slug;
 
   const handleOptionChange = (e) => {
     setSelectedOption(e.target.value);
@@ -14,15 +20,20 @@ function AddExamModal({ closeModal }) {
     setShowFolderModal(false); // Close AddFolderModal
     closeModal(); // Close AddExamModal
   };
-
   const handleSubmit = () => {
     if (selectedOption === "exam") {
-      router.push("/imtahan-yarat"); // Navigate to the exam edit page
+      const path = slugParam
+        ? {
+            pathname: "/imtahan-yarat",
+            query: { qovluq: slugParam },
+          }
+        : "/imtahan-yarat";
+      router.push(path);
     } else if (selectedOption === "folder") {
       setShowFolderModal(true); // Show folder modal
     }
   };
-
+  
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
       closeModal();
@@ -31,8 +42,16 @@ function AddExamModal({ closeModal }) {
 
   return (
     <>
-      {showFolderModal && <AddFolderModal closeModal={closeAllModals} />}
-
+   {showFolderModal && (
+        // Conditionally render AddExamFolderModal or AddExamSubFolderModal
+        router.pathname === "/umumi-imtahanlar" ? (
+          <AddExamFolderModal closeModal={closeAllModals} />
+        ) : (
+          router.pathname.startsWith("/umumi-imtahanlar/") && (
+            <AddExamSubFolderModal slugParam={slugParam} closeModal={closeAllModals} />
+          )
+        )
+      )}
       {!showFolderModal && (
         <div
           className="fixed inset-0 bg-black bg-opacity-55 flex items-center justify-center z-50"

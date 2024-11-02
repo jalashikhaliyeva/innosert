@@ -19,6 +19,7 @@ function AddMemberModal({ closeModal }) {
     return emailRegex.test(email);
   };
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !isValidEmail(email)) {
@@ -26,25 +27,52 @@ function AddMemberModal({ closeModal }) {
       return;
     }
     setLoading(true);
-
+  
     try {
       const token = localStorage.getItem("token");
-      const response = await addMemberToCompany(
-        email,
-        token,
-        selectedCompany.id
-      );
+      const response = await addMemberToCompany(email, token, selectedCompany.id);
       console.log("User added successfully:", response);
-
+  
       toast.success("İstifadəçi uğurla əlavə olundu!"); // Show success toast
-      setLoading(false);
-      closeModal();
+  
+      // Add a delay before closing the modal
+      setTimeout(() => {
+        setLoading(false);
+        closeModal();
+      }, 2000); // Adjust the delay time (in milliseconds) as needed
     } catch (error) {
       console.error("Failed to add user:", error);
       toast.warning("İstifadəçini əlavə etmək alınmadı, yenidən cəhd edin!"); // Show error toast
       setLoading(false);
     }
   };
+  
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!email || !isValidEmail(email)) {
+  //     setInputError(true);
+  //     return;
+  //   }
+  //   setLoading(true);
+
+  //   try {
+  //     const token = localStorage.getItem("token");
+  //     const response = await addMemberToCompany(
+  //       email,
+  //       token,
+  //       selectedCompany.id
+  //     );
+  //     console.log("User added successfully:", response);
+
+  //     toast.success("İstifadəçi uğurla əlavə olundu!");
+  //     setLoading(false);
+  //     closeModal();
+  //   } catch (error) {
+  //     console.error("Failed to add user:", error);
+  //     toast.warning("İstifadəçini əlavə etmək alınmadı, yenidən cəhd edin!");
+  //     setLoading(false);
+  //   }
+  // };
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
   //   if (!email || !isValidEmail(email)) {

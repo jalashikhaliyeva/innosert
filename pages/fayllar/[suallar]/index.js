@@ -6,13 +6,18 @@ import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
 import SuallarTable from "@/components/SuallarTable";
 import SuallarTableNavigationTitle from "@/components/SuallarTableNavigationTitle";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import DeleteModal from "@/components/DeleteModal"; // Import DeleteModal
 import EditFolderModal from "@/components/EditFolderModal";
+import CreateSubFolderOrQuestion from "@/components/CreateSubFolderOrQuestion";
+import { UserContext } from "@/shared/context/UserContext";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
+import TeacherSidebar from "@/components/TeacherSidebar";
 
 function ImtahanSUallariTable() {
+  const { user } = useContext(UserContext);
   const [selectedRows, setSelectedRows] = useState([]);
-
 
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -42,13 +47,20 @@ function ImtahanSUallariTable() {
   };
   return (
     <>
-      <HeaderInternal />
+      <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
-          <CompanySidebar />
+        <div className="hidden lg:block md:w-[20%]">
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
 
-        <div className="w-[80%]">
+        <div className="w-full md:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
             <SuallarTableNavigationTitle
@@ -56,25 +68,27 @@ function ImtahanSUallariTable() {
               handleDelete={handleDelete}
               handleEdit={handleEdit}
             />
-            <SuallarTable
+            {/* <SuallarTable
               selectedRows={selectedRows}
               setSelectedRows={setSelectedRows}
               handleDelete={handleDelete}
               handleEdit={handleEdit}
-            />
+            /> */}
           </InternalContainer>
         </div>
       </div>
 
-        {/* Render the modals conditionally */}
-        {isDeleteModalOpen && (
+      {/* Render the modals conditionally */}
+      {isDeleteModalOpen && (
         <DeleteModal
           onCancel={handleCloseDeleteModal}
           onDelete={handleConfirmDelete}
         />
       )}
 
-      {isEditModalOpen && <EditFolderModal closeModal={handleCloseEditModal} />}
+      {isEditModalOpen && (
+        <CreateSubFolderOrQuestion closeModal={handleCloseEditModal} />
+      )}
     </>
   );
 }

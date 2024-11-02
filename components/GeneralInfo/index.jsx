@@ -1,25 +1,28 @@
 import React from "react";
 
-function GeneralInfo() {
+function GeneralInfo({ examDetailsSingle }) {
+  console.log(examDetailsSingle, "examDetailsSingle general");
+
+  // Parse the category JSON string into an array
+  const categories = examDetailsSingle?.category
+    ? JSON.parse(examDetailsSingle.category)
+    : [];
+
   return (
     <div className="bg-white rounded-xl flex flex-col p-8 shadow-createBox mt-3">
       <h1 className="font-gilroy text-black text-2xl font-medium leading-8 mb-3">
-        MOSE
+        {examDetailsSingle?.name}
       </h1>
-      <p className="font-gilroy text-grayText  tracking-036 text-lg">
-        Lorem ipsum dolor sit amet consectetur. Metus cursus velit molestie
-        turpis pulvinar sit interdum pharetra. Posuere ut quam netus id est ut
-        integer viverra scelerisque. Netus laoreet vulputate rhoncus nec tortor
-        suspendisse velit ornare.Metus cursus velit molestie turpis pulvinar sit
-        interdum pharetra.
+      <p className="font-gilroy text-grayText tracking-036 text-lg">
+        {examDetailsSingle?.desc}
       </p>
-      <div className="flex  flex-col lg:flex-row gap-8 mt-6">
+      <div className="flex flex-col lg:flex-row gap-8 mt-6">
         <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">
           <h4 className="font-gilroy text-textSecondaryDefault tracking-036 text-lg">
             Ayrılan vaxt
           </h4>
           <p className="font-gilroy text-lg tracking-036 text-grayButtonText">
-            60 san
+            {examDetailsSingle?.duration}
           </p>
         </div>
         <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">
@@ -27,7 +30,7 @@ function GeneralInfo() {
             Qiyməti
           </h4>
           <p className="font-gilroy text-lg tracking-036 text-grayButtonText">
-            60$
+            {examDetailsSingle?.price} ₼
           </p>
         </div>
         <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">
@@ -44,12 +47,14 @@ function GeneralInfo() {
           </h4>
 
           <div className="flex flex-row gap-2">
-            <p className="font-gilroy text-lg tracking-036 text-textSecondaryDefault rounded-md bg-purple200 px-4 py-2">
-              Data
-            </p>
-            <p className="font-gilroy text-lg tracking-036 text-textSecondaryDefault rounded-md bg-purple200 px-4 py-2">
-              Excell
-            </p>
+            {categories.map((category, index) => (
+              <p
+                key={index}
+                className="font-gilroy text-lg tracking-036 text-textSecondaryDefault rounded-md bg-purple200 px-4 py-2"
+              >
+                {category}
+              </p>
+            ))}
           </div>
         </div>
       </div>

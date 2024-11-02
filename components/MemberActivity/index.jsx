@@ -3,8 +3,11 @@ import ReactPaginate from "react-paginate";
 import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
+import LoginModal from "../Login";
 
-function MemberActivity({ selectedRows, setSelectedRows }) {
+function MemberActivity({ selectedRows, setSelectedRows, data }) {
+  console.log(data, "data member acrivity");
+
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -56,24 +59,6 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [openFilter, dropdownRefs]);
-
-  const data = [
-    {
-      id: 1,
-      fullName: "John Doe",
-      publishedQuestions: 10,
-      publishedExams: 5,
-      slug: "john-doe",
-    },
-    {
-      id: 2,
-      fullName: "Jane Smith",
-      publishedQuestions: 8,
-      publishedExams: 3,
-      slug: "jane-smith",
-    },
-    // Add more members as needed
-  ];
 
   const filteredData = data
     .filter((item) => {
@@ -245,15 +230,15 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
 
           <tbody>
             {paginatedData.length > 0 ? (
-              paginatedData.map((item) => (
+              paginatedData.map((item, index) => (
                 <tr
                   key={item.id}
                   className="bg-tableBgDefault border-b border-borderTableCel hover:bg-headerTableCel"
                 >
-                  <td className="px-4 py-3">{item.id}</td>
-                  <td className="px-4 py-3">{item.fullName}</td>
-                  <td className="px-4 py-3">{item.publishedQuestions}</td>
-                  <td className="px-4 py-3">{item.publishedExams}</td>
+                  <td className="px-4 py-3">{index + 1}</td>
+                  <td className="px-4 py-3">{item.first_name}</td>
+                  <td className="px-4 py-3">{item.question_count}</td>
+                  <td className="px-4 py-3">{item.exam_count}</td>
                   <td className="px-4 py-3 text-linkBlue !text-base">
                     <button onClick={() => handleDetailNavigation(item.slug)}>
                       Bax &gt;
@@ -263,7 +248,7 @@ function MemberActivity({ selectedRows, setSelectedRows }) {
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="px-4 py-3 text-center text-gray-500">
+                <td colSpan="4" className="px-4 py-3 text-center text-gray-500">
                   No results found.
                 </td>
               </tr>

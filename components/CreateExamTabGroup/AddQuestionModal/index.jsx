@@ -1,169 +1,97 @@
-// components/AddQuestionModal.jsx
-
 import React, { useState, useRef, useEffect, useMemo } from "react";
+import axios from "axios";
 import QuestionCard from "../QuestionCard";
-import TableComponent from "../TableComponent"; // Ensure this component exists
+import TableComponent from "../TableComponent";
 import { GrFormPrevious } from "react-icons/gr";
+import Questions from "@/components/Questions";
+import DeleteModal from "@/components/DeleteModal";
 
-// Files array with ISO date format (moved outside the component)
-const files = [
-  {
-    name: "Physics",
-    slug: "physics",
-    date: "2024-09-20",
-    year: "2024",
-    difficulty: "Asan",
-    level: "Yüksək",
-    creator: "Orta",
-    url: "/fayllar/physics/",
-  },
-  {
-    name: "Science",
-    slug: "science",
-    date: "2024-09-25",
-    year: "2024",
-    difficulty: "Orta",
-    level: "Asan",
-    creator: "Çətin",
-    subfolder: [
-      {
-        name: "Chemistry",
-        slug: "chemistry",
-        date: "2024-09-25",
-        year: "2024",
-        difficulty: "Orta",
-        level: "Asan",
-        creator: "Çətin",
-        url: "/files/chemistry.pdf",
-      },
-      {
-        name: "Biology",
-        slug: "biology",
-        date: "2024-10-01",
-        year: "2024",
-        difficulty: "Asan",
-        level: "Orta",
-        creator: "Yüksək",
-        url: "/files/biology.pdf",
-      },
-    ],
-  },
-  {
-    name: "History",
-    slug: "history",
-    date: "2024-10-10",
-    year: "2024",
-    difficulty: "Orta",
-    level: "Yüksək",
-    creator: "Asan",
-    url: "/files/history.pdf",
-  },
-  {
-    name: "Geography",
-    slug: "geography",
-    date: "2024-10-20",
-    year: "2024",
-    difficulty: "Çətin",
-    level: "Asan",
-    creator: "Orta",
-    url: "/files/geography.pdf",
-  },
-  {
-    name: "Languages",
-    slug: "languages",
-    date: "2024-10-30",
-    year: "2024",
-    difficulty: "Asan",
-    level: "Orta",
-    creator: "Yüksək",
-    subfolder: [
-      {
-        name: "English",
-        slug: "english",
-        date: "2024-10-30",
-        year: "2024",
-        difficulty: "Asan",
-        level: "Orta",
-        creator: "Yüksək",
-        url: "/files/english.pdf",
-      },
-    ],
-  },
-  {
-    name: "Frontend",
-    slug: "frontend",
-    date: "2024-11-05",
-    year: "2024",
-    difficulty: "Çətin",
-    level: "Yüksək",
-    creator: "Asan",
-    url: "/files/frontend.pdf",
-  },
-  {
-    name: "Art",
-    slug: "art",
-    date: "2024-11-15",
-    year: "2024",
-    difficulty: "Orta",
-    level: "Asan",
-    creator: "Orta",
-    url: "/files/art.pdf",
-  },
-  {
-    name: "Backend",
-    slug: "backend",
-    date: "2024-11-25",
-    year: "2024",
-    difficulty: "Asan",
-    level: "Orta",
-    creator: "Çətin",
-    url: "/files/backend.pdf",
-  },
-];
-
-function AddQuestionModal({ onClose }) {
+function AddQuestionModal({ onClose, selectedCompany }) {
   const [selectedIcon, setSelectedIcon] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const [currentFiles, setCurrentFiles] = useState([]);
-  const [navigationStack, setNavigationStack] = useState([]); // Now stores objects with folderName and files
+  const [navigationStack, setNavigationStack] = useState([]);
   const [showTable, setShowTable] = useState(false);
   const [currentFile, setCurrentFile] = useState(null);
-  const [breadcrumbs, setBreadcrumbs] = useState([]); // Initialize as empty array
+  const [breadcrumbs, setBreadcrumbs] = useState(["Qovluqlar"]);
   const [currentPath, setCurrentPath] = useState([]);
+  const [files, setFiles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [questions, setQuestions] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
   const dropdownRef = useRef(null);
 
-  // Function to handle clicks outside the modal content
-  const handleOverlayClick = (e) => {
-    if (e.target === e.currentTarget) {
-      onClose(); // Close modal if the overlay (background) is clicked
+  const fetchQuestions = async (folderPath = "") => {
+    setLoading(true);
+    setError(null);
+    try {
+      const token = localStorage.getItem("token");
+      const headers = {
+        Authorization: `Bearer ${token}`,
+      };
+
+      if (selectedCompany && selectedCompany.id) {
+        headers["X-Company-ID"] = selectedCompany.id;
+      }
+
+      const endpoint = folderPath
+        ? `https://innocert-admin.markup.az/api/questions/folder/${folderPath}`
+        : "https://innocert-admin.markup.az/api/questions/folder/";
+
+      const response = await axios.get(endpoint, { headers });
+
+      const fetchedFolders = response.data?.data?.folders || [];
+      console.log(fetchedFolders, "fetchedFolders");
+
+      const fetchedQuestions = response.data?.data?.questions || [];
+      console.log(fetchedQuestions, "fetchedQuestions");
+
+      setFiles(fetchedFolders);
+      setQuestions(fetchedQuestions);
+    } catch (err) {
+      console.error("Error fetching folders or questions:", err);
+      setError("Failed to fetch data. Please try again later.");
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Function to handle icon click
-  const handleIconClick = (icon) => {
-    setSelectedIcon(icon); // Set selected view mode
-  };
+  // Fetch questions on component mount and when selectedCompany changes
+  useEffect(() => {
+    fetchQuestions();
+  }, [selectedCompany]);
 
-  // Filter files based on search query
   const filteredFiles = useMemo(() => {
     return files.filter((file) =>
       file.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
+  }, [searchQuery, files]);
+
+  // **New useEffect: Reset breadcrumbs and navigation when searchQuery changes**
+  useEffect(() => {
+    if (searchQuery) {
+      setNavigationStack([]);
+      setBreadcrumbs(["Qovluqlar"]);
+      setShowTable(false);
+      setCurrentFile(null);
+    }
+    // No else block needed here
   }, [searchQuery]);
 
-  // Initialize currentFiles with filteredFiles whenever searchQuery changes
+  // **New useEffect: Update currentFiles based on searchQuery and files**
   useEffect(() => {
-    setCurrentFiles(filteredFiles);
-    // Reset navigation stack, breadcrumbs, and table view when search query changes
-    setNavigationStack([]);
-    setBreadcrumbs([]); // Start with empty breadcrumbs
-    setShowTable(false);
-    setCurrentFile(null);
-  }, [searchQuery, filteredFiles]);
+    if (searchQuery) {
+      setCurrentFiles(filteredFiles);
+    } else {
+      setCurrentFiles(files);
+    }
+  }, [searchQuery, filteredFiles, files]);
 
-  // Implement the formatDate function
   const monthNamesAZ = [
     "yanvar",
     "fevral",
@@ -186,101 +114,109 @@ function AddQuestionModal({ onClose }) {
 
   const formatDate = (dateStr) => {
     const date = new Date(dateStr);
-
-    // Validate the date
     if (isNaN(date)) {
       console.error(`Invalid date: ${dateStr}`);
-      return dateStr; // Return the original string if invalid
+      return dateStr;
     }
-
     const day = date.getDate();
-    const monthIndex = date.getMonth(); // 0-based index
+    const monthIndex = date.getMonth();
     const year = date.getFullYear();
-
     const monthName = monthNamesAZ[monthIndex] || "";
-
-    const formattedDate = `${day} ${capitalizeFirstLetter(monthName)} ${year}`;
-
-    return formattedDate;
+    return `${day} ${capitalizeFirstLetter(monthName)} ${year}`;
   };
 
-  // Handle checkbox change
   const handleCheckboxChange = (fileUrl, isChecked) => {
     setSelectedFiles((prevSelectedFiles) => {
       if (isChecked) {
-        return [...prevSelectedFiles, fileUrl]; // Add the file URL when checked
+        return [...prevSelectedFiles, fileUrl];
       } else {
-        return prevSelectedFiles.filter((url) => url !== fileUrl); // Remove the file URL when unchecked
+        return prevSelectedFiles.filter((url) => url !== fileUrl);
       }
     });
   };
 
-  const handleBoxClick = (file) => {
-    if (file.subfolder) {
-      // Push the folder onto currentPath
-      setCurrentPath((prevPath) => [...prevPath, file]);
-      // Update current files to subfolder
-      setCurrentFiles(file.subfolder);
-      // Update breadcrumbs
+  const handleBoxClick = async (file) => {
+    if (file.sub_folder && file.sub_folder.length > 0) {
+      setNavigationStack((prevStack) => [...prevStack, file]);
       setBreadcrumbs((prevBreadcrumbs) => [...prevBreadcrumbs, file.name]);
+      setShowTable(false);
+      setCurrentFile(null);
+      setQuestions([]);
+      await fetchQuestions(file.slug);
     } else {
-      // It's a leaf node; display the table component
       setShowTable(true);
       setCurrentFile(file);
-      // Update breadcrumbs
       setBreadcrumbs((prevBreadcrumbs) => [...prevBreadcrumbs, file.name]);
+      await fetchQuestions(file.slug);
     }
   };
-
-  const handleBack = () => {
+  const handleBack = async () => {
     if (showTable) {
-      // If currently showing table, just hide it
+      // Navigating back from the table view
       setShowTable(false);
       setCurrentFile(null);
-      // Remove the last breadcrumb (file name)
       setBreadcrumbs((prevBreadcrumbs) => prevBreadcrumbs.slice(0, -1));
-    } else if (currentPath.length > 0) {
-      // Pop the last item from currentPath and set currentFiles accordingly
-      const newPath = currentPath.slice(0, -1);
-      setCurrentPath(newPath);
 
-      if (newPath.length === 0) {
-        setCurrentFiles(filteredFiles);
+      if (navigationStack.length > 0) {
+        const currentFolder = navigationStack[navigationStack.length - 1];
+        await fetchQuestions(currentFolder.slug);
       } else {
-        const file = newPath[newPath.length - 1];
-        setCurrentFiles(file.subfolder);
+        await fetchQuestions();
       }
-
-      // Remove the last breadcrumb (folder name)
+    } else if (navigationStack.length > 0) {
+      // Navigating up the folder hierarchy
+      const newStack = [...navigationStack];
+      newStack.pop();
+      setNavigationStack(newStack);
       setBreadcrumbs((prevBreadcrumbs) => prevBreadcrumbs.slice(0, -1));
+
+      if (newStack.length === 0) {
+        await fetchQuestions();
+      } else {
+        const parentFolder = newStack[newStack.length - 1];
+        await fetchQuestions(parentFolder.slug);
+      }
     } else {
-      // If no more items in the path, reset to initial state
-      setCurrentFiles(filteredFiles);
-      setBreadcrumbs([]); // Reset breadcrumbs to empty
+      // At the root level
+      await fetchQuestions();
+      setBreadcrumbs(["Qovluqlar"]);
+      setShowTable(false);
+      setCurrentFile(null);
     }
   };
-  const handleBreadcrumbClick = (index) => {
-    if (index === breadcrumbs.length - 1) return; // Do nothing if clicking on the current folder
 
-    if (index === -1) {
-      // User clicked on 'Qovluqlar', reset to root
-      setCurrentPath([]);
-      setCurrentFiles(filteredFiles);
-      setBreadcrumbs([]);
-      setShowTable(false);
-      setCurrentFile(null);
+  const handleBreadcrumbClick = async (index) => {
+    if (index === breadcrumbs.length - 1) return;
+    const newBreadcrumbs = breadcrumbs.slice(0, index + 1);
+    setBreadcrumbs(newBreadcrumbs);
+
+    if (index === 0) {
+      setNavigationStack([]);
+      await fetchQuestions();
     } else {
-      // Navigate to the selected breadcrumb level
-      const newPath = currentPath.slice(0, index + 1);
-      setCurrentPath(newPath);
-
-      const file = newPath[newPath.length - 1];
-      setCurrentFiles(file.subfolder);
-
-      setBreadcrumbs(breadcrumbs.slice(0, index + 1));
-      setShowTable(false);
-      setCurrentFile(null);
+      const newStack = navigationStack.slice(0, index);
+      setNavigationStack(newStack);
+      const targetFolder = newStack[newStack.length - 1];
+      await fetchQuestions(targetFolder.slug);
     }
+
+    setShowTable(false);
+    setCurrentFile(null);
+  };
+
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  const handleIconClick = (icon) => {
+    setSelectedIcon(icon);
+  };
+
+  const openDeleteModal = (id) => {
+    setQuestionToDelete(id);
+    setIsDeleteModalOpen(true);
   };
 
   return (
@@ -288,19 +224,17 @@ function AddQuestionModal({ onClose }) {
       className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
       onClick={handleOverlayClick}
     >
-      {/* Modal content */}
       <div
         className="bg-white rounded-lg p-10 m-5 md:m-0 w-[960px] relative max-h-[790px] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-white z-20 ">
+        <div className="sticky top-0 bg-white z-20">
           <button
             onClick={onClose}
             className="absolute top-0 right-2 text-gray-400 hover:text-gray-700 text-2xl"
           >
             &times;
           </button>
-
           <div className="flex items-center mb-4">
             {(navigationStack.length > 0 || showTable) && (
               <button
@@ -314,19 +248,11 @@ function AddQuestionModal({ onClose }) {
               Sual əlavə et
             </h2>
           </div>
-
-          {/* Breadcrumbs */}
           {breadcrumbs.length > 0 && (
             <div className="flex items-center mb-4">
-              <span
-                className="font-gilroy text-gray-400 cursor-pointer hover:underline"
-                onClick={() => handleBreadcrumbClick(-1)}
-              >
-                Qovluqlar
-              </span>
               {breadcrumbs.map((crumb, index) => (
                 <React.Fragment key={index}>
-                  <span className="mx-2 text-gray-400">/</span>
+                  {index > 0 && <span className="mx-2 text-gray-400">/</span>}
                   <span
                     className={`font-gilroy ${
                       index === breadcrumbs.length - 1
@@ -341,8 +267,6 @@ function AddQuestionModal({ onClose }) {
               ))}
             </div>
           )}
-
-          {/* Search and View Mode Controls */}
           {!showTable && (
             <div className="mb-4 flex items-center justify-between">
               <div className="w-[70%]">
@@ -370,16 +294,13 @@ function AddQuestionModal({ onClose }) {
                   />
                 </div>
               </div>
-
-              {/* View Mode Buttons */}
-              <div className="flex gap-1 border rounded-lg ">
+              <div className="flex gap-1 border rounded-lg">
                 <div
                   className={`p-1 m-1 rounded-md cursor-pointer ${
                     selectedIcon === "grid" ? "bg-gray-100" : ""
                   }`}
                   onClick={() => handleIconClick("grid")}
                 >
-                  {/* Grid Icon */}
                   <svg
                     width="24"
                     height="24"
@@ -402,7 +323,6 @@ function AddQuestionModal({ onClose }) {
                   }`}
                   onClick={() => handleIconClick("list")}
                 >
-                  {/* List Icon */}
                   <svg
                     width="24"
                     height="24"
@@ -421,44 +341,78 @@ function AddQuestionModal({ onClose }) {
               </div>
             </div>
           )}
-        </div>
-        {/* Close button */}
 
-        {/* Main Content */}
-        {!showTable ? (
-          <div className="py-6">
-            <div
-              className={
-                selectedIcon === "grid"
-                  ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
-                  : "flex flex-col gap-3"
-              }
-            >
-              {currentFiles.map((file, index) => (
-                <QuestionCard
-                  key={file.slug}
-                  file={file}
-                  viewMode={selectedIcon}
-                  selectedFiles={selectedFiles}
-                  handleCheckboxChange={handleCheckboxChange}
-                  handleBoxClick={handleBoxClick}
-                  index={index}
-                  dropdownVisible={dropdownVisible}
-                  setDropdownVisible={setDropdownVisible}
-                  formatDate={formatDate}
-                  dropdownRef={dropdownRef}
-                  showActions={false} // Hide edit/delete actions in modal
+          {!showTable ? (
+            <div className="py-6 overflow-auto max-h-[400px]">
+              {loading ? (
+                <div className="text-center text-gray-500">Yüklənir...</div>
+              ) : error ? (
+                <div className="text-center text-red-500">{error}</div>
+              ) : (
+                <div
+                  className={
+                    selectedIcon === "grid"
+                      ? "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+                      : "flex flex-col gap-3"
+                  }
+                >
+                  {currentFiles.map((file, index) => (
+                    <QuestionCard
+                      key={file.slug || index}
+                      file={file}
+                      viewMode={selectedIcon}
+                      selectedFiles={selectedFiles}
+                      handleCheckboxChange={handleCheckboxChange}
+                      handleBoxClick={handleBoxClick}
+                      index={index}
+                      dropdownVisible={dropdownVisible}
+                      setDropdownVisible={setDropdownVisible}
+                      formatDate={formatDate}
+                      dropdownRef={dropdownRef}
+                      showActions={true}
+                    />
+                  ))}
+                </div>
+              )}
+
+              {/* Render <TableComponent> when there are no subfolders or during search */}
+              {!loading && !error && currentFiles.length === 0 && (
+                <TableComponent
+                  selectedRows={selectedRows}
+                  setSelectedRows={setSelectedRows}
+                  questions={questions}
+                  openDeleteModal={openDeleteModal}
+                  showActionButtons={true}
                 />
-              ))}
+              )}
             </div>
-          </div>
-        ) : (
-          <div className="">
-            {/* Render your table component here */}
-            <TableComponent file={currentFile} />
-          </div>
-        )}
+          ) : (
+            <div className="">
+              {/* When showTable is true, display <TableComponent> */}
+              <TableComponent
+                selectedRows={selectedRows}
+                setSelectedRows={setSelectedRows}
+                questions={questions}
+                openDeleteModal={openDeleteModal}
+                showActionButtons={true}
+              />
+            </div>
+          )}
+        </div>
       </div>
+
+      {/* Delete Modal */}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          isOpen={isDeleteModalOpen}
+          onClose={() => setIsDeleteModalOpen(false)}
+          onDelete={() => {
+            // Implement delete functionality here
+            setIsDeleteModalOpen(false);
+          }}
+          questionId={questionToDelete}
+        />
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import GeneralInfo from "../GeneralInfo"; // Component for "Ümumi məlumat"
 import Questions from "@/components/Questions"; // Component for "Suallar"
 import { FaPen } from "react-icons/fa";
@@ -6,10 +6,32 @@ import { IoEyeOutline } from "react-icons/io5";
 import GeneralInfoEditExam from "../GeneralInfoEditExam";
 import { FaPlus } from "react-icons/fa6";
 import AddQuestionModal from "./AddQuestionModal"; // Import your modal component
+import { UserContext } from "@/shared/context/UserContext";
+import TableComponent from "./TableComponent";
+import DeleteModal from "../DeleteModal";
 
 function CreateExamTabGroup() {
+  const { selectedQuestionsForExam } = useContext(UserContext);
+  console.log(selectedQuestionsForExam, "selectedQuestionsForExam");
+
   const [activeTab, setActiveTab] = useState("general");
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
+
+  // State for selected rows in the table
+  const [selectedRows, setSelectedRows] = useState([]);
+
+  // State to manage the delete modal visibility
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  // Function to open the delete modal
+  const openDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
+
+  // Function to close the delete modal
+  const closeDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
 
   // Define color variables based on activeTab
   const isActiveGeneral = activeTab === "general";
@@ -17,6 +39,7 @@ function CreateExamTabGroup() {
   const circleStroke = isActiveGeneral ? "#3366FF" : "#888888";
   const innerPathFill = isActiveGeneral ? "white" : "#888888";
   const textColor = isActiveGeneral ? "text-blue400" : "text-neutral700";
+
   // Define color variables for "Suallar" tab based on activeTab
   const isActiveQuestions = activeTab === "questions";
   const questionsCircleFill = isActiveQuestions ? "#3366FF" : "none";
@@ -27,14 +50,20 @@ function CreateExamTabGroup() {
   const renderTabContent = () => {
     switch (activeTab) {
       case "questions":
-        return (
-          <div className="w-[80%] mx-auto">
-            <p className="bg-white p-10 flex items-center justify-center rounded-xl text-lg text-grayButtonText">
-              Hal-hazırda heç bir sual yoxdur, əlavə etmək üçün &quot;Sual əlavə et&quot;
-              düyməsinə klikləyin.
-            </p>
-            {/* <Questions /> */}
-          </div>
+        return selectedQuestionsForExam &&
+          selectedQuestionsForExam.length > 0 ? (
+          <TableComponent
+            selectedRows={selectedRows}
+            setSelectedRows={setSelectedRows}
+            questions={selectedQuestionsForExam}
+            openDeleteModal={openDeleteModal}
+            showDeleteButton={true}
+          />
+        ) : (
+          <p className="bg-white p-10 flex items-center justify-center rounded-xl text-lg text-grayButtonText">
+            Hal-hazırda heç bir sual yoxdur, əlavə etmək üçün &quot;Sual əlavə
+            et&quot; düyməsinə klikləyin.
+          </p>
         );
       default:
         return <GeneralInfoEditExam />;
@@ -82,9 +111,7 @@ function CreateExamTabGroup() {
 
           <button
             className={`text-lg px-4 py-2 rounded-lg flex gap-2 items-center ${
-              activeTab === "questions"
-                ? "bg-blue100 text-blue400"
-                : "text-neutral700"
+              isActiveQuestions ? "bg-blue100 text-blue400" : "text-neutral700"
             }`}
             onClick={() => setActiveTab("questions")}
           >
@@ -132,10 +159,13 @@ function CreateExamTabGroup() {
       {/* Render the content based on the active tab */}
       <div>{renderTabContent()}</div>
 
-      {/* Render the modal when isModalOpen is true, pass onClose function */}
+      {/* Render the AddQuestionModal when isModalOpen is true */}
       {isModalOpen && (
         <AddQuestionModal onClose={() => setIsModalOpen(false)} />
       )}
+
+      {/* Render the DeleteQuestionModal when isDeleteModalOpen is true */}
+      {isDeleteModalOpen && <DeleteModal onClose={closeDeleteModal} />}
     </div>
   );
 }

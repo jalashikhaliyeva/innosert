@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import CompanyQuestionsNav from "@/components/CompanyQuestionsNav";
 import CompanySidebar from "@/components/CompanySidebar";
@@ -9,9 +9,21 @@ import AddFolderModal from "@/components/AddFolderModal";
 import DeleteModal from "@/components/DeleteModal";
 import SubFolderCard from "@/components/SubFolderCard";
 import EditFolderModal from "@/components/EditFolderModal";
+import QuestionsNavigationCompany from "@/components/QuestionsNavigationCompany";
+import { UserContext } from "@/shared/context/UserContext";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
+import TeacherSidebar from "@/components/TeacherSidebar";
+import axios from "axios";
+import SuallarTableNavigationTitle from "@/components/SuallarTableNavigationTitle";
+import CreateSubFolderOrQuestion from "@/components/CreateSubFolderOrQuestion";
+import AddSubFolderModal from "@/components/AddSubFolderModal";
 
 function SubFolderSUallarToplusu() {
+  const { user } = useContext(UserContext);
   const [subFolders, setSubFolders] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+
   // State for Edit Modal
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [folderToEdit, setFolderToEdit] = useState(null);
@@ -19,134 +31,70 @@ function SubFolderSUallarToplusu() {
   // State for Delete Modal
   const [isDeleteFolderModalOpen, setIsDeleteFolderModalOpen] = useState(false);
   const [folderToDelete, setFolderToDelete] = useState(null);
-
+  const addNewSubFolder = (newSubFolder) => {
+    setSubFolders((prevSubFolders) => [...prevSubFolders, newSubFolder]);
+  };
   const router = useRouter();
   const { subfolder } = router.query;
 
-  const files = [
-    {
-      name: "Mathematics",
-      slug: "mathematics",
-      date: "2024-09-15",
-      year: "2024",
-      difficulty: "Çətin",
-      level: "Orta",
-      creator: "Asan",
-      url: "/fayllar/mathematics",
-    },
-    {
-      name: "Physics",
-      slug: "physics",
-      date: "2024-09-20",
-      year: "2024",
-      difficulty: "Asan",
-      level: "Yüksək",
-      creator: "Orta",
-      url: "/fayllar/physics/",
-    },
-    {
-      name: "Science",
-      slug: "science",
-      date: "2024-09-25",
-      year: "2024",
-      difficulty: "Orta",
-      level: "Asan",
-      creator: "Çətin",
-      subfolder: [
-        {
-          name: "Chemistry",
-          slug: "chemistry",
-          date: "2024-09-25",
-          year: "2024",
-          difficulty: "Orta",
-          level: "Asan",
-          creator: "Çətin",
-          url: "/files/chemistry.pdf",
-        },
-        {
-          name: "Biology",
-          slug: "biology",
-          date: "2024-10-01",
-          year: "2024",
-          difficulty: "Asan",
-          level: "Orta",
-          creator: "Yüksək",
-          url: "/files/biology.pdf",
-        },
-      ],
-    },
-    {
-      name: "History",
-      slug: "history",
-      date: "2024-10-10",
-      year: "2024",
-      difficulty: "Orta",
-      level: "Yüksək",
-      creator: "Asan",
-      url: "/files/history.pdf",
-    },
-    {
-      name: "Geography",
-      slug: "geography",
-      date: "2024-10-20",
-      year: "2024",
-      difficulty: "Çətin",
-      level: "Asan",
-      creator: "Orta",
-      url: "/files/geography.pdf",
-    },
-    {
-      name: "Languages",
-      slug: "languages",
-      date: "2024-10-30",
-      year: "2024",
-      difficulty: "Asan",
-      level: "Orta",
-      creator: "Yüksək",
-      subfolder: [
-        {
-          name: "English",
-          slug: "english",
-          date: "2024-10-30",
-          year: "2024",
-          difficulty: "Asan",
-          level: "Orta",
-          creator: "Yüksək",
-          url: "/files/english.pdf",
-        },
-      ],
-    },
-    {
-      name: "Frontend",
-      slug: "frontend",
-      date: "2024-11-05",
-      year: "2024",
-      difficulty: "Çətin",
-      level: "Yüksək",
-      creator: "Asan",
-      url: "/files/frontend.pdf",
-    },
-    {
-      name: "Art",
-      slug: "art",
-      date: "2024-11-15",
-      year: "2024",
-      difficulty: "Orta",
-      level: "Asan",
-      creator: "Orta",
-      url: "/files/art.pdf",
-    },
-    {
-      name: "Backend",
-      slug: "backend",
-      date: "2024-11-25",
-      year: "2024",
-      difficulty: "Asan",
-      level: "Orta",
-      creator: "Çətin",
-      url: "/files/backend.pdf",
-    },
-  ];
+  const handleDelete = () => {
+    // Open the delete modal
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleEdit = () => {
+    // Open the edit modal
+    setIsEditModalOpen(true);
+  };
+
+  const handleConfirmDelete = () => {
+    // Implement delete logic here
+    console.log("Delete selected rows:", selectedRows);
+    setIsDeleteModalOpen(false); // Close modal after deletion
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false); // Close the delete modal without deletion
+  };
+
+  const handleCloseEditModal = () => {
+    setIsEditModalOpen(false); // Close the edit modal
+  };
+  useEffect(() => {
+    const fetchSubFolders = async () => {
+      // Get token from local storage
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No authentication token found");
+        return;
+      }
+
+      try {
+        const response = await axios.get(
+          `https://innocert-admin.markup.az/api/questions/folder/${subfolder}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Check if data exists and if folders property is present
+        if (response.data && response.data.data && response.data.data.folders) {
+          setSubFolders(response.data.data.folders);
+        } else {
+          console.error("No folders found in the response:", response.data);
+          setSubFolders([]); // Set to an empty array if no folders found
+        }
+      } catch (error) {
+        console.error("Error fetching subfolders:", error);
+      }
+    };
+
+    if (subfolder) {
+      fetchSubFolders();
+    }
+  }, [subfolder]);
 
   // Function to handle editing a folder
   const handleEditFolder = (folder) => {
@@ -159,18 +107,6 @@ function SubFolderSUallarToplusu() {
     setFolderToDelete(folder);
     setIsDeleteFolderModalOpen(true);
   };
-
-  useEffect(() => {
-    if (subfolder) {
-      // Find the matching object from the files array
-      const foundItem = files.find((file) => file.slug === subfolder);
-
-      // If subfolder exists, set it in the state
-      if (foundItem && foundItem.subfolder) {
-        setSubFolders(foundItem.subfolder);
-      }
-    }
-  }, [subfolder]);
 
   const [viewMode, setViewMode] = useState("grid");
   const [sortOption, setSortOption] = useState("Son Yaradilan");
@@ -201,16 +137,23 @@ function SubFolderSUallarToplusu() {
 
   return (
     <>
-      <HeaderInternal />
+      <div className="hidden lg:block ">
+        <HeaderInternal />
+      </div>
+      <div className="block  lg:hidden">
+        {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
+      </div>
       <div className="flex">
-        <div className="w-[20%]">
-          <CompanySidebar />
+        <div className="hidden lg:block md:w-[20%]">
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
 
         <div className="w-[80%]">
           <InternalContainer>
             <Breadcrumb />
-            <CompanyQuestionsNav
+            {/* <CompanyQuestionsNav
               viewMode={viewMode}
               setViewMode={setViewMode}
               sortOption={sortOption}
@@ -219,6 +162,12 @@ function SubFolderSUallarToplusu() {
               selectedFiles={selectedFiles}
               openModal={openModal}
               openDeleteModal={openDeleteModal}
+            /> */}
+
+            <SuallarTableNavigationTitle
+              selectedRows={selectedRows}
+              handleDelete={handleDelete}
+              handleEdit={handleEdit}
             />
 
             {/* Render the SubFolderCard component and pass necessary props */}
@@ -255,8 +204,12 @@ function SubFolderSUallarToplusu() {
         />
       )}
 
+      {isEditModalOpen && (
+        <CreateSubFolderOrQuestion closeModal={handleCloseEditModal} />
+      )}
+
       {/* Render the modal when isModalOpen is true */}
-      {isModalOpen && <AddFolderModal closeModal={closeModal} />}
+      {isModalOpen && <AddSubFolderModal closeModal={closeModal} />}
       {/* Render the delete modal when isDeleteModalOpen is true */}
       {isDeleteModalOpen && (
         <DeleteModal

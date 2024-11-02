@@ -11,9 +11,12 @@ import ExamDetailsTabGroup from "@/components/ExamDetailsTabGroup";
 import { UserContext } from "@/shared/context/UserContext";
 import { useRouter } from "next/router";
 import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 
 function ImtahanDetallari() {
-  const { user } = useContext(UserContext);
+  const { user, examDetailsSingle } = useContext(UserContext);
+  console.log(examDetailsSingle, "examDetailsSingle");
+
   // console.log(user.data.roles, "user imtahan detallari");
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -39,7 +42,8 @@ function ImtahanDetallari() {
         <HeaderInternal />
       </div>
       <div className="block  lg:hidden">
-        <TeacherDashboardHeader />
+        {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
       <div className="flex">
         <div className="hidden lg:block md:w-[20%]">
@@ -49,7 +53,7 @@ function ImtahanDetallari() {
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
-            <ExamDetailsTabGroup />
+            <ExamDetailsTabGroup examDetailsSingle={examDetailsSingle} />
           </InternalContainer>
         </div>
       </div>

@@ -1,125 +1,193 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import axios from "axios";
 import Breadcrumb from "@/components/Breadcrumb";
 import CompanyQuestionsNav from "@/components/CompanyQuestionsNav";
 import CompanySidebar from "@/components/CompanySidebar";
 import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
 import QuestionFiles from "@/components/CompanyQuestionsFiles";
-import AddFolderModal from "@/components/AddFolderModal"; // Import the modal
+import AddFolderModal from "@/components/AddFolderModal";
 import DeleteModal from "@/components/DeleteModal";
 import EditFolderModal from "@/components/EditFolderModal";
 import DeleteFolderModal from "@/components/DeleteFolderModal";
-import QuestionsTableCompany from "@/components/QuestionsTableCompany";
-import QuestionsNavigationCompany from "@/components/QuestionsNavigationCompany";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
+import TeacherSidebar from "@/components/TeacherSidebar";
+import QuestionsTableCompany from "@/components/QuestionsTableCompany"; // Import this component
+import { UserContext } from "@/shared/context/UserContext";
+import { TbFolder, TbTable } from "react-icons/tb"; // Import icons
+import Spinner from "@/components/Spinner";
 
 function SualBazasi() {
+  const { user } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState("folders");
   const [viewMode, setViewMode] = useState("grid");
   const [sortOption, setSortOption] = useState("Son Yaradilan");
-  const [isCheckboxSelected, setIsCheckboxSelected] = useState(false);
-  const [selectedFiles, setSelectedFiles] = useState([]); // Track selected files
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false); // New state for modal
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFolderModalOpen, setIsEditFolderModalOpen] = useState(false);
   const [isDeleteFolderModalOpen, setIsDeleteFolderModalOpen] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState(null);
-  const openEditFolderModal = (folder) => {
-    setSelectedFolder(folder);
-    setIsEditFolderModalOpen(true);
+  const [files, setFiles] = useState([]);
+
+  // Fetch folders from the API
+  const fetchFiles = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(
+        "https://innocert-admin.markup.az/api/questions/folder/",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setFiles(response.data.data.folders);
+    } catch (error) {
+      console.error("Error fetching folders:", error);
+    } finally {
+      setLoading(false); // End loading
+    }
   };
 
-  const closeEditFolderModal = () => {
-    setIsEditFolderModalOpen(false);
+  useEffect(() => {
+    fetchFiles();
+  }, []);
+
+  // Handlers for adding, editing, and deleting folders
+  const addNewFolder = (newFolder) => {
+    setFiles((prevFiles) => [...prevFiles, newFolder]);
+    fetchFiles();
   };
 
-  const openDeleteFolderModal = (folder) => {
-    setSelectedFolder(folder);
-    setIsDeleteFolderModalOpen(true);
+  const updateFolder = (updatedFolder) => {
+    setFiles((prevFiles) =>
+      prevFiles.map((file) =>
+        file.id === updatedFolder.id ? updatedFolder : file
+      )
+    );
   };
 
-  const closeDeleteFolderModal = () => {
-    setIsDeleteFolderModalOpen(false);
-  };
-
-  // Function to open the modal
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  // Function to close the modal
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-  // Function to open the delete modal
-  const openDeleteModal = () => {
-    setIsDeleteModalOpen(true);
-  };
-
-  // Function to close the delete modal
-  const closeDeleteModal = () => {
-    setIsDeleteModalOpen(false);
+  const deleteFolder = (folderId) => {
+    setFiles((prevFiles) => prevFiles.filter((file) => file.id !== folderId));
   };
 
   return (
     <>
-      <HeaderInternal />
-      <div className="flex">
-        <div className="w-[20%]">
-          <CompanySidebar />
-        </div>
+      {loading ? (
+        <Spinner /> 
+      ) : (
+        <>
+          <div className="hidden lg:block">
+            <HeaderInternal />
+          </div>
+          <div className="block lg:hidden">
+            {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+            {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
+          </div>
 
-        <div className="w-[80%]">
-          <InternalContainer>
-            <Breadcrumb />
-            {/* <CompanyQuestionsNav
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              sortOption={sortOption}
-              setSortOption={setSortOption}
-              isCheckboxSelected={isCheckboxSelected}
-              selectedFiles={selectedFiles}
-              openModal={openModal} 
-              openDeleteModal={openDeleteModal} 
-            /> */}
+          <div className="flex">
+            <div className="hidden lg:block md:w-[20%]">
+              {user?.data.roles === "Teacher" && <TeacherSidebar />}
+              {user?.data.roles === "Owner" && <CompanySidebar />}
+            </div>
 
-            <QuestionsNavigationCompany
-              viewMode={viewMode}
-              setViewMode={setViewMode}
-              sortOption={sortOption}
-              setSortOption={setSortOption}
-              isCheckboxSelected={isCheckboxSelected}
-              selectedFiles={selectedFiles}
-              openModal={openModal}
-              openDeleteModal={openDeleteModal}
+            <div className="w-[80%]">
+              <InternalContainer>
+                <Breadcrumb />
+
+                {/* Sual Toplusu (CompanyQuestionsNav) */}
+                <CompanyQuestionsNav
+                  viewMode={viewMode}
+                  setViewMode={setViewMode}
+                  sortOption={sortOption}
+                  setSortOption={setSortOption}
+                  selectedFiles={selectedFiles}
+                  openModal={() => setIsModalOpen(true)}
+                />
+
+                {/* Tab Navigation placed below Sual Toplusu */}
+                <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
+                  <button
+                    className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                      activeTab === "folders"
+                        ? "bg-blue100 text-blue400"
+                        : "text-neutral700"
+                    }`}
+                    onClick={() => setActiveTab("folders")}
+                  >
+                    <TbFolder className="size-6" />
+                    Mənim Qovluqlarım
+                  </button>
+                  <button
+                    className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                      activeTab === "questions"
+                        ? "bg-blue100 text-blue400"
+                        : "text-neutral700"
+                    }`}
+                    onClick={() => setActiveTab("questions")}
+                  >
+                    <TbTable className="size-6" />
+                    Sual Bazası
+                  </button>
+                </div>
+
+                {/* Conditional Rendering based on active tab */}
+                {activeTab === "folders" && (
+                  <>
+                    <QuestionFiles
+                      files={files}
+                      viewMode={viewMode}
+                      sortOption={sortOption}
+                      selectedFiles={selectedFiles}
+                      setSelectedFiles={setSelectedFiles}
+                      openEditFolderModal={(folder) => {
+                        setSelectedFolder(folder);
+                        setIsEditFolderModalOpen(true);
+                      }}
+                      openDeleteFolderModal={(folder) => {
+                        setSelectedFolder(folder);
+                        setIsDeleteFolderModalOpen(true);
+                      }}
+                    />
+                  </>
+                )}
+
+                {activeTab === "questions" && (
+                  <QuestionsTableCompany /> 
+                )}
+              </InternalContainer>
+            </div>
+          </div>
+
+          {/* Modals */}
+          {isEditFolderModalOpen && (
+            <EditFolderModal
+              folder={selectedFolder}
+              closeModal={() => setIsEditFolderModalOpen(false)}
+              onFolderUpdate={updateFolder}
             />
-            <QuestionsTableCompany />
-          </InternalContainer>
-        </div>
-      </div>
-      {isEditFolderModalOpen && (
-        <EditFolderModal
-          folder={selectedFolder}
-          closeModal={closeEditFolderModal}
-        />
-      )}
-      {isDeleteFolderModalOpen && (
-        <DeleteFolderModal
-          folder={selectedFolder}
-          closeModal={closeDeleteFolderModal}
-        />
-      )}
+          )}
 
-      {/* Render the modal when isModalOpen is true */}
-      {isModalOpen && <AddFolderModal closeModal={closeModal} />}
-      {/* Render the delete modal when isDeleteModalOpen is true */}
-      {isDeleteModalOpen && (
-        <DeleteModal
-          onCancel={closeDeleteModal} // Correct function
-          onDelete={() => {
-            // Handle the delete action
-            // For example, remove the folder from your state or make an API call
-            closeDeleteModal(); // Correct function
-          }}
-        />
+          {isDeleteFolderModalOpen && (
+            <DeleteFolderModal
+              folder={selectedFolder}
+              closeModal={() => setIsDeleteFolderModalOpen(false)}
+              onDelete={deleteFolder}
+            />
+          )}
+
+          {isModalOpen && (
+            <AddFolderModal
+              closeModal={() => setIsModalOpen(false)}
+              addNewFolder={addNewFolder}
+              fetchFiles={fetchFiles}
+            />
+          )}
+        </>
       )}
     </>
   );

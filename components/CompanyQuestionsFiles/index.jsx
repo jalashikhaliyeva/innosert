@@ -1,12 +1,16 @@
 // QuestionFiles.jsx (components/CompanyQuestionsFiles/index.jsx)
 
+// QuestionFiles.jsx
+
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { IoMdMore } from "react-icons/io";
 import { BsTrash } from "react-icons/bs";
 import Link from "next/link";
+
 const QuestionFiles = ({
+  files,
   viewMode,
   sortOption,
   setIsCheckboxSelected,
@@ -17,7 +21,9 @@ const QuestionFiles = ({
 }) => {
   const router = useRouter();
   const [dropdownVisible, setDropdownVisible] = useState(null);
-  const dropdownRef = useRef(null); // Use a single ref
+  const dropdownRef = useRef(null);
+
+  console.log(files, "files company question files");
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -31,212 +37,43 @@ const QuestionFiles = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-  // Define Azerbaijani month names
-  const monthNamesAZ = [
-    "yanvar",
-    "fevral",
-    "mart",
-    "aprel",
-    "may",
-    "iyun",
-    "iyul",
-    "avqust",
-    "sentyabr",
-    "oktyabr",
-    "noyabr",
-    "dekabr",
-  ];
 
-  // Helper function to capitalize the first letter
-  const capitalizeFirstLetter = (string) => {
-    if (!string) return "";
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
   const handleCheckboxChange = (fileUrl, isChecked) => {
     setSelectedFiles((prevSelectedFiles) => {
       if (isChecked) {
-        return [...prevSelectedFiles, fileUrl]; // Add the file URL when checked
+        // Add the file to the selection if it is checked
+        return [...prevSelectedFiles, fileUrl];
       } else {
-        return prevSelectedFiles.filter((url) => url !== fileUrl); // Remove the file URL when unchecked
+        // Remove the file from the selection if it is unchecked
+        return prevSelectedFiles.filter((url) => url !== fileUrl);
       }
     });
   };
 
   const handleBoxClick = (file) => {
-    // Check if the file has subfolders
     if (file.subfolder && file.subfolder.length > 0) {
-      router.push(`/suallar-toplusu/${file.slug}`);
+      router.push(`/sual-bazasi/${file.slug}`);
     } else {
-      // Navigate to the default file page if no subfolders
-      router.push(`/fayllar/${file.slug}`);
+      router.push(`/sual-bazasi/${file.slug}`);
     }
   };
 
-  // Files array with ISO date format
-  const files = [
-    {
-      name: "Mathematics",
-      slug: "mathematics",
-      date: "2024-09-15",
-      year: "2024",
-      difficulty: "Çətin",
-      level: "Orta",
-      creator: "Asan",
-      url: "/fayllar/mathematics",
-    },
-    {
-      name: "Physics",
-      slug: "physics",
-      date: "2024-09-20",
-      year: "2024",
-      difficulty: "Asan",
-      level: "Yüksək",
-      creator: "Orta",
-      url: "/fayllar/physics/",
-    },
-    {
-      name: "Science",
-      slug: "science",
-      date: "2024-09-25",
-      year: "2024",
-      difficulty: "Orta",
-      level: "Asan",
-      creator: "Çətin",
-      subfolder: [
-        {
-          name: "Chemistry",
-          slug: "chemistry",
-          date: "2024-09-25",
-          year: "2024",
-          difficulty: "Orta",
-          level: "Asan",
-          creator: "Çətin",
-          url: "/files/chemistry.pdf",
-        },
-        {
-          name: "Biology",
-          slug: "biology",
-          date: "2024-10-01",
-          year: "2024",
-          difficulty: "Asan",
-          level: "Orta",
-          creator: "Yüksək",
-          url: "/files/biology.pdf",
-        },
-      ],
-    },
-    {
-      name: "History",
-      slug: "history",
-      date: "2024-10-10",
-      year: "2024",
-      difficulty: "Orta",
-      level: "Yüksək",
-      creator: "Asan",
-      url: "/files/history.pdf",
-    },
-    {
-      name: "Geography",
-      slug: "geography",
-      date: "2024-10-20",
-      year: "2024",
-      difficulty: "Çətin",
-      level: "Asan",
-      creator: "Orta",
-      url: "/files/geography.pdf",
-    },
-    {
-      name: "Languages",
-      slug: "languages",
-      date: "2024-10-30",
-      year: "2024",
-      difficulty: "Asan",
-      level: "Orta",
-      creator: "Yüksək",
-      subfolder: [
-        {
-          name: "English",
-          slug: "english",
-          date: "2024-10-30",
-          year: "2024",
-          difficulty: "Asan",
-          level: "Orta",
-          creator: "Yüksək",
-          url: "/files/english.pdf",
-        },
-      ],
-    },
-    {
-      name: "Frontend",
-      slug: "frontend",
-      date: "2024-11-05",
-      year: "2024",
-      difficulty: "Çətin",
-      level: "Yüksək",
-      creator: "Asan",
-      url: "/files/frontend.pdf",
-    },
-    {
-      name: "Art",
-      slug: "art",
-      date: "2024-11-15",
-      year: "2024",
-      difficulty: "Orta",
-      level: "Asan",
-      creator: "Orta",
-      url: "/files/art.pdf",
-    },
-    {
-      name: "Backend",
-      slug: "backend",
-      date: "2024-11-25",
-      year: "2024",
-      difficulty: "Asan",
-      level: "Orta",
-      creator: "Çətin",
-      url: "/files/backend.pdf",
-    },
-  ];
-
-  // Copy files array to avoid mutating the original
   const sortedFiles = [...files];
 
-  // Implement sorting based on sortOption
-  if (sortOption === "Son Yaradilan") {
-    // Sort by date descending (latest first)
-    sortedFiles.sort((a, b) => new Date(b.date) - new Date(a.date));
-  } else if (sortOption === "Ilk Yaradilan") {
-    // Sort by date ascending (earliest first)
-    sortedFiles.sort((a, b) => new Date(a.date) - new Date(b.date));
+  // Adjust the sorting logic for 'Son Yaradilan' and 'Ilk Yaradilan'
+  if (sortOption === "Ilk Yaradilan") {
+    sortedFiles.sort(
+      (a, b) => new Date(b.created_at || 0) - new Date(a.created_at || 0)
+    );
+  } else if (sortOption === "Son Yaradilan") {
+    sortedFiles.sort(
+      (a, b) => new Date(a.created_at || 0) - new Date(b.created_at || 0)
+    );
   } else if (sortOption === "A-Z") {
-    // Sort by name ascending
     sortedFiles.sort((a, b) => a.name.localeCompare(b.name));
   } else if (sortOption === "Z-A") {
-    // Sort by name descending
     sortedFiles.sort((a, b) => b.name.localeCompare(a.name));
   }
-  // Updated formatDate function with manual month mapping
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-
-    // Validate the date
-    if (isNaN(date)) {
-      console.error(`Invalid date: ${dateStr}`);
-      return dateStr; // Return the original string if invalid
-    }
-
-    const day = date.getDate();
-    const monthIndex = date.getMonth(); // 0-based index
-    const year = date.getFullYear();
-
-    const monthName = monthNamesAZ[monthIndex] || "";
-
-    const formattedDate = `${day} ${capitalizeFirstLetter(monthName)} ${year}`;
-
-    console.log(`Original Date: ${dateStr} | Formatted Date: ${formattedDate}`);
-
-    return formattedDate;
-  };
 
   return (
     <div className="py-6">
@@ -256,6 +93,7 @@ const QuestionFiles = ({
                     handleCheckboxChange(file.url, e.target.checked)
                   }
                 />
+
                 <IoMdMore
                   className="text-inputBorder cursor-pointer"
                   onClick={(e) => {
@@ -321,24 +159,37 @@ const QuestionFiles = ({
                         />
                       </svg>
                     </div>
-                    <h3 className="text-xl font-gilroy leading-7.5 text-brandBlue700 font-medium">
-                      {file.name}
-                    </h3>
+                    <div className="relative group inline-block">
+                      <h3 className="text-xl font-gilroy leading-7.5 text-brandBlue700 font-medium cursor-pointer">
+                        {file?.name?.length > 6
+                          ? `${file?.name.slice(0, 8)}...`
+                          : file?.name}
+                      </h3>
+                      {file?.name?.length > 6 && (
+                        <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[999]">
+                          {file?.name}
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="relative group">
-                    <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium text-center truncate cursor-pointer max-w-[15ch] mx-auto">
-                      {`${file.year} • ${file.difficulty} • ${file.level} • ${file.creator}`}
+                    <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium  truncate cursor-pointer max-w-[15ch] mx-auto">
+                      {file.sub_folder && file.sub_folder.length > 0
+                        ? file.sub_folder.join(" ~ ")
+                        : "Hazırda fayl yoxdur"}
                     </div>
                     <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[999]">
-                      {`${file.year} • ${file.difficulty} • ${file.level} • ${file.creator}`}
+                      {file.sub_folder && file.sub_folder.length > 0
+                        ? file.sub_folder.join(" ~ ")
+                        : "Hazırda fayl yoxdur"}
                     </div>
                   </div>
 
                   <div className="md:w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
 
                   <div className="text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
-                    {formatDate(file.date)}
+                    {file?.created_at}
                   </div>
                 </p>
               </div>
@@ -386,14 +237,34 @@ const QuestionFiles = ({
                 </div>
                 {/* File Info */}
                 <div className="flex items-center w-full justify-between">
-                  <h3 className="text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
-                    {file.name}
-                  </h3>
-                  <div className="text-sm font-gilroy text-gray300 font-medium">
-                    {`${file.year} • ${file.difficulty} • ${file.level} • ${file.creator}`}
+                  <div className="relative group inline-block w-[400px]">
+                    <h3 className="text-xl font-gilroy leading-7.5 text-brandBlue700 font-medium cursor-pointer">
+                      {file.name.length > 35
+                        ? `${file.name.slice(0, 35)}...`
+                        : file.name}
+                    </h3>
+                    {file.name.length > 35 && (
+                      <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[999]">
+                        {file.name}
+                      </div>
+                    )}
                   </div>
-                  <div className="text-sm leading-normal font-gilroy font-medium text-gray90">
-                    {formatDate(file.date)}
+
+                  <div className="relative group">
+                    <div className="text-3.5  font-gilroy mt-1.5 text-arrowButtonGray font-medium justify-start truncate cursor-pointer max-w-[30ch] mx-auto">
+                      {file.sub_folder && file.sub_folder.length > 0
+                        ? file.sub_folder.join(" ~ ")
+                        : "Hazırda fayl yoxdur"}
+                    </div>
+                    <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[999]">
+                      {file.sub_folder && file.sub_folder.length > 0
+                        ? file.sub_folder.join(" ~ ")
+                        : "Hazırda fayl yoxdur"}
+                    </div>
+                  </div>
+
+                  <div className="ml-auto text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
+                    {file?.created_at}
                   </div>
                   <div
                     onClick={(e) => {

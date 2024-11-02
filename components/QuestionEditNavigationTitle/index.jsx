@@ -6,7 +6,11 @@ import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { RiBuildingLine } from "react-icons/ri";
 
 // Accept selectedOption and setSelectedOption as props
-function QuestionEditNavigationTitle({ selectedOption, setSelectedOption }) {
+function QuestionEditNavigationTitle({
+  selectedOption,
+  setSelectedOption,
+  onSave,
+}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const toggleDropdown = () => {
@@ -77,7 +81,10 @@ function QuestionEditNavigationTitle({ selectedOption, setSelectedOption }) {
         </button>
 
         {/* Save Button */}
-        <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-green600 hover:bg-green600Hover active:bg-green600Pressed whitespace-nowrap w-full sm:w-auto">
+        <button
+          onClick={onSave}
+          className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-green600 hover:bg-green600Hover active:bg-green600Pressed whitespace-nowrap w-full sm:w-auto"
+        >
           <FaRegCircleCheck className="text-white w-5 h-5" />
           Yadda saxla
         </button>

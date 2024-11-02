@@ -1,52 +1,55 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import ReactPaginate from "react-paginate";
 import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
+import CompanyContext from "@/shared/context/CompanyContext";
+import axios from "axios";
 
 function QuestionsTableCompany() {
+  const { selectedCompany } = useContext(CompanyContext);
+  console.log(selectedCompany, "QuestionsTableCompany selectedCompany");
+
   const levelColors = {
-    Hard: "bg-redLow",
-    Medium: "bg-violetLow",
-    Easy: "bg-orangeLow",
+    Çətin: "bg-redLow",
+    Orta: "bg-violetLow",
+    Asan: "bg-orangeLow",
   };
 
-  const data = [
-    {
-      id: 1,
-      title: "What is the capital of France?",
-      level: "Easy",
-      points: 10,
-      time: "2 min",
-      date: "2023-10-01",
-      fullname: "John Doe",
-    },
-    {
-      id: 2,
-      title: "Explain Newton's Second Law of Motion.",
-      level: "Medium",
-      points: 15,
-      time: "5 min",
-      date: "2023-09-28",
-      fullname: "Jane Smith",
-    },
-    {
-      id: 3,
-      title: "Solve the integral of sin(x) dx.",
-      level: "Hard",
-      points: 20,
-      time: "7 min",
-      date: "2023-09-25",
-      fullname: "Alice Johnson",
-    },
-    // Include fullname for all other items...
-  ];
+  // Fetch data from API
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        // if (!token || !selectedCompany) return;
+
+        const response = await axios.get(
+          "https://innocert-admin.markup.az/api/all-questions",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "X-Company-ID": selectedCompany.id,
+            },
+          }
+        );
+
+        console.log(response.data, "response QUESTION TABLE COMPANY");
+
+        setQuestions(response.data.data); // Update questions state with API data
+      } catch (error) {
+        console.error("Error fetching questions:", error);
+      }
+    };
+
+    fetchData();
+  }, [selectedCompany]);
 
   const router = useRouter();
 
-  // State declarations
+  const [questions, setQuestions] = useState([]);
   const [currentPage, setCurrentPage] = useState(0);
-  const [itemsPerPage, setItemsPerPage] = useState(15); // Default items per page set to 15
+  const [itemsPerPage, setItemsPerPage] = useState(15);
   const [openFilter, setOpenFilter] = useState(null);
   const [levelFilter, setLevelFilter] = useState([]);
   const [questionOrder, setQuestionOrder] = useState(null); // 'asc' or 'desc'
@@ -58,7 +61,6 @@ function QuestionsTableCompany() {
   });
   const [fullnameFilter, setFullnameFilter] = useState("");
 
-  // Refs for each dropdown to handle clicks outside
   const dropdownRefs = {
     suallar: useRef(null),
     fullname: useRef(null),
@@ -68,7 +70,6 @@ function QuestionsTableCompany() {
     tarix: useRef(null),
   };
 
-  // Function to reset all filters
   const resetFilters = () => {
     setLevelFilter([]);
     setQuestionOrder(null);
@@ -118,8 +119,7 @@ function QuestionsTableCompany() {
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  // Filtering logic
-  const filteredData = data
+  const filteredData = questions
     .filter((item) => {
       // Level filter
       if (levelFilter.length > 0 && !levelFilter.includes(item.level)) {
@@ -127,7 +127,7 @@ function QuestionsTableCompany() {
       }
       return true;
     })
-    // Points filter
+    // Other filters
     .filter((item) => {
       const minPoints = pointsFilter.min
         ? parseInt(pointsFilter.min)
@@ -135,53 +135,51 @@ function QuestionsTableCompany() {
       const maxPoints = pointsFilter.max
         ? parseInt(pointsFilter.max)
         : Infinity;
-      if (item.points < minPoints || item.points > maxPoints) {
+      const itemScore = parseInt(item.score);
+      if (itemScore < minPoints || itemScore > maxPoints) {
         return false;
       }
       return true;
     })
-    // Time filter
-    .filter((item) => {
-      const minTime = timeFilter.min ? parseInt(timeFilter.min) : -Infinity;
-      const maxTime = timeFilter.max ? parseInt(timeFilter.max) : Infinity;
-      const itemTimeMatch = item.time.match(/(\d+)/);
-      const itemTime = itemTimeMatch ? parseInt(itemTimeMatch[1]) : 0;
-      if (itemTime < minTime || itemTime > maxTime) {
-        return false;
-      }
-      return true;
-    })
-    // Date filter
+    // Date filter logic
     .filter((item) => {
       const { from, to } = dateFilter;
-      const itemDate = new Date(item.date);
+      const itemDate = new Date(item.created_at);
+
       let fromDate = null;
       let toDate = null;
 
-      if (from.year && from.month && from.day) {
-        fromDate = new Date(from.year, from.month - 1, from.day);
+      // Create fromDate if at least the year is provided
+      if (from.year) {
+        const fromYear = from.year;
+        const fromMonth = from.month ? from.month.padStart(2, "0") : "01";
+        const fromDay = from.day ? from.day.padStart(2, "0") : "01";
+        fromDate = new Date(`${fromYear}-${fromMonth}-${fromDay}`);
+
+        // If the item date is before fromDate, filter it out
         if (itemDate < fromDate) {
           return false;
         }
       }
 
-      if (to.year && to.month && to.day) {
-        toDate = new Date(to.year, to.month - 1, to.day);
+      // Create toDate if at least the year is provided
+      if (to.year) {
+        const toYear = to.year;
+        const toMonth = to.month ? to.month.padStart(2, "0") : "12";
+        const toDay = to.day ? to.day.padStart(2, "0") : "31";
+        toDate = new Date(`${toYear}-${toMonth}-${toDay}`);
+
+        // If the item date is after toDate, filter it out
         if (itemDate > toDate) {
           return false;
         }
       }
 
-      return true;
+      return true; // Return true if it passes all date filter conditions
     })
-    // Fullname filter
     .filter((item) => {
-      if (fullnameFilter) {
-        return item.fullname
-          .toLowerCase()
-          .includes(fullnameFilter.toLowerCase());
-      }
-      return true;
+      if (!fullnameFilter) return true;
+      return item.username.toLowerCase().includes(fullnameFilter.toLowerCase());
     });
 
   // Sorting logic
@@ -310,13 +308,13 @@ function QuestionsTableCompany() {
                       <input
                         className="mr-2"
                         type="checkbox"
-                        checked={levelFilter.includes("Easy")}
+                        checked={levelFilter.includes("Asan")}
                         onChange={(e) => {
                           const isChecked = e.target.checked;
                           setLevelFilter((prev) =>
                             isChecked
-                              ? [...prev, "Easy"]
-                              : prev.filter((l) => l !== "Easy")
+                              ? [...prev, "Asan"]
+                              : prev.filter((l) => l !== "Asan")
                           );
                         }}
                       />
@@ -326,13 +324,13 @@ function QuestionsTableCompany() {
                       <input
                         className="mr-2"
                         type="checkbox"
-                        checked={levelFilter.includes("Medium")}
+                        checked={levelFilter.includes("Orta")}
                         onChange={(e) => {
                           const isChecked = e.target.checked;
                           setLevelFilter((prev) =>
                             isChecked
-                              ? [...prev, "Medium"]
-                              : prev.filter((l) => l !== "Medium")
+                              ? [...prev, "Orta"]
+                              : prev.filter((l) => l !== "Orta")
                           );
                         }}
                       />
@@ -342,13 +340,13 @@ function QuestionsTableCompany() {
                       <input
                         className="mr-2"
                         type="checkbox"
-                        checked={levelFilter.includes("Hard")}
+                        checked={levelFilter.includes("Çətin")}
                         onChange={(e) => {
                           const isChecked = e.target.checked;
                           setLevelFilter((prev) =>
                             isChecked
-                              ? [...prev, "Hard"]
-                              : prev.filter((l) => l !== "Hard")
+                              ? [...prev, "Çətin"]
+                              : prev.filter((l) => l !== "Çətin")
                           );
                         }}
                       />
@@ -418,7 +416,7 @@ function QuestionsTableCompany() {
                 )}
               </th>
               {/* Vaxt Header */}
-              <th
+              {/* <th
                 className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
                 onClick={() =>
                   setOpenFilter(openFilter === "vaxt" ? null : "vaxt")
@@ -469,7 +467,7 @@ function QuestionsTableCompany() {
                     </button>
                   </div>
                 )}
-              </th>
+              </th> */}
               {/* Tarix Header */}
               <th
                 className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
@@ -499,57 +497,56 @@ function QuestionsTableCompany() {
                             onChange={(e) =>
                               setDateFilter((prev) => ({
                                 ...prev,
-                                from: {
-                                  ...prev.from,
-                                  year: e.target.value,
-                                },
+                                from: { ...prev.from, year: e.target.value },
                               }))
                             }
                             className="border rounded px-2 py-1 w-1/3"
                           >
                             <option value="">İl</option>
                             {years.map((year) => (
-                              <option key={year} value={year}>
+                              <option key={year} value={year.toString()}>
                                 {year}
                               </option>
                             ))}
                           </select>
+
                           <select
                             value={dateFilter.from.month}
                             onChange={(e) =>
                               setDateFilter((prev) => ({
                                 ...prev,
-                                from: {
-                                  ...prev.from,
-                                  month: e.target.value,
-                                },
+                                from: { ...prev.from, month: e.target.value },
                               }))
                             }
                             className="border rounded px-2 py-1 w-1/3"
                           >
                             <option value="">Ay</option>
                             {months.map((month) => (
-                              <option key={month} value={month}>
+                              <option
+                                key={month}
+                                value={month.toString().padStart(2, "0")}
+                              >
                                 {month}
                               </option>
                             ))}
                           </select>
+
                           <select
                             value={dateFilter.from.day}
                             onChange={(e) =>
                               setDateFilter((prev) => ({
                                 ...prev,
-                                from: {
-                                  ...prev.from,
-                                  day: e.target.value,
-                                },
+                                from: { ...prev.from, day: e.target.value },
                               }))
                             }
                             className="border rounded px-2 py-1 w-1/3"
                           >
                             <option value="">Gün</option>
                             {days.map((day) => (
-                              <option key={day} value={day}>
+                              <option
+                                key={day}
+                                value={day.toString().padStart(2, "0")}
+                              >
                                 {day}
                               </option>
                             ))}
@@ -638,47 +635,52 @@ function QuestionsTableCompany() {
           </thead>
           <tbody>
             {paginatedData.length > 0 ? (
-              paginatedData.map((item) => (
+              paginatedData.map((item, index) => (
                 <tr
                   key={item.id}
                   className="bg-tableBgDefault border-b border-borderTableCel hover:bg-gray-100"
                 >
                   <td className="px-4 py-2"></td>
-                  <td className="px-4 py-2">{item.id}</td>
+                  <td className="px-4 py-2">{index + 1}</td>{" "}
+                  {/* Custom numbering */}
                   <td className="flex items-center gap-3 px-4 py-2">
-                    <svg
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <rect width="24" height="24" rx="12" fill="#EDEFFD" />
-                      <path
-                        d="M16.364 16.909C16.364 16.1478 16.364 15.7672 16.27 15.4575C16.0585 14.7602 15.5128 14.2145 14.8155 14.0029C14.5058 13.909 14.1252 13.909 13.364 13.909H10.6367C9.8755 13.909 9.49489 13.909 9.18519 14.0029C8.48788 14.2145 7.9422 14.7602 7.73067 15.4575C7.63672 15.7672 7.63672 16.1478 7.63672 16.909M14.4549 9.54537C14.4549 10.901 13.356 11.9999 12.0004 11.9999C10.6447 11.9999 9.54581 10.901 9.54581 9.54537C9.54581 8.18976 10.6447 7.09082 12.0004 7.09082C13.356 7.09082 14.4549 8.18976 14.4549 9.54537Z"
-                        stroke="#2826A7"
-                        stroke-width="1.09091"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                    {item.photo &&
+                    item.photo !== "https://innocert-admin.markup.az" ? (
+                      <img
+                        src={item.photo}
+                        alt={item.username}
+                        className="w-6 h-6 rounded-full"
                       />
-                    </svg>
-                    {item.fullname}
+                    ) : (
+                      <div className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-200 text-xs text-blue-800 font-medium">
+                        {item.username
+                          .split(" ")
+                          .map((name) => name.charAt(0))
+                          .join("")}
+                      </div>
+                    )}
+                    {item.username}
                   </td>
-
                   <td className="px-4 py-2 relative group">
-                    {item.title.length > 49
-                      ? item.title.substring(0, 49) + "..."
-                      : item.title}
+                    <div
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          item.title.length > 49
+                            ? item.title.substring(0, 49) + "..."
+                            : item.title,
+                      }}
+                    ></div>
 
                     {/* Tooltip */}
-                    <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black text-sm px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                      {item.title}
-                    </div>
+                    <div
+                      className="absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black text-sm px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                      dangerouslySetInnerHTML={{ __html: item.title }}
+                    ></div>
 
                     <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-blue-300 transition-all duration-300 group-hover:w-full"></span>
                   </td>
                   {/* Member Name Cell */}
-                  <td className="px-4 py-2">
+                  <td className="px-4 py-2 w-[130px]">
                     <div
                       className={`${
                         levelColors[item.level]
@@ -687,9 +689,9 @@ function QuestionsTableCompany() {
                       {item.level}
                     </div>
                   </td>
-                  <td className="px-4 py-2">{item.points}</td>
-                  <td className="px-4 py-2">{item.time}</td>
-                  <td className="px-4 py-2 !text-sm">{item.date}</td>
+                  <td className="px-4 py-2">{item.score}</td>
+                  {/* <td className="px-4 py-2">{item.time}</td> */}
+                  <td className="px-4 py-2 !text-sm">{item.created_at}</td>
                 </tr>
               ))
             ) : (

@@ -6,15 +6,53 @@ const UserContext = createContext();
 
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
+  const [lastQuery, setLastQuery] = useState(() => {
+    return localStorage.getItem("lastQuery") || null;
+  });
+  const [examDetailsSingle, setExamDetailsSingle] = useState(null);
+  // Initialize examDetails from localStorage or set to null
+  const [examDetails, setExamDetails] = useState(() => {
+    const storedDetails = localStorage.getItem("examDetails");
+    return storedDetails ? JSON.parse(storedDetails) : null;
+  });
 
-  // Memoize fetchUserData to prevent it from changing on every render
+  // Function to update examDetails and persist to localStorage
+  const updateExamDetails = (details) => {
+    setExamDetails(details);
+    localStorage.setItem("examDetails", JSON.stringify(details));
+  };
+
+  // Existing state for selectedQuestion
+  const [selectedQuestion, setSelectedQuestion] = useState(() => {
+    return JSON.parse(localStorage.getItem("selectedQuestion")) || null;
+  });
+
+  // New state for selectedQuestionsForExam
+  const [selectedQuestionsForExam, setSelectedQuestionsForExam] = useState(
+    () => {
+      return JSON.parse(localStorage.getItem("selectedQuestionsForExam")) || [];
+    }
+  );
+
+  // Existing states
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [selectedSubcategory, setSelectedSubcategory] = useState(null);
+
+  // New state for timeForQuestion
+  const [timeForQuestion, setTimeForQuestion] = useState(() => {
+    const storedValue = localStorage.getItem("timeForQuestion");
+    return storedValue ? JSON.parse(storedValue) : false;
+  });
+
+  // New validation states for form readiness
+  const [isGeneralInfoValid, setIsGeneralInfoValid] = useState(false);
+  const [isQuestionsValid, setIsQuestionsValid] = useState(false);
+
   const fetchUserData = useCallback(async () => {
     const userToken = localStorage.getItem("token");
 
     if (!userToken) {
-      // toast.error("User is not authenticated. Please log in again.");
       console.log("User is not authenticated");
-
       return;
     }
 
@@ -32,7 +70,7 @@ function UserProvider({ children }) {
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
-        console.log(userData, "userData contect");
+        console.log(userData, "userData context");
       } else {
         toast.error("Failed to fetch user data");
       }
@@ -41,13 +79,82 @@ function UserProvider({ children }) {
     }
   }, []);
 
-  // Fetch user data on component mount
+  useEffect(() => {
+    if (lastQuery !== null) {
+      localStorage.setItem("lastQuery", lastQuery);
+    }
+  }, [lastQuery]);
+
   useEffect(() => {
     fetchUserData();
   }, [fetchUserData]);
 
+  // Sync selectedQuestion to localStorage on change
+  useEffect(() => {
+    if (selectedQuestion !== null) {
+      localStorage.setItem(
+        "selectedQuestion",
+        JSON.stringify(selectedQuestion)
+      );
+    } else {
+      localStorage.removeItem("selectedQuestion"); // Remove it if null
+    }
+  }, [selectedQuestion]);
+
+  // Sync selectedQuestionsForExam to localStorage on change
+  useEffect(() => {
+    if (selectedQuestionsForExam.length > 0) {
+      localStorage.setItem(
+        "selectedQuestionsForExam",
+        JSON.stringify(selectedQuestionsForExam)
+      );
+    } else {
+      localStorage.removeItem("selectedQuestionsForExam"); // Remove it if empty
+    }
+  }, [selectedQuestionsForExam]);
+
+  // Sync timeForQuestion to localStorage on change
+  useEffect(() => {
+    localStorage.setItem("timeForQuestion", JSON.stringify(timeForQuestion));
+  }, [timeForQuestion]);
+
+  // Sync examDetails to localStorage on change (if updated outside updateExamDetails)
+  useEffect(() => {
+    if (examDetails) {
+      localStorage.setItem("examDetails", JSON.stringify(examDetails));
+    } else {
+      localStorage.removeItem("examDetails");
+    }
+  }, [examDetails]);
+
   return (
-    <UserContext.Provider value={{ user, setUser, fetchUserData }}>
+    <UserContext.Provider
+      value={{
+        user,
+        setUser,
+        lastQuery,
+        setLastQuery,
+        selectedQuestion,
+        setSelectedQuestion,
+        selectedQuestionsForExam, // Provide the new state
+        setSelectedQuestionsForExam, // Provide the setter for the new state
+        fetchUserData,
+        selectedCategory,
+        setSelectedCategory,
+        selectedSubcategory,
+        setSelectedSubcategory,
+        timeForQuestion, // Provide the new state
+        setTimeForQuestion, // Provide the setter for the new state
+        isGeneralInfoValid, // Provide validation state for GeneralInfoEditExam
+        setIsGeneralInfoValid, // Setter for GeneralInfo validation
+        isQuestionsValid, // Provide validation state for TableComponent
+        setIsQuestionsValid, // Setter for Questions validation
+        examDetails, // Provide exam details
+        updateExamDetails, // Provide update function for exam details
+        examDetailsSingle,
+        setExamDetailsSingle,
+      }}
+    >
       {children}
     </UserContext.Provider>
   );

@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; // Import Toastify CSS
 import "@/styles/globals.css";
 import { appWithTranslation } from "next-i18next";
 import Spinner from "@/components/Spinner";
@@ -14,6 +16,7 @@ import "froala-editor/css/froala_editor.pkgd.min.css";
 import "froala-editor/css/plugins/image.min.css";
 import "froala-editor/css/plugins/video.min.css";
 import "froala-editor/css/plugins/file.min.css";
+import { SnackbarProvider } from "notistack";
 function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
@@ -72,7 +75,10 @@ function App({ Component, pageProps }) {
         return true;
       }
 
-      if (pathname.startsWith("/exams/") || pathname.startsWith("/imtahanlar/")) {
+      if (
+        pathname.startsWith("/exams/") ||
+        pathname.startsWith("/imtahanlar/")
+      ) {
         return true;
       }
 
@@ -100,11 +106,22 @@ function App({ Component, pageProps }) {
   return (
     // Wrap the application with SavedExamsProvider and UserProvider
     <UserProvider>
-      <SavedExamsProvider>
-        <CompanyContext.Provider value={{ selectedCompany, setSelectedCompany }}>
-          {loading ? <Spinner /> : <Component {...pageProps} />}
-        </CompanyContext.Provider>
-      </SavedExamsProvider>
+      <SnackbarProvider
+        anchorOrigin={{
+          vertical: "top", // Position at the top
+          horizontal: "right", // Align to the right
+        }}
+        autoHideDuration={1500}
+        maxSnack={3}
+      >
+        <SavedExamsProvider>
+          <CompanyContext.Provider
+            value={{ selectedCompany, setSelectedCompany }}
+          >
+            {loading ? <Spinner /> : <Component {...pageProps} />}
+          </CompanyContext.Provider>
+        </SavedExamsProvider>
+      </SnackbarProvider>
     </UserProvider>
   );
 }

@@ -1,8 +1,7 @@
-// SubFolderCard.jsx
 import React, { useState, useRef, useEffect } from "react";
-import { IoMdMore } from "react-icons/io"; // Importing the IoMdMore icon
-import { CiEdit } from "react-icons/ci";   // Importing the edit icon
-import { BsTrash } from "react-icons/bs";  // Importing the trash icon
+import { IoMdMore } from "react-icons/io";
+import { CiEdit } from "react-icons/ci";
+import { BsTrash } from "react-icons/bs";
 import { useRouter } from "next/router";
 
 const SubFolderCard = ({
@@ -14,12 +13,9 @@ const SubFolderCard = ({
   openDeleteFolderModal,
 }) => {
   const router = useRouter();
-
-  // State to manage which dropdown is visible
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
 
-  // Effect to close the dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -34,55 +30,18 @@ const SubFolderCard = ({
   }, []);
 
   const handleBoxClick = (subfolder) => {
-    router.push(`/fayllar/${subfolder.slug}`); // Navigate to dynamic slug page
+    const newPath = `${router.asPath}/${subfolder.slug}`;
+    router.push(newPath);
   };
 
   const handleCheckboxChange = (subfolderUrl, isChecked) => {
     setSelectedFiles((prevSelectedFiles) => {
       if (isChecked) {
-        return [...prevSelectedFiles, subfolderUrl]; // Add the subfolder URL when checked
+        return [...prevSelectedFiles, subfolderUrl];
       } else {
-        return prevSelectedFiles.filter((url) => url !== subfolderUrl); // Remove the subfolder URL when unchecked
+        return prevSelectedFiles.filter((url) => url !== subfolderUrl);
       }
     });
-  };
-
-  // Define Azerbaijani month names
-  const monthNamesAZ = [
-    "yanvar",
-    "fevral",
-    "mart",
-    "aprel",
-    "may",
-    "iyun",
-    "iyul",
-    "avqust",
-    "sentyabr",
-    "oktyabr",
-    "noyabr",
-    "dekabr",
-  ];
-
-  // Helper function to capitalize the first letter
-  const capitalizeFirstLetter = (string) => {
-    if (!string) return "";
-    return string.charAt(0).toUpperCase() + string.slice(1);
-  };
-
-  // Function to format date
-  const formatDate = (dateStr) => {
-    const date = new Date(dateStr);
-    if (isNaN(date)) {
-      console.error(`Invalid date: ${dateStr}`);
-      return dateStr; // Return the original string if invalid
-    }
-
-    const day = date.getDate();
-    const monthIndex = date.getMonth(); // 0-based index
-    const year = date.getFullYear();
-
-    const monthName = monthNamesAZ[monthIndex] || "";
-    return `${day} ${capitalizeFirstLetter(monthName)} ${year}`;
   };
 
   return (
@@ -92,29 +51,29 @@ const SubFolderCard = ({
           {subFolders.map((subfolder, index) => (
             <div
               key={subfolder.slug}
-              className="cursor-pointer  relative flex flex-col p-6 rounded-[10px] border border-gray-100 bg-white shadow-createBox"
+              className="relative flex flex-col p-6 rounded-[10px] border border-gray-100 bg-white shadow-createBox cursor-pointer"
               onClick={() => handleBoxClick(subfolder)}
             >
               <div className="flex w-full justify-between items-center mb-4">
-                {/* Checkbox */}
                 <input
                   type="checkbox"
-                  className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
+                  className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder focus:outline-none"
                   checked={selectedFiles.includes(subfolder.url)}
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) =>
                     handleCheckboxChange(subfolder.url, e.target.checked)
                   }
                 />
-                {/* More Icon */}
+
                 <IoMdMore
                   className="text-inputBorder cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setDropdownVisible(dropdownVisible === index ? null : index);
+                    setDropdownVisible(
+                      dropdownVisible === index ? null : index
+                    );
                   }}
                 />
-                {/* Dropdown Menu */}
                 {dropdownVisible === index && (
                   <div
                     ref={dropdownRef}
@@ -126,7 +85,7 @@ const SubFolderCard = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           openEditFolderModal(subfolder);
-                          setDropdownVisible(null); // Close the dropdown
+                          setDropdownVisible(null);
                         }}
                       >
                         <CiEdit />
@@ -137,7 +96,7 @@ const SubFolderCard = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           openDeleteFolderModal(subfolder);
-                          setDropdownVisible(null); // Close the dropdown
+                          setDropdownVisible(null);
                         }}
                       >
                         <BsTrash className="text-red-500" />
@@ -148,11 +107,9 @@ const SubFolderCard = ({
                 )}
               </div>
 
-              {/* Name and Date */}
               <p className="flex flex-col w-full">
                 <div className="flex items-center space-x-2">
                   <div className="text-yellow-500">
-                    {/* Folder Icon */}
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       width="28px"
@@ -175,41 +132,37 @@ const SubFolderCard = ({
                     {subfolder.name}
                   </h3>
                 </div>
-
-                {/* Additional properties */}
                 <div className="relative group">
-                  <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium text-center truncate cursor-pointer max-w-[15ch] mx-auto">
-                    {`${subfolder.year} • ${subfolder.difficulty} • ${subfolder.level} • ${subfolder.creator}`}
+                  <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium  truncate cursor-pointer max-w-[15ch] mx-auto">
+                    {subfolder.sub_folder && subfolder.sub_folder.length > 0
+                      ? subfolder.sub_folder.join(" ~ ")
+                      : "Hazırda fayl yoxdur"}
                   </div>
-                  <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
-                    {`${subfolder.year} • ${subfolder.difficulty} • ${subfolder.level} • ${subfolder.creator}`}
+                  <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[999]">
+                    {subfolder.sub_folder && subfolder.sub_folder.length > 0
+                      ? subfolder.sub_folder.join(" ~ ")
+                      : "Hazırda fayl yoxdur"}
                   </div>
                 </div>
-
-                {/* Separator */}
                 <div className="md:w-[162px] h-[1px] mt-3 mb-3 bg-buttonGhostPressed"></div>
-
-                {/* Date */}
                 <div className="text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
-                  {formatDate(subfolder.date)}
+                  {subfolder?.created_at}
                 </div>
               </p>
             </div>
           ))}
         </div>
       ) : (
-        // List View
         <div className="flex flex-col gap-3">
           {subFolders.map((subfolder, index) => (
             <div
               key={subfolder.slug}
-              className="cursor-pointer relative flex items-center p-5 rounded-[10px] border border-gray-100 bg-white shadow-createBox"
+              className="relative flex items-center p-5 rounded-[10px] border border-gray-100 bg-white shadow-createBox cursor-pointer"
               onClick={() => handleBoxClick(subfolder)}
             >
-              {/* Checkbox */}
               <input
                 type="checkbox"
-                className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
+                className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder focus:outline-none"
                 checked={selectedFiles.includes(subfolder.url)}
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) =>
@@ -217,9 +170,7 @@ const SubFolderCard = ({
                 }
               />
 
-              {/* Folder Icon */}
               <div className="text-yellow-500 mr-4">
-                {/* Folder SVG Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="28px"
@@ -239,24 +190,27 @@ const SubFolderCard = ({
                 </svg>
               </div>
 
-              {/* Folder Details */}
-              <div>
-                <h3 className="text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
-                  {subfolder.name}
-                </h3>
+              <h3 className="text-lg w-[400px] font-gilroy leading-7.5 text-brandBlue700 font-medium">
+                {subfolder.name}
+              </h3>
+
+              <div className="relative group">
+                <div className="text-3.5 w-[300px] font-gilroy mt-1.5 text-arrowButtonGray font-medium justify-start truncate cursor-pointer max-w-[15ch] mx-auto">
+                  {subfolder.sub_folder && subfolder.sub_folder.length > 0
+                    ? subfolder.sub_folder.join(" ~ ")
+                    : "Hazırda fayl yoxdur"}
+                </div>
+                <div className="absolute bottom-full mb-2 left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-[999]">
+                  {subfolder.sub_folder && subfolder.sub_folder.length > 0
+                    ? subfolder.sub_folder.join(" ~ ")
+                    : "Hazırda fayl yoxdur"}
+                </div>
               </div>
 
-              {/* Additional Info */}
-              <div className="ml-auto text-sm flex gap-2 items-center text-gray-600">
-                <span>{`${subfolder.year} • ${subfolder.difficulty} • ${subfolder.level} • ${subfolder.creator}`}</span>
+              <div className="ml-auto text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
+                {subfolder?.created_at}
               </div>
 
-              {/* Date */}
-              <div className="ml-auto text-sm leading-normal font-gilroy font-medium text-gray90">
-                {formatDate(subfolder.date)}
-              </div>
-
-              {/* More Icon and Dropdown */}
               <div
                 onClick={(e) => {
                   e.stopPropagation();
@@ -266,7 +220,9 @@ const SubFolderCard = ({
                   className="text-gray-400 ml-2 cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setDropdownVisible(dropdownVisible === index ? null : index);
+                    setDropdownVisible(
+                      dropdownVisible === index ? null : index
+                    );
                   }}
                 />
                 {dropdownVisible === index && (
@@ -280,7 +236,7 @@ const SubFolderCard = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           openEditFolderModal(subfolder);
-                          setDropdownVisible(null); // Close the dropdown
+                          setDropdownVisible(null);
                         }}
                       >
                         <CiEdit />
@@ -291,7 +247,7 @@ const SubFolderCard = ({
                         onClick={(e) => {
                           e.stopPropagation();
                           openDeleteFolderModal(subfolder);
-                          setDropdownVisible(null); // Close the dropdown
+                          setDropdownVisible(null);
                         }}
                       >
                         <BsTrash className="text-red-500" />

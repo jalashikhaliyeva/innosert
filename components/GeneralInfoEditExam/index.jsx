@@ -1,23 +1,67 @@
-import React, { useState, useRef, useEffect } from "react";
-import { FaPen } from "react-icons/fa"; // Import pen icon from FontAwesome
+// src/components/GeneralInfoEditExam.js
+import React, { useState, useRef, useEffect, useContext } from "react";
+import { FaPen, FaKey } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
-import { FaKey } from "react-icons/fa";
+import { UserContext } from "@/shared/context/UserContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function GeneralInfoEditExam() {
+  const {
+    selectedCategory,
+    selectedSubcategory,
+    timeForQuestion,
+    setTimeForQuestion,
+    isGeneralInfoValid,
+    setIsGeneralInfoValid,
+    updateExamDetails,
+    examDetails, // Get examDetails from context
+  } = useContext(UserContext);
+
+  console.log(selectedCategory, "selectedCategoryyy");
+  console.log(selectedSubcategory, "selectedSubcategory");
+  console.log(timeForQuestion, "timeForQuestion");
+  console.log(examDetails, "examDetails");
+
+  // Initialize form values
   const [values, setValues] = useState(["", "", "", "", "00:00:00"]);
-  // State to manage textarea values
-  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false); // State for dropdown visibility
-  const [selectedCategories, setSelectedCategories] = useState([]); // State for selected categories
-  const [isInfoHoveredFifth, setIsInfoHoveredFifth] = useState(false); // State for fifth info icon hover
+  const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [isInfoHoveredFifth, setIsInfoHoveredFifth] = useState(false);
   const [isInfoHoveredSixth, setIsInfoHoveredSixth] = useState(false);
-  const categories = [
-    "ux/uı dizayn",
-    "front-end proqramlaşdırma",
-    "data analitika",
-    "back-end proqramlaşdırma",
-    // ... additional categories
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const combinedList = [
+    ...(selectedCategory || []).map((cat) => ({
+      name: cat.name,
+      type: "category",
+      id: cat.id,
+    })),
+    ...(selectedSubcategory || []).map((sub) => ({
+      name: sub.name,
+      type: "subcategory",
+      id: sub.id,
+    })),
   ];
 
-  // Add this function to generate a random code
+  const handleItemSelection = (itemName) => {
+    const selectedItem = combinedList.find((item) => item.name === itemName);
+
+    if (selectedItem) {
+      setSelectedItems((prev) =>
+        prev.some((item) => item.name === selectedItem.name)
+          ? prev.filter((item) => item.name !== selectedItem.name)
+          : [...prev, selectedItem]
+      );
+      setHasSubmitted(false);
+    }
+  };
+
+  const handleCodeChange = (newCode) => {
+    setCode(newCode);
+    setHasSubmitted(false);
+  };
+
   function generateRandomCode() {
     const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
     let result = "";
@@ -29,26 +73,19 @@ function GeneralInfoEditExam() {
     return result;
   }
 
-  // Add this state variable for the code
   const [code, setCode] = useState("");
-
-  // Update the state variable for the "Kodlu" radio button
   const [isKodlu, setIsKodlu] = useState(true);
 
-  // Use useEffect to generate a code when "Kodlu" is selected
   useEffect(() => {
     if (isKodlu) {
-      setCode(generateRandomCode());
+      handleCodeChange(generateRandomCode());
     } else {
-      setCode(""); // Clear the code when "Kodsuz" is selected
+      setCode("");
+      setHasSubmitted(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isKodlu]);
 
-  // State for the two checkboxes in the fifth section
-  const [isRadio1CheckedFifth, setIsRadio1CheckedFifth] = useState(false);
-  const [isRadio2CheckedFifth, setIsRadio2CheckedFifth] = useState(false);
-
-  // State for the two checkboxes in the sixth section
   const [isRadio1CheckedSixth, setIsRadio1CheckedSixth] = useState(false);
   const [isRadio2CheckedSixth, setIsRadio2CheckedSixth] = useState(false);
 
@@ -58,48 +95,43 @@ function GeneralInfoEditExam() {
     useRef(null),
     useRef(null),
     useRef(null),
-  ]; // Refs for each textarea
+  ];
 
-  // Effect to adjust height whenever the values change
   useEffect(() => {
     textareaRefs.forEach((ref) => {
       if (ref.current) {
-        ref.current.style.height = "auto"; // Reset height
-        ref.current.style.height = ref.current.scrollHeight + "px"; // Adjust height based on scrollHeight
+        ref.current.style.height = "auto";
+        ref.current.style.height = ref.current.scrollHeight + "px";
       }
     });
   }, [values]);
 
-  // Handler to update the value of a specific textarea
   const handleValueChange = (index, newValue) => {
     setValues((prevValues) => {
       const newValues = [...prevValues];
       newValues[index] = newValue;
       return newValues;
     });
+    setHasSubmitted(false);
   };
 
-  // Handler for the fourth textarea to always append the ₼ sign
   const handlePriceChange = (index, newValue) => {
-    const numericValue = newValue.replace(/[^\d]/g, ""); // Remove any non-numeric characters
+    const numericValue = newValue.replace(/[^\d]/g, "");
     setValues((prevValues) => {
       const newValues = [...prevValues];
-      newValues[index] = numericValue ? `${numericValue} ₼` : ""; // Append ₼ to the numeric value
+      newValues[index] = numericValue ? `${numericValue} ₼` : "";
       return newValues;
     });
+    setHasSubmitted(false);
   };
 
   function handleTimeChange(index, e) {
     const input = e.target;
     let value = input.value;
 
-    // Remove all non-digit characters
     let digits = value.replace(/\D/g, "");
-
-    // Limit to 6 digits
     digits = digits.slice(0, 6);
 
-    // Build formatted value
     let formatted = "";
     if (digits.length >= 2) {
       formatted += digits.slice(0, 2);
@@ -122,21 +154,124 @@ function GeneralInfoEditExam() {
       newValues[index] = formatted;
       return newValues;
     });
+    setHasSubmitted(false);
   }
 
   function handleTimeKeyDown(e) {
-    // Allow digits, backspace, delete, and navigation keys
-    if (
-      e.key.length === 1 && // This ensures that keys like 'Backspace' are not blocked
-      !/\d/.test(e.key)
-    ) {
+    if (e.key.length === 1 && !/\d/.test(e.key)) {
       e.preventDefault();
     }
   }
 
+  // Initialize form values from examDetails
+  useEffect(() => {
+    if (examDetails) {
+      setValues([
+        examDetails.name || "",
+        examDetails.desc || "",
+        "", // Assuming the third value is not part of examDetails
+        examDetails.price !== undefined
+          ? examDetails.price.toString() + " ₼"
+          : "",
+        examDetails.duration || "00:00:00",
+      ]);
+
+      if (examDetails.code) {
+        setCode(examDetails.code);
+        setIsKodlu(true);
+      } else {
+        setCode("");
+        setIsKodlu(false);
+      }
+
+      // Initialize selectedItems based on category_ids or category_id
+      if (examDetails.category_id) {
+        // Ensure category_id is always an array
+        const categoryIds = Array.isArray(examDetails.category_id)
+          ? examDetails.category_id
+          : [examDetails.category_id];
+
+        const items = combinedList.filter((item) =>
+          categoryIds.includes(item.id)
+        );
+        setSelectedItems(items);
+      }
+
+      setHasSubmitted(true); // Since details are loaded
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [examDetails, selectedCategory, selectedSubcategory]);
+
+  useEffect(() => {
+    // Trim all relevant values
+    const examName = values[0].trim();
+    const examDesc = values[1].trim();
+    const examPrice = values[3].trim();
+    const examDuration = values[4].trim();
+    const isCodeValid = isKodlu ? code.trim() !== "" : true;
+
+    // Check if form fields are filled
+    const areFieldsFilled =
+      examName !== "" &&
+      examDesc !== "" &&
+      selectedItems.length > 0 &&
+      examPrice !== "" &&
+      isCodeValid;
+
+    // Initialize form validity
+    let isFormValid = areFieldsFilled;
+
+    // Additional validation when setting overall duration
+    if (!timeForQuestion) {
+      // Parse the duration to extract hours, minutes, and seconds
+      const durationParts = examDuration.split(":").map(Number);
+      const [hours, minutes, seconds] = durationParts;
+
+      // Ensure at least one of the time components is greater than zero
+      const isDurationValid = hours > 0 || minutes > 0 || seconds > 0;
+
+      isFormValid = isFormValid && isDurationValid;
+
+      // Optional: Notify user if duration is invalid
+      if (areFieldsFilled && !isDurationValid && !hasSubmitted) {
+        toast.error(
+          "Ümumi müddət 00:00:00 ola bilməz. Zəhmət olmasa, ən azı bir hissəni doldurun."
+        );
+      }
+    }
+
+    // Set the validity state
+    setIsGeneralInfoValid(isFormValid);
+
+    // Update exam details if the form is valid and not yet submitted
+    if (isFormValid && !hasSubmitted) {
+      const payload = {
+        name: examName,
+        desc: examDesc,
+        price: parseFloat(examPrice.replace("₼", "").trim()),
+        code: isKodlu ? code : null,
+        ...(timeForQuestion === false && { duration: examDuration }),
+        category_id: selectedItems.map((item) => item.id), // Always an array
+      };
+
+      updateExamDetails(payload);
+
+      setHasSubmitted(true);
+    }
+  }, [
+    values,
+    selectedItems,
+    timeForQuestion,
+    isKodlu,
+    code,
+    setIsGeneralInfoValid,
+    updateExamDetails,
+    hasSubmitted,
+  ]);
+
   return (
     <div className="bg-white rounded-xl py-10 px-6 sm:px-10 flex flex-col items-center w-full max-w-[90%] mx-auto">
-   <div className="flex flex-col gap-1 w-full">
+      <div className="flex flex-col gap-1 lg:w-[60%] w-full">
         <h2 className="font-gilroy text-2xl leading-8 font-medium text-textSecondaryDefault mb-5">
           Detallar
         </h2>
@@ -160,11 +295,11 @@ function GeneralInfoEditExam() {
           </div>
 
           {/* Second Textarea */}
-          <div className="w-full"> 
+          <div className="w-full">
             <p className="font-gilroy text-xl text-gray200 mb-1">
               İmtahan haqqında
             </p>
-            <div className="group w-full flex py-3 px-4 items-center border border-buttonPrimaryDefault  hover:border-inputBorderHover rounded-lg w-[580px] bg-inputBgDefault hover:bg-inputBgHover">
+            <div className="group w-full flex py-3 px-4 items-center border border-buttonPrimaryDefault hover:border-inputBorderHover rounded-lg w-[580px] bg-inputBgDefault hover:bg-inputBgHover">
               <FaPen className="text-gray200 mr-3 group-hover:text-gray800" />
               <textarea
                 ref={textareaRefs[1]}
@@ -178,8 +313,11 @@ function GeneralInfoEditExam() {
           </div>
 
           {/* Third Section - Category Dropdown */}
+          {/* Category and Subcategory Dropdown */}
           <div className="w-full">
-            <p className="font-gilroy text-xl text-gray200 mb-1">Kateqoriya</p>
+            <p className="font-gilroy text-xl text-gray200 mb-1">
+              Kateqoriya və Subkateqoriya Seçimi
+            </p>
             <div className="relative w-full">
               <div
                 className={`w-full border font-gilroy border-gray-700 rounded-md py-3 px-4 cursor-pointer flex flex-wrap items-center bg-inputBgDefault dropdown-input hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus ${
@@ -189,103 +327,74 @@ function GeneralInfoEditExam() {
                   setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
                 }
               >
-                {selectedCategories.length > 0 ? (
-                  <>
-                    {selectedCategories.map((category, index) => (
-                      <div
-                        key={index}
-                        className="flex !w-full items-center bg-[#EBEBEB] text-black px-2 py-2 rounded-md mr-2 mb-1"
+                {selectedItems.length > 0 ? (
+                  selectedItems.map((item, index) => (
+                    <div
+                      key={index}
+                      className="flex !w-full items-center bg-[#EBEBEB] text-black px-2 py-2 rounded-md mr-2 mb-1"
+                    >
+                      <span>{item.name}</span>
+                      <button
+                        className="ml-1 text-xl text-black hover:text-gray-700"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleItemSelection(item.name);
+                        }}
                       >
-                        <span>{category}</span>
-                        <button
-                          className="ml-1 text-xl text-black hover:text-gray-700"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent dropdown toggle
-                            setSelectedCategories(
-                              selectedCategories.filter(
-                                (item) => item !== category
-                              )
-                            );
-                          }}
-                        >
-                          &times;
-                        </button>
-                      </div>
-                    ))}
-                    <div className="flex-1" />
-                    <svg
-                      className={`w-4 h-4 transition-transform text-[#B2B2B2] ${
-                        isCategoryDropdownOpen ? "transform rotate-180" : ""
-                      }`}
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </>
+                        &times;
+                      </button>
+                    </div>
+                  ))
                 ) : (
-                  <>
-                    <span className="text-gray200 font-gilroy">
-                      Kateqoriya seçin
-                    </span>
-                    <div className="flex-1" />
-                    <svg
-                      className={`w-4 h-4 transition-transform text-[#B2B2B2] ${
-                        isCategoryDropdownOpen ? "transform rotate-180" : ""
-                      }`}
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </>
+                  <span className="text-gray200 font-gilroy">
+                    Kateqoriya və ya Subkateqoriya seçin
+                  </span>
                 )}
+
+                <div className="flex-1" />
+                <svg
+                  className={`w-4 h-4 transition-transform text-[#B2B2B2] ${
+                    isCategoryDropdownOpen ? "transform rotate-180" : ""
+                  }`}
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path d="M19 9l-7 7-7-7" />
+                </svg>
               </div>
 
               {isCategoryDropdownOpen && (
                 <div className="absolute z-10 w-full bg-inputBgDefault border border-gray-600 rounded-md mt-1 max-h-[7.5rem] overflow-y-scroll category-dropdown">
-                  {categories.map((category, index) => {
-                    const isSelected = selectedCategories.includes(category);
-                    return (
-                      <div
-                        key={index}
-                        className={`py-2 px-4 hover:bg-gray-100 cursor-pointer flex justify-between items-center ${
-                          isSelected ? "bg-gray-100" : ""
-                        }`}
-                        onClick={() => {
-                          if (isSelected) {
-                            setSelectedCategories(
-                              selectedCategories.filter(
-                                (item) => item !== category
-                              )
-                            );
-                          } else {
-                            setSelectedCategories([
-                              ...selectedCategories,
-                              category,
-                            ]);
-                          }
-                        }}
-                      >
-                        <span>{category}</span>
-                        {isSelected && (
-                          <svg
-                            className="w-4 h-4 text-blue-500"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path d="M5 13l4 4L19 7" />
-                          </svg>
-                        )}
-                      </div>
-                    );
-                  })}
+                  {combinedList.map((item, index) => (
+                    <div
+                      key={index}
+                      className={`py-2 px-4 hover:bg-gray-100 cursor-pointer flex justify-between items-center ${
+                        selectedItems.some(
+                          (selectedItem) => selectedItem.name === item.name
+                        )
+                          ? "bg-gray-100"
+                          : ""
+                      }`}
+                      onClick={() => handleItemSelection(item.name)}
+                    >
+                      <span>{item.name}</span>
+                      {selectedItems.some(
+                        (selectedItem) => selectedItem.name === item.name
+                      ) && (
+                        <svg
+                          className="w-4 h-4 text-blue-500"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path d="M5 13l4 4L19 7" />
+                        </svg>
+                      )}
+                    </div>
+                  ))}
                 </div>
               )}
             </div>
@@ -302,11 +411,12 @@ function GeneralInfoEditExam() {
                 className="text-black font-gilroy placeholder-gray200 w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
                 rows={1}
                 value={values[3]}
-                onChange={(e) => handlePriceChange(3, e.target.value)} // Handle the input for price
+                onChange={(e) => handlePriceChange(3, e.target.value)}
               />
             </div>
           </div>
 
+          {/* Fifth Section - Time Settings */}
           <div className="mt-8 w-full">
             <p className="font-medium leading-8 font-gilroy text-2xl text-textSecondaryDefault mb-5 flex items-center gap-3">
               Imtahan müddətinin təyin olunması
@@ -332,10 +442,10 @@ function GeneralInfoEditExam() {
                   type="radio"
                   name="fifth-options"
                   className="form-radio"
-                  checked={isRadio1CheckedFifth}
+                  checked={timeForQuestion === true}
                   onChange={() => {
-                    setIsRadio1CheckedFifth(true);
-                    setIsRadio2CheckedFifth(false); // Uncheck the other option
+                    setTimeForQuestion(true);
+                    setHasSubmitted(false);
                   }}
                 />
                 <span className="text-base font-gilroy">
@@ -347,10 +457,10 @@ function GeneralInfoEditExam() {
                   type="radio"
                   name="fifth-options"
                   className="form-radio"
-                  checked={isRadio2CheckedFifth}
+                  checked={timeForQuestion === false}
                   onChange={() => {
-                    setIsRadio2CheckedFifth(true);
-                    setIsRadio1CheckedFifth(false); // Uncheck the other option
+                    setTimeForQuestion(false);
+                    setHasSubmitted(false);
                   }}
                 />
                 <span className="text-base font-gilroy">
@@ -359,8 +469,7 @@ function GeneralInfoEditExam() {
               </label>
             </div>
 
-            {/* Conditionally render the time input based on isRadio2CheckedFifth */}
-            {isRadio2CheckedFifth && (
+            {timeForQuestion === false && (
               <div className="group flex py-3 px-4 items-center border border-buttonPrimaryDefault rounded-lg w-[160px] hover:border-inputBorderHover hover:bg-inputBgHover bg-inputBgDefault">
                 <FaPen className="text-gray200 mr-3 group-hover:text-gray800" />
                 <input
@@ -375,20 +484,18 @@ function GeneralInfoEditExam() {
             )}
           </div>
 
-          {/* Sixth Input with Info Icon */}
+          {/* Sixth Section - Exam Code Settings */}
           <div className="mt-8">
             <p className="font-medium leading-8 font-gilroy text-2xl text-textSecondaryDefault mb-5 flex items-center gap-3">
               Imtahan kodunun təyin olunması
               <div className="relative inline-block z-20">
-                {/* Circular icon */}
                 <div
-                  className="flex items-center justify-center w-8 h-8 rounded-full  text-black"
+                  className="flex items-center justify-center w-8 h-8 rounded-full text-black"
                   onMouseEnter={() => setIsInfoHoveredSixth(true)}
                   onMouseLeave={() => setIsInfoHoveredSixth(false)}
                 >
                   <IoIosInformationCircleOutline size={22} />
                 </div>
-                {/* Tooltip */}
                 {isInfoHoveredSixth && (
                   <div className="absolute left-full ml-3 top-1/2 transform -translate-y-1/2 w-[300px] text-sm leading-5 font-gilroy bg-white text-black p-4 border border-gray-300 rounded-lg shadow-lg z-10">
                     Burada imtahanın kodu avtomatik təyin edilir.
@@ -398,7 +505,6 @@ function GeneralInfoEditExam() {
                 )}
               </div>
             </p>
-            {/* Radio Buttons */}
             <div className="flex flex-col gap-2 mb-4">
               <label className="flex items-center space-x-2">
                 <input
@@ -406,7 +512,10 @@ function GeneralInfoEditExam() {
                   name="sixth-options"
                   className="form-radio"
                   checked={!isKodlu}
-                  onChange={() => setIsKodlu(false)}
+                  onChange={() => {
+                    setIsKodlu(false);
+                    setHasSubmitted(false);
+                  }}
                 />
                 <span className="text-base font-gilroy">Kodsuz</span>
               </label>
@@ -416,18 +525,22 @@ function GeneralInfoEditExam() {
                   name="sixth-options"
                   className="form-radio"
                   checked={isKodlu}
-                  onChange={() => setIsKodlu(true)}
+                  onChange={() => {
+                    setIsKodlu(true);
+                    setHasSubmitted(false);
+                  }}
                 />
                 <span className="text-base font-gilroy">Kodlu</span>
               </label>
             </div>
 
-            {/* Code Input */}
             {isKodlu && (
               <div className="group flex py-3 px-4 items-center border border-buttonPrimaryDefault rounded-lg w-[160px] hover:border-inputBorderHover hover:bg-inputBgHover bg-inputBgDefault">
                 <FaKey
                   className="text-gray200 mr-3 group-hover:text-gray800 cursor-pointer"
-                  onClick={() => setCode(generateRandomCode())}
+                  onClick={() => {
+                    handleCodeChange(generateRandomCode());
+                  }}
                 />
                 <input
                   type="text"
@@ -440,6 +553,18 @@ function GeneralInfoEditExam() {
           </div>
         </div>
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

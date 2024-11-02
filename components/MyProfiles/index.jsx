@@ -9,6 +9,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import { UserContext } from "@/shared/context/UserContext";
+import { FaRegTrashCan } from "react-icons/fa6";
 
 function MyProfiles() {
   // const [user, setUser] = useState(null);
@@ -227,7 +228,12 @@ function MyProfiles() {
           setMobile(userData.data.mobile || "");
           // setImagePreview(userData.data.image || "");
           const userImage = userData.data.image;
-          if (!userImage || userImage === "https://innocert-admin.markup.az") {
+          if (
+            !userImage ||
+            userImage === "https://innocert-admin.markup.az" ||
+            userImage.endsWith("null") ||
+            userImage.endsWith("/")
+          ) {
             setImagePreview(null); // No image available
           } else {
             setImagePreview(userImage);
@@ -245,11 +251,17 @@ function MyProfiles() {
   }, []);
 
   const getImageSrc = () => {
-    if (!imagePreview) {
+    if (
+      !imagePreview ||
+      imagePreview === "https://innocert-admin.markup.az" ||
+      imagePreview.endsWith("null") ||
+      imagePreview.endsWith("/")
+    ) {
       return "/img/defaultUser.png";
     }
     return imagePreview;
   };
+
   useEffect(() => {
     if (isFormOpen) {
       setFormHeight(`${formRef.current.scrollHeight}px`);
@@ -274,10 +286,55 @@ function MyProfiles() {
     }
   };
 
-  const handleDeleteImage = (e) => {
+  const handleDeleteImage = async (e) => {
     e.stopPropagation();
-    setImage(null);
-    setImagePreview("");
+    const userToken = localStorage.getItem("token");
+
+    if (!userToken) {
+      toast.error("İstifadəçi doğrulanmayıb. Yenidən daxil olun.");
+      return;
+    }
+
+    setLoading(true); // Optional: Set loading state if you want to show a loader
+
+    try {
+      const formData = new FormData();
+      formData.append("delete_image", "true");
+
+      const response = await fetch(
+        "https://innocert-admin.markup.az/api/me/remove-image",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Şəkil uğurla silindi.");
+        setImage(null);
+        setImagePreview(null);
+
+        // Update the user state
+        setUser((prevUser) => ({
+          ...prevUser,
+          data: {
+            ...prevUser.data,
+            image: null,
+          },
+        }));
+      } else {
+        toast.error(`Şəkil silinmədi: ${data.message}`);
+      }
+    } catch (error) {
+      toast.error(`Xəta baş verdi: ${error.message}`);
+    } finally {
+      setLoading(false); // Optional: Reset loading state
+    }
   };
 
   const generateInitials = (firstName, lastName) => {
@@ -434,7 +491,7 @@ function MyProfiles() {
       {!isCreatingCompany ? (
         !showCompanies ? (
           // Profile section
-          <div>
+          <div className="mb-20">
             <div className="flex justify-between items-center p-6 mt-4 bg-bodyColor rounded-3xl border px-4 md:px-14 ">
               <div className="flex items-center ">
                 {imagePreview ? (
@@ -509,7 +566,7 @@ function MyProfiles() {
                           height={220}
                           src={imagePreview}
                           alt="Profile Large"
-                          className="w-[100%] h-[220px] rounded-lg object-cover"
+                          className="w-[100%] h-[370px] rounded-lg object-cover"
                         />
                       ) : (
                         <div className="w-48 h-48 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center text-4xl font-bold">
@@ -522,13 +579,24 @@ function MyProfiles() {
                         onChange={handleImageChange}
                         className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer "
                       />
-                      <div className="relative mt-4 flex justify-end">
+                      <div className="flex items-center gap-2 relative mt-4 justify-end">
+                        {/* Display the delete button only when an image is present */}
+                        {imagePreview && (
+                          <button
+                            type="button"
+                            onClick={handleDeleteImage}
+                            className="px-4 py-3 text-errorButtonDefault hover:text-errorButtonHover rounded-lg font-gilroy text-base font-normal leading-6 relative z-10"
+                            style={{ zIndex: 10 }}
+                          >
+                            Şəkili sil
+                          </button>
+                        )}
                         <button
                           type="button"
                           onClick={() =>
                             document.querySelector('input[type="file"]').click()
                           }
-                          className="px-4 py-3 text-grayButtonText bg-buttonGhostPressed hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed rounded-lg font-gilroy text-base  font-normal leading-6 relative z-10"
+                          className="px-4 py-3 text-grayButtonText bg-buttonGhostPressed hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed rounded-lg font-gilroy text-base font-normal leading-6 relative z-10"
                           style={{ zIndex: 10 }}
                         >
                           Şəkili dəyiş
@@ -809,7 +877,7 @@ function MyProfiles() {
 
         <div className="flex bg-bodyColor border w-[100%] flex-col md:flex-row">
           <div className="w-full md:w-[40%] flex flex-col items-center justify-center p-4">
-            {companyImagePreview ? ( 
+            {companyImagePreview ? (
               <div className="relative w-full flex items-center">
                 <div className="w-[80%]">
                   <Image

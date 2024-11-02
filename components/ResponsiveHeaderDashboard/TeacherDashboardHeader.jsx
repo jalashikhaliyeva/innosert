@@ -26,7 +26,7 @@ import { FiAlertOctagon } from "react-icons/fi";
 function TeacherDashboardHeader() {
   const router = useRouter();
   const { user } = useContext(UserContext);
-  console.log(user, "user TeacherDashboardHeader");
+  // console.log(user, "user TeacherDashboardHeader");
   const { setSelectedCompany } = useContext(CompanyContext);
 
   const activeCompanies = user?.data?.companies.filter(
