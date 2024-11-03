@@ -40,7 +40,7 @@ function AddExamFolderModal({ closeModal, addNewFolder }) {
         }
       );
       console.log(response.data, "response add folder modal");
-
+      addNewFolder(response.data.data);
       // addNewFolder(response.data);
       setFolderName("");
       closeModal();

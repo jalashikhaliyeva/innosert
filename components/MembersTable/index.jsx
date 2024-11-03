@@ -14,6 +14,7 @@ function MembersTable({
   setSelectedRows,
   handleDelete,
   handleEdit,
+  searchTerm,
   data,
 }) {
   const router = useRouter();
@@ -100,10 +101,64 @@ function MembersTable({
     }
   };
 
+  // const filteredData = Array.isArray(data)
+  //   ? data
+  //       .filter((item) => {
+  //         // Email filter
+  //         if (
+  //           emailFilter &&
+  //           !item.email.toLowerCase().includes(emailFilter.toLowerCase())
+  //         ) {
+  //           return false;
+  //         }
+  //         return true;
+  //       })
+  //       .filter((item) => {
+  //         // Mobile filter
+  //         if (
+  //           mobileFilter &&
+  //           !item.mobile.toLowerCase().includes(mobileFilter.toLowerCase())
+  //         ) {
+  //           return false;
+  //         }
+  //         return true;
+  //       })
+  //       .filter((item) => {
+  //         // Date filter
+  //         const { from, to } = dateFilter;
+  //         const itemDate = new Date(item.dateJoined);
+  //         let fromDate = null;
+  //         let toDate = null;
+
+  //         if (from.year && from.month && from.day) {
+  //           fromDate = new Date(from.year, from.month - 1, from.day);
+  //           if (itemDate < fromDate) {
+  //             return false;
+  //           }
+  //         }
+
+  //         if (to.year && to.month && to.day) {
+  //           toDate = new Date(to.year, to.month - 1, to.day);
+  //           if (itemDate > toDate) {
+  //             return false;
+  //           }
+  //         }
+
+  //         return true;
+  //       })
+  //   : [];
+
   const filteredData = Array.isArray(data)
     ? data
         .filter((item) => {
-          // Email filter
+          // Search filter: check if fullname or email includes the search term
+          const fullName = `${item.first_name} ${item.last_name}`.toLowerCase();
+          const email = item.email.toLowerCase();
+          const term = searchTerm.toLowerCase();
+          return fullName.includes(term) || email.includes(term);
+        })
+        .filter((item) => {
+          // Existing email filter
           if (
             emailFilter &&
             !item.email.toLowerCase().includes(emailFilter.toLowerCase())
@@ -113,7 +168,7 @@ function MembersTable({
           return true;
         })
         .filter((item) => {
-          // Mobile filter
+          // Existing mobile filter
           if (
             mobileFilter &&
             !item.mobile.toLowerCase().includes(mobileFilter.toLowerCase())
@@ -123,7 +178,7 @@ function MembersTable({
           return true;
         })
         .filter((item) => {
-          // Date filter
+          // Existing date filter
           const { from, to } = dateFilter;
           const itemDate = new Date(item.dateJoined);
           let fromDate = null;

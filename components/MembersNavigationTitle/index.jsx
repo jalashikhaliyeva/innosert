@@ -1,14 +1,17 @@
-
 import React from "react";
 import { LuUserPlus, LuSearch } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
-
-function MembersNavigationTitle({ openModal, selectedRows, handleDeleteSelected,openDeleteModal,  }) {
+function MembersNavigationTitle({
+  openModal,
+  selectedRows,
+  handleDeleteSelected,
+  openDeleteModal,
+  searchTerm,
+  setSearchTerm,
+}) {
   return (
     <div className="flex md:flex-row flex-col justify-between relative font-gilroy">
-      <h1  className="text-2xl font-medium leading-8">
-        Üzvlər
-      </h1>
+      <h1 className="text-2xl font-medium leading-8">Üzvlər</h1>
 
       {/* Conditional rendering based on selectedRows */}
       {selectedRows?.length === 0 ? (
@@ -18,6 +21,8 @@ function MembersNavigationTitle({ openModal, selectedRows, handleDeleteSelected,
             <input
               type="text"
               placeholder="Axtar"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="ml-2 w-full text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
             />
           </div>
@@ -34,7 +39,7 @@ function MembersNavigationTitle({ openModal, selectedRows, handleDeleteSelected,
         <div className="flex items-center gap-3">
           <button
             className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed"
-            onClick={() => openDeleteModal()} 
+            onClick={() => openDeleteModal()}
           >
             <BsTrash className="size-5 text-white" />
             Seçilmiş üzvləri sil

@@ -14,6 +14,7 @@ const Breadcrumb = () => {
   const breadcrumbMapping = {
     home: "Əsas səhifə",
     profil: "Profil",
+    bloq: "Bloq",
     fayllar: "Fayllar",
     backend: "Backend",
     english: "English",
@@ -73,26 +74,33 @@ const Breadcrumb = () => {
     );
   });
 
+  // Check if the current path is /bloq or starts with /bloq/
+  const isBloqPath =
+    router.pathname === "/bloq" || router.pathname.startsWith("/bloq/");
+
   return (
-    <div className="flex flex-wrap md:flex-nowrap flex-row gap-3  mb-6 mt-24 md:mt-32">
+    <div className="flex flex-wrap md:flex-nowrap flex-row gap-3 mb-6 mt-24 md:mt-32">
       {/* Static home link */}
       <Link href="/home">
         <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
           Əsas səhifə
         </span>
       </Link>
-      <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
-        /
-      </span>
-
-      {/* Static profil link */}
-      <Link href="/hesablarim">
-        <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
-          Profil
-        </span>
-      </Link>
 
       {/* Render dynamic breadcrumb items */}
+      {!isBloqPath && (
+        <>
+          <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
+            /
+          </span>
+          <Link href="/hesablarim">
+            <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
+              Profil
+            </span>
+          </Link>
+        </>
+      )}
+
       {breadcrumbItems}
     </div>
   );

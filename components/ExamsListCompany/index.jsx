@@ -9,6 +9,7 @@ function ExamListCompany({
   setSelectedExams,
   openEditExamModal,
   openDeleteExamModal,
+  openEditFolderModal,
   exams,
 }) {
   const { selectedCompany } = useContext(CompanyContext);
@@ -46,17 +47,17 @@ function ExamListCompany({
 
   return (
     <div>
-     <ExamsListTeacher
-  exams={examsData}
-  viewMode={viewMode}
-  sortOption={sortOption}
-  selectedExams={selectedExams}
-  setSelectedExams={setSelectedExams}
-  openEditExamModal={openEditExamModal}
-  openDeleteExamModal={openDeleteExamModal}
-  showTeacherName={!!selectedCompany}
-/>
-
+      <ExamsListTeacher
+        exams={examsData}
+        viewMode={viewMode}
+        sortOption={sortOption}
+        selectedExams={selectedExams}
+        setSelectedExams={setSelectedExams}
+        openEditExamModal={openEditExamModal}
+        openDeleteExamModal={openDeleteExamModal}
+        showTeacherName={!!selectedCompany}
+        openEditFolderModal={openEditFolderModal}
+      />
     </div>
   );
 }

@@ -18,13 +18,13 @@ import AddExamFolderModal from "@/components/AddExamFolderModal";
 import axios from "axios";
 import CompanyContext from "@/shared/context/CompanyContext";
 import DeleteExamModal from "@/components/DeleteExamModal";
+import EditExamFolderModal from "@/components/EditExamFolderModal";
 
 function UmumiImtahanlar() {
   const [folders, setFolders] = useState([]);
 
   const { selectedCompany } = useContext(CompanyContext);
   // console.log(selectedCompany.id, "selectedCompany umumi");
-  
 
   // Fetch folders from the API
   const fetchFolders = async () => {
@@ -62,19 +62,19 @@ function UmumiImtahanlar() {
     }
   };
 
-
   useEffect(() => {
     fetchFolders();
   }, [selectedCompany]);
 
   const addNewFolder = (newFolder) => {
-    setFolders((prevFolders) => [...prevFolders, newFolder]);
-    fetchFolders()
-    // Removed fetchFolders to avoid unnecessary re-fetching
+    setFolders((prevFolders) => ({
+      ...prevFolders,
+      folders: [...prevFolders.folders, newFolder],
+    }));
   };
+
   const closeModal = () => {
     setIsModalOpen(false);
-  
   };
 
   const updateFolder = (updatedFolder) => {
@@ -84,9 +84,19 @@ function UmumiImtahanlar() {
       )
     );
   };
-  
   const deleteFolder = (folderId) => {
-    setFolders((prevFolders) => prevFolders.filter((folder) => folder.id !== folderId));
+    setFolders((prevFolders) => ({
+      ...prevFolders,
+      folders: prevFolders.folders.filter((folder) => folder.id !== folderId),
+    }));
+  };
+
+  const deleteExam = (examId) => {
+    console.log(examId, "examId");
+    setFolders((prevFolders) => ({
+      ...prevFolders,
+      exams: prevFolders.exams.filter((exam) => exam.id !== examId),
+    }));
   };
 
   const [viewMode, setViewMode] = useState("grid");
@@ -97,6 +107,26 @@ function UmumiImtahanlar() {
   const [isAddExamModalOpen, setIsAddExamModalOpen] = useState(false);
   const [isEditExamModalOpen, setIsEditExamModalOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
+  // Inside UmumiImtahanlar component
+  const [isEditFolderModalOpen, setIsEditFolderModalOpen] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState(null);
+
+  const openEditFolderModal = (folder) => {
+    setSelectedFolder(folder);
+    setIsEditFolderModalOpen(true);
+  };
+  const closeEditFolderModal = () => {
+    setSelectedFolder(null);
+    setIsEditFolderModalOpen(false);
+  }; // Function to handle folder updates
+  const handleFolderUpdate = (updatedFolder) => {
+    setFolders((prevFolders) => ({
+      ...prevFolders,
+      folders: prevFolders.folders.map((folder) =>
+        folder.id === updatedFolder.id ? updatedFolder : folder
+      ),
+    }));
+  };
 
   const openAddExamModal = () => setIsAddExamModalOpen(true);
   const closeAddExamModal = () => setIsAddExamModalOpen(false);
@@ -113,7 +143,7 @@ function UmumiImtahanlar() {
     setSelectedExam(item); // Set the item (exam or folder) to delete
     setIsDeleteModalOpen(true);
   };
-  
+
   return (
     <>
       <div className="hidden lg:block ">
@@ -136,7 +166,7 @@ function UmumiImtahanlar() {
               setSortOption={setSortOption}
               selectedExams={selectedExams}
               openAddExamModal={openAddExamModal}
-              openDeleteModal={openDeleteModal}
+              openDeleteModal={openDeleteExamModal}
             />
             <ExamListCompany
               exams={folders}
@@ -146,41 +176,41 @@ function UmumiImtahanlar() {
               setSelectedExams={setSelectedExams}
               openEditExamModal={openEditExamModal}
               openDeleteExamModal={openDeleteExamModal}
-
+              openEditFolderModal={openEditFolderModal}
             />
           </InternalContainer>
         </div>
       </div>
 
-      {isAddExamModalOpen && <AddExamModal closeModal={closeAddExamModal} />}
+      {isAddExamModalOpen && (
+        <AddExamModal
+          addNewFolder={addNewFolder}
+          closeModal={closeAddExamModal}
+        />
+      )}
       {isEditExamModalOpen && (
         <EditExamModal exam={selectedExam} closeModal={closeEditExamModal} />
       )}
-      {isDeleteModalOpen && (
-        <DeleteModal
-          onCancel={closeDeleteModal}
-          closeModal={closeModal} 
-          onDelete={() => {
-            // Handle delete action
-            closeDeleteModal();
-          }}
-        />
-      )}
+
       {isModalOpen && (
         <AddExamFolderModal
           closeModal={() => setIsModalOpen(false)}
           addNewFolder={addNewFolder}
-
         />
       )}
-      {/* Place DeleteModal rendering here */}
+      {isEditFolderModalOpen && (
+        <EditExamFolderModal
+          folder={selectedFolder}
+          closeModal={closeEditFolderModal}
+          onFolderUpdate={handleFolderUpdate}
+        />
+      )}
       {isDeleteModalOpen && (
         <DeleteExamModal
           item={selectedExam} // Pass the selected exam or folder to delete
-          onCancel={closeDeleteModal} 
-          closeModal={closeModal} 
+          onCancel={closeDeleteModal}
+          closeModal={closeModal}
           onDelete={() => {
-            // Call deleteFolder or deleteExam based on item type
             if (selectedExam.type === "folder") {
               deleteFolder(selectedExam.id);
             } else {

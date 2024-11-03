@@ -1,13 +1,13 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import ReactPaginate from "react-paginate";
 import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import LoginModal from "../Login";
+import { UserContext } from "@/shared/context/UserContext";
 
-function MemberActivity({ selectedRows, setSelectedRows, data }) {
-  console.log(data, "data member acrivity");
-
+function MemberActivity({ data, searchTerm }) {
+  const { setMemberActivitySingle } = useContext(UserContext);
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10);
@@ -60,6 +60,7 @@ function MemberActivity({ selectedRows, setSelectedRows, data }) {
     };
   }, [openFilter, dropdownRefs]);
 
+  // Update filteredData to include search filtering
   const filteredData = data
     .filter((item) => {
       if (
@@ -78,6 +79,14 @@ function MemberActivity({ selectedRows, setSelectedRows, data }) {
         return false;
       }
       return true;
+    })
+    .filter((item) => {
+      // Search filter: check if fullName includes the search term
+      const fullName = item.fullName
+        ? item.fullName.toLowerCase()
+        : `${item.first_name} ${item.last_name}`.toLowerCase();
+      const term = searchTerm.toLowerCase();
+      return fullName.includes(term);
     });
 
   const sortedData = nameOrder
@@ -97,8 +106,22 @@ function MemberActivity({ selectedRows, setSelectedRows, data }) {
     (currentPage + 1) * itemsPerPage
   );
 
-  const handleDetailNavigation = () => {
-    router.push(`/uzv-aktivliyi/`);
+  const handleDetailNavigation = (userId) => {
+    const selectedMember = data.find((item) => item.id === userId);
+
+    console.log(selectedMember); // Check the structure of each member in data
+
+    if (selectedMember) {
+      setMemberActivitySingle(
+        selectedMember.fullName ||
+          selectedMember.first_name ||
+          selectedMember.name
+      ); // Adjust to match the correct key
+      router.push({
+        pathname: "/uzv-aktivliyi/",
+        query: { id: userId },
+      });
+    }
   };
 
   return (
@@ -240,7 +263,7 @@ function MemberActivity({ selectedRows, setSelectedRows, data }) {
                   <td className="px-4 py-3">{item.question_count}</td>
                   <td className="px-4 py-3">{item.exam_count}</td>
                   <td className="px-4 py-3 text-linkBlue !text-base">
-                    <button onClick={() => handleDetailNavigation(item.slug)}>
+                    <button onClick={() => handleDetailNavigation(item.id)}>
                       Bax &gt;
                     </button>
                   </td>

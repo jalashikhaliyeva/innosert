@@ -1,4 +1,4 @@
-// src/contexts/UserContext.js
+// src/shared/context/UserContext.js
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 
@@ -10,17 +10,20 @@ function UserProvider({ children }) {
     return localStorage.getItem("lastQuery") || null;
   });
   const [examDetailsSingle, setExamDetailsSingle] = useState(null);
+  const [examToEdit, setExamToEdit] = useState(null);
+  const [memberActivitySingle, setMemberActivitySingle] = useState(null);
+
   // Initialize examDetails from localStorage or set to null
   const [examDetails, setExamDetails] = useState(() => {
     const storedDetails = localStorage.getItem("examDetails");
     return storedDetails ? JSON.parse(storedDetails) : null;
   });
 
-  // Function to update examDetails and persist to localStorage
-  const updateExamDetails = (details) => {
+  // Memoize updateExamDetails to prevent recreation on each render
+  const updateExamDetails = useCallback((details) => {
     setExamDetails(details);
     localStorage.setItem("examDetails", JSON.stringify(details));
-  };
+  }, []);
 
   // Existing state for selectedQuestion
   const [selectedQuestion, setSelectedQuestion] = useState(() => {
@@ -153,6 +156,10 @@ function UserProvider({ children }) {
         updateExamDetails, // Provide update function for exam details
         examDetailsSingle,
         setExamDetailsSingle,
+        examToEdit,
+        setExamToEdit,
+        memberActivitySingle,
+        setMemberActivitySingle,
       }}
     >
       {children}

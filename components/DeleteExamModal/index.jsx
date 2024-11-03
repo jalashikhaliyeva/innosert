@@ -1,17 +1,19 @@
+// DeleteExamModal.jsx
+
 import React, { useState } from "react";
 import { IoWarningOutline } from "react-icons/io5";
 import axios from "axios";
 
-function DeleteExamModal({ item, closeModal, onDelete, onCancel }) {
+function DeleteExamModal({ item, onDelete, onCancel }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleBackgroundClick = (e) => {
     if (e.target === e.currentTarget) {
-      onCancel(); // Use onCancel to correctly close the delete modal
+      onCancel(); // Close the modal when clicking outside
     }
   };
 
-  console.log(item.id, "item dlete");
+  // console.log(item.id, "item delete");
 
   const handleDelete = async () => {
     setIsLoading(true);
@@ -19,8 +21,8 @@ function DeleteExamModal({ item, closeModal, onDelete, onCancel }) {
       const token = localStorage.getItem("token");
       const url =
         item.type === "exam"
-          ? `https://innocert-admin.markup.az/api/exam/${item.id}`
-          : `https://innocert-admin.markup.az/api/folder/${item.id}`;
+          ? `https://innocert-admin.markup.az/api/exam/destroy/${item.id}`
+          : `https://innocert-admin.markup.az/api/exam-folder/${item.id}`;
 
       await axios.delete(url, {
         headers: {
@@ -30,7 +32,6 @@ function DeleteExamModal({ item, closeModal, onDelete, onCancel }) {
 
       // Call onDelete callback to update the parent component's state
       onDelete(item.id);
-      closeModal();
     } catch (error) {
       console.error("Error deleting item:", error);
     } finally {
@@ -53,19 +54,19 @@ function DeleteExamModal({ item, closeModal, onDelete, onCancel }) {
 
         {/* Title */}
         <h3 className="text-lg font-semibold text-gray-900 text-center">
-          {item.type === "exam" ? "İmtahanı sil" : "Qovluğu sil"}
+          {item?.type === "exam" ? "İmtahanı sil" : "Qovluğu sil"}
         </h3>
 
         {/* Description */}
         <p className="text-sm text-gray-600 text-center mt-2">
-          Bu {item.type === "exam" ? "imtahanı" : "qovluğu"} silmək istədiyinizə
+          Bu {item?.type === "exam" ? "imtahanı" : "qovluğu"} silmək istədiyinizə
           əminsinizmi? <br /> Bu əməliyyat geri alına bilməz.
         </p>
 
         {/* Buttons */}
         <div className="mt-6 flex justify-between">
           <button
-            onClick={closeModal}
+            onClick={onCancel}
             className="w-full py-2 px-4 mr-2 bg-buttonSecondaryDefault text-gray-700 rounded-lg hover:bg-buttonSecondaryHover"
           >
             Ləğv et

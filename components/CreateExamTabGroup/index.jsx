@@ -1,8 +1,4 @@
 import React, { useContext, useState } from "react";
-import GeneralInfo from "../GeneralInfo"; // Component for "Ümumi məlumat"
-import Questions from "@/components/Questions"; // Component for "Suallar"
-import { FaPen } from "react-icons/fa";
-import { IoEyeOutline } from "react-icons/io5";
 import GeneralInfoEditExam from "../GeneralInfoEditExam";
 import { FaPlus } from "react-icons/fa6";
 import AddQuestionModal from "./AddQuestionModal"; // Import your modal component
@@ -10,7 +6,7 @@ import { UserContext } from "@/shared/context/UserContext";
 import TableComponent from "./TableComponent";
 import DeleteModal from "../DeleteModal";
 
-function CreateExamTabGroup() {
+function CreateExamTabGroup({ isLoadingQuestions }) {
   const { selectedQuestionsForExam } = useContext(UserContext);
   console.log(selectedQuestionsForExam, "selectedQuestionsForExam");
 
@@ -48,26 +44,32 @@ function CreateExamTabGroup() {
 
   // Function to render the content based on the active tab
   const renderTabContent = () => {
-    switch (activeTab) {
-      case "questions":
-        return selectedQuestionsForExam &&
-          selectedQuestionsForExam.length > 0 ? (
-          <TableComponent
-            selectedRows={selectedRows}
-            setSelectedRows={setSelectedRows}
-            questions={selectedQuestionsForExam}
-            openDeleteModal={openDeleteModal}
-            showDeleteButton={true}
-          />
-        ) : (
+    if (activeTab === "questions") {
+      if (isLoadingQuestions) {
+        return (
           <p className="bg-white p-10 flex items-center justify-center rounded-xl text-lg text-grayButtonText">
-            Hal-hazırda heç bir sual yoxdur, əlavə etmək üçün &quot;Sual əlavə
-            et&quot; düyməsinə klikləyin.
+            Yüklənir...
           </p>
         );
-      default:
-        return <GeneralInfoEditExam />;
+      }
+
+      return selectedQuestionsForExam && selectedQuestionsForExam.length > 0 ? (
+        <TableComponent
+          selectedRows={selectedRows}
+          setSelectedRows={setSelectedRows}
+          questions={selectedQuestionsForExam}
+          openDeleteModal={openDeleteModal}
+          showDeleteButton={true}
+        />
+      ) : (
+        <p className="bg-white p-10 flex items-center justify-center rounded-xl text-lg text-grayButtonText">
+          Hal-hazırda heç bir sual yoxdur, əlavə etmək üçün &quot;Sual əlavə
+          et&quot; düyməsinə klikləyin.
+        </p>
+      );
     }
+
+    return <GeneralInfoEditExam />;
   };
 
   return (

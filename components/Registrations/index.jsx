@@ -5,6 +5,7 @@ import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import axios from "axios";
+import Spinner from "../Spinner";
 
 function Registrations({ examSlug }) {
   const [data, setData] = useState([]);
@@ -102,7 +103,7 @@ function Registrations({ examSlug }) {
   if (loading) {
     return (
       <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
-        <p>Loading registrations...</p>
+        <p><Spinner /></p>
       </div>
     );
   }

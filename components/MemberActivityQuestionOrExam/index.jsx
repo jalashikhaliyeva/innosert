@@ -4,7 +4,7 @@ import { FaClipboardList } from "react-icons/fa";
 import SuallarComponent from "./SuallarComponent";
 import ImtahanlarComponent from "./ImtahanlarComponent";
 
-function MemberActivityQuestionOrExam() {
+function MemberActivityQuestionOrExam({id}) {
   const [activeView, setActiveView] = useState("suallar");
 
   return (
@@ -61,9 +61,9 @@ function MemberActivityQuestionOrExam() {
 
       {/* Conditional Rendering */}
       {activeView === "suallar" ? (
-        <SuallarComponent />
+        <SuallarComponent id={id}  />
       ) : (
-        <ImtahanlarComponent />
+        <ImtahanlarComponent  id={id} />
       )}
     </>
   );

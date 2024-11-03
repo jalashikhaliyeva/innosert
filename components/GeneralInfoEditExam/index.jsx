@@ -184,17 +184,17 @@ function GeneralInfoEditExam() {
         setIsKodlu(false);
       }
 
-      // Initialize selectedItems based on category_ids or category_id
-      if (examDetails.category_id) {
-        // Ensure category_id is always an array
-        const categoryIds = Array.isArray(examDetails.category_id)
-          ? examDetails.category_id
-          : [examDetails.category_id];
-
-        const items = combinedList.filter((item) =>
-          categoryIds.includes(item.id)
-        );
-        setSelectedItems(items);
+      // Handle category initialization
+      if (examDetails.category) {
+        try {
+          const parsedCategories = JSON.parse(examDetails.category); // Parse the stringified array
+          const items = combinedList.filter((item) =>
+            parsedCategories.includes(item.name)
+          );
+          setSelectedItems(items);
+        } catch (error) {
+          console.error("Error parsing category:", error);
+        }
       }
 
       setHasSubmitted(true); // Since details are loaded

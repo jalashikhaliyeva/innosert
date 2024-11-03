@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import ExamsListTeacher from "@/components/ExamsListTeacher";
+import Spinner from "../Spinner";
 
 function SubExamsListTeacher({ folderSlug, selectedExams, setSelectedExams, viewMode, sortOption  }) {
   const [exams, setExams] = useState([]);
@@ -111,7 +112,7 @@ function SubExamsListTeacher({ folderSlug, selectedExams, setSelectedExams, view
   }, [folderSlug]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div><Spinner /></div>;
   }
 
   return (

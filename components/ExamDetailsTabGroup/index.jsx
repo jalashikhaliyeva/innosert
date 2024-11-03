@@ -39,7 +39,7 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
       }
     };
 
-    if (examDetailsSingle.name) {
+    if (examDetailsSingle?.name) {
       fetchQuestions();
     }
   }, []);

@@ -17,6 +17,7 @@ import "froala-editor/css/plugins/image.min.css";
 import "froala-editor/css/plugins/video.min.css";
 import "froala-editor/css/plugins/file.min.css";
 import { SnackbarProvider } from "notistack";
+import { ViewCountProvider } from "@/shared/context/ViewCountContext";
 function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
@@ -115,11 +116,13 @@ function App({ Component, pageProps }) {
         maxSnack={3}
       >
         <SavedExamsProvider>
-          <CompanyContext.Provider
-            value={{ selectedCompany, setSelectedCompany }}
-          >
-            {loading ? <Spinner /> : <Component {...pageProps} />}
-          </CompanyContext.Provider>
+          <ViewCountProvider>
+            <CompanyContext.Provider
+              value={{ selectedCompany, setSelectedCompany }}
+            >
+              {loading ? <Spinner /> : <Component {...pageProps} />}
+            </CompanyContext.Provider>
+          </ViewCountProvider>
         </SavedExamsProvider>
       </SnackbarProvider>
     </UserProvider>

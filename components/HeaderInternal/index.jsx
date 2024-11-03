@@ -815,7 +815,7 @@ const HeaderInternal = () => {
                     </ul>
                   </div>
                 </div>
-                <p className="cursor-pointer font-medium text-lg text-textSecondaryDefault py-3 hover:text-textHoverBlue">
+                <p    onClick={() => handleClick("/bloq")} className="cursor-pointer font-medium text-lg text-textSecondaryDefault py-3 hover:text-textHoverBlue">
                   Bloq
                 </p>
 

@@ -4,9 +4,8 @@ import AddFolderModal from "../AddFolderModal";
 import AddExamFolderModal from "../AddExamFolderModal";
 import AddExamSubFolderModal from "../AddExamSubFolderModal";
 
-
-// add exam or folder modal 
-function AddExamModal({ closeModal }) {
+// add exam or folder modal
+function AddExamModal({ closeModal, addNewFolder }) {
   const [selectedOption, setSelectedOption] = useState(null);
   const [showFolderModal, setShowFolderModal] = useState(false); // State to control AddFolderModal visibility
   const router = useRouter(); // Initialize router
@@ -33,7 +32,7 @@ function AddExamModal({ closeModal }) {
       setShowFolderModal(true); // Show folder modal
     }
   };
-  
+
   const handleBackdropClick = (e) => {
     if (e.target === e.currentTarget) {
       closeModal();
@@ -42,16 +41,21 @@ function AddExamModal({ closeModal }) {
 
   return (
     <>
-   {showFolderModal && (
+      {showFolderModal &&
         // Conditionally render AddExamFolderModal or AddExamSubFolderModal
-        router.pathname === "/umumi-imtahanlar" ? (
-          <AddExamFolderModal closeModal={closeAllModals} />
+        (router.pathname === "/umumi-imtahanlar" ? (
+          <AddExamFolderModal
+            addNewFolder={addNewFolder}
+            closeModal={closeAllModals}
+          />
         ) : (
           router.pathname.startsWith("/umumi-imtahanlar/") && (
-            <AddExamSubFolderModal slugParam={slugParam} closeModal={closeAllModals} />
+            <AddExamSubFolderModal
+              slugParam={slugParam}
+              closeModal={closeAllModals}
+            />
           )
-        )
-      )}
+        ))}
       {!showFolderModal && (
         <div
           className="fixed inset-0 bg-black bg-opacity-55 flex items-center justify-center z-50"

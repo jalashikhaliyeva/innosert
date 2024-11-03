@@ -13,14 +13,14 @@ import DeleteMemberModal from "@/components/DeleteMemberModal";
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 import CompanyContext from "@/shared/context/CompanyContext";
 import Spinner from "@/components/Spinner";
+import { UserContext } from "@/shared/context/UserContext";
 
 function Uzvler() {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
   const [activeView, setActiveView] = useState("edit");
-
-
   const [data, setData] = useState([]); // State to store API data
   const [activityData, setActivityData] = useState([]); // State to store activity data
   const [loading, setLoading] = useState(true); // State to manage loading
@@ -98,7 +98,9 @@ function Uzvler() {
   const handleDelete = (id) => {
     console.log("Delete member with id:", id);
     setData((prevData) => prevData.filter((member) => member.id !== id));
-    setSelectedRows((prevSelected) => prevSelected.filter((rowId) => rowId !== id));
+    setSelectedRows((prevSelected) =>
+      prevSelected.filter((rowId) => rowId !== id)
+    );
   };
   const handleEdit = (id) => {
     console.log("Edit member with id:", id);
@@ -142,6 +144,8 @@ function Uzvler() {
               selectedRows={selectedRows}
               handleDeleteSelected={handleDeleteSelected}
               openDeleteModal={openDeleteModal}
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
             />
 
             <MembersTableorActivityNavigation
@@ -159,11 +163,12 @@ function Uzvler() {
                 handleDelete={handleDelete}
                 handleEdit={handleEdit}
                 data={data}
+                searchTerm={searchTerm}
               />
             ) : activityLoading ? (
               <Spinner />
             ) : (
-              <MemberActivity data={activityData} />
+              <MemberActivity data={activityData} searchTerm={searchTerm} />
             )}
           </InternalContainer>
         </div>
@@ -177,7 +182,6 @@ function Uzvler() {
     onDelete={confirmDelete} 
   />
 )} */}
-
     </>
   );
 }
