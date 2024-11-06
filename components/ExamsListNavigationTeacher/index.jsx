@@ -28,7 +28,7 @@ function ExamsListNavigationTeacher({
       {selectedExams.length > 0 ? (
         <div className="flex flex-row gap-4">
           <button
-            onClick={openDeleteModal}
+      onClick={openDeleteModal}
             className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed"
           >
             <BsTrash3 className="fill-white text-white" />

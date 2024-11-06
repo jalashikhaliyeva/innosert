@@ -3,7 +3,7 @@ import ProgressPieChart from "../ProgressPieChart";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-function ExamEndSuccess() {
+function ExamEndSuccess({ percentage }) {
   const router = useRouter();
 
   return (
@@ -15,7 +15,7 @@ function ExamEndSuccess() {
       <div className="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-10">
         <div className="flex flex-col md:flex-row gap-5 items-center">
           <div className="flex flex-col items-center">
-            <ProgressPieChart />
+            <ProgressPieChart percentage={percentage.percentage} />
             <p className="font-gilroy text-grayText text-lg sm:text-xl leading-6 sm:leading-8 font-medium text-center mt-2">
               Müvəffəqiyət faizi
             </p>
@@ -27,7 +27,7 @@ function ExamEndSuccess() {
                 Düz sualların sayı
               </p>
               <h5 className="font-gilroy text-base sm:text-lg font-medium text-chartGreen">
-                25
+                {percentage.correct}
               </h5>
             </div>
 
@@ -36,7 +36,7 @@ function ExamEndSuccess() {
                 Səhv sualların sayı
               </p>
               <h5 className="font-gilroy text-base sm:text-lg font-medium text-chartRed">
-                4
+                {percentage.wrong}
               </h5>
             </div>
 

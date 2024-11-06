@@ -38,7 +38,9 @@ function GeneralInfo({ examDetailsSingle }) {
             İmtahan növü
           </h4>
           <p className="font-gilroy text-lg tracking-036 text-grayButtonText">
-            Kod ilə ( MY13HS64 )
+            {examDetailsSingle?.code
+              ? `Kod ilə ${examDetailsSingle.code}`
+              : "Kodsuz"}
           </p>
         </div>
         <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">

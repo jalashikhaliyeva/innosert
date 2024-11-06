@@ -10,8 +10,27 @@ function UserProvider({ children }) {
     return localStorage.getItem("lastQuery") || null;
   });
   const [examDetailsSingle, setExamDetailsSingle] = useState(null);
+  const [percentage, setPercentage] = useState(null);
+  const [clickedExam, setClickedExam] = useState(() => {
+    const storedExam = localStorage.getItem("clickedExam");
+    return storedExam ? JSON.parse(storedExam) : null;
+  });
+  const [isCategoriesFilterValid, setIsCategoriesFilterValid] = useState(null);
+
   const [examToEdit, setExamToEdit] = useState(null);
   const [memberActivitySingle, setMemberActivitySingle] = useState(null);
+  // Initialize filteredExams from localStorage or set to null
+  const [filteredExams, setFilteredExams] = useState(() => {
+    const storedExams = localStorage.getItem("filteredExams");
+    return storedExams ? JSON.parse(storedExams) : null;
+  });
+  useEffect(() => {
+    if (filteredExams !== null) {
+      localStorage.setItem("filteredExams", JSON.stringify(filteredExams));
+    } else {
+      localStorage.removeItem("filteredExams");
+    }
+  }, [filteredExams]);
 
   // Initialize examDetails from localStorage or set to null
   const [examDetails, setExamDetails] = useState(() => {
@@ -49,6 +68,8 @@ function UserProvider({ children }) {
 
   // New validation states for form readiness
   const [isGeneralInfoValid, setIsGeneralInfoValid] = useState(false);
+  const [searchExam, setSearchExam] = useState(false);
+  const [privateExam, setPrivateExam] = useState(false);
   const [isQuestionsValid, setIsQuestionsValid] = useState(false);
 
   const fetchUserData = useCallback(async () => {
@@ -160,6 +181,18 @@ function UserProvider({ children }) {
         setExamToEdit,
         memberActivitySingle,
         setMemberActivitySingle,
+        setFilteredExams,
+        filteredExams,
+        isCategoriesFilterValid,
+        setIsCategoriesFilterValid,
+        privateExam,
+        setPrivateExam,
+        searchExam,
+        setSearchExam,
+        clickedExam,
+        setClickedExam,
+        percentage,
+        setPercentage,
       }}
     >
       {children}

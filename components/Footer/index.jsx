@@ -45,58 +45,58 @@ const Footer = React.forwardRef((props, ref) => {
         </div>
 
         <div className="flex flex-col-reverse md:flex-row items-center gap-20 py-20">
-  <iframe
-    className="w-[680px] md:w-[550px]"
-    src={settingInfo}
-    height="290"
-    style={{ border: 0 }}
-    allowFullScreen=""
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-  ></iframe>
-  
-  {/* Wrapper for aligning sections horizontally on medium and larger screens */}
-  <div className="flex flex-col md:flex-row gap-8 md:gap-24 items-start justify-start">
-    <div className="flex flex-col">
-      <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5">
-        Sayt xəritəsi
-      </h6>
-      <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
-        Lorem ipsum
-      </p>
-      <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
-        Lorem ipsum
-      </p>
-      <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
-        Lorem ipsum
-      </p>
-    </div>
+          <iframe
+            className="w-full md:w-[620px]"
+            src={settingInfo}
+            height="290"
+            style={{ border: 0 }}
+            allowFullScreen=""
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          ></iframe>
 
-    <div className="flex flex-col">
-      <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5">
-        Əlaqə
-      </h6>
-      <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
-        Lorem ipsum
-      </p>
-      <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
-        Lorem ipsum
-      </p>
-      <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
-        Lorem ipsum
-      </p>
-    </div>
+          {/* Wrapper for aligning sections horizontally on medium and larger screens */}
+          <div className="flex flex-col md:flex-row gap-8 md:gap-24 items-start justify-start">
+            <div className="flex flex-col">
+              <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5">
+                Sayt xəritəsi
+              </h6>
+              <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
+                Lorem ipsum
+              </p>
+              <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
+                Lorem ipsum
+              </p>
+              <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
+                Lorem ipsum
+              </p>
+            </div>
 
-    <div className="flex flex-col">
-      <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5">
-        Ünvan
-      </h6>
-      <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
-        Nizami küç. 203b AF Business House
-      </p>
-    </div>
-  </div>
-</div>
+            <div className="flex flex-col">
+              <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5">
+                Əlaqə
+              </h6>
+              <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
+                Lorem ipsum
+              </p>
+              <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
+                Lorem ipsum
+              </p>
+              <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
+                Lorem ipsum
+              </p>
+            </div>
+
+            <div className="flex flex-col">
+              <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5">
+                Ünvan
+              </h6>
+              <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
+                Nizami küç. 203b AF Business House
+              </p>
+            </div>
+          </div>
+        </div>
 
         <div className="flex flex-col md:flex-row justify-between border-t-[1px] pt-7 border-footerGrayText">
           <p className="text-inputBorder font-gilroy font-normal text-sm leading-6">

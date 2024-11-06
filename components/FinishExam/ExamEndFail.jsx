@@ -3,7 +3,7 @@ import ProgressPieChart from "../ProgressPieChart";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
-function ExamEndFail() {
+function ExamEndFail({ percentage }) {
   const router = useRouter();
 
   return (
@@ -15,7 +15,7 @@ function ExamEndFail() {
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col md:flex-row gap-5 items-center">
           <div className="flex flex-col items-center">
-            <ProgressPieChart />
+            <ProgressPieChart percentage={percentage.percentage}  />
             <p className="font-gilroy text-grayText text-lg sm:text-xl leading-8 font-medium text-center">
               Müvəffəqiyət faizi
             </p>
@@ -24,25 +24,25 @@ function ExamEndFail() {
           <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between gap-4">
               <p className="font-gilroy text-sm sm:text-lg leading-6 text-gray90">
-                Düz sualların sayı
+                Düz cavabların sayı
               </p>
               <h5 className="font-gilroy text-sm sm:text-lg font-medium text-chartGreen">
-                25
+                {percentage.correct}
               </h5>
             </div>
 
             <div className="flex items-center justify-between gap-4">
               <p className="font-gilroy text-sm sm:text-lg leading-6 text-gray90">
-                Səhv sualların sayı
+                Səhv cavabların sayı
               </p>
               <h5 className="font-gilroy text-sm sm:text-lg font-medium text-chartRed">
-                4
+              {percentage.wrong}
               </h5>
             </div>
 
             <div className="flex items-center justify-between gap-4">
               <p className="font-gilroy text-sm sm:text-lg leading-6 text-gray90">
-                Boş sualların sayı
+                Boş cavabların sayı
               </p>
               <h5 className="font-gilroy text-sm sm:text-lg font-medium text-chartYellow">
                 1

@@ -103,7 +103,9 @@ function Registrations({ examSlug }) {
   if (loading) {
     return (
       <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
-        <p><Spinner /></p>
+        <p>
+          <Spinner />
+        </p>
       </div>
     );
   }
@@ -488,13 +490,16 @@ function Registrations({ examSlug }) {
           </thead>
           <tbody>
             {paginatedData.length > 0 ? (
-              paginatedData.map((item) => (
+              paginatedData.map((item, index) => (
                 <tr
                   key={item.id}
                   className="bg-tableBgDefault border-b border-borderTableCel hover:bg-gray-100"
                 >
-                  <td className="px-4 py-2">{item.id}</td>
-                  <td className="px-4 py-2">{item.fullname}</td>
+                  <td className="px-4 py-2">
+                    {currentPage * itemsPerPage + index + 1}
+                  </td>
+
+                  <td className="px-4 py-2">{item.user}</td>
                   <td className="px-4 py-2 text-mailBlue cursor-pointer">
                     <a
                       href={`mailto:${item.mail}?subject=Innosert&body=Salam, ${item.fullname}`}
@@ -506,19 +511,18 @@ function Registrations({ examSlug }) {
 
                   <td className="px-4 py-2 text-gray200">₼ {item.price}</td>
                   <td className="px-4 py-2 !text-base text-gray200">
-                    {item.date}
+                    {item.created_at}
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-              <td colSpan="5" className="px-4 py-2 text-center text-gray-500">
-                {filteredData.length === 0
-                  ? "Qeydiyyat tapılmadı."
-                  : "Nəticə tapılmadı."}
-              </td>
-            </tr>
-            
+                <td colSpan="5" className="px-4 py-2 text-center text-gray-500">
+                  {filteredData.length === 0
+                    ? "Qeydiyyat tapılmadı."
+                    : "Nəticə tapılmadı."}
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

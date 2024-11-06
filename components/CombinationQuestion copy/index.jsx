@@ -20,47 +20,40 @@ const Checkmark = () => (
   </svg>
 );
 
-function CombinationQuestion({
-  questionData,
-  userAnswer,
-  setUserAnswer,
-  onSubmitReport,
-}) {
-  console.log(questionData, "questionData");
-
+function CombinationQuestion({ questionData, userAnswer, setUserAnswer }) {
   const [selectedPairs, setSelectedPairs] = useState(userAnswer || []);
   const [openDropdowns, setOpenDropdowns] = useState({});
   const dropdownRefs = useRef({});
 
   // Handle selection toggle
-  const handleSelectionToggle = (questionIndex, answerId) => {
+  const handleSelectionToggle = (questionIndex, answerValue) => {
     const existingPair = selectedPairs.find(
       (pair) => pair.questionIndex === questionIndex
     );
 
     let updatedPair;
     if (existingPair) {
-      const isSelected = existingPair.selectedOptionIds.includes(answerId);
-      let selectedOptionIds;
+      const isSelected = existingPair.selectedOptions.includes(answerValue);
+      let selectedOptions;
 
       if (isSelected) {
         // Remove the answer
-        selectedOptionIds = existingPair.selectedOptionIds.filter(
-          (val) => val !== answerId
+        selectedOptions = existingPair.selectedOptions.filter(
+          (val) => val !== answerValue
         );
       } else {
         // Add the answer
-        selectedOptionIds = [...existingPair.selectedOptionIds, answerId];
+        selectedOptions = [...existingPair.selectedOptions, answerValue];
       }
 
-      if (selectedOptionIds.length === 0) {
+      if (selectedOptions.length === 0) {
         updatedPair = null; // No selections left
       } else {
-        updatedPair = { questionIndex, selectedOptionIds };
+        updatedPair = { questionIndex, selectedOptions };
       }
     } else {
       // No existing pair, add new selection
-      updatedPair = { questionIndex, selectedOptionIds: [answerId] };
+      updatedPair = { questionIndex, selectedOptions: [answerValue] };
     }
 
     let updatedPairs;
@@ -112,10 +105,7 @@ function CombinationQuestion({
 
   return (
     <div className="py-6 px-4 mb-10 sm:py-10 sm:px-8 lg:px-32 w-full sm:w-[90%] lg:w-[85%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col justify-center mx-auto rounded-lg">
-      <WarningQuestion
-        questionId={questionData.id}
-        onSubmitReport={onSubmitReport}
-      />
+      <WarningQuestion />
 
       <h2
         className="text-lg sm:text-xl font-gilroy font-semibold mb-6"
@@ -125,12 +115,12 @@ function CombinationQuestion({
       <div className="flex flex-row">
         {/* Left Column: Numbered Questions with Toggle Divs */}
         <div className="flex flex-col space-y-6 font-gilroy w-1/2">
-          {questionData.answers.key.map((keyItem, index) => {
+          {questionData.answers.key.map((questionText, index) => {
             const existingPair = selectedPairs.find(
               (pair) => pair.questionIndex === index
             );
-            const selectedOptionIds = existingPair
-              ? existingPair.selectedOptionIds
+            const selectedOptions = existingPair
+              ? existingPair.selectedOptions
               : [];
 
             return (
@@ -145,10 +135,9 @@ function CombinationQuestion({
                   </span>
                   <div
                     className="py-2 px-4 border rounded-lg font-gilroy text-grayButtonText text-lg w-full"
-                    dangerouslySetInnerHTML={{
-                      __html: keyItem || "No question provided",
-                    }}
+                    dangerouslySetInnerHTML={{ __html: questionText }}
                   ></div>
+
                   {/* Toggle Div to Show/Hide Answers */}
                   <div
                     className="py-2 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full flex justify-between items-center"
@@ -165,15 +154,8 @@ function CombinationQuestion({
                   >
                     {/* Display selected options or placeholder */}
                     <span>
-                      {selectedOptionIds.length > 0
-                        ? selectedOptionIds
-                            .map(
-                              (id) =>
-                                questionData.answers.value.find(
-                                  (answer) => answer.id === id
-                                )?.value || ""
-                            )
-                            .join(", ")
+                      {selectedOptions.length > 0
+                        ? selectedOptions.join(", ")
                         : "Cavabları əlavə edin"}
                     </span>
                     {/* Dropdown Arrow Icon */}
@@ -202,21 +184,21 @@ function CombinationQuestion({
                       onClick={(e) => e.stopPropagation()} // Prevent closing on click inside
                     >
                       {questionData.answers.value.map((answer) => {
-                        const isSelected = selectedOptionIds.includes(
-                          answer.id
+                        const isSelected = selectedOptions.includes(
+                          answer.value
                         );
                         return (
                           <div
                             key={answer.id}
                             className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
                             onClick={() =>
-                              handleSelectionToggle(index, answer.id)
+                              handleSelectionToggle(index, answer.value)
                             }
                             tabIndex={0}
                             onKeyDown={(e) => {
                               if (e.key === "Enter" || e.key === " ") {
                                 e.preventDefault();
-                                handleSelectionToggle(index, answer.id);
+                                handleSelectionToggle(index, answer.value);
                               }
                             }}
                             role="option"

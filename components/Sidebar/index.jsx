@@ -43,10 +43,10 @@ function Sidebar() {
 
     if (user?.data?.roles === "Owner") {
       router.push(`/hesabatlar`);
-     // router.push(`/shirket-hesabi`); // Redirect for Owner role
+      // router.push(`/shirket-hesabi`); // Redirect for Owner role
     } else if (user?.data?.roles === "Teacher") {
       // router.push(`/muellim-hesabi`); // Redirect for Teacher role
-      router.push(`/suallar-toplusu`); // Redirect for Teacher role
+      router.push(`/sual-bazasi`); // Redirect for Teacher role
     }
   };
   // Toggle the dropdown open state

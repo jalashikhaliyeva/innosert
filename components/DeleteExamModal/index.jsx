@@ -13,7 +13,7 @@ function DeleteExamModal({ item, onDelete, onCancel }) {
     }
   };
 
-  // console.log(item.id, "item delete");
+  console.log(item, "item delete");
 
   const handleDelete = async () => {
     setIsLoading(true);

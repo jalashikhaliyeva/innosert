@@ -1,36 +1,91 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import CompanySidebar from "@/components/CompanySidebar";
 import HeaderInternal from "@/components/HeaderInternal";
 import InternalContainer from "@/components/InternalContainer";
-import ReportTable from "@/components/ReportTable";
-import ReportTitleNavigation from "@/components/ReportTitleNavigation";
-import ReportSingleNavigationTitle from "@/components/ReportSingleNavigationTitle";
 import ReportSingleTable from "@/components/ReportSingleTable";
+import ReportSingleNavigationTitle from "@/components/ReportSingleNavigationTitle";
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
+import CompanyContext from "@/shared/context/CompanyContext";
+import { useRouter } from "next/router";
 
 function ReportsSingle() {
-  // Initialize state for selected rows
+  const router = useRouter();
+  const { id } = router.query;
+  const { selectedCompany } = useContext(CompanyContext);
+  const [reportData, setReportData] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
+
+  useEffect(() => {
+    const fetchReportData = async () => {
+      if (id && selectedCompany) {
+        const token = localStorage.getItem("token");
+
+        try {
+          const response = await fetch(
+            `https://innocert-admin.markup.az/api/report-question/${id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "X-Company-ID": selectedCompany.id,
+              },
+            }
+          );
+
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data.data, "data single report");
+
+            setReportData(data.data);
+          } else {
+            console.error("Failed to fetch report data:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error fetching report data:", error);
+        }
+      }
+    };
+
+    fetchReportData();
+  }, [id, selectedCompany]);
+
+  // Filter data based on the search term, including both `title` and `user`
+  // Filter data based on the search term, including both `title` and `user`
+  // Filter data based on the search term, including `title`, `user`, and `type`
+  const filteredData = reportData
+    ? reportData.filter(
+        (item) =>
+          (item.title &&
+            item.title.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (item.user &&
+            item.user.toLowerCase().includes(searchTerm.toLowerCase())) ||
+          (item.type &&
+            item.type.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : [];
 
   return (
     <>
-     <div className="hidden lg:block ">
+      <div className="hidden lg:block ">
         <HeaderInternal />
       </div>
-      <div className="block  lg:hidden">
+      <div className="block lg:hidden">
         <OwnerDashboardHeader />
       </div>
       <div className="flex">
-      <div className="hidden lg:block md:w-[20%]">
+        <div className="hidden lg:block md:w-[20%]">
           <CompanySidebar />
         </div>
 
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
-            <ReportSingleNavigationTitle />
-            <ReportSingleTable />
-    
+            <ReportSingleNavigationTitle
+              reportData={reportData}
+              setSearchTerm={setSearchTerm} // Pass setSearchTerm
+            />
+            <ReportSingleTable reportData={filteredData} />{" "}
+            {/* Use filtered data */}
           </InternalContainer>
         </div>
       </div>

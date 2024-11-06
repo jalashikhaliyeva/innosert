@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import ExamRulesModal from "../ExamRulesModal";
 // import ExamRulesModal from "./ExamRulesModal"; 
 
-function JoinButtonandPriceExam() {
+function JoinButtonandPriceExam({examData}) {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
 
   const handleButtonClick = () => {
@@ -22,7 +22,7 @@ function JoinButtonandPriceExam() {
         Daxil ol
       </button>
       <h2 className="font-gilroy text-2xl font-medium leading-8 flex items-center justify-center">
-        20$
+      {examData.exam.price} ₼
       </h2>
 
       {isModalOpen && (

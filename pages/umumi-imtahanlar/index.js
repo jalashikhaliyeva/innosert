@@ -19,13 +19,35 @@ import axios from "axios";
 import CompanyContext from "@/shared/context/CompanyContext";
 import DeleteExamModal from "@/components/DeleteExamModal";
 import EditExamFolderModal from "@/components/EditExamFolderModal";
+import { UserContext } from "@/shared/context/UserContext";
 
 function UmumiImtahanlar() {
+  const { user } = useContext(UserContext);
   const [folders, setFolders] = useState([]);
+  const [selectedExamsToDelete, setSelectedExamsToDelete] = useState([]);
 
   const { selectedCompany } = useContext(CompanyContext);
   // console.log(selectedCompany.id, "selectedCompany umumi");
-
+  const openDeleteMultipleModal = () => {
+    setSelectedExamsToDelete(selectedExams);
+    setIsDeleteModalOpen(true);
+  };
+  const deleteSelectedExams = () => {
+    selectedExamsToDelete.forEach((examId) => {
+      deleteExam(examId);
+    });
+    setSelectedExams([]);
+    closeDeleteModal();
+  };
+  
+  const deleteSelectedFolders = () => {
+    selectedExamsToDelete.forEach((folderId) => {
+      deleteFolder(folderId);
+    });
+    setSelectedExams([]);
+    closeDeleteModal();
+  };
+    
   // Fetch folders from the API
   const fetchFolders = async () => {
     try {
@@ -150,11 +172,13 @@ function UmumiImtahanlar() {
         <HeaderInternal />
       </div>
       <div className="block  lg:hidden">
-        <OwnerDashboardHeader />
+        {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
       <div className="flex">
         <div className="hidden lg:block md:w-[20%]">
-          <CompanySidebar />
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
@@ -166,7 +190,7 @@ function UmumiImtahanlar() {
               setSortOption={setSortOption}
               selectedExams={selectedExams}
               openAddExamModal={openAddExamModal}
-              openDeleteModal={openDeleteExamModal}
+              openDeleteModal={openDeleteMultipleModal} 
             />
             <ExamListCompany
               exams={folders}
@@ -207,7 +231,7 @@ function UmumiImtahanlar() {
       )}
       {isDeleteModalOpen && (
         <DeleteExamModal
-          item={selectedExam} // Pass the selected exam or folder to delete
+          item={selectedExam}
           onCancel={closeDeleteModal}
           closeModal={closeModal}
           onDelete={() => {

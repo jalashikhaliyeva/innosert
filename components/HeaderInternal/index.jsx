@@ -26,12 +26,16 @@ import { RiBuildingLine } from "react-icons/ri";
 import CompanyContext from "@/shared/context/CompanyContext";
 import { FaRegCircleUser } from "react-icons/fa6";
 import MobileLanguageSwitcher from "@/shared/MobileLanguageSwitcher";
+import NotificationsDropdown from "../NotificationsDropdown";
 
 const HeaderInternal = () => {
-  const { user } = useContext(UserContext);
+  const { user, setSearchExam } = useContext(UserContext);
+
+  const [searchValue, setSearchValue] = useState("");
+  const searchInputRef = useRef(null);
+  const router = useRouter();
   const { setSelectedCompany } = useContext(CompanyContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const router = useRouter();
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
   const [isImtahanlarDropdownOpen, setIsImtahanlarDropdownOpen] =
@@ -86,7 +90,7 @@ const HeaderInternal = () => {
       router.push(`/hesabatlar`);
       // router.push(`/shirket-hesabi`); // Redirect for Owner role
     } else if (user?.data?.roles === "Teacher") {
-      router.push(`/suallar-toplusu`);
+      router.push(`/sual-bazasi`);
       // router.push(`/muellim-hesabi`); // Redirect for Teacher role
     }
   };
@@ -139,8 +143,7 @@ const HeaderInternal = () => {
   const [subCategories, setSubCategories] = useState([]);
   const { push } = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchValue, setSearchValue] = useState("");
-  const searchInputRef = useRef(null);
+
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Add this line
   const userMenuRef = useRef(null);
@@ -313,6 +316,44 @@ const HeaderInternal = () => {
     setShowOnlyCategories(false); // Show the full menu
     setIsImtahanlarDropdownOpen(false); // Close the category dropdown
   };
+
+  const handleSearchChange = async (e) => {
+    const query = e.target.value.trim(); // Trim any whitespace
+    setSearchValue(query);
+  
+    if (query.length === 0) {
+      setSearchExam([]); // Clear search results from context if input is empty
+      return;
+    }
+  
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        "https://innocert-admin.markup.az/api/search",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ search: e.target.value }),
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data, "data search exam");
+        
+        setSearchExam(data.exams); // Store exams in context
+      } else {
+        console.error("Search API response error:", response.status);
+      }
+    } catch (error) {
+      console.error("Error performing search:", error);
+    }
+  };
+
   return (
     <header className="markup fixed top-0 left-0 right-0 bg-bodyColor shadow-createBox z-30 font-gilroy">
       <Container>
@@ -815,20 +856,26 @@ const HeaderInternal = () => {
                     </ul>
                   </div>
                 </div>
-                <p    onClick={() => handleClick("/bloq")} className="cursor-pointer font-medium text-lg text-textSecondaryDefault py-3 hover:text-textHoverBlue">
+                <p
+                  onClick={() => handleClick("/bloq")}
+                  className="cursor-pointer font-medium text-lg text-textSecondaryDefault py-3 hover:text-textHoverBlue"
+                >
                   Bloq
                 </p>
 
                 {/* Search */}
                 {showSearch && (
-                  <div className="flex items-center bg-bodyColor border border-inputBorder rounded-full mx-20 px-4 py-2 focus-within:border-inputRingFocus">
-                    <CiSearch className="text-inputPlaceholderText size-6" />
-                    <input
-                      type="text"
-                      placeholder="Imtahan axtar"
-                      className="ml-2 text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
-                    />
-                  </div>
+                <div className="flex items-center bg-bodyColor border border-inputBorder rounded-full mx-20 px-4 py-2 focus-within:border-inputRingFocus">
+                <CiSearch className="text-inputPlaceholderText size-6" />
+                <input
+                  type="text"
+                  placeholder="Imtahan axtar"
+                  value={searchValue}
+                  onChange={handleSearchChange} // Add the change handler
+                  ref={searchInputRef}
+                  className="ml-2 text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
+                />
+              </div>
                 )}
               </nav>
             </div>
@@ -837,94 +884,7 @@ const HeaderInternal = () => {
 
             <div className="relative hidden lg:flex items-center">
               <LanguageSwitcher />
-              <div
-                className="relative"
-                onMouseEnter={handleNotificationMouseEnter}
-                onMouseLeave={handleNotificationMouseLeave}
-              >
-                <TbBell className="size-5 cursor-pointer" />
-
-                <div
-                  className={`absolute font-gilroy right-0 mt-2 w-[560px] bg-white shadow-lg rounded-lg py-3 px-5 z-50 transition-all duration-300 ease-in-out transform ${
-                    isNotificationOpen
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 -translate-y-4 pointer-events-none"
-                  }`}
-                >
-                  <h2 className="font-medium text-lg mb-2 pb-2 text-center border-b">
-                    Bildirişlər
-                  </h2>
-                  <ul className="divide-y divide-gray-200">
-                    <li className="py-2 flex justify-between items-center pb-2">
-                      <div className="flex">
-                        <span className="h-2 w-4 bg-blue-500 rounded-full mt-2 mr-2"></span>
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium text-green900">
-                            &apos;Data&apos;
-                          </span>
-                          imtahanı ilə bağlı bildirdiyiniz xətaya baxıldı.
-                          Bildirişiniz müsbət dəyərləndirildi,
-                          <a
-                            onClick={() => router.push("/neticelerim")}
-                            className="text-blue-600 underline mx-1 cursor-pointer"
-                          >
-                            Nəticələrim
-                          </a>
-                          bölməsindən balınıza baxa bilərsiniz.
-                        </p>
-                      </div>
-                      <span className="text-gray-400 ml-2 font-gilroy text-sm whitespace-nowrap">
-                        2 gün əvvəl
-                      </span>
-                    </li>
-                    <li className="py-2 flex justify-between items-center pb-2">
-                      <div className="flex">
-                        <span className="h-2 w-4 bg-blue-500 rounded-full mt-2 mr-2"></span>
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium text-green900">
-                            &apos;Data&apos;
-                          </span>
-                          imtahanı ilə bağlı bildirdiyiniz xətaya baxıldı.
-                          Bildirişiniz müsbət dəyərləndirildi,
-                          <a
-                            onClick={() => router.push("/neticelerim")}
-                            className="text-blue-600 underline mx-1 cursor-pointer"
-                          >
-                            Nəticələrim
-                          </a>
-                          bölməsindən balınıza baxa bilərsiniz.
-                        </p>
-                      </div>
-                      <span className="text-gray-400 ml-2 font-gilroy text-sm whitespace-nowrap">
-                        2 gün əvvəl
-                      </span>
-                    </li>
-                    <li className="py-2 flex justify-between items-center pb-2">
-                      <div className="flex">
-                        <span className="h-2 w-4 bg-blue-500 rounded-full mt-2 mr-2"></span>
-                        <p className="text-sm text-gray-700">
-                          <span className="font-medium text-green900">
-                            &apos;Data&apos;
-                          </span>
-                          imtahanı ilə bağlı bildirdiyiniz xətaya baxıldı.
-                          Bildirişiniz müsbət dəyərləndirildi,
-                          <a
-                            onClick={() => router.push("/neticelerim")}
-                            className="text-blue-600 underline mx-1 cursor-pointer"
-                          >
-                            Nəticələrim
-                          </a>
-                          bölməsindən balınıza baxa bilərsiniz.
-                        </p>
-                      </div>
-                      <span className="text-gray-400 ml-2 font-gilroy text-sm whitespace-nowrap">
-                        2 gün əvvəl
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
+              <NotificationsDropdown />
               <div
                 className="relative"
                 onMouseEnter={() => setIsUserMenuOpen(true)}

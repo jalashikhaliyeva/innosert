@@ -18,119 +18,44 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
   const router = useRouter();
   const { user } = useContext(UserContext);
   const { category } = router.query;
-  const faqRef = useRef(null);
-  const footerRef = useRef(null);
-  const certificateRef = useRef(null);
-  const [mounted, setMounted] = useState(false);
-  const [landingInfo, setLandingInfo] = useState(null);
-  const [settingInfo, setSettingInfo] = useState(null);
+  console.log(category, "router.query");
+
   const [exams, setExams] = useState([]);
   const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
 
+  // Fetch exams based on category slug
   useEffect(() => {
-    // In a real application, you might fetch this data from an API
-    const fetchedExams = [
-      {
-        id: "microsoft-office-specialist-excel-expert",
-        name: "Microsoft Office Specialist Excel Expert",
-        duration: "1 saat",
-        questions: 30,
-        paid: true,
-        price: 20,
-      },
-      {
-        id: "certified-project-manager",
-        name: "Certified Project Manager",
-        duration: "2 saat",
-        questions: 50,
-        paid: false,
-        price: 30,
-      },
-      {
-        id: "advanced-graphic-design",
-        name: "Advanced Graphic Design",
-        duration: "1.5 saat",
-        questions: 40,
-        paid: true,
-        price: 25,
-      },
-      {
-        id: "full-stack-developer",
-        name: "Full Stack Developer",
-        duration: "3 saat",
-        questions: 60,
-        paid: false,
-        price: 35,
-      },
-      {
-        id: "data-science-specialist",
-        name: "Data Science Specialist",
-        duration: "2.5 saat",
-        questions: 45,
-        paid: true,
-        price: 28,
-      },
-      {
-        id: "digital-marketing-expert",
-        name: "Digital Marketing Expert",
-        duration: "1.2 saat",
-        questions: 35,
-        paid: false,
-        price: 22,
-      },
-      {
-        id: "cyber-security-analyst",
-        name: "Cyber Security Analyst",
-        duration: "2 saat",
-        questions: 40,
-        paid: true,
-        price: 27,
-      },
-      {
-        id: "cloud-computing-engineer",
-        name: "Cloud Computing Engineer",
-        duration: "2.5 saat",
-        questions: 50,
-        paid: false,
-        price: 33,
-      },
-    ];
+    const fetchExams = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `https://innocert-admin.markup.az/api/exams/${category}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-    setExams(fetchedExams);
-  }, []);
+        const data = await response.json();
+        console.log(data.data, "data CategoryPage");
 
-  // Fetch data based on the current locale
-  const fetchData = async (locale) => {
-    try {
-      const landingData = await getLandingInfo(locale);
-      const settingData = await getSettingInfo(locale);
+        setExams(data.data); // Set the exams from the API response
+      } catch (error) {
+        console.error("Failed to fetch exams:", error);
+      } finally {
+        setLoading(false); // Set loading to false once data is fetched
+      }
+    };
 
-      const mappedSlides = settingData.category?.map((item) => ({
-        imageSrc: item.image,
-        text: item.name,
-      }));
-
-      setLandingInfo(landingData);
-      setSettingInfo({
-        slides: mappedSlides,
-        map: settingData?.contact?.map,
-      });
-    } catch (error) {
-      console.error("Failed to fetch landing or setting info:", error);
+    if (category) {
+      fetchExams();
     }
-  };
-
-  // Fetch data whenever the locale changes
-  useEffect(() => {
-    if (router.locale) {
-      fetchData(router.locale); // Re-fetch data when locale changes
-    }
-  }, [router.locale]);
-
-  if (!landingInfo || !settingInfo) {
-    return <Spinner />;
-  }
+  }, [category]);
 
   // Function to close both modals
   const closeModals = () => {
@@ -146,8 +71,6 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
     }
   };
 
-  // Ensure mounted is true before using client-side-only code
-
   return (
     <main>
       <HeaderInternal />
@@ -155,56 +78,30 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
       <section className="my-28">
         <Container>
           <SortTitleExams category={category} />
-          <ExamCard
-            openLoginModal={handleLoginOrRulesClick}
-            openRegisterModal={handleLoginOrRulesClick}
-            widthClass="w-[23.8%]"
-            exams={exams}
-          />
+          {loading ? (
+            <Spinner />
+          ) : exams?.length > 0 ? (
+            <ExamCard
+              openLoginModal={handleLoginOrRulesClick}
+              openRegisterModal={handleLoginOrRulesClick}
+              widthClass="w-[23.8%]"
+              exams={exams} // Pass the dynamic exams data
+            />
+          ) : (
+            <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
+              "{category}" kateqoriyası üçün mövcud imtahan yoxdur.
+            </p>
+          )}
         </Container>
       </section>
 
-      {/* <h1 className="mt-36">{`Category: ${category}`}</h1> */}
-      {/* Modals */}
       {isExamRulesModalOpen && <ExamRulesModal onClose={closeModals} />}
       {isLoginModalOpen && (
         <LoginModal isOpen={isLoginModalOpen} onClose={closeModals} />
       )}
-      <Footer ref={footerRef} />
+      <Footer />
     </main>
   );
-}
-
-// Fetch landing and setting info on server side
-export async function getServerSideProps(context) {
-  const lang = context.locale || "az"; // Get the language from the context locale
-  try {
-    const landingInfo = await getLandingInfo(lang);
-    const settingInfo = await getSettingInfo(lang);
-
-    const mappedSlides = settingInfo.category?.map((item) => ({
-      imageSrc: item.image,
-      text: item.name,
-    }));
-
-    return {
-      props: {
-        landingInfo,
-        settingInfo: {
-          slides: mappedSlides,
-          map: settingInfo?.contact?.map,
-        },
-      },
-    };
-  } catch (error) {
-    console.error("Failed to fetch landing or setting info:", error);
-    return {
-      props: {
-        landingInfo: null,
-        settingInfo: null,
-      },
-    };
-  }
 }
 
 export default withModalManagement(CategoryPage);

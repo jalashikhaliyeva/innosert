@@ -4,8 +4,11 @@ import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 
-function ReportTable({ selectedRows, setSelectedRows }) {
+function ReportTable({ selectedRows, setSelectedRows, data }) {
+  console.log(data, "data report table");
+
   const router = useRouter(); // Initialize useRouter hook
+
   // State declarations
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page set to 10
@@ -19,15 +22,15 @@ function ReportTable({ selectedRows, setSelectedRows }) {
   });
 
   // Initialize refs at the top level of the component
-  const questionTitleRef = useRef(null);
-  const quantityOfReportsRef = useRef(null);
+  const titleRef = useRef(null);
+  const countRef = useRef(null);
   const statusRef = useRef(null);
   const dateRef = useRef(null);
 
   // Create a stable dropdownRefs object
   const dropdownRefs = {
-    questionTitle: questionTitleRef,
-    quantityOfReports: quantityOfReportsRef,
+    title: titleRef,
+    count: countRef,
     status: statusRef,
     date: dateRef,
   };
@@ -74,189 +77,29 @@ function ReportTable({ selectedRows, setSelectedRows }) {
     };
   }, [openFilter, dropdownRefs]);
 
-  const data = [
-    {
-      id: 1,
-      questionTitle: "Sayt dizaynı",
-      quantityOfReports: 5,
-      status: "Tamamlandı",
-      date: "2023-10-01",
-      slug: "sayt-dizaynı",
-    },
-    {
-      id: 2,
-      questionTitle: "Verilənlər bazası",
-      quantityOfReports: 3,
-      status: "Gözlənilir",
-      date: "2023-09-28",
-      slug: "verilənlər-bazası",
-    },
-    {
-      id: 3,
-      questionTitle: "HTML ilə səhifə strukturunun yaradılması",
-      quantityOfReports: 2,
-      status: "Tamamlandı",
-      date: "2023-09-30",
-      slug: "html-ilə-səhifə-strukturunun-yaradılması",
-    },
-    {
-      id: 4,
-      questionTitle: "CSS ilə səhifənin stilinin tətbiqi",
-      quantityOfReports: 4,
-      status: "Tamamlandı",
-      date: "2023-10-02",
-      slug: "css-ilə-səhifənin-stilinin-tətbiqi",
-    },
-    {
-      id: 5,
-      questionTitle: "JavaScript-də funksiyaların yaradılması",
-      quantityOfReports: 6,
-      status: "Gözlənilir",
-      date: "2023-10-05",
-      slug: "javascript-də-funksiyaların-yaradılması",
-    },
-    {
-      id: 6,
-      questionTitle: "DOM manipulasiya üsulları",
-      quantityOfReports: 3,
-      status: "Tamamlandı",
-      date: "2023-09-25",
-      slug: "dom-manipulasiya-üsulları",
-    },
-    {
-      id: 7,
-      questionTitle: "API sorğularının hazırlanması",
-      quantityOfReports: 7,
-      status: "Gözlənilir",
-      date: "2023-09-29",
-      slug: "api-sorğularının-hazırlanması",
-    },
-    {
-      id: 8,
-      questionTitle: "Verilənlər bazası əlaqələrinin izahı",
-      quantityOfReports: 5,
-      status: "Tamamlandı",
-      date: "2023-09-27",
-      slug: "verilənlər-bazası-əlaqələrinin-izahı",
-    },
-    {
-      id: 9,
-      questionTitle: "Git ilə versiya nəzarətinin əsasları",
-      quantityOfReports: 2,
-      status: "Tamamlandı",
-      date: "2023-10-01",
-      slug: "git-ilə-versiya-nəzarətinin-əsasları",
-    },
-    {
-      id: 10,
-      questionTitle: "React komponentlərinin yaradılması",
-      quantityOfReports: 8,
-      status: "Gözlənilir",
-      date: "2023-10-03",
-      slug: "react-komponentlərinin-yaradılması",
-    },
-    {
-      id: 11,
-      questionTitle: "Vue.js ilə tək səhifəlik tətbiq yaradılması",
-      quantityOfReports: 4,
-      status: "Tamamlandı",
-      date: "2023-09-22",
-      slug: "vue-js-ilə-tək-səhifəlik-tətbiq-yaradılması",
-    },
-    {
-      id: 12,
-      questionTitle: "PHP ilə backend proqramlaşdırma",
-      quantityOfReports: 9,
-      status: "Gözlənilir",
-      date: "2023-09-26",
-      slug: "php-ilə-backend-proqramlaşdırma",
-    },
-    {
-      id: 13,
-      questionTitle: "Node.js server proqramlaşdırma",
-      quantityOfReports: 6,
-      status: "Tamamlandı",
-      date: "2023-10-04",
-      slug: "node-js-server-proqramlaşdırma",
-    },
-    {
-      id: 14,
-      questionTitle: "SQL sorğularının yazılması",
-      quantityOfReports: 5,
-      status: "Tamamlandı",
-      date: "2023-09-30",
-      slug: "sql-sorğularının-yazılması",
-    },
-    {
-      id: 15,
-      questionTitle: "Python ilə skriptlərin yazılması",
-      quantityOfReports: 3,
-      status: "Gözlənilir",
-      date: "2023-10-01",
-      slug: "python-ilə-skriptlərin-yazılması",
-    },
-    {
-      id: 16,
-      questionTitle: "Django framework istifadəsi",
-      quantityOfReports: 4,
-      status: "Tamamlandı",
-      date: "2023-09-24",
-      slug: "django-framework-istifadəsi",
-    },
-    {
-      id: 17,
-      questionTitle: "Mobil tətbiq inkişafı üçün React Native",
-      quantityOfReports: 7,
-      status: "Gözlənilir",
-      date: "2023-09-29",
-      slug: "mobil-tətbiq-inkişafı-üçün-react-native",
-    },
-    {
-      id: 18,
-      questionTitle: "Test avtomatlaşdırılması ilə Selenium",
-      quantityOfReports: 2,
-      status: "Tamamlandı",
-      date: "2023-09-27",
-      slug: "test-avtomatlaşdırılması-ilə-selenium",
-    },
-    {
-      id: 19,
-      questionTitle: "WebSocket ilə real-time tətbiqlərin qurulması",
-      quantityOfReports: 8,
-      status: "Tamamlandı",
-      date: "2023-10-05",
-      slug: "websocket-ilə-real-time-tətbiqlərin-qurulması",
-    },
-    {
-      id: 20,
-      questionTitle: "Redux ilə vəziyyətin idarə edilməsi",
-      quantityOfReports: 5,
-      status: "Gözlənilir",
-      date: "2023-09-28",
-      slug: "redux-ilə-vəziyyətin-idarə-edilməsi",
-    },
-  ];
-
   // Filtering logic
   const filteredData = data
     .filter((item) => {
       // Reports filter
-      if (reportsFilter && item.quantityOfReports < parseInt(reportsFilter)) {
+      if (reportsFilter && item.count < parseInt(reportsFilter)) {
         return false;
       }
       return true;
     })
     .filter((item) => {
       // Status filter
-      if (statusFilter && item.status !== statusFilter) {
-        return false;
+      if (statusFilter) {
+        const statusValue = statusFilter === "Tamamlandı";
+        if (item.status !== statusValue) {
+          return false;
+        }
       }
       return true;
     })
     .filter((item) => {
       // Date filter
       const { from, to } = dateFilter;
-      const itemDate = new Date(item.date);
+      const itemDate = new Date(item.created_at);
       let fromDate = null;
       let toDate = null;
 
@@ -281,9 +124,9 @@ function ReportTable({ selectedRows, setSelectedRows }) {
   const sortedData = titleOrder
     ? [...filteredData].sort((a, b) => {
         if (titleOrder === "asc") {
-          return a.questionTitle.localeCompare(b.questionTitle);
+          return a.title.localeCompare(b.title);
         } else {
-          return b.questionTitle.localeCompare(a.questionTitle);
+          return b.title.localeCompare(a.title);
         }
       })
     : filteredData;
@@ -296,8 +139,8 @@ function ReportTable({ selectedRows, setSelectedRows }) {
   );
 
   // Function to handle navigation to detail page
-  const handleDetailNavigation = (slug) => {
-    router.push(`/xeta-bildirisleri/${slug}`); // Navigate to the specific report page
+  const handleDetailNavigation = (id) => {
+    router.push(`/xeta-bildirisleri/${id}`); // Navigate to the specific report page
   };
 
   return (
@@ -311,22 +154,20 @@ function ReportTable({ selectedRows, setSelectedRows }) {
                 <th className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
                   #
                 </th>
-                {/* Sual başlığı */}
+                {/* Title */}
                 <th
                   className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
                   onClick={() =>
-                    setOpenFilter(
-                      openFilter === "questionTitle" ? null : "questionTitle"
-                    )
+                    setOpenFilter(openFilter === "title" ? null : "title")
                   }
                 >
                   <div className="flex items-center gap-4">
                     Sual başlığı
                     <IoFunnelOutline />
                   </div>
-                  {openFilter === "questionTitle" && (
+                  {openFilter === "title" && (
                     <div
-                      ref={questionTitleRef}
+                      ref={titleRef}
                       className="absolute z-20 mt-2 bg-white border rounded shadow-2xl p-2 divide-y w-40"
                     >
                       <div
@@ -354,24 +195,20 @@ function ReportTable({ selectedRows, setSelectedRows }) {
                     </div>
                   )}
                 </th>
-                {/* Bildirilən xəta sayı */}
+                {/* Count */}
                 <th
                   className="relative px-4 py-3 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
                   onClick={() =>
-                    setOpenFilter(
-                      openFilter === "quantityOfReports"
-                        ? null
-                        : "quantityOfReports"
-                    )
+                    setOpenFilter(openFilter === "count" ? null : "count")
                   }
                 >
                   <div className="flex items-center gap-4">
                     Bildirilən xəta sayı
                     <IoFunnelOutline />
                   </div>
-                  {openFilter === "quantityOfReports" && (
+                  {openFilter === "count" && (
                     <div
-                      ref={quantityOfReportsRef}
+                      ref={countRef}
                       className="absolute z-20 mt-2 bg-white border rounded shadow p-2 w-60"
                       onClick={(e) => e.stopPropagation()}
                     >
@@ -457,38 +294,38 @@ function ReportTable({ selectedRows, setSelectedRows }) {
 
             <tbody>
               {paginatedData.length > 0 ? (
-                paginatedData.map((item) => (
+                paginatedData.map((item, index) => (
                   <tr
                     key={item.id}
                     className="bg-tableBgDefault border-b border-borderTableCel hover:bg-headerTableCel"
                   >
-                    <td className="px-4 py-3">{item.id}</td>
+                    <td className="px-4 py-3">
+                      {currentPage * itemsPerPage + index + 1}
+                    </td>{" "}
+                    {/* Custom Counter */}
                     <td
-                      onClick={() => handleDetailNavigation(item.slug)}
+                      onClick={() => handleDetailNavigation(item.id)}
                       className="flex items-center gap-3 px-4 py-3 relative group cursor-pointer !text-base text-tableCell"
                     >
-                      {item.questionTitle}
+                      {item.title}
                     </td>
-                    <td className="px-4 py-3 !text-base">
-                      {item.quantityOfReports}
-                    </td>
+                    <td className="px-4 py-3 !text-base">{item.count}</td>
                     {/* Conditionally set the background color based on the status */}
                     <td className="px-4 py-2">
                       <div
                         className={`text-gray200 !text-sm ${
-                          item.status === "Tamamlandı"
+                          item.status === true
                             ? "bg-greenMediumLight"
-                            : item.status === "Gözlənilir"
+                            : item.status === false
                             ? "bg-redLow"
                             : ""
                         } rounded-md py-1 flex items-center justify-center w-[110px]`}
                       >
-                        {item.status}
+                        {item.status === true ? "Tamamlandı" : "Gözlənilir"}
                       </div>
                     </td>
-
-                    <td className="px-4 py-3 text-linkBlue !text-base flex items-center sticky right-0 bg-white  z-10">
-                      <button onClick={() => handleDetailNavigation(item.slug)}>
+                    <td className="px-4 py-3 text-linkBlue !text-base flex items-center sticky right-0 bg-white z-10">
+                      <button onClick={() => handleDetailNavigation(item.id)}>
                         Bax &gt;
                       </button>
                     </td>
@@ -497,7 +334,7 @@ function ReportTable({ selectedRows, setSelectedRows }) {
               ) : (
                 <tr>
                   <td
-                    colSpan="8"
+                    colSpan="5"
                     className="px-4 py-3 text-center text-gray-500"
                   >
                     Nəticə tapılmadı.

@@ -76,18 +76,15 @@ const ExamsListTeacher = ({
   }, [combinedItems, sortOption]);
 
   const handleCheckboxChange = (itemSlug, isChecked, type) => {
-    // Only handle selection for exams, not folders
-    if (type === "exam") {
-      setSelectedExams((prevSelectedExams) => {
-        if (isChecked) {
-          return [...prevSelectedExams, itemSlug];
-        } else {
-          return prevSelectedExams.filter((slug) => slug !== itemSlug);
-        }
-      });
-    }
-    // If you want to handle folder selection, implement it here
+    setSelectedExams((prevSelectedExams) => {
+      if (isChecked) {
+        return [...prevSelectedExams, itemSlug];
+      } else {
+        return prevSelectedExams.filter((slug) => slug !== itemSlug);
+      }
+    });
   };
+
   const handleItemClick = (item) => {
     if (item.type === "folder") {
       // Navigate to the folder's exam list and pass the folder slug

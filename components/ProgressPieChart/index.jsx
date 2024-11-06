@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const ProgressPieChart = () => {
+const ProgressPieChart = ({ percentage }) => {
   const [inView, setInView] = useState(false);
-  const [series, setSeries] = useState([0, 0, 100]); // Start with 0 progress for all
+  const [series, setSeries] = useState([0, 0, 100]); // Initial state: 0% Correct, 0% Wrong, 100% Not Answered
 
   const options = {
     chart: {
@@ -30,12 +30,11 @@ const ProgressPieChart = () => {
               show: true,
               showAlways: true,
               label: "",
-              formatter: () => `${series[0]}%`,
+              formatter: () => `${series[0]}%`, // Display Correct Answers percentage
               style: {
                 fontSize: "20px",
                 fontWeight: "bold",
                 color: "#333",
-                fontFamily: undefined,
               },
             },
           },
@@ -43,7 +42,7 @@ const ProgressPieChart = () => {
       },
     },
     fill: {
-      colors: ["#30B83E", "#D92626", "#F6CF09"], // Green for correct, red for wrong, yellow for not answered
+      colors: ["#30B83E", "#D92626", "#F6CF09"], // Green, Red, Yellow
     },
     stroke: {
       lineCap: "round",
@@ -54,7 +53,7 @@ const ProgressPieChart = () => {
     tooltip: {
       enabled: true, // Show values on hover
       y: {
-        formatter: (val) => `${val}%`, // Format the tooltip to show percentage
+        formatter: (val) => `${val}%`, // Format tooltip to show percentage
       },
     },
     responsive: [
@@ -76,13 +75,23 @@ const ProgressPieChart = () => {
     },
   };
 
-  // Scroll observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          setInView(true); // When in view, set it to true to trigger animation
-          setSeries([72, 15, 13]); // Set to the actual progress: correct, wrong, not answered
+          setInView(true); // Trigger animation when in view
+
+          // Ensure the percentage is between 0 and 100
+          const correct = Math.min(Math.max(percentage, 0), 100);
+
+          // Example distribution: 20% of remaining for Wrong Answers
+          const wrong = Math.min(
+            Math.max((100 - correct) * 0.2, 0),
+            100 - correct
+          );
+          const notAnswered = 100 - correct - wrong;
+
+          setSeries([correct, wrong, notAnswered]);
         }
       },
       {
@@ -98,17 +107,17 @@ const ProgressPieChart = () => {
     return () => {
       if (element) observer.unobserve(element);
     };
-  }, []);
+  }, [percentage]); // Re-run effect if 'percentage' changes
 
   return (
     <motion.div
       id="progress-chart"
-      initial={{ opacity: 0, y: 20 }} // Start with hidden and slightly off position
+      initial={{ opacity: 0, y: 20 }} // Start hidden and slightly offset
       animate={inView ? { opacity: 1, y: 0 } : {}} // Animate when in view
       transition={{ duration: 0.9 }} // Animation duration
     >
       <Chart options={options} series={series} type="donut" width="180" />{" "}
-      {/* Changed width to 180 */}
+      {/* Adjusted width */}
     </motion.div>
   );
 };

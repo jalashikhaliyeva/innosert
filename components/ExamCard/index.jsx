@@ -1,7 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css"; // Main Swiper styles
 import "swiper/css/pagination"; // Pagination styles if you're using pagination
-
 import Image from "next/image";
 import React, { useContext } from "react";
 import { FaBookmark, FaRegBookmark } from "react-icons/fa6";
@@ -11,12 +10,29 @@ import { useSavedExams } from "@/shared/context/SavedExamsContext";
 
 function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
   const router = useRouter();
-  const { user } = useContext(UserContext); // Get user from UserContext
-  const { savedExams, addExamToSaved, removeExamFromSaved } = useSavedExams(); // Get saved exams management functions
+  const { user, setClickedExam } = useContext(UserContext); // Get user from UserContext
+  const { savedExams, addExamToSaved, removeExamFromSaved } = useSavedExams();
+  console.log(savedExams, "savedExams");
+  console.log(exams, "exams");
 
+  const formatDuration = (duration) => {
+    if (duration === "00:00:00") return ""; // Don't display if duration is "00:00:00"
+
+    const [hours, minutes] = duration.split(":").map(Number);
+    let formattedDuration = "";
+
+    if (hours > 0) {
+      formattedDuration += `${hours} saat`;
+    }
+    if (minutes > 0) {
+      formattedDuration += `${formattedDuration ? " " : ""}${minutes} dəqiqə`;
+    }
+
+    return formattedDuration;
+  };
   // Function to handle navigation to the detailed exam page
-  const handleDetailClick = (id) => {
-    router.push(`/etrafli/${encodeURIComponent(id)}`);
+  const handleDetailClick = (slug) => {
+    router.push(`/etrafli/${slug}`);
   };
 
   // Function to handle saving/removing an exam
@@ -35,14 +51,19 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
     }
   };
 
-  const handleLoginOrRulesClick = () => {
+  // Updated function to handle "Daxil ol" button click
+  const handleLoginOrRulesClick = (exam) => {
+    // Set the clickedExam in context
+    console.log(exam, "clicked exam card");
+
+    setClickedExam(exam);
+
     if (user) {
       openRegisterModal();
     } else {
       openLoginModal();
     }
   };
-
   // Check if the current route is '/imtahanlarim'
   const isMyExamsPage =
     router.pathname === "/imtahanlarim" ||
@@ -53,15 +74,15 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
       <div className="block md:hidden">
         {/* Show Swiper only if not on '/imtahanlarim' page */}
         {!isMyExamsPage ? (
-        <Swiper
-        spaceBetween={16}
-        slidesPerView="auto" // Dynamically adjusts to the number of slides
-        pagination={{ clickable: true }}
-        centeredSlides={false}
-        loop={false}
-        loopFillGroupWithBlank={false}
-        slideToClickedSlide={true} // Allows precise navigation to clicked slides
-      >
+          <Swiper
+            spaceBetween={16}
+            slidesPerView="auto" // Dynamically adjusts to the number of slides
+            pagination={{ clickable: true }}
+            centeredSlides={false}
+            loop={false}
+            loopFillGroupWithBlank={false}
+            slideToClickedSlide={true} // Allows precise navigation to clicked slides
+          >
             {exams.map((exam) => {
               const isSaved = savedExams.find(
                 (savedExam) => savedExam.id === exam.id
@@ -91,14 +112,14 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                       <div className="pb-6">
                         <div className="flex gap-2">
                           <Image
-                            src="/img/handexLogo.png"
+                            src={exam.company_logo}
                             alt="Handex Logo"
                             width={40}
                             height={40}
                             className="object-contain"
                           />
                           <h3 className="font-gilroy text-base text-grayText70">
-                            Handex
+                            {exam.company}
                           </h3>
                         </div>
                         <p className="pt-2.5 font-gilroy h-[90px] text-xl leading-8 text-textSecondaryDefault font-medium">
@@ -120,7 +141,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                     <div className="py-4">
                       <div className="flex justify-start gap-2">
                         <p className="font-gilroy text-grayTextinBox text-base font-normal leading-6">
-                          {exam.duration}
+                          {formatDuration(exam.duration)}
                         </p>
                         <div className="w-2 h-2 bg-grayTextinBox rounded-full self-center"></div>
                         <p className="font-gilroy text-grayTextinBox text-base font-normal leading-6">
@@ -134,7 +155,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                             exam.paid ? "text-green400" : "text-darkBlue100"
                           } font-normal leading-4`}
                         >
-                          {exam.paid ? "Ödənilib" : `${exam.price}$`}
+                          {exam.paid ? "Ödənilib" : `${exam.price} ₼`}
                         </p>
                         {isSaved ? (
                           <FaBookmark
@@ -151,13 +172,13 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
 
                       <div className="w-full flex flex-row gap-4 pt-3">
                         <button
-                          onClick={handleLoginOrRulesClick}
+                          onClick={() => handleLoginOrRulesClick(exam)}
                           className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                         >
                           Daxil ol
                         </button>
                         <button
-                          onClick={() => handleDetailClick(exam.id)}
+                          onClick={() => handleDetailClick(exam.slug)}
                           className="py-3 px-4 h-11 w-full font-gilroy leading-6 rounded-md bg-buttonSecondaryDefault text-grayButtonText hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
                         >
                           Ətraflı
@@ -200,14 +221,14 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                     <div className="pb-6">
                       <div className="flex gap-2">
                         <Image
-                          src="/img/handexLogo.png"
+                          src={exam.company_logo}
                           alt="Handex Logo"
                           width={40}
                           height={40}
                           className="object-contain"
                         />
                         <h3 className="font-gilroy text-base text-grayText70">
-                          Handex
+                          {exam.company}
                         </h3>
                       </div>
                       <p className="pt-2.5 font-gilroy h-[90px] text-xl leading-8 text-textSecondaryDefault font-medium">
@@ -229,7 +250,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                   <div className="py-4">
                     <div className="flex justify-start gap-2">
                       <p className="font-gilroy text-grayTextinBox text-base font-normal leading-6">
-                        {exam.duration}
+                        {formatDuration(exam.duration)}
                       </p>
                       <div className="w-2 h-2 bg-grayTextinBox rounded-full self-center"></div>
                       <p className="font-gilroy text-grayTextinBox text-base font-normal leading-6">
@@ -243,7 +264,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                           exam.paid ? "text-green400" : "text-darkBlue100"
                         } font-normal leading-4`}
                       >
-                        {exam.paid ? "Ödənilib" : `${exam.price}$`}
+                        {exam.paid ? "Ödənilib" : `${exam.price} ₼`}
                       </p>
                       {isSaved ? (
                         <FaBookmark
@@ -260,13 +281,13 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
 
                     <div className="w-full flex flex-row gap-4 pt-3">
                       <button
-                        onClick={handleLoginOrRulesClick}
+                        onClick={() => handleLoginOrRulesClick(exam)}
                         className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                       >
                         Daxil ol
                       </button>
                       <button
-                        onClick={() => handleDetailClick(exam.id)}
+                        onClick={() => handleDetailClick(exam.slug)}
                         className="py-3 px-4 h-11 w-full font-gilroy leading-6 rounded-md bg-buttonSecondaryDefault text-grayButtonText hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
                       >
                         Ətraflı
@@ -310,14 +331,14 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                 <div className="pb-6">
                   <div className="flex gap-2">
                     <Image
-                      src="/img/handexLogo.png"
+                      src={exam.company_logo}
                       alt="Handex Logo"
                       width={40}
                       height={40}
-                      className="object-contain"
+                      className="object-contain rounded-full "
                     />
-                    <h3 className="font-gilroy text-base text-grayText70">
-                      Handex
+                    <h3 className="font-gilroy items-center justify-center flex text-base text-grayText70">
+                      {exam.company}
                     </h3>
                   </div>
                   <p className="pt-2.5 font-gilroy h-[90px] text-xl leading-8 text-textSecondaryDefault font-medium">
@@ -339,11 +360,11 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
               <div className="py-4">
                 <div className="flex justify-start gap-2">
                   <p className="font-gilroy text-grayTextinBox text-base font-normal leading-6">
-                    {exam.duration}
+                    {formatDuration(exam.duration)}
                   </p>
                   <div className="w-2 h-2 bg-grayTextinBox rounded-full self-center"></div>
                   <p className="font-gilroy text-grayTextinBox text-base font-normal leading-6">
-                    {exam.questions} sual
+                    {exam.count} sual
                   </p>
                 </div>
 
@@ -353,7 +374,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                       exam.paid ? "text-green400" : "text-darkBlue100"
                     } font-normal leading-4`}
                   >
-                    {exam.paid ? "Ödənilib" : `${exam.price}$`}
+                    {exam.paid ? "Ödənilib" : `${exam.price} ₼`}
                   </p>
                   {isSaved ? (
                     <FaBookmark
@@ -370,13 +391,13 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
 
                 <div className="w-full flex flex-row gap-4 pt-3">
                   <button
-                    onClick={handleLoginOrRulesClick}
+                    onClick={() => handleLoginOrRulesClick(exam)}
                     className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                   >
                     Daxil ol
                   </button>
                   <button
-                    onClick={() => handleDetailClick(exam.id)}
+                    onClick={() => handleDetailClick(exam.slug)}
                     className="py-3 px-4 h-11 w-full font-gilroy leading-6 rounded-md bg-buttonSecondaryDefault text-grayButtonText hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
                   >
                     Ətraflı

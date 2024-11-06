@@ -2,26 +2,20 @@ import { useRouter } from "next/router";
 import React from "react";
 import { IoHourglassOutline } from "react-icons/io5";
 
-function FinishExamModal({ closeModal }) {
-  const router = useRouter();
+function FinishExamModal({ closeModal, handleFinishExam }) {
   const handleBackgroundClick = (e) => {
     if (e.target === e.currentTarget) {
       closeModal();
     }
   };
 
-  const handleFinishExam = () => {
-    // Logic for finishing the exam
-    // Redirect to "İmtahan Nəticələri" page
-    router.push("/imtahan-neticeleri");
-  };
   return (
     <div
       onClick={handleBackgroundClick}
       className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]"
     >
       <div className="bg-white rounded-xl shadow-lg p-6 w-96">
-        {/* Icon */}
+        {/* Icon and content */}
         <div className="flex justify-center mb-4">
           <div className="flex items-center justify-center w-16 h-16 rounded-full  ">
             <IoHourglassOutline
@@ -37,7 +31,6 @@ function FinishExamModal({ closeModal }) {
         >
           İmtahanı bitir
         </h3>
-
         {/* Description */}
         <p
           className="text-sm text-gray-600 text-center mt-2"
@@ -47,19 +40,18 @@ function FinishExamModal({ closeModal }) {
           alına bilməz.
         </p>
 
-        {/* Buttons */}
         <div className="mt-6 flex justify-between">
           <button
-            onClick={closeModal}
             className="w-full py-2 px-4 mr-2 bg-buttonSecondaryDefault text-gray-700 rounded-lg hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed focus:outline-none"
-            style={{ fontFamily: "Gilroy" }}
+            onClick={closeModal}
+            // ... rest of your button props
           >
             Ləğv et
           </button>
           <button
-            onClick={handleFinishExam}
             className="w-full py-2 px-4 ml-2 bg-buttonPrimaryDefault text-white rounded-lg hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary focus:outline-none"
-            style={{ fontFamily: "Gilroy" }}
+            onClick={handleFinishExam}
+            // ... rest of your button props
           >
             Bitir
           </button>

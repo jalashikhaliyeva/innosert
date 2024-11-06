@@ -283,42 +283,39 @@ function TableComponent({
   const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
 
   const filteredData = data
-    ?.filter((item) => {
-      const { from, to } = dateFilter;
-      const itemDate = new Date(item.created_at);
+  ?.filter((item) => {
+    // Include items without 'created_at'
+    if (!item.created_at) return true;
 
-      let fromDate = new Date(-8640000000000000); // Minimum date
-      let toDate = new Date(8640000000000000); // Maximum date
+    const { from, to } = dateFilter;
+    const itemDate = new Date(item.created_at);
 
-      if (from.year && from.month && from.day) {
-        fromDate = new Date(from.year, from.month - 1, from.day);
-      }
+    // Exclude items with invalid 'created_at'
+    if (isNaN(itemDate)) return false;
 
-      if (to.year && to.month && to.day) {
-        toDate = new Date(to.year, to.month - 1, to.day);
-      }
+    let fromDate = new Date(-8640000000000000); // Minimum date
+    let toDate = new Date(8640000000000000); // Maximum date
 
-      return itemDate >= fromDate && itemDate <= toDate;
-    })
-    .filter((item) => {
-      const minPoints = pointsFilter.min
-        ? parseInt(pointsFilter.min)
-        : -Infinity;
-      const maxPoints = pointsFilter.max
-        ? parseInt(pointsFilter.max)
-        : Infinity;
-      const itemScore = parseInt(item.score);
-      if (itemScore < minPoints || itemScore > maxPoints) {
-        return false;
-      }
-      return true;
-    })
-    .filter((item) => {
-      if (levelFilter.length === 0) {
-        return true;
-      }
-      return levelFilter.includes(item.level);
-    });
+    if (from.year && from.month && from.day) {
+      fromDate = new Date(from.year, from.month - 1, from.day);
+    }
+
+    if (to.year && to.month && to.day) {
+      toDate = new Date(to.year, to.month - 1, to.day);
+    }
+
+    return itemDate >= fromDate && itemDate <= toDate;
+  })
+  .filter((item) => {
+    const minPoints = pointsFilter.min ? parseInt(pointsFilter.min) : -Infinity;
+    const maxPoints = pointsFilter.max ? parseInt(pointsFilter.max) : Infinity;
+    const itemScore = parseInt(item.score);
+    return itemScore >= minPoints && itemScore <= maxPoints;
+  })
+  .filter((item) => {
+    if (levelFilter.length === 0) return true;
+    return levelFilter.includes(item.level);
+  });
 
   // Sorting logic
   const sortedData = questionOrder

@@ -5,6 +5,11 @@ import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import axios from "axios";
+const parseDate = (dateString) => {
+  const [time, date] = dateString.split(" ");
+  const [day, month, year] = date.split(".");
+  return new Date(year, month - 1, day, ...time.split(":"));
+};
 
 function Results({ examSlug }) {
   const router = useRouter();
@@ -17,6 +22,23 @@ function Results({ examSlug }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [openFilter, setOpenFilter] = useState(null);
+// Define the current year
+const currentYear = new Date().getFullYear();
+
+// Generate an array of years from 2000 to the current year
+const years = Array.from({ length: currentYear - 1999 }, (_, i) => 2000 + i);
+
+// Define months as numbers (1-12)
+const months = Array.from({ length: 12 }, (_, i) => i + 1);
+
+// Alternatively, define months with names for better UX
+// const months = [
+//   "Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun",
+//   "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+// ];
+
+// Define days as numbers (1-31)
+const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   // Filter states
   const [nameFilter, setNameFilter] = useState("");
@@ -72,12 +94,6 @@ function Results({ examSlug }) {
     };
   }, [openFilter, dropdownRefs]);
 
-  // Generate options for years, months, and days
-  const currentYear = new Date().getFullYear();
-  const years = Array.from({ length: 10 }, (_, i) => currentYear - i);
-  const months = Array.from({ length: 12 }, (_, i) => i + 1);
-  const days = Array.from({ length: 31 }, (_, i) => i + 1);
-
   // Fetch results data from API
   useEffect(() => {
     const fetchResults = async () => {
@@ -91,8 +107,12 @@ function Results({ examSlug }) {
             },
           }
         );
-        console.log("Results API Response:", response.data);
-        setData(response.data.data || []); // Ensure data is an array
+        const fetchedData = response.data.data.map(item => ({
+          ...item,
+          examDate: parseDate(item.start_exam),
+          completionDate: parseDate(item.finish_exam)
+        }));
+        setData(fetchedData);
       } catch (err) {
         console.error("Error fetching results:", err);
         setError("Nəticələr alınarkən səhv baş verdi.");
@@ -125,75 +145,40 @@ function Results({ examSlug }) {
   // Filtering logic
   const filteredData = data
     .filter((item) => {
-      // Name filter
-      if (
-        nameFilter &&
-        !item.name.toLowerCase().includes(nameFilter.toLowerCase())
-      ) {
+      if (nameFilter && !item.user.toLowerCase().includes(nameFilter.toLowerCase())) {
         return false;
       }
       return true;
     })
     .filter((item) => {
-      // Exam Date filter
       const { from: examFrom, to: examTo } = examDateFilter;
-      const itemExamDate = new Date(item.examDate);
       if (examFrom.year && examFrom.month && examFrom.day) {
-        const examFromDate = new Date(
-          examFrom.year,
-          examFrom.month - 1,
-          examFrom.day
-        );
-        if (itemExamDate < examFromDate) {
-          return false;
-        }
+        const fromDate = new Date(examFrom.year, examFrom.month - 1, examFrom.day);
+        if (item.examDate < fromDate) return false;
       }
       if (examTo.year && examTo.month && examTo.day) {
-        const examToDate = new Date(examTo.year, examTo.month - 1, examTo.day);
-        if (itemExamDate > examToDate) {
-          return false;
-        }
+        const toDate = new Date(examTo.year, examTo.month - 1, examTo.day);
+        if (item.examDate > toDate) return false;
       }
       return true;
     })
     .filter((item) => {
-      // Completion Date filter
       const { from: completionFrom, to: completionTo } = completionDateFilter;
-      const itemCompletionDate = new Date(item.completionDate);
       if (completionFrom.year && completionFrom.month && completionFrom.day) {
-        const completionFromDate = new Date(
-          completionFrom.year,
-          completionFrom.month - 1,
-          completionFrom.day
-        );
-        if (itemCompletionDate < completionFromDate) {
-          return false;
-        }
+        const fromDate = new Date(completionFrom.year, completionFrom.month - 1, completionFrom.day);
+        if (item.completionDate < fromDate) return false;
       }
       if (completionTo.year && completionTo.month && completionTo.day) {
-        const completionToDate = new Date(
-          completionTo.year,
-          completionTo.month - 1,
-          completionTo.day
-        );
-        if (itemCompletionDate > completionToDate) {
-          return false;
-        }
+        const toDate = new Date(completionTo.year, completionTo.month - 1, completionTo.day);
+        if (item.completionDate > toDate) return false;
       }
       return true;
     })
     .filter((item) => {
-      // Result filter by percentage ranges
-      const result = parseInt(item.result, 10);
-      if (resultFilter === "75+" && result < 75) {
-        return false;
-      }
-      if (resultFilter === "45+" && result < 45) {
-        return false;
-      }
-      if (resultFilter === "20+" && result < 20) {
-        return false;
-      }
+      const result = parseInt(item.totalScore, 10);
+      if (resultFilter === "75+" && result < 75) return false;
+      if (resultFilter === "45+" && result < 45) return false;
+      if (resultFilter === "20+" && result < 20) return false;
       return true;
     });
 
@@ -658,21 +643,24 @@ function Results({ examSlug }) {
           </thead>
           <tbody>
             {paginatedData.length > 0 ? (
-              paginatedData.map((item) => (
+              paginatedData.map((item, index) => (
                 <tr
                   key={item.id}
                   className="bg-tableBgDefault border-b border-borderTableCel hover:bg-gray-100"
                 >
-                  <td className="px-2 py-2">{item.id}</td>
+                  <td className="px-4 py-2">
+                    {currentPage * itemsPerPage + index + 1}
+                  </td>
+
                   <td
                     onClick={() => handleClick(item)}
                     className="px-2 py-2 cursor-pointer "
                   >
-                    {item.name}
+                    {item.user}
                   </td>
-                  <td className="px-2 py-2">{item.examDate}</td>
-                  <td className="px-2 py-2">{item.completionDate}</td>
-                  <td className="px-2 py-2">{item.result}%</td>
+                  <td className="px-2 py-2">{item.start_exam}</td>
+                  <td className="px-2 py-2">{item.finish_exam}</td>
+                  <td className="px-2 py-2">{item.totalScore}%</td>
                 </tr>
               ))
             ) : (

@@ -1,38 +1,29 @@
-import { useState } from "react";
-import { FaAngleRight } from "react-icons/fa";
-import Container from "../Container";
-import FinishExamModal from "../FinishExam/FinishExamModal";
+import React from "react";
 
-function ExamFooter({ onNext }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
+function ExamFooter({
+  onNext,
+  onPrevious,
+  isLastQuestion,
+  showPreviousButton,
+}) {
   return (
-    <>
-      <div className="flex !justify-end p-5 lg:py-6 m-5 lg:m-0 mt-auto bg-white shadow-Cardshadow">
-        <div className="flex gap-6 items-center lg:mr-[100px]">
-          {/* Open Modal on  */}
-          <p
-            onClick={openModal}
-            className="font-gilroy text-lg leading-7 font-normal cursor-pointer"
-          >
-            İmtahanı bitir
-          </p>
-          <button
-            onClick={onNext}
-            className="bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white font-normal text-lg py-2 px-4 rounded-lg flex gap-2 items-center"
-          >
-            Növbəti suala keç
-            <FaAngleRight className="text-white" />
-          </button>
-        </div>
-      </div>
-
-      {/* Finish Exam Modal */}
-      {isModalOpen && <FinishExamModal closeModal={closeModal} />}
-    </>
+    <div className="flex justify-end gap-4 p-4 bg-white shadow-md">
+      {showPreviousButton && (
+        <button
+          onClick={onPrevious}
+          disabled={onPrevious == null}
+          className="bg-buttonSecondaryDefault text-grayButtonText text-lg py-2 px-4 rounded-lg hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed  font-gilroy"
+        >
+          Əvvəlki suala keç
+        </button>
+      )}
+      <button
+        onClick={onNext}
+        className="bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white font-normal text-lg py-2 px-4 rounded-lg flex gap-2 items-center"
+      >
+        {isLastQuestion ? "İmtahanı Bitir" : "Növbəti suala keç"}
+      </button>
+    </div>
   );
 }
 

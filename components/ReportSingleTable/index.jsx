@@ -1,26 +1,20 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import DeleteReportModal from "./DeleteReportModal";
 
-function ReportSingleTable() {
-  const router = useRouter(); // Initialize useRouter hook
+function ReportSingleTable({ reportData }) {
+  const router = useRouter();
+  const [data, setData] = useState(reportData || []);
+  console.log(reportData, "reportData");
+
   // State declarations
   const [currentPage, setCurrentPage] = useState(0);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAction, setSelectedAction] = useState(null);
   const [selectedId, setSelectedId] = useState(null);
-
-  const [modifiedItems, setModifiedItems] = useState(() => {
-    // Retrieve modified items from local storage on component mount
-    if (typeof window !== "undefined") {
-      const savedData = localStorage.getItem("modifiedItems");
-      return savedData ? JSON.parse(savedData) : {};
-    }
-    return {};
-  });
 
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page set to 10
   const [openFilter, setOpenFilter] = useState(null);
@@ -30,21 +24,27 @@ function ReportSingleTable() {
     to: { year: "", month: "", day: "" },
   });
 
+  // Update data state when reportData prop changes
+  useEffect(() => {
+    setData(reportData || []);
+  }, [reportData]);
+
+  // Handle confirming the action from the modal
   const handleConfirmAction = () => {
-    const updatedItems = {
-      ...modifiedItems,
-      [selectedId]: selectedAction,
-    };
-
-    // Save the updated modified items to state and local storage
-    setModifiedItems(updatedItems);
-    localStorage.setItem("modifiedItems", JSON.stringify(updatedItems)); // Save to local storage
-
-    setIsModalOpen(false); // Close the modal
+    setData((prevData) =>
+      prevData.map((item) => {
+        if (item.id === selectedId) {
+          return {
+            ...item,
+            updated_data: true,
+            status: selectedAction === "Düzəliş edildi" ? true : false,
+          };
+        }
+        return item;
+      })
+    );
+    setIsModalOpen(false);
   };
-  // Refs for dropdowns
-  const statusRef = useRef(null);
-  const dateRef = useRef(null);
 
   // Reset filters function
   const resetFilters = () => {
@@ -68,199 +68,30 @@ function ReportSingleTable() {
     setCurrentPage(0); // Reset to first page when items per page change
   };
 
-  // Close dropdown when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        openFilter &&
-        ((statusRef.current && !statusRef.current.contains(event.target)) ||
-          (dateRef.current && !dateRef.current.contains(event.target)))
-      ) {
-        setOpenFilter(null);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [openFilter]);
-
-  const data = [
-    {
-      id: 1,
-      reporter: "John Doe",
-      errorType: "UI Bug",
-      details: "Buttons are not aligned on the homepage correctly",
-      date: "2023-10-01",
-      status: "Tamamlandı",
-    },
-    {
-      id: 2,
-      reporter: "Jane Smith",
-      errorType: "Backend Error",
-      details: "API request fails on login",
-      date: "2023-09-28",
-      status: "Gözlənilir",
-    },
-    {
-      id: 3,
-      reporter: "Alice Johnson",
-      errorType: "UI Bug",
-      details: "Text overlap in mobile view",
-      date: "2023-09-30",
-      status: "Tamamlandı",
-    },
-    {
-      id: 4,
-      reporter: "Mark Williams",
-      errorType: "Performance Issue",
-      details: "Slow page load on dashboard",
-      date: "2023-09-27",
-      status: "Gözlənilir",
-    },
-    {
-      id: 5,
-      reporter: "Emma Brown",
-      errorType: "Security Vulnerability",
-      details: "Weak password policy",
-      date: "2023-09-29",
-      status: "Tamamlandı",
-    },
-    {
-      id: 6,
-      reporter: "Michael Davis",
-      errorType: "Backend Error",
-      details: "Database connection timeout",
-      date: "2023-09-25",
-      status: "Tamamlandı",
-    },
-    {
-      id: 7,
-      reporter: "Sophia Miller",
-      errorType: "UI Bug",
-      details: "Footer links not clickable",
-      date: "2023-09-24",
-      status: "Gözlənilir",
-    },
-    {
-      id: 8,
-      reporter: "James Wilson",
-      errorType: "UI Bug",
-      details: "Header alignment off in IE",
-      date: "2023-09-23",
-      status: "Tamamlandı",
-    },
-    {
-      id: 9,
-      reporter: "Olivia Martinez",
-      errorType: "Backend Error",
-      details: "500 error on form submission",
-      date: "2023-09-22",
-      status: "Gözlənilir",
-    },
-    {
-      id: 10,
-      reporter: "Liam Anderson",
-      errorType: "UI Bug",
-      details: "Image carousel not working",
-      date: "2023-09-21",
-      status: "Tamamlandı",
-    },
-    {
-      id: 11,
-      reporter: "Isabella Thomas",
-      errorType: "Performance Issue",
-      details: "High memory usage on reports",
-      date: "2023-09-20",
-      status: "Gözlənilir",
-    },
-    {
-      id: 12,
-      reporter: "Noah Lee",
-      errorType: "Backend Error",
-      details: "Incorrect data returned by API",
-      date: "2023-09-19",
-      status: "Tamamlandı",
-    },
-    {
-      id: 13,
-      reporter: "Mia Walker",
-      errorType: "Security Vulnerability",
-      details: "Sensitive data exposed in logs",
-      date: "2023-09-18",
-      status: "Tamamlandı",
-    },
-    {
-      id: 14,
-      reporter: "Ethan Harris",
-      errorType: "UI Bug",
-      details: "Modal not closing on click",
-      date: "2023-09-17",
-      status: "Gözlənilir",
-    },
-    {
-      id: 15,
-      reporter: "Amelia Clark",
-      errorType: "Backend Error",
-      details: "Session timeout too short",
-      date: "2023-09-16",
-      status: "Tamamlandı",
-    },
-    {
-      id: 16,
-      reporter: "Logan Martinez",
-      errorType: "UI Bug",
-      details: "Sidebar not scrolling",
-      date: "2023-09-15",
-      status: "Gözlənilir",
-    },
-    {
-      id: 17,
-      reporter: "Charlotte Hall",
-      errorType: "Performance Issue",
-      details: "High CPU usage on user profile",
-      date: "2023-09-14",
-      status: "Tamamlandı",
-    },
-    {
-      id: 18,
-      reporter: "Aiden Allen",
-      errorType: "Backend Error",
-      details: "API rate limit exceeded",
-      date: "2023-09-13",
-      status: "Gözlənilir",
-    },
-    {
-      id: 19,
-      reporter: "Harper Young",
-      errorType: "UI Bug",
-      details: "Search box not returning results",
-      date: "2023-09-12",
-      status: "Tamamlandı",
-    },
-    {
-      id: 20,
-      reporter: "Daniel King",
-      errorType: "Security Vulnerability",
-      details: "SQL injection vulnerability",
-      date: "2023-09-11",
-      status: "Gözlənilir",
-    },
-  ];
-
-  // Filtering and sorting logic (you can extend this as needed)
-  const filteredData = data
+  // Filter data based on status and date
+  const filteredData = (data || [])
     .filter((item) => {
       // Status filter
-      if (statusFilter && item.status !== statusFilter) {
-        return false;
+      if (statusFilter) {
+        if (
+          statusFilter === "Düzəliş edildi" &&
+          (!item.updated_data || !item.status)
+        ) {
+          return false;
+        }
+        if (
+          statusFilter === "Xəta deyil" &&
+          (!item.updated_data || item.status)
+        ) {
+          return false;
+        }
       }
       return true;
     })
     .filter((item) => {
-      // Date filter
+      // Date filter logic
       const { from, to } = dateFilter;
-      const itemDate = new Date(item.date);
+      const itemDate = new Date(item.created_at); // Assuming 'created_at' is the date
       let fromDate = null;
       let toDate = null;
 
@@ -319,36 +150,37 @@ function ReportSingleTable() {
 
             <tbody>
               {paginatedData.length > 0 ? (
-                paginatedData.map((item) => (
+                paginatedData.map((item, index) => (
                   <tr
                     key={item.id}
                     className="bg-tableBgDefault border-b border-borderTableCel hover:bg-headerTableCel"
                   >
-                    <td className="px-4 py-3">{item.id}</td>
-                    <td className="px-4 py-3">{item.reporter}</td>
-                    <td className="px-4 py-3">{item.errorType}</td>
+                    <td className="px-4 py-3">{index + 1}</td>
+                    <td className="px-4 py-3">{item.user}</td>
+                    <td className="px-4 py-3">{item.type}</td>
                     <td className="px-4 py-3 relative group">
-                      {item.details.length > 30
-                        ? `${item.details.substring(0, 30)}...`
-                        : item.details}
+                      {item.title.length > 30
+                        ? `${item.title.substring(0, 30)}...`
+                        : item.title}
 
-                      <span className="absolute hidden group-hover:block bg-white text-gray-800 border text-sm rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 z-10 whitespace-nowrap">
-                        {item.details}
-                      </span>
+                      {item.title.length > 30 && (
+                        <span className="absolute hidden group-hover:block bg-white text-gray-800 border text-sm rounded py-1 px-2 bottom-full left-1/2 transform -translate-x-1/2 z-10 whitespace-nowrap">
+                          {item.title}
+                        </span>
+                      )}
                     </td>
 
-                    <td className="px-4 py-3">{item.date}</td>
+                    <td className="px-4 py-3">{item.created_at}</td>
                     <td className="px-4 py-3">
-                      {modifiedItems[item.id] ? (
+                      {item.updated_data ? (
                         <span
                           style={{
-                            color:
-                              modifiedItems[item.id] === "Düzəliş edildi"
-                                ? "#30B83E"
-                                : "#E03D3E",
+                            color: item.status
+                              ? "#30B83E" // "Düzəliş edildi"
+                              : "#E03D3E", // "Xəta deyil"
                           }}
                         >
-                          {modifiedItems[item.id]}
+                          {item.status ? "Düzəliş edildi" : "Xəta deyil"}
                         </span>
                       ) : (
                         <div className="flex items-center gap-2">
@@ -422,10 +254,10 @@ function ReportSingleTable() {
               pageRangeDisplayed={5}
               onPageChange={handlePageClick}
               containerClassName="flex justify-center items-center gap-2 w-full"
-              pageClassName="inline-block" // Minimal styling on li elements
-              pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
-              activeClassName="" // Remove active styles from li elements
-              activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
+              pageClassName="inline-block"
+              pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
+              activeClassName=""
+              activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
               previousClassName={currentPage === 0 ? "text-gray-300" : ""}
               previousLinkClassName={
                 currentPage === 0 ? "cursor-not-allowed" : ""
@@ -452,6 +284,7 @@ function ReportSingleTable() {
           onCancel={() => setIsModalOpen(false)}
           onDelete={handleConfirmAction}
           actionType={selectedAction} // Pass selected action
+          selectedId={selectedId} // Pass selected ID
         />
       )}
     </div>

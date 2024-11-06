@@ -16,8 +16,12 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import ExamListCompany from "@/components/ExamsListCompany";
 import ExamsListNavigationTeacher from "@/components/ExamsListNavigationTeacher";
 import AddExamModal from "@/components/AddExamModal";
+import { UserContext } from "@/shared/context/UserContext";
+import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
+import CompanySidebar from "@/components/CompanySidebar";
 
 function SubImtahan() {
+  const { user } = useContext(UserContext);
   const router = useRouter();
   const { slug } = router.query;
 
@@ -137,11 +141,13 @@ function SubImtahan() {
         <HeaderInternal />
       </div>
       <div className="block lg:hidden">
-        <TeacherDashboardHeader />
+      {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+      {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
       <div className="flex">
         <div className="hidden lg:block md:w-[20%]">
-          <TeacherSidebar />
+        {user?.data.roles === "Teacher" && <TeacherSidebar />}
+        {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>

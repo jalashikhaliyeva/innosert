@@ -113,9 +113,9 @@ function TeacherSidebar() {
         <ul className="mx-4">
           <li className="mb-2">
             <Link
-              href={`/suallar-toplusu`}
+              href={`/sual-bazasi`}
               className={`flex items-center space-x-4 px-4 py-2 text-grayButtonText hover:bg-gray-100 rounded-lg ${
-                isActive(`/suallar-toplusu`) ? "bg-buttonGhostPressed" : ""
+                isActive(`/sual-bazasi`) ? "bg-buttonGhostPressed" : ""
               }`}
             >
               <svg
@@ -134,7 +134,7 @@ function TeacherSidebar() {
               {/* Removed fill-color logic */}
               <span
                 className={`text-lg font-gilroy font-normal leading-6 ${
-                  isActive(`/suallar-toplusu`) ? "text-brandBlue500" : ""
+                  isActive(`/sual-bazasi`) ? "text-brandBlue500" : ""
                 }`}
               >
                 Suallar toplusu
@@ -144,9 +144,9 @@ function TeacherSidebar() {
 
           <li className="mb-2">
             <Link
-              href={`/imtahanlar-siyahisi`}
+              href={`/umumi-imtahanlar`}
               className={`flex items-center space-x-4 px-4 py-2 text-grayButtonText hover:bg-gray-100 rounded-lg ${
-                isActive(`/imtahanlar-siyahisi`) ? "bg-buttonGhostPressed" : ""
+                isActive(`/umumi-imtahanlar`) ? "bg-buttonGhostPressed" : ""
               }`}
             >
               <svg
@@ -165,7 +165,7 @@ function TeacherSidebar() {
               {/* Removed fill-color logic */}
               <span
                 className={`text-lg font-gilroy font-normal leading-6 ${
-                  isActive(`/imtahanlar-siyahisi`) ? "text-brandBlue500" : ""
+                  isActive(`/umumi-imtahanlar`) ? "text-brandBlue500" : ""
                 }`}
               >
                 İmtahanlar

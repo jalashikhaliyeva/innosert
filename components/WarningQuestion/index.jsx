@@ -1,22 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
 import { PiWarningOctagon } from "react-icons/pi";
 
-function WarningQuestion() {
+function WarningQuestion({ questionId, onSubmitReport }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isCheckboxSelected, setIsCheckboxSelected] = useState(false);
+  const [selectedTypes, setSelectedTypes] = useState([]);
+  const [note, setNote] = useState("");
   const modalRef = useRef(null);
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
   };
 
-  const handleCheckboxChange = () => {
-    // Enable "Send" button only if any checkbox is selected
-    const checkboxes = document.querySelectorAll("input[type='checkbox']");
-    const isAnyChecked = Array.from(checkboxes).some(
-      (checkbox) => checkbox.checked
+  const handleCheckboxChange = (event) => {
+    const { value, checked } = event.target;
+    setSelectedTypes((prevTypes) =>
+      checked ? [...prevTypes, value] : prevTypes.filter((type) => type !== value)
     );
-    setIsCheckboxSelected(isAnyChecked);
+  };
+
+  const handleSubmit = () => {
+    const reports = selectedTypes.map((type) => ({
+      id: questionId,
+      type: type === "Cavabda xəta var" ? "Cavabda xeta" : "Sualda xeta",
+      title: note,
+    }));
+    onSubmitReport(reports);
+    setIsModalOpen(false);
+    setSelectedTypes([]);
+    setNote("");
   };
 
   const handleClickOutside = (event) => {
@@ -31,14 +42,15 @@ function WarningQuestion() {
     } else {
       document.removeEventListener("mousedown", handleClickOutside);
     }
-
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isModalOpen]);
 
+  const isCheckboxSelected = selectedTypes.length > 0;
+
   return (
-    <div className="flex justify-end">
+    <div className="flex justify-end pb-4">
       <button onClick={handleModalToggle}>
         <PiWarningOctagon className="size-6" />
       </button>
@@ -64,8 +76,7 @@ function WarningQuestion() {
                 Problemi bildir
               </h2>
               <p className="text-grayButtonText mb-4 text-center font-gilroy">
-                Lorem ipsumLorem ipsum dolor sit amet, consectetur adipiscing
-                elit.
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               </p>
             </div>
 
@@ -74,6 +85,7 @@ function WarningQuestion() {
                 <input
                   type="checkbox"
                   className="mr-2"
+                  value="Sualda xəta var"
                   onChange={handleCheckboxChange}
                 />
                 Sualda xəta var
@@ -82,6 +94,7 @@ function WarningQuestion() {
                 <input
                   type="checkbox"
                   className="mr-2"
+                  value="Cavabda xəta var"
                   onChange={handleCheckboxChange}
                 />
                 Cavabda xəta var
@@ -89,7 +102,11 @@ function WarningQuestion() {
             </div>
 
             <p className="pb-2 font-gilroy">Qeydiniz</p>
-            <textarea className="w-full p-2 border rounded-xl mb-4" />
+            <textarea
+              className="w-full p-2 border rounded-xl mb-4"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
 
             <div className="flex gap-2 items-center justify-center">
               <button
@@ -100,6 +117,7 @@ function WarningQuestion() {
               </button>
               <button
                 disabled={!isCheckboxSelected}
+                onClick={handleSubmit}
                 className={`px-4 py-2 text-lg font-gilroy rounded-lg ${
                   isCheckboxSelected
                     ? "bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"

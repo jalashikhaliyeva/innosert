@@ -34,208 +34,50 @@ const SubcategoryPage = ({
   const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
-  const examsPerPage = 8;
-  useEffect(() => {
-    // Unique list of exams (no duplicates)
-    const fetchedExams = [
-      {
-        id: "microsoft-office-specialist-excel-expert",
-        name: "Microsoft Office Specialist Excel Expert",
-        duration: "1 saat",
-        questions: 30,
-        paid: true,
-        price: 20,
-      },
-      {
-        id: "certified-project-manager",
-        name: "Certified Project Manager",
-        duration: "2 saat",
-        questions: 50,
-        paid: false,
-        price: 30,
-      },
-      {
-        id: "advanced-graphic-design",
-        name: "Advanced Graphic Design",
-        duration: "1.5 saat",
-        questions: 40,
-        paid: true,
-        price: 25,
-      },
-      {
-        id: "full-stack-developer",
-        name: "Full Stack Developer",
-        duration: "3 saat",
-        questions: 60,
-        paid: false,
-        price: 35,
-      },
-      {
-        id: "data-science-specialist",
-        name: "Data Science Specialist",
-        duration: "2.5 saat",
-        questions: 45,
-        paid: true,
-        price: 28,
-      },
-      {
-        id: "digital-marketing-expert",
-        name: "Digital Marketing Expert",
-        duration: "1.2 saat",
-        questions: 35,
-        paid: false,
-        price: 22,
-      },
-      {
-        id: "cyber-security-analyst",
-        name: "Cyber Security Analyst",
-        duration: "2 saat",
-        questions: 40,
-        paid: true,
-        price: 27,
-      },
-      {
-        id: "cloud-computing-engineer",
-        name: "Cloud Computing Engineer",
-        duration: "2.5 saat",
-        questions: 50,
-        paid: false,
-        price: 33,
-      },
-      {
-        id: "exam-1",
-        name: "Exam 1",
-        duration: "2 saat",
-        questions: 35,
-        paid: false,
-        price: 18,
-      },
-      {
-        id: "exam-2",
-        name: "Exam 2",
-        duration: "3 saat",
-        questions: 40,
-        paid: true,
-        price: 24,
-      },
-      {
-        id: "exam-3",
-        name: "Exam 3",
-        duration: "1 saat",
-        questions: 45,
-        paid: false,
-        price: 24,
-      },
-      {
-        id: "exam-4",
-        name: "Exam 4",
-        duration: "2 saat",
-        questions: 50,
-        paid: true,
-        price: 28,
-      },
-      {
-        id: "exam-5",
-        name: "Exam 5",
-        duration: "3 saat",
-        questions: 55,
-        paid: false,
-        price: 30,
-      },
-      {
-        id: "exam-6",
-        name: "Exam 6",
-        duration: "1 saat",
-        questions: 60,
-        paid: true,
-        price: 32,
-      },
-      {
-        id: "exam-7",
-        name: "Exam 7",
-        duration: "2 saat",
-        questions: 65,
-        paid: false,
-        price: 36,
-      },
-      {
-        id: "exam-8",
-        name: "Exam 8",
-        duration: "3 saat",
-        questions: 70,
-        paid: true,
-        price: 36,
-      },
-      {
-        id: "exam-9",
-        name: "Exam 9",
-        duration: "1 saat",
-        questions: 75,
-        paid: false,
-        price: 42,
-      },
-      {
-        id: "exam-10",
-        name: "Exam 10",
-        duration: "2 saat",
-        questions: 80,
-        paid: true,
-        price: 40,
-      },
-      {
-        id: "exam-11",
-        name: "Exam 11",
-        duration: "3 saat",
-        questions: 85,
-        paid: false,
-        price: 48,
-      },
-      {
-        id: "exam-12",
-        name: "Exam 12",
-        duration: "1 saat",
-        questions: 90,
-        paid: true,
-        price: 44,
-      },
-      {
-        id: "exam-13",
-        name: "Exam 13",
-        duration: "2 saat",
-        questions: 95,
-        paid: false,
-        price: 54,
-      },
-      {
-        id: "exam-14",
-        name: "Exam 14",
-        duration: "3 saat",
-        questions: 100,
-        paid: true,
-        price: 48,
-      },
-      {
-        id: "exam-15",
-        name: "Exam 15",
-        duration: "1 saat",
-        questions: 105,
-        paid: false,
-        price: 60,
-      },
-    ];
+  const [loading, setLoading] = useState(true);
 
-    setExams(fetchedExams);
-  }, []); // Run only once when the component is mounted
+  const examsPerPage = 8;
+  // Fetch exams based on category and subcategory slugs
+  useEffect(() => {
+    const fetchExams = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `https://innocert-admin.markup.az/api/exams/${category}/${subcategory}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        const data = await response.json();
+        console.log(data.data, "data SubcategoryPage");
+
+        setExams(data.data); // Set exams from the API response
+      } catch (error) {
+        console.error("Failed to fetch exams:", error);
+      } finally {
+        setLoading(false); // Set loading to false once data is fetched
+      }
+    };
+
+    if (category && subcategory) {
+      fetchExams();
+    }
+  }, [category, subcategory]);
 
   // Pagination logic
-  const pageCount = Math.ceil(exams.length / examsPerPage);
+  const pageCount = Math.ceil(exams?.length / examsPerPage);
 
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
     window.scrollTo(0, 0); // Optional: Scroll to the top after pagination
   };
 
-  const paginateExams = exams.slice(
+  const paginateExams = exams?.slice(
     currentPage * examsPerPage,
     (currentPage + 1) * examsPerPage
   );
@@ -302,12 +144,22 @@ const SubcategoryPage = ({
       <section className="my-28">
         <Container>
           <SortTitleExams category={subcategory} />
-          <ExamCard
-            openLoginModal={handleLoginOrRulesClick}
-            openRegisterModal={handleLoginOrRulesClick}
-            widthClass="w-[23.8%]"
-            exams={paginateExams} // Display paginated exams
-          />
+
+          {loading ? (
+            <Spinner />
+          ) : paginateExams.length > 0 ? (
+            <ExamCard
+              openLoginModal={handleLoginOrRulesClick}
+              openRegisterModal={handleLoginOrRulesClick}
+              widthClass="w-[23.8%]"
+              exams={paginateExams} // Display paginated exams
+            />
+          ) : (
+            <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
+              &quot;{subcategory}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
+            </p>
+          )}
+
           {pageCount > 1 && (
             <ReactPaginate
               previousLabel={"<"}

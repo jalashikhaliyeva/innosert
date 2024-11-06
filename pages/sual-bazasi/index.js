@@ -75,6 +75,9 @@ function SualBazasi() {
     setFiles((prevFiles) => prevFiles.filter((file) => file.id !== folderId));
   };
 
+  // Determine if the user is a Teacher
+  const isTeacher = user?.data.roles === "Teacher";
+
   return (
     <>
       {loading ? (
@@ -109,55 +112,76 @@ function SualBazasi() {
                   openModal={() => setIsModalOpen(true)}
                 />
 
-                {/* Tab Navigation placed below Sual Toplusu */}
-                <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
-                  <button
-                    className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
-                      activeTab === "folders"
-                        ? "bg-blue100 text-blue400"
-                        : "text-neutral700"
-                    }`}
-                    onClick={() => setActiveTab("folders")}
-                  >
-                    <TbFolder className="size-6" />
-                    Mənim Qovluqlarım
-                  </button>
-                  <button
-                    className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
-                      activeTab === "questions"
-                        ? "bg-blue100 text-blue400"
-                        : "text-neutral700"
-                    }`}
-                    onClick={() => setActiveTab("questions")}
-                  >
-                    <TbTable className="size-6" />
-                    Sual Bazası
-                  </button>
-                </div>
-
-                {/* Conditional Rendering based on active tab */}
-                {activeTab === "folders" && (
+                {/* Conditional Rendering Based on User Role */}
+                {isTeacher ? (
+                  // Render only QuestionFiles for Teachers
+                  <QuestionFiles
+                    files={files}
+                    viewMode={viewMode}
+                    sortOption={sortOption}
+                    selectedFiles={selectedFiles}
+                    setSelectedFiles={setSelectedFiles}
+                    openEditFolderModal={(folder) => {
+                      setSelectedFolder(folder);
+                      setIsEditFolderModalOpen(true);
+                    }}
+                    openDeleteFolderModal={(folder) => {
+                      setSelectedFolder(folder);
+                      setIsDeleteFolderModalOpen(true);
+                    }}
+                  />
+                ) : (
+                  // Render Tabs and Conditional Components for Other Roles
                   <>
-                    <QuestionFiles
-                      files={files}
-                      viewMode={viewMode}
-                      sortOption={sortOption}
-                      selectedFiles={selectedFiles}
-                      setSelectedFiles={setSelectedFiles}
-                      openEditFolderModal={(folder) => {
-                        setSelectedFolder(folder);
-                        setIsEditFolderModalOpen(true);
-                      }}
-                      openDeleteFolderModal={(folder) => {
-                        setSelectedFolder(folder);
-                        setIsDeleteFolderModalOpen(true);
-                      }}
-                    />
-                  </>
-                )}
+                    {/* Tab Navigation */}
+                    <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
+                      <button
+                        className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                          activeTab === "folders"
+                            ? "bg-blue100 text-blue400"
+                            : "text-neutral700"
+                        }`}
+                        onClick={() => setActiveTab("folders")}
+                      >
+                        <TbFolder className="size-6" />
+                        Mənim Qovluqlarım
+                      </button>
+                      <button
+                        className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                          activeTab === "questions"
+                            ? "bg-blue100 text-blue400"
+                            : "text-neutral700"
+                        }`}
+                        onClick={() => setActiveTab("questions")}
+                      >
+                        <TbTable className="size-6" />
+                        Sual Bazası
+                      </button>
+                    </div>
 
-                {activeTab === "questions" && (
-                  <QuestionsTableCompany /> 
+                    {/* Conditional Rendering based on active tab */}
+                    {activeTab === "folders" && (
+                      <QuestionFiles
+                        files={files}
+                        viewMode={viewMode}
+                        sortOption={sortOption}
+                        selectedFiles={selectedFiles}
+                        setSelectedFiles={setSelectedFiles}
+                        openEditFolderModal={(folder) => {
+                          setSelectedFolder(folder);
+                          setIsEditFolderModalOpen(true);
+                        }}
+                        openDeleteFolderModal={(folder) => {
+                          setSelectedFolder(folder);
+                          setIsDeleteFolderModalOpen(true);
+                        }}
+                      />
+                    )}
+
+                    {activeTab === "questions" && (
+                      <QuestionsTableCompany /> 
+                    )}
+                  </>
                 )}
               </InternalContainer>
             </div>
