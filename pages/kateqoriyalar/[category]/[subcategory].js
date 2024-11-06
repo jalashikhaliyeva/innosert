@@ -86,7 +86,7 @@ const SubcategoryPage = ({ openRegisterModal, openLoginModal }) => {
             />
           ) : (
             <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
-              "{subcategory}" kateqoriyası üçün mövcud imtahan yoxdur.
+            &quot;{subcategory}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
             </p>
           )}
         </Container>

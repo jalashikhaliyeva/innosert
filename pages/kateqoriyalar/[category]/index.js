@@ -89,7 +89,7 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
             />
           ) : (
             <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
-              "{category}" kateqoriyası üçün mövcud imtahan yoxdur.
+              &quot;{category}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
             </p>
           )}
         </Container>
