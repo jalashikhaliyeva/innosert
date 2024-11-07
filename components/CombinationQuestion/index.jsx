@@ -33,11 +33,11 @@ function CombinationQuestion({
     value: key,
   }));
 
-  const answersWithIds = questionData.answers.value.map((value, idx) => ({
-    id: idx,
-    value: value,
+  const answersWithIds = questionData.answers.value.map((answer) => ({
+    id: answer.id,
+    value: answer.value,
   }));
-
+  
   const [selectedPairs, setSelectedPairs] = useState(userAnswer || []);
   const [openDropdowns, setOpenDropdowns] = useState({});
   const dropdownRefs = useRef({});
@@ -232,7 +232,10 @@ function CombinationQuestion({
                             role="option"
                             aria-selected={isSelected}
                           >
-                            <span>{answer.value}</span>
+                            <span
+                              dangerouslySetInnerHTML={{ __html: answer.value }}
+                            />
+
                             {isSelected && <Checkmark />}
                           </div>
                         );

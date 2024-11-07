@@ -266,17 +266,16 @@ function ImtahanSehifesi() {
               submittedAnswer: userAnswer || "",
             };
 
-          case "Uyğunlaşdırma Sual": // Combination Question
+            case "Uyğunlaşdırma Sual": // Combination Question
             if (userAnswer && userAnswer.length > 0) {
               const submittedAnswer = {};
               userAnswer.forEach((pair) => {
                 const keyIndex = pair.questionIndex;
                 const keyValue = question.answers.key[keyIndex]; // Get the key string
-
-                const valueValues = pair.selectedOptionIds.map(
-                  (id) => question.answers.value[id] // Map IDs back to values
-                );
-
+          
+                // Use the selectedOptionIds directly since they now contain the correct IDs
+                const valueValues = pair.selectedOptionIds;
+          
                 submittedAnswer[keyValue] = valueValues;
               });
               return {
@@ -289,6 +288,7 @@ function ImtahanSehifesi() {
                 submittedAnswer: {},
               };
             }
+          
 
           default:
             return null;
