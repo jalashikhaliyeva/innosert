@@ -367,7 +367,7 @@ function ImtahanSehifesi() {
 
         {/* Main Content Area with Left Margin for Sidebar */}
         <div
-          className={`flex-1 ml-[20%] overflow-auto ${
+          className={`flex-1  overflow-auto ${
             isDurationZero(examDetails.duration) ? "ml-0" : "ml-[20%]"
           }`}
         >

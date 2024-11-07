@@ -121,7 +121,7 @@ function CombinationQuestion({
   }, []);
 
   return (
-    <div className="py-6 px-4 min-h-[500px] mb-10 sm:py-10 sm:px-8 lg:px-32 w-full sm:w-[90%] lg:w-[85%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col justify-center mx-auto rounded-lg">
+    <div className="py-6 px-4  min-h-[500px] mb-10 sm:py-10 sm:px-8 lg:px-32 w-full sm:w-[90%] lg:w-[85%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col justify-center mx-auto rounded-lg">
       <WarningQuestion
         questionId={questionData.id}
         onSubmitReport={onSubmitReport}
