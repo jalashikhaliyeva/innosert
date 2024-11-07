@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { PiWarningOctagon } from "react-icons/pi";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function WarningQuestion({ questionId, onSubmitReport }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -14,7 +16,9 @@ function WarningQuestion({ questionId, onSubmitReport }) {
   const handleCheckboxChange = (event) => {
     const { value, checked } = event.target;
     setSelectedTypes((prevTypes) =>
-      checked ? [...prevTypes, value] : prevTypes.filter((type) => type !== value)
+      checked
+        ? [...prevTypes, value]
+        : prevTypes.filter((type) => type !== value)
     );
   };
 
@@ -28,6 +32,9 @@ function WarningQuestion({ questionId, onSubmitReport }) {
     setIsModalOpen(false);
     setSelectedTypes([]);
     setNote("");
+
+    // Show success toast
+    toast.success("Probleminiz uğurla bildirildi!");
   };
 
   const handleClickOutside = (event) => {
@@ -130,6 +137,18 @@ function WarningQuestion({ questionId, onSubmitReport }) {
           </div>
         </div>
       )}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }
