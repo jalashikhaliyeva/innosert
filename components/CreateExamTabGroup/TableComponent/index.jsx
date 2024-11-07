@@ -16,6 +16,7 @@ function TableComponent({
   questions,
   showActionButtons = false,
   showDeleteButton = false,
+  searchTerm,
 }) {
   console.log(questions, "QuestionsTableCompany from API add quest");
   const data = questions;
@@ -38,8 +39,8 @@ function TableComponent({
     // Map selected questions to include minute and second if timeForQuestion is true
     const selectedQuestionsWithTime = selectedQuestions.map((q) => ({
       ...q,
-      minute: timeForQuestion ? (questionTimes[q.id]?.minutes || 0) : undefined,
-      second: timeForQuestion ? (questionTimes[q.id]?.seconds || 0) : undefined,
+      minute: timeForQuestion ? questionTimes[q.id]?.minutes || 0 : undefined,
+      second: timeForQuestion ? questionTimes[q.id]?.seconds || 0 : undefined,
     }));
 
     // Update the context by appending new questions with time data
@@ -60,7 +61,10 @@ function TableComponent({
 
     // Optional: Provide feedback to the user
     toast.success(`${selectedQuestions.length} question(s) added to the exam.`);
-    console.log(selectedQuestionsWithTime, "question(s) added to the exam with time");
+    console.log(
+      selectedQuestionsWithTime,
+      "question(s) added to the exam with time"
+    );
 
     // Optional: Clear the selection after adding
     setSelectedRows([]);
@@ -112,11 +116,10 @@ function TableComponent({
       );
 
       // Optional: Notify user if validation fails
-      if (
-        selectedQuestionsForExam.length >= 10 &&
-        !allTimesValid
-      ) {
-        toast.warning("Hər bir sual üçün ən azı bir sıfırdan fərqli vaxt dəyəri olmalıdır.");
+      if (selectedQuestionsForExam.length >= 10 && !allTimesValid) {
+        toast.warning(
+          "Hər bir sual üçün ən azı bir sıfırdan fərqli vaxt dəyəri olmalıdır."
+        );
       }
     }
   }, [selectedQuestionsForExam, timeForQuestion, setIsQuestionsValid]);
@@ -283,39 +286,49 @@ function TableComponent({
   const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
 
   const filteredData = data
-  ?.filter((item) => {
-    // Include items without 'created_at'
-    if (!item.created_at) return true;
+    ?.filter((item) => {
+      // Include items without 'created_at'
+      if (
+        searchTerm &&
+        !item.title.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
+        return false;
+      }
+      if (!item.created_at) return true;
 
-    const { from, to } = dateFilter;
-    const itemDate = new Date(item.created_at);
+      const { from, to } = dateFilter;
+      const itemDate = new Date(item.created_at);
 
-    // Exclude items with invalid 'created_at'
-    if (isNaN(itemDate)) return false;
+      // Exclude items with invalid 'created_at'
+      if (isNaN(itemDate)) return false;
 
-    let fromDate = new Date(-8640000000000000); // Minimum date
-    let toDate = new Date(8640000000000000); // Maximum date
+      let fromDate = new Date(-8640000000000000); // Minimum date
+      let toDate = new Date(8640000000000000); // Maximum date
 
-    if (from.year && from.month && from.day) {
-      fromDate = new Date(from.year, from.month - 1, from.day);
-    }
+      if (from.year && from.month && from.day) {
+        fromDate = new Date(from.year, from.month - 1, from.day);
+      }
 
-    if (to.year && to.month && to.day) {
-      toDate = new Date(to.year, to.month - 1, to.day);
-    }
+      if (to.year && to.month && to.day) {
+        toDate = new Date(to.year, to.month - 1, to.day);
+      }
 
-    return itemDate >= fromDate && itemDate <= toDate;
-  })
-  .filter((item) => {
-    const minPoints = pointsFilter.min ? parseInt(pointsFilter.min) : -Infinity;
-    const maxPoints = pointsFilter.max ? parseInt(pointsFilter.max) : Infinity;
-    const itemScore = parseInt(item.score);
-    return itemScore >= minPoints && itemScore <= maxPoints;
-  })
-  .filter((item) => {
-    if (levelFilter.length === 0) return true;
-    return levelFilter.includes(item.level);
-  });
+      return itemDate >= fromDate && itemDate <= toDate;
+    })
+    .filter((item) => {
+      const minPoints = pointsFilter.min
+        ? parseInt(pointsFilter.min)
+        : -Infinity;
+      const maxPoints = pointsFilter.max
+        ? parseInt(pointsFilter.max)
+        : Infinity;
+      const itemScore = parseInt(item.score);
+      return itemScore >= minPoints && itemScore <= maxPoints;
+    })
+    .filter((item) => {
+      if (levelFilter.length === 0) return true;
+      return levelFilter.includes(item.level);
+    });
 
   // Sorting logic
   const sortedData = questionOrder
@@ -558,146 +571,44 @@ function TableComponent({
             </tr>
           </thead>
           <tbody>
-            {paginatedData?.length > 0 ? (
-              paginatedData.map((item, indexInPage) => {
-                const customIndex =
-                  currentPage * itemsPerPage + indexInPage + 1;
-                const plainTitle = stripHtml(item?.title);
-                const displayedTitle =
-                  plainTitle.length > 49
-                    ? plainTitle.substring(0, 49) + "..."
-                    : plainTitle;
+            {paginatedData.map((item, index) => {
+              const customIndex = index + 1; // Starts from 1 on each page
 
-                // Get current time for the question, default to 0 if not set
-                const currentTime =
-                  questionTimes[item.id] || {
-                    minutes: item.minute || 0,
-                    seconds: item.second || 0,
-                  };
-
-                return (
-                  <tr
-                    key={item?.id}
-                    className="bg-tableBgDefault border-b border-borderTableCel "
-                  >
-                    <td className="px-4 py-2">
-                      <input
-                        type="checkbox"
-                        checked={
-                          Array.isArray(selectedRows) &&
-                          selectedRows.includes(item.id)
-                        }
-                        onChange={() => handleCheckboxChange(item.id)}
-                      />
-                    </td>
-                    <td className="px-4 py-2">{customIndex}</td>
-
-                    <td
-                      onClick={() => handleClick(item)}
-                      className="px-4 py-2 relative group cursor-pointer"
-                    >
-                      {displayedTitle}
-
-                      {/* Tooltip */}
-                      <div className="absolute !text-xs bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black  px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                        <div dangerouslySetInnerHTML={{ __html: item.title }} />
-                      </div>
-
-                      <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-blue-300 transition-all duration-300 group-hover:w-full"></span>
-                    </td>
-
-                    <td className="px-4 py-2 w-[100px]">
-                      <div
-                        className={`${
-                          levelColors[item.level]
-                        } rounded-md py-1 flex items-center justify-center`}
-                      >
-                        {item.level}
-                      </div>
-                    </td>
-                    <td className="px-4 py-2">{item.score}</td>
-                    {timeForQuestion && (
-                      <td className="px-4 py-2">
-                        <div className="flex items-start space-x-4">
-                          {/* Minutes Section */}
-                          <div className="flex flex-col items-center">
-                            <label
-                              htmlFor={`minutes-${item.id}`}
-                              className="text-[10px] mb-1"
-                            >
-                              Minutes
-                            </label>
-                            <input
-                              id={`minutes-${item.id}`}
-                              type="number"
-                              min="0"
-                              max="59"
-                              value={currentTime.minutes}
-                              onChange={(e) =>
-                                handleMinutesChange(item.id, e.target.value)
-                              }
-                              className="w-12 p-0 text-center focus:outline-none focus:border-blue-500 border rounded"
-                            />
-                          </div>
-
-                          {/* Separator */}
-                          <span className="self-end text-lg">:</span>
-
-                          {/* Seconds Section */}
-                          <div className="flex flex-col items-center">
-                            <label
-                              htmlFor={`seconds-${item.id}`}
-                              className="text-[10px] mb-1"
-                            >
-                              Seconds
-                            </label>
-                            <input
-                              id={`seconds-${item.id}`}
-                              type="number"
-                              min="0"
-                              max="59"
-                              value={currentTime.seconds}
-                              onChange={(e) =>
-                                handleSecondsChange(item.id, e.target.value)
-                              }
-                              className="w-12 p-0 text-center focus:outline-none focus:border-blue-500 border rounded"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    )}
-                    <td className="sticky right-0 bg-white z-10 sm:static px-2 md:px-4 py-2 ">
-                      <div className="flex items-center">
-                        {showDeleteButton && (
-                          <div className="relative flex items-center group">
-                            <BsTrash3
-                              onClick={() => handleRemoveQuestion(item.id)}
-                              className="mx-2 size-5 cursor-pointer text-red400 hover:bg-gray-100"
-                            />
-                            <span className="absolute bottom-full mb-2 hidden px-2 py-1 text-base text-gray-700 bg-white border  rounded-md whitespace-nowrap group-hover:block">
-                              Bu sualı yalnız imtahandan silin
-                            </span>
-                          </div>
-                        )}
-                        <VscEdit
-                          onClick={() => handleEdit(item)}
-                          className="mx-2 size-5 cursor-pointer text-brandBlue400 hover:bg-gray-100"
-                        />
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })
-            ) : (
-              <tr>
-                <td
-                  colSpan={timeForQuestion ? "7" : "6"}
-                  className="px-4 py-2 text-center text-gray-500"
+              return (
+                <tr
+                  key={index}
+                  className="even:bg-boxGrayBodyColor hover:bg-gray-100"
                 >
-                  Heç bir nəticə tapılmadı.
-                </td>
-              </tr>
-            )}
+                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                    {customIndex}
+                  </td>
+                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                    {item.user}
+                  </td>
+                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                    {item.exam_id}
+                  </td>
+                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                    {item.tarix || "N/A"}
+                  </td>
+                  <td className="px-4 py-2.5 h-11 font-gilroy text-grayText">
+                    {item.type}
+                  </td>
+                  <td
+                    className={`px-4 py-2.5 h-11 font-gilroy ${
+                      item.status === "Ödəniş uğurludur"
+                        ? "text-green-500"
+                        : "text-red-500"
+                    }`}
+                  >
+                    {item.status}
+                  </td>
+                  <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                    {item.amount}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
 

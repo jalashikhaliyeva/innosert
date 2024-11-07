@@ -11,81 +11,39 @@ import { useSavedExams } from "@/shared/context/SavedExamsContext";
 
 function Imtahanlarim() {
   const { savedExams } = useSavedExams(); // Use saved exams from context
-
   const [exams, setExams] = useState([]);
   const [activeTab, setActiveTab] = useState("paid"); // State to track active tab
 
   useEffect(() => {
-    // In a real application, you might fetch this data from an API
-    const fetchedExams = [
-      {
-        id: "microsoft-office-specialist-excel-expert",
-        name: "Microsoft Office Specialist Excel Expert",
-        duration: "1 saat",
-        questions: 30,
-        paid: true,
-        price: 20,
-      },
-      {
-        id: "certified-project-manager",
-        name: "Certified Project Manager",
-        duration: "2 saat",
-        questions: 50,
-        paid: false,
-        price: 30,
-      },
-      {
-        id: "advanced-graphic-design",
-        name: "Advanced Graphic Design",
-        duration: "1.5 saat",
-        questions: 40,
-        paid: true,
-        price: 25,
-      },
-      {
-        id: "full-stack-developer",
-        name: "Full Stack Developer",
-        duration: "3 saat",
-        questions: 60,
-        paid: false,
-        price: 35,
-      },
-      {
-        id: "data-science-specialist",
-        name: "Data Science Specialist",
-        duration: "2.5 saat",
-        questions: 45,
-        paid: true,
-        price: 28,
-      },
-      {
-        id: "digital-marketing-expert",
-        name: "Digital Marketing Expert",
-        duration: "1.2 saat",
-        questions: 35,
-        paid: false,
-        price: 22,
-      },
-      {
-        id: "cyber-security-analyst",
-        name: "Cyber Security Analyst",
-        duration: "2 saat",
-        questions: 40,
-        paid: true,
-        price: 27,
-      },
-      {
-        id: "cloud-computing-engineer",
-        name: "Cloud Computing Engineer",
-        duration: "2.5 saat",
-        questions: 50,
-        paid: false,
-        price: 33,
-      },
-    ];
+    const fetchExams = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          "https://innocert-admin.markup.az/api/me/get-paid-exam",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-    setExams(fetchedExams);
+        const result = await response.json();
+
+        if (result.status) {
+          setExams(result.data); // Set fetched exams to state
+        } else {
+          console.error("Failed to fetch exams:", result.message);
+        }
+      } catch (error) {
+        console.error("Error fetching exams:", error);
+      }
+    };
+
+    fetchExams();
   }, []);
+
   // Filter exams based on the active tab
   const filteredExams =
     activeTab === "paid"
@@ -103,7 +61,6 @@ function Imtahanlarim() {
         <div className="w-full md:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
-            {/* <TitleNavigation /> */}
             <TitleExamsPage activeTab={activeTab} setActiveTab={setActiveTab} />
             <ExamCard widthClass="w-[31.4%]" exams={filteredExams} />
           </InternalContainer>
@@ -114,8 +71,3 @@ function Imtahanlarim() {
 }
 
 export default Imtahanlarim;
-
-
-
-
-

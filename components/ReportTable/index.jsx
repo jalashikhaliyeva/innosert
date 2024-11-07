@@ -306,9 +306,8 @@ function ReportTable({ selectedRows, setSelectedRows, data }) {
                     <td
                       onClick={() => handleDetailNavigation(item.id)}
                       className="flex items-center gap-3 px-4 py-3 relative group cursor-pointer !text-base text-tableCell"
-                    >
-                      {item.title}
-                    </td>
+                      dangerouslySetInnerHTML={{ __html: item.title }}
+                    ></td>
                     <td className="px-4 py-3 !text-base">{item.count}</td>
                     {/* Conditionally set the background color based on the status */}
                     <td className="px-4 py-2">

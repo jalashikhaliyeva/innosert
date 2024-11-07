@@ -252,38 +252,51 @@ function ImtahanSehifesi() {
       .map((question, index) => {
         const userAnswer = userAnswers[index];
         const questionId = question.id;
-
+  
         switch (question.type) {
           case "Variantlı Sual": // Multiple Choice Question
             return {
               questionId: questionId,
               submittedAnswer: userAnswer ? [userAnswer] : [],
             };
+  
           case "Açıq sual": // Open Question
             return {
               questionId: questionId,
               submittedAnswer: userAnswer || "",
             };
+  
           case "Uyğunlaşdırma Sual": // Combination Question
-            const submittedAnswer = {};
-            if (userAnswer) {
+            if (userAnswer && userAnswer.length > 0) {
+              const submittedAnswer = {};
               userAnswer.forEach((pair) => {
-                const keyItem = question.answers.key[pair.questionIndex];
-                const keyValue = keyItem.value; // The key text, e.g., "Baku"
-                const valueIds = pair.selectedOptionIds; // Array of selected answer IDs
-                submittedAnswer[keyValue] = valueIds;
+                const keyIndex = pair.questionIndex;
+                const keyValue = question.answers.key[keyIndex]; // Get the key string
+  
+                const valueValues = pair.selectedOptionIds.map(
+                  (id) => question.answers.value[id] // Map IDs back to values
+                );
+  
+                submittedAnswer[keyValue] = valueValues;
               });
+              return {
+                questionId: questionId,
+                submittedAnswer: submittedAnswer,
+              };
+            } else {
+              return {
+                questionId: questionId,
+                submittedAnswer: {},
+              };
             }
-            return {
-              questionId: questionId,
-              submittedAnswer: submittedAnswer,
-            };
+  
           default:
             return null;
         }
       })
       .filter((answer) => answer !== null);
   };
+  
 
   const handleFinishExam = async () => {
     try {

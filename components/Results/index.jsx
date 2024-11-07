@@ -11,7 +11,7 @@ const parseDate = (dateString) => {
   return new Date(year, month - 1, day, ...time.split(":"));
 };
 
-function Results({ examSlug }) {
+function Results({ examSlug, searchTerm }) {
   const router = useRouter();
 
   // State declarations
@@ -22,23 +22,23 @@ function Results({ examSlug }) {
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [openFilter, setOpenFilter] = useState(null);
-// Define the current year
-const currentYear = new Date().getFullYear();
+  // Define the current year
+  const currentYear = new Date().getFullYear();
 
-// Generate an array of years from 2000 to the current year
-const years = Array.from({ length: currentYear - 1999 }, (_, i) => 2000 + i);
+  // Generate an array of years from 2000 to the current year
+  const years = Array.from({ length: currentYear - 1999 }, (_, i) => 2000 + i);
 
-// Define months as numbers (1-12)
-const months = Array.from({ length: 12 }, (_, i) => i + 1);
+  // Define months as numbers (1-12)
+  const months = Array.from({ length: 12 }, (_, i) => i + 1);
 
-// Alternatively, define months with names for better UX
-// const months = [
-//   "Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun",
-//   "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
-// ];
+  // Alternatively, define months with names for better UX
+  // const months = [
+  //   "Yanvar", "Fevral", "Mart", "Aprel", "May", "İyun",
+  //   "İyul", "Avqust", "Sentyabr", "Oktyabr", "Noyabr", "Dekabr"
+  // ];
 
-// Define days as numbers (1-31)
-const days = Array.from({ length: 31 }, (_, i) => i + 1);
+  // Define days as numbers (1-31)
+  const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   // Filter states
   const [nameFilter, setNameFilter] = useState("");
@@ -107,12 +107,13 @@ const days = Array.from({ length: 31 }, (_, i) => i + 1);
             },
           }
         );
-        const fetchedData = response.data.data.map(item => ({
+        const fetchedData = response.data.data.map((item) => ({
           ...item,
           examDate: parseDate(item.start_exam),
-          completionDate: parseDate(item.finish_exam)
+          completionDate: parseDate(item.finish_exam),
         }));
         setData(fetchedData);
+        console.log(fetchedData, "results data");
       } catch (err) {
         console.error("Error fetching results:", err);
         setError("Nəticələr alınarkən səhv baş verdi.");
@@ -144,8 +145,22 @@ const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
   // Filtering logic
   const filteredData = data
+
     .filter((item) => {
-      if (nameFilter && !item.user.toLowerCase().includes(nameFilter.toLowerCase())) {
+      // **Search filter: filter by user name based on searchTerm**
+      if (
+        searchTerm &&
+        !item.user.toLowerCase().includes(searchTerm.toLowerCase())
+      ) {
+        return false;
+      }
+      return true;
+    })
+    .filter((item) => {
+      if (
+        nameFilter &&
+        !item.user.toLowerCase().includes(nameFilter.toLowerCase())
+      ) {
         return false;
       }
       return true;
@@ -153,7 +168,11 @@ const days = Array.from({ length: 31 }, (_, i) => i + 1);
     .filter((item) => {
       const { from: examFrom, to: examTo } = examDateFilter;
       if (examFrom.year && examFrom.month && examFrom.day) {
-        const fromDate = new Date(examFrom.year, examFrom.month - 1, examFrom.day);
+        const fromDate = new Date(
+          examFrom.year,
+          examFrom.month - 1,
+          examFrom.day
+        );
         if (item.examDate < fromDate) return false;
       }
       if (examTo.year && examTo.month && examTo.day) {
@@ -165,11 +184,19 @@ const days = Array.from({ length: 31 }, (_, i) => i + 1);
     .filter((item) => {
       const { from: completionFrom, to: completionTo } = completionDateFilter;
       if (completionFrom.year && completionFrom.month && completionFrom.day) {
-        const fromDate = new Date(completionFrom.year, completionFrom.month - 1, completionFrom.day);
+        const fromDate = new Date(
+          completionFrom.year,
+          completionFrom.month - 1,
+          completionFrom.day
+        );
         if (item.completionDate < fromDate) return false;
       }
       if (completionTo.year && completionTo.month && completionTo.day) {
-        const toDate = new Date(completionTo.year, completionTo.month - 1, completionTo.day);
+        const toDate = new Date(
+          completionTo.year,
+          completionTo.month - 1,
+          completionTo.day
+        );
         if (item.completionDate > toDate) return false;
       }
       return true;

@@ -81,7 +81,7 @@ function SualBazasi() {
   return (
     <>
       {loading ? (
-        <Spinner /> 
+        <Spinner />
       ) : (
         <>
           <div className="hidden lg:block">
@@ -178,9 +178,7 @@ function SualBazasi() {
                       />
                     )}
 
-                    {activeTab === "questions" && (
-                      <QuestionsTableCompany /> 
-                    )}
+                    {activeTab === "questions" && <QuestionsTableCompany />}
                   </>
                 )}
               </InternalContainer>

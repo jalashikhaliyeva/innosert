@@ -7,7 +7,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import Spinner from "../Spinner";
 
-function Registrations({ examSlug }) {
+function Registrations({ examSlug, searchTerm }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -123,8 +123,18 @@ function Registrations({ examSlug }) {
     .filter((item) => {
       // Full Name filter
       if (
+        searchTerm &&
+        !(
+          item.user.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.email?.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      ) {
+        return false;
+      }
+
+      if (
         nameFilter &&
-        !item.fullname.toLowerCase().includes(nameFilter.toLowerCase())
+        !item.user.toLowerCase().includes(nameFilter.toLowerCase())
       ) {
         return false;
       }
@@ -134,7 +144,7 @@ function Registrations({ examSlug }) {
       // Email filter
       if (
         emailFilter &&
-        !item.mail.toLowerCase().includes(emailFilter.toLowerCase())
+        !item.email.toLowerCase().includes(emailFilter.toLowerCase())
       ) {
         return false;
       }
@@ -502,10 +512,10 @@ function Registrations({ examSlug }) {
                   <td className="px-4 py-2">{item.user}</td>
                   <td className="px-4 py-2 text-mailBlue cursor-pointer">
                     <a
-                      href={`mailto:${item.mail}?subject=Innosert&body=Salam, ${item.fullname}`}
+                      href={`mailto:${item.email}?subject=Innosert&body=Salam, ${item.user}`}
                       className="relative inline-block text-mailBlue after:content-[''] after:absolute after:left-0 after:right-0 after:bottom-[-2px] after:h-[2px] after:bg-mailBlue after:scale-x-0 after:origin-left after:transition-transform after:duration-300 hover:after:scale-x-100"
                     >
-                      {item.mail}
+                      {item.email}
                     </a>
                   </td>
 

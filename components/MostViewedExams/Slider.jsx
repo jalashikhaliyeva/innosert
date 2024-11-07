@@ -1,10 +1,10 @@
+// Slider.jsx
 import React, { useState, useEffect, useCallback } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import styles from "./embla.module.css";
 import { MdNavigateNext } from "react-icons/md";
 import { GrFormPrevious } from "react-icons/gr";
 import ExamCardMost from "../ExamCardMost";
-// Import the ExamCardMost component
 
 const Slider = ({ data }) => {
   const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -96,10 +96,10 @@ const Slider = ({ data }) => {
           {data?.map((slide, index) => (
             <div className={styles.embla__slide} key={slide.id}>
               <div className={styles.embla__slide__inner}>
-                {/* Replace Image component with ExamCardMost component */}
+                {/* Pass individual exam data to ExamCardMost */}
                 <ExamCardMost
+                  data={slide}
                   className="border border-buttonSecondaryDefault"
-                  // Pass any necessary props here
                 />
               </div>
             </div>

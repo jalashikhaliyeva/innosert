@@ -27,6 +27,16 @@ function CombinationQuestion({
   onSubmitReport,
 }) {
   console.log(questionData, "questionData");
+// In CombinationQuestion component
+const keysWithIds = questionData.answers.key.map((key, idx) => ({
+  id: idx,
+  value: key,
+}));
+
+const answersWithIds = questionData.answers.value.map((value, idx) => ({
+  id: idx,
+  value: value,
+}));
 
   const [selectedPairs, setSelectedPairs] = useState(userAnswer || []);
   const [openDropdowns, setOpenDropdowns] = useState({});

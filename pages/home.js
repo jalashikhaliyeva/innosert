@@ -42,8 +42,9 @@ function Home() {
       slug: sub.slug || "", // Ensure slug is set here
     })),
   ];
-  
+
   const [allExams, setAllExams] = useState({});
+  const [mostViewedExams, setMostViewedExams] = useState({});
   const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -81,6 +82,7 @@ function Home() {
 
         if (response.status === 200) {
           setAllExams(response.data.exams);
+          setMostViewedExams(response.data.most_view);
         } else {
           throw new Error("Failed to fetch exams.");
         }
@@ -150,10 +152,9 @@ function Home() {
       <HeaderInternal />
       <Container>
         <div className="mt-32 flex flex-row w-full justify-between items-start">
-          <MostViwedExams />
+          <MostViwedExams mostViewedExams={mostViewedExams} />
           <EnterExamCode />
         </div>
-
 
         {searchExam && searchExam.length > 0 ? (
           <div className="mt-8">
@@ -190,7 +191,10 @@ function Home() {
                 return (
                   <div key={category} className="mt-8">
                     {!isUncategorized && (
-                      <TitleCategoryExams combinedList={combinedList} categoryName={category} />
+                      <TitleCategoryExams
+                        combinedList={combinedList}
+                        categoryName={category}
+                      />
                     )}
                     <ExamCard
                       exams={displayedExamsByCategory[category]}
@@ -211,7 +215,6 @@ function Home() {
           </>
         )}
       </Container>
-
 
       {isExamRulesModalOpen && <ExamRulesModal onClose={closeModals} />}
       {isLoginModalOpen && (

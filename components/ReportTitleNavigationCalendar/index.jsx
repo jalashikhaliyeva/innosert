@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect } from "react";
 import { IoCalendarClearOutline } from "react-icons/io5";
 import { MdKeyboardArrowDown } from "react-icons/md";
 
-function ReportTitleNavigationCalendar() {
+function ReportTitleNavigationCalendar({ onFilterChange }) {
+  // State management
   const [openFilter, setOpenFilter] = useState(false);
   const [dateFilter, setDateFilter] = useState({
     from: { year: "", month: "", day: "" },
@@ -11,16 +12,20 @@ function ReportTitleNavigationCalendar() {
   const [inputValue, setInputValue] = useState("");
   const dropdownRef = useRef(null);
 
-  const years = Array.from(
-    { length: new Date().getFullYear() - 1999 },
-    (_, i) => 2000 + i
-  );
+  // Generate year, month, and day options
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1999 }, (_, i) => 2000 + i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
+  // Handle click outside to close dropdown
   useEffect(() => {
     function handleClickOutside(event) {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target) &&
+        !triggerRef.current.contains(event.target)
+      ) {
         setOpenFilter(false);
       }
     }
@@ -28,16 +33,50 @@ function ReportTitleNavigationCalendar() {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [dropdownRef]);
+  }, []);
+
+  // Reference to the trigger element (input and icons)
+  const triggerRef = useRef(null);
+
+  // Apply the date filter
+  const applyFilter = () => {
+    setOpenFilter(false);
+    const { from, to } = dateFilter;
+    const fromDate =
+      from.year && from.month && from.day
+        ? new Date(from.year, from.month - 1, from.day)
+        : null;
+    const toDate =
+      to.year && to.month && to.day
+        ? new Date(to.year, to.month - 1, to.day)
+        : null;
+    const displayFrom =
+      from.year || from.month || from.day
+        ? `${from.year}-${String(from.month).padStart(2, "0")}-${String(from.day).padStart(2, "0")}`
+        : "";
+    const displayTo =
+      to.year || to.month || to.day
+        ? `${to.year}-${String(to.month).padStart(2, "0")}-${String(to.day).padStart(2, "0")}`
+        : "";
+    setInputValue(`${displayFrom} - ${displayTo}`);
+
+    onFilterChange({ from: fromDate, to: toDate });
+  };
+
+  // Toggle dropdown visibility
+  const toggleDropdown = () => {
+    setOpenFilter((prev) => !prev);
+  };
 
   return (
     <div className="flex justify-between items-center relative font-gilroy mb-5">
       <h1 className="text-2xl font-medium leading-8">Hesabat</h1>
 
-      <div className="relative w-[24%]">
+      <div className="relative w-[27%] z-20">
         <div
-          className="flex items-center bg-bodyColor border border-inputBorder rounded-lg px-3 py-2 focus-within:border-inputRingFocus overflow-hidden hover:bg-inputBgHover"
-          onClick={() => setOpenFilter(!openFilter)}
+          ref={triggerRef}
+          className="flex items-center bg-bodyColor border border-inputBorder rounded-lg px-3 py-2 focus-within:border-inputRingFocus overflow-hidden hover:bg-inputBgHover cursor-pointer"
+          onClick={toggleDropdown}
         >
           <IoCalendarClearOutline className="text-inputPlaceholderText size-5 flex-shrink-0" />
           <input
@@ -45,9 +84,17 @@ function ReportTitleNavigationCalendar() {
             placeholder="Axtar"
             value={inputValue}
             readOnly
-            className="ml-2 w-full text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2 hover:bg-inputBgHover "
+            onClick={(e) => {
+              e.stopPropagation(); // Prevent the event from bubbling to the parent div
+              toggleDropdown();
+            }}
+            className="ml-2 w-full text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2 hover:bg-inputBgHover cursor-pointer"
           />
-          <MdKeyboardArrowDown />
+          <MdKeyboardArrowDown
+            className={`transition-transform duration-300 size-6 text-gray-400 ${
+              openFilter ? "transform rotate-180" : ""
+            }`}
+          />
         </div>
         {openFilter && (
           <div
@@ -193,21 +240,7 @@ function ReportTitleNavigationCalendar() {
               </div>
               <button
                 className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded w-full"
-                onClick={() => {
-                  // Apply the date filter
-                  setOpenFilter(false);
-                  // Format the dates
-                  const from = dateFilter.from;
-                  const to = dateFilter.to;
-                  const fromDate = `${from.year || ""}-${from.month || ""}-${
-                    from.day || ""
-                  }`;
-                  const toDate = `${to.year || ""}-${to.month || ""}-${
-                    to.day || ""
-                  }`;
-                  // Set the input value
-                  setInputValue(`${fromDate} - ${toDate}`);
-                }}
+                onClick={applyFilter}
               >
                 Tətbiq et
               </button>

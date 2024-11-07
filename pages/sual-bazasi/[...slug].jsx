@@ -45,9 +45,6 @@ const DynamicSubFolderPage = () => {
 
   const handleDelete = async () => {
     if (!questionToDelete) return;
-    // console.log(questionToDelete, "questionToDelete");
-    
-
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("No authentication token found");
@@ -55,7 +52,6 @@ const DynamicSubFolderPage = () => {
     }
 
     try {
-      // Send DELETE request to the API
       await axios.delete(
         `https://innocert-admin.markup.az/api/questions/${questionToDelete}`,
         {
@@ -66,21 +62,15 @@ const DynamicSubFolderPage = () => {
         }
       );
 
-      // Update the questions state by filtering out the deleted question
       setQuestions((prevQuestions) =>
         prevQuestions.filter((q) => q.id !== questionToDelete)
       );
-
-      // Close the delete modal
       setIsDeleteModalOpen(false);
-
-      // Optionally, reset selectedRows if needed
       setSelectedRows((prevSelected) =>
         prevSelected.filter((id) => id !== questionToDelete)
       );
     } catch (error) {
       console.error("Error deleting question:", error);
-      // Handle error (e.g., show notification)
     }
   };
 
@@ -131,7 +121,7 @@ const DynamicSubFolderPage = () => {
       } catch (error) {
         console.error("Error fetching subfolders and questions:", error);
       } finally {
-        setLoading(false); // Set loading to false once fetching is complete
+        setLoading(false);
       }
     };
 
@@ -168,6 +158,8 @@ const DynamicSubFolderPage = () => {
     setIsDeleteFolderModalOpen(true);
   };
 
+  const isTeacher = user?.data.roles === "Teacher";
+
   return (
     <>
       {loading ? (
@@ -178,14 +170,12 @@ const DynamicSubFolderPage = () => {
             <HeaderInternal />
           </div>
           <div className="block lg:hidden">
-            {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
-            {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
+            {isTeacher ? <TeacherDashboardHeader /> : <OwnerDashboardHeader />}
           </div>
 
           <div className="flex">
             <div className="hidden lg:block md:w-[20%]">
-              {user?.data.roles === "Teacher" && <TeacherSidebar />}
-              {user?.data.roles === "Owner" && <CompanySidebar />}
+              {isTeacher ? <TeacherSidebar /> : <CompanySidebar />}
             </div>
 
             <div className="w-[80%]">
@@ -200,37 +190,40 @@ const DynamicSubFolderPage = () => {
                   selectedFiles={selectedFiles}
                 />
 
-                {/* Tab Navigation */}
-                <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
-                  <button
-                    className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
-                      activeTab === "folders"
-                        ? "bg-blue100 text-blue400"
-                        : "text-neutral700"
-                    }`}
-                    onClick={() => setActiveTab("folders")}
-                  >
-                    <TbFolder className="size-6" />
-                    Mənim Qovluqlarım
-                  </button>
-                  <button
-                    className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
-                      activeTab === "questions"
-                        ? "bg-blue100 text-blue400"
-                        : "text-neutral700"
-                    }`}
-                    onClick={() => setActiveTab("questions")}
-                  >
-                    <TbTable className="size-6" />
-                    Sual Bazası
-                  </button>
-                </div>
+                {!isTeacher && (
+                  <>
+                    {/* Tab Navigation */}
+                    <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
+                      <button
+                        className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                          activeTab === "folders"
+                            ? "bg-blue100 text-blue400"
+                            : "text-neutral700"
+                        }`}
+                        onClick={() => setActiveTab("folders")}
+                      >
+                        <TbFolder className="size-6" />
+                        Mənim Qovluqlarım
+                      </button>
+                      <button
+                        className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                          activeTab === "questions"
+                            ? "bg-blue100 text-blue400"
+                            : "text-neutral700"
+                        }`}
+                        onClick={() => setActiveTab("questions")}
+                      >
+                        <TbTable className="size-6" />
+                        Sual Bazası
+                      </button>
+                    </div>
+                  </>
+                )}
 
                 {/* Conditional Rendering based on active tab */}
                 {activeTab === "folders" && (
                   <>
-                    {/* Conditionally render the SubFolderCard only if subFolders exist */}
-                    {subFolders.length > 0 ? (
+                    {subFolders.length > 0 && (
                       <SubFolderCard
                         subFolders={subFolders}
                         viewMode={viewMode}
@@ -239,9 +232,8 @@ const DynamicSubFolderPage = () => {
                         openEditFolderModal={openEditFolderModal}
                         openDeleteFolderModal={openDeleteFolderModal}
                       />
-                    ) : null}
+                    )}
 
-                    {/* Display questions if available */}
                     {questions.length > 0 && (
                       <Questions
                         selectedRows={selectedRows}

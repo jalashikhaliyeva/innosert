@@ -83,6 +83,14 @@ function TeacherSidebar() {
     ) {
       return true;
     }
+    // Mark 'İmtahanlar' as active when on /imtahanlar-siyahisi or /imtahan-detallari
+    if (
+      path === "/umumi-imtahanlar" &&
+      (currentPath.startsWith("/imtahanlar-siyahisi") ||
+        currentPath.startsWith("/imtahan-detallari"))
+    ) {
+      return true;
+    }
     return currentPath.startsWith(path);
   };
 
@@ -175,15 +183,15 @@ function TeacherSidebar() {
           <hr className="border-t border-gray-200 mb-2" />
           <li className="mb-2">
             <Link
-              href={`/bildirilen-xetalar`}
+              href={`/xeta-bildirisleri`}
               className={`flex items-center space-x-4 px-4 py-2 text-grayButtonText hover:bg-gray-100 rounded-lg ${
-                isActive(`/bildirilen-xetalar`) ? "bg-buttonGhostPressed" : ""
+                isActive(`/xeta-bildirisleri`) ? "bg-buttonGhostPressed" : ""
               }`}
             >
               <FiAlertOctagon className="size-6" />{" "}
               <span
                 className={`text-lg font-gilroy font-normal leading-6 ${
-                  isActive(`/bildirilen-xetalar`) ? "text-brandBlue500" : ""
+                  isActive(`/xeta-bildirisleri`) ? "text-brandBlue500" : ""
                 }`}
               >
                 Bildirlən xətalar

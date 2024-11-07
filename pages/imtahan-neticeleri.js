@@ -10,7 +10,11 @@ function ImtahanNeticeleri() {
   console.log(percentage, "percentage");
 
   if (percentage === null) {
-    return <><Spinner /></>;
+    return (
+      <>
+        <Spinner />
+      </>
+    );
   }
 
   return (

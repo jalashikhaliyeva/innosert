@@ -8,8 +8,12 @@ import ReportTitleNavigation from "@/components/ReportTitleNavigation";
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 import axios from "axios";
 import CompanyContext from "@/shared/context/CompanyContext";
+import { UserContext } from "@/shared/context/UserContext";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
+import TeacherSidebar from "@/components/TeacherSidebar";
 
 function XetaBildirisleri() {
+  const { user } = useContext(UserContext);
   const [selectedRows, setSelectedRows] = useState([]);
   const [reportData, setReportData] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
@@ -48,17 +52,20 @@ function XetaBildirisleri() {
         <HeaderInternal />
       </div>
       <div className="block lg:hidden">
-        <OwnerDashboardHeader />
+        {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
       <div className="flex">
         <div className="hidden lg:block md:w-[20%]">
-          <CompanySidebar />
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
 
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
-            <ReportTitleNavigation setSearchTerm={setSearchTerm} /> {/* Pass setSearchTerm */}
+            <ReportTitleNavigation setSearchTerm={setSearchTerm} />{" "}
+            {/* Pass setSearchTerm */}
             <ReportTable
               data={filteredData}
               selectedRows={selectedRows}

@@ -17,6 +17,7 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
   const router = useRouter();
   const [selectedRows, setSelectedRows] = useState([]);
   const sortMenuRef = useRef(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -62,12 +63,20 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
             setSelectedRows={setSelectedRows}
             handleDelete={handleDelete}
             handleEdit={handleEdit}
+            searchTerm={searchTerm}
           />
         );
       case "registrations":
-        return <Registrations examSlug={examDetailsSingle.slug} />;
+        return (
+          <Registrations
+            examSlug={examDetailsSingle.slug}
+            searchTerm={searchTerm}
+          />
+        );
       case "results":
-        return <Results examSlug={examDetailsSingle.slug} />;
+        return (
+          <Results examSlug={examDetailsSingle.slug} searchTerm={searchTerm} />
+        );
       default:
         return <GeneralInfo examDetailsSingle={examDetailsSingle} />;
     }
@@ -109,7 +118,7 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
           </button>
         ) : (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 relative">
-            <div className="relative" ref={sortMenuRef}>
+            {/* <div className="relative" ref={sortMenuRef}>
               <div
                 onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
                 className="flex items-center cursor-pointer gap-1 sm:gap-2"
@@ -136,12 +145,14 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
                   </ul>
                 </div>
               )}
-            </div>
+            </div> */}
             <div className="flex items-center w-[70%] md:w-full bg-bodyColor border border-inputBorder rounded-lg px-2 py-1 sm:px-3 sm:py-2 focus-within:border-inputRingFocus overflow-hidden z-10">
               <LuSearch className="text-inputPlaceholderText size-4 sm:size-6 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Axtar"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
                 className="ml-2 w-full text-sm sm:text-base bg-bodyColor outline-none placeholder-inputPlaceholderText"
               />
             </div>

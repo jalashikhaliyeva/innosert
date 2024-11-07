@@ -15,7 +15,7 @@ function ExamEndFail({ percentage }) {
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col md:flex-row gap-5 items-center">
           <div className="flex flex-col items-center">
-            <ProgressPieChart percentage={percentage.percentage}  />
+            <ProgressPieChart percentage={percentage.percentage} />
             <p className="font-gilroy text-grayText text-lg sm:text-xl leading-8 font-medium text-center">
               Müvəffəqiyət faizi
             </p>
@@ -36,7 +36,7 @@ function ExamEndFail({ percentage }) {
                 Səhv cavabların sayı
               </p>
               <h5 className="font-gilroy text-sm sm:text-lg font-medium text-chartRed">
-              {percentage.wrong}
+                {percentage.wrong}
               </h5>
             </div>
 
@@ -45,7 +45,7 @@ function ExamEndFail({ percentage }) {
                 Boş cavabların sayı
               </p>
               <h5 className="font-gilroy text-sm sm:text-lg font-medium text-chartYellow">
-                1
+                {percentage.blank}
               </h5>
             </div>
           </div>

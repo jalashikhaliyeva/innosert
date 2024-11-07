@@ -42,13 +42,13 @@ function TitleExamsPage({ activeTab, setActiveTab }) {
             <span>Seçilənlər</span>
           </button>
         </div>
-        {/* Render Filter Modal */}
-
+     
+{/* 
         <FilterCategories
           isModalOpen={isFilterModalOpen}
           setIsModalOpen={setIsFilterModalOpen}
           setAppliedFilterCount={setAppliedFilterCount}
-        />
+        /> */}
       </div>
     </div>
   );

@@ -11,9 +11,12 @@ function ReportSingleNavigationTitle({ reportData, setSearchTerm }) {
 
   return (
     <div className="flex flex-col lg:flex-row justify-between items-center relative font-gilroy mb-5">
-      <h1 className="text-2xl font-medium leading-8 mb-4 md:mb-0">
-        &apos; {question} &apos; sualında xətalar
-      </h1>
+      <h1
+        className="text-2xl font-medium leading-8 mb-4 md:mb-0"
+        dangerouslySetInnerHTML={{
+          __html: ` ${question} sualında xətalar`,
+        }}
+      ></h1>
 
       <div className="lg:w-[20%] w-full flex items-center bg-bodyColor border border-inputBorder rounded-lg px-3 py-2 focus-within:border-inputRingFocus overflow-hidden">
         <LuSearch className="text-inputPlaceholderText size-6 flex-shrink-0" />

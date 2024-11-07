@@ -10,7 +10,8 @@ import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import { UserContext } from "@/shared/context/UserContext";
 import { FaRegTrashCan } from "react-icons/fa6";
-
+import { AiOutlineEyeInvisible } from "react-icons/ai";
+import { AiOutlineEye } from "react-icons/ai";
 function MyProfiles() {
   // const [user, setUser] = useState(null);
   const { user, setUser, fetchUserData } = useContext(UserContext);
@@ -41,6 +42,57 @@ function MyProfiles() {
   const [loadingCompanyCreation, setLoadingCompanyCreation] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [companyImage, setCompanyImage] = useState(null);
+  const [activeTab, setActiveTab] = useState("general"); // 'general' or 'password'
+  const [newPassword, setNewPassword] = useState("");
+  const [oldPassword, setOldPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  // Visibility states
+  const [oldPasswordVisible, setOldPasswordVisible] = useState(false);
+  const [newPasswordVisible, setNewPasswordVisible] = useState(false);
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
+  const [newPasswordError, setNewPasswordError] = useState("");
+
+  // SVG Icons
+  const EyeIcon = (
+    <svg
+      className="h-5 w-5 text-gray-500"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+      />
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+      />
+    </svg>
+  );
+
+  const EyeOffIcon = (
+    <svg
+      className="h-5 w-5 text-gray-500"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a10.05 10.05 0 011.432-2.637M9.878 9.878a3 3 0 104.242 4.242M3 3l18 18"
+      />
+    </svg>
+  );
+
   const [companyImagePreview, setCompanyImagePreview] = useState(null);
   const handleCompanyImageChange = (e) => {
     const file = e.target.files[0];
@@ -360,6 +412,84 @@ function MyProfiles() {
   //   return;
   // }
 
+  // Handler function for changing password
+  const handleChangePassword = async (e) => {
+    e.preventDefault();
+
+    // Reset previous errors
+    setNewPasswordError("");
+
+    // Validate that new password meets length requirement
+    if (newPassword.length < 8) {
+      setNewPasswordError("Yeni parol ən azı 8 simvoldan ibarət olmalıdır.");
+      return;
+    }
+
+    // Validate that new password and confirm password match
+    if (newPassword !== confirmPassword) {
+      toast.error("Yeni parollar uyğun gəlmir.");
+      return;
+    }
+
+    // Retrieve the token from localStorage
+    const userToken = localStorage.getItem("token");
+
+    if (!userToken) {
+      toast.error("İstifadəçi doğrulanmayıb. Yenidən daxil olun.");
+      return;
+    }
+
+    setLoading(true); // Start loading state
+
+    try {
+      // Make the API request
+      const response = await fetch(
+        "https://innocert-admin.markup.az/api/me/password/change",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${userToken}`,
+          },
+          body: JSON.stringify({
+            old_password: oldPassword,
+            password: newPassword,
+            password_confirmation: confirmPassword,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (response.ok) {
+        toast.success("Parol uğurla dəyişdirildi.");
+        // Optionally, reset the form fields
+        setOldPassword("");
+        setNewPassword("");
+        setConfirmPassword("");
+      } else {
+        // Handle errors returned by the API
+        toast.error(`Xəta: ${data.message || "Parol dəyişdirilə bilmədi."}`);
+      }
+    } catch (error) {
+      // Handle network or unexpected errors
+      toast.error(`Xəta baş verdi: ${error.message}`);
+    } finally {
+      setLoading(false); // Stop loading state
+    }
+  };
+
+  const handleNewPasswordChange = (e) => {
+    const value = e.target.value;
+    setNewPassword(value);
+
+    if (value.length < 8) {
+      setNewPasswordError("Yeni Şifrə ən azı 8 simvoldan ibarət olmalıdır.");
+    } else {
+      setNewPasswordError("");
+    }
+  };
+
   const handleCompanyCreate = async (e) => {
     e.preventDefault();
     const userToken = localStorage.getItem("token");
@@ -546,7 +676,6 @@ function MyProfiles() {
                 </button>
               </div>
             </div>
-
             <div
               ref={formRef}
               style={{
@@ -557,138 +686,353 @@ function MyProfiles() {
               className="overflow-hidden"
             >
               <div className="p-6 mt-4 bg-bodyColor rounded-3xl border">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="flex justify-center">
-                    <div className="relative">
-                      {imagePreview ? (
-                        <Image
-                          width={200}
-                          height={220}
-                          src={imagePreview}
-                          alt="Profile Large"
-                          className="w-[100%] h-[370px] rounded-lg object-cover"
+                {/* General Tab */}
+                {activeTab === "general" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Left Side - Image */}
+                    <div className="flex justify-center">
+                      <div className="relative">
+                        {imagePreview ? (
+                          <Image
+                            width={200}
+                            height={220}
+                            src={imagePreview}
+                            alt="Profile Large"
+                            className="w-full h-[370px] rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="w-48 h-48 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center text-4xl font-bold">
+                            {generateInitials(firstName, lastName)}
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageChange}
+                          className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer "
                         />
-                      ) : (
-                        <div className="w-48 h-48 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center text-4xl font-bold">
-                          {generateInitials(firstName, lastName)}
-                        </div>
-                      )}
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer "
-                      />
-                      <div className="flex items-center gap-2 relative mt-4 justify-end">
-                        {/* Display the delete button only when an image is present */}
-                        {imagePreview && (
+                        <div className="flex items-center gap-2 relative mt-4 justify-end">
+                          {/* Display the delete button only when an image is present */}
+                          {imagePreview && (
+                            <button
+                              type="button"
+                              onClick={handleDeleteImage}
+                              className="px-4 py-3 text-errorButtonDefault hover:text-errorButtonHover rounded-lg font-gilroy text-base font-normal leading-6 relative z-10"
+                              style={{ zIndex: 10 }}
+                            >
+                              Şəkili sil
+                            </button>
+                          )}
                           <button
                             type="button"
-                            onClick={handleDeleteImage}
-                            className="px-4 py-3 text-errorButtonDefault hover:text-errorButtonHover rounded-lg font-gilroy text-base font-normal leading-6 relative z-10"
+                            onClick={() =>
+                              document
+                                .querySelector('input[type="file"]')
+                                .click()
+                            }
+                            className="px-4 py-3 text-grayButtonText bg-buttonGhostPressed hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed rounded-lg font-gilroy text-base font-normal leading-6 relative z-10"
                             style={{ zIndex: 10 }}
                           >
-                            Şəkili sil
+                            Şəkili dəyiş
                           </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() =>
-                            document.querySelector('input[type="file"]').click()
-                          }
-                          className="px-4 py-3 text-grayButtonText bg-buttonGhostPressed hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed rounded-lg font-gilroy text-base font-normal leading-6 relative z-10"
-                          style={{ zIndex: 10 }}
-                        >
-                          Şəkili dəyiş
-                        </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div>
-                    <form onSubmit={handleSave}>
-                      <div className="mb-4">
-                        <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-                          Ad
-                        </label>
-                        <input
-                          type="text"
-                          value={firstName}
-                          onChange={(e) => setFirstName(e.target.value)}
-                          className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
-                        />
-                      </div>
-
-                      <div className="mb-4">
-                        <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-                          Soyad
-                        </label>
-                        <input
-                          type="text"
-                          value={lastName}
-                          onChange={(e) => setLastName(e.target.value)}
-                          className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
-                        />
-                      </div>
-
-                      <div className="mb-4">
-                        <label className="block text-gray-700">Email</label>
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
-                        />
-                      </div>
-                      <div className="mb-4">
-                        <label className="block text-gray-700">Nömrə</label>
-                        <InputMask
-                          mask="+994 99 999 99 99"
-                          value={mobile}
-                          onChange={(e) => setMobile(e.target.value)}
-                          className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
-                          placeholder="Mobil nömrə"
-                        />
-                      </div>
-                      <div className="flex justify-end">
+                    {/* Right Side - Form with Tabs */}
+                    <div>
+                      {/* Tabs */}
+                      <div className="flex justify-start mb-4">
                         <button
-                          type="submit"
-                          disabled={loading} // Disable the button when loading is true
-                          className={` bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 font-gilroy rounded-lg ${
-                            loading ? "opacity-50 cursor-not-allowed" : ""
+                          className={`mr-4 px-4 py-2 rounded-lg font-gilroy ${
+                            activeTab === "general"
+                              ? "bg-blue100 text-blue400"
+                              : "text-neutral700"
                           }`}
+                          onClick={() => setActiveTab("general")}
                         >
-                          {loading ? (
-                            <div className="flex items-center justify-center">
-                              <svg
-                                className="animate-spin h-5 w-5 mr-3 text-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                              >
-                                <circle
-                                  className="opacity-25"
-                                  cx="12"
-                                  cy="12"
-                                  r="10"
-                                  stroke="currentColor"
-                                  strokeWidth="4"
-                                ></circle>
-                                <path
-                                  className="opacity-75"
-                                  fill="currentColor"
-                                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                                ></path>
-                              </svg>
-                              Gözləyin...
-                            </div>
-                          ) : (
-                            "Yadda saxla"
-                          )}
+                          Məlumatlar
+                        </button>
+                        <button
+                          className={`px-4 py-2 rounded-lg font-gilroy ${
+                            activeTab === "password"
+                              ? "bg-blue100 text-blue400"
+                              : "text-neutral700"
+                          }`}
+                          onClick={() => setActiveTab("password")}
+                        >
+                          Şifrəni dəyişdir
                         </button>
                       </div>
-                    </form>
+
+                      {/* Form */}
+                      <form onSubmit={handleSave}>
+                        <div className="mb-4">
+                          <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
+                            Ad
+                          </label>
+                          <input
+                            type="text"
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="mb-4">
+                          <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
+                            Soyad
+                          </label>
+                          <input
+                            type="text"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
+                          />
+                        </div>
+
+                        <div className="mb-4">
+                          <label className="block text-gray-700">Email</label>
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
+                          />
+                        </div>
+                        <div className="mb-4">
+                          <label className="block text-gray-700">Nömrə</label>
+                          <InputMask
+                            mask="+994 99 999 99 99"
+                            value={mobile}
+                            onChange={(e) => setMobile(e.target.value)}
+                            className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
+                            placeholder="Mobil nömrə"
+                          />
+                        </div>
+                        <div className="flex justify-end">
+                          <button
+                            type="submit"
+                            disabled={loading} // Disable the button when loading is true
+                            className={` bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 font-gilroy rounded-lg ${
+                              loading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
+                          >
+                            {loading ? (
+                              <div className="flex items-center justify-center">
+                                <svg
+                                  className="animate-spin h-5 w-5 mr-3 text-white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  ></circle>
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                  ></path>
+                                </svg>
+                                Gözləyin...
+                              </div>
+                            ) : (
+                              "Yadda saxla"
+                            )}
+                          </button>
+                        </div>
+                      </form>
+                    </div>
                   </div>
-                </div>
+                )}
+
+                {/* Password Tab */}
+                {activeTab === "password" && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Left Side - Image */}
+                    <div className="flex justify-center">
+                      <div className="relative">
+                        {imagePreview ? (
+                          <Image
+                            width={200}
+                            height={220}
+                            src={imagePreview}
+                            alt="Profile Large"
+                            className="w-full h-[370px] rounded-lg object-cover"
+                          />
+                        ) : (
+                          <div className="w-48 h-48 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center text-4xl font-bold">
+                            {generateInitials(firstName, lastName)}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    {/* Right Side - Form with Tabs */}
+                    <div>
+                      {/* Tabs */}
+                      <div className="flex justify-start mb-4">
+                        <button
+                          className={`mr-4 px-4 py-2 rounded-lg font-gilroy ${
+                            activeTab === "general"
+                              ? "bg-blue100 text-blue400"
+                              : "text-neutral700"
+                          }`}
+                          onClick={() => setActiveTab("general")}
+                        >
+                          Məlumatlar
+                        </button>
+                        <button
+                          className={`px-4 py-2 rounded-lg font-gilroy ${
+                            activeTab === "password"
+                              ? "bg-blue100 text-blue400"
+                              : "text-neutral700"
+                          }`}
+                          onClick={() => setActiveTab("password")}
+                        >
+                          Şifrəni dəyişdir
+                        </button>
+                      </div>
+
+                      <form onSubmit={handleChangePassword}>
+      {/* Old Password Field */}
+      <div className="mb-4 relative">
+        <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
+          Mövcud Şifrəniz
+        </label>
+        <input
+          type={oldPasswordVisible ? "text" : "password"}
+          value={oldPassword}
+          placeholder="********"
+          onChange={(e) => setOldPassword(e.target.value)}
+          className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
+            // Optionally, add validation if needed
+            ""
+          }`}
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setOldPasswordVisible(!oldPasswordVisible)}
+          className="absolute inset-y-0 right-0 top-6 flex items-center justify-center pr-3"
+        >
+          {oldPasswordVisible ? (
+            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+          ) : (
+            <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+          )}
+        </button>
+      </div>
+
+      {/* New Password Field */}
+      <div className="mb-4 relative">
+        <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
+          Yeni Şifrə
+        </label>
+        <input
+          type={newPasswordVisible ? "text" : "password"}
+          value={newPassword}
+            placeholder="********"
+          onChange={handleNewPasswordChange}
+          className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
+            newPasswordError
+              ? "border-red-500 bg-red-50"
+              : ""
+          }`}
+          required
+        />
+        <button
+          type="button"
+          onClick={() => setNewPasswordVisible(!newPasswordVisible)}
+          className="absolute inset-y-0 right-0 top-6 flex items-center pr-3"
+        >
+          {newPasswordVisible ? (
+            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+          ) : (
+            <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+          )}
+        </button>
+        {newPasswordError && (
+          <p className="mt-1 text-red-500 text-sm">
+            {newPasswordError}
+          </p>
+        )}
+      </div>
+
+      {/* Confirm Password Field */}
+      <div className="mb-4 relative">
+        <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
+        Şifrəni təsdiqləyin
+        </label>
+        <input
+          type={confirmPasswordVisible ? "text" : "password"}
+          value={confirmPassword}
+            placeholder="********"
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10"
+          required
+        />
+        <button
+          type="button"
+          onClick={() =>
+            setConfirmPasswordVisible(!confirmPasswordVisible)
+          }
+          className="absolute inset-y-0 right-0 top-6 flex items-center pr-3"
+        >
+          {confirmPasswordVisible ? (
+            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+          ) : (
+            <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+          )}
+        </button>
+      </div>
+
+      {/* Submit Button */}
+      <div className="flex justify-end">
+        <button
+          type="submit"
+          disabled={loading}
+          className={`bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 font-gilroy rounded-lg ${
+            loading ? "opacity-50 cursor-not-allowed" : ""
+          }`}
+        >
+          {loading ? (
+            <div className="flex items-center justify-center">
+              <svg
+                className="animate-spin h-5 w-5 mr-3 text-white"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                ></circle>
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
+              </svg>
+              Gözləyin...
+            </div>
+          ) : (
+            "Şifrəni dəyiş"
+          )}
+        </button>
+      </div>
+    </form>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

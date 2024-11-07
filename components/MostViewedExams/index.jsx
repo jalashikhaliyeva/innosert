@@ -1,13 +1,15 @@
 import React from "react";
 import Slider from "./Slider"; // Adjust the path based on your project structure
 
-function MostViwedExams() {
-  const data = [
-    { id: 1, image: "/img/Sertifikat1.png" },
-    { id: 2, image: "/img/Sertifikat1.png" },
-    { id: 3, image: "/img/Sertifikat1.png" },
-    // Add more slides if needed
-  ];
+function MostViwedExams({mostViewedExams}) {
+  console.log(mostViewedExams, "mostViewedExams");
+  const data = mostViewedExams
+  // const data = [
+  //   { id: 1, image: "/img/Sertifikat1.png" },
+  //   { id: 2, image: "/img/Sertifikat1.png" },
+  //   { id: 3, image: "/img/Sertifikat1.png" },
+  //   // Add more slides if needed
+  // ];
 
   return (
     <div className="hidden lg:block w-[40%] ">

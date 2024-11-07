@@ -49,9 +49,7 @@ function ReportsSingle() {
     fetchReportData();
   }, [id, selectedCompany]);
 
-  // Filter data based on the search term, including both `title` and `user`
-  // Filter data based on the search term, including both `title` and `user`
-  // Filter data based on the search term, including `title`, `user`, and `type`
+
   const filteredData = reportData
     ? reportData.filter(
         (item) =>
