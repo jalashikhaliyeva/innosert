@@ -31,7 +31,7 @@ function ExamHeader({
   };
 
   return (
-    <div className="bg-boxGrayBodyColor shadow-certificate py-5">
+    <div className="bg-boxGrayBodyColor shadow-certificate py-5 z-20">
       <Container>
         <div className="flex items-center justify-between bg-boxGrayBodyColor">
           <div className="hidden lg:block">

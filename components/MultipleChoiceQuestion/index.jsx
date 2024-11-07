@@ -12,7 +12,7 @@ function MultipleChoiceQuestion({
   };
 
   return (
-    <div className="py-6 px-4 sm:py-10 sm:px-8 lg:px-40 w-full sm:w-[90%] lg:w-[75%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col justify-center mx-auto rounded-lg">
+    <div className="py-6 px-4  min-h-[500px] sm:py-10 sm:px-8 lg:px-40 w-full sm:w-[90%] lg:w-[75%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col  mx-auto rounded-lg">
       <WarningQuestion
         questionId={questionData.id}
         onSubmitReport={onSubmitReport}

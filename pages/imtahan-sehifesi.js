@@ -252,31 +252,31 @@ function ImtahanSehifesi() {
       .map((question, index) => {
         const userAnswer = userAnswers[index];
         const questionId = question.id;
-  
+
         switch (question.type) {
           case "Variantlı Sual": // Multiple Choice Question
             return {
               questionId: questionId,
               submittedAnswer: userAnswer ? [userAnswer] : [],
             };
-  
+
           case "Açıq sual": // Open Question
             return {
               questionId: questionId,
               submittedAnswer: userAnswer || "",
             };
-  
+
           case "Uyğunlaşdırma Sual": // Combination Question
             if (userAnswer && userAnswer.length > 0) {
               const submittedAnswer = {};
               userAnswer.forEach((pair) => {
                 const keyIndex = pair.questionIndex;
                 const keyValue = question.answers.key[keyIndex]; // Get the key string
-  
+
                 const valueValues = pair.selectedOptionIds.map(
                   (id) => question.answers.value[id] // Map IDs back to values
                 );
-  
+
                 submittedAnswer[keyValue] = valueValues;
               });
               return {
@@ -289,14 +289,13 @@ function ImtahanSehifesi() {
                 submittedAnswer: {},
               };
             }
-  
+
           default:
             return null;
         }
       })
       .filter((answer) => answer !== null);
   };
-  
 
   const handleFinishExam = async () => {
     try {
@@ -340,9 +339,11 @@ function ImtahanSehifesi() {
     }
   };
 
+  // ImtahanSehifesi component
   return (
-    <div className="min-h-screen flex flex-col" ref={examAreaRef}>
+    <div className="h-screen flex flex-col" ref={examAreaRef}>
       <ExamHeader
+        className="flex-shrink-0"
         clickedExam={clickedExam}
         duration={timeRemaining}
         currentQuestion={currentQuestion}
@@ -350,9 +351,11 @@ function ImtahanSehifesi() {
         currentScore={currentQuestionData.score}
         isPerQuestionTiming={isDurationZero(examDetails.duration)}
       />
-      <div className="flex flex-1 items-stretch">
+
+      <div className="flex-1 overflow-auto flex">
+        {/* Fixed Sidebar */}
         {!isDurationZero(examDetails.duration) && (
-          <div className="hidden md:block md:w-[20%]">
+          <div className="fixed z-10 left-0 top-20 bottom-30 w-[20%] h-[100vh] overflow-y-auto shadow-md">
             <ExamSidebar
               questions={questionsData}
               currentQuestion={currentQuestion}
@@ -362,9 +365,10 @@ function ImtahanSehifesi() {
           </div>
         )}
 
+        {/* Main Content Area with Left Margin for Sidebar */}
         <div
-          className={`w-full ${
-            !isDurationZero(examDetails.duration) ? "md:w-[80%]" : "w-full"
+          className={`flex-1 ml-[20%] overflow-auto ${
+            isDurationZero(examDetails.duration) ? "ml-0" : "ml-[20%]"
           }`}
         >
           <InternalContainer>
@@ -374,11 +378,13 @@ function ImtahanSehifesi() {
       </div>
 
       <ExamFooter
+        className="flex-shrink-0"
         onNext={handleNextQuestion}
         onPrevious={handlePreviousQuestion}
         isLastQuestion={currentQuestion === questionsData.length - 1}
         showPreviousButton={!isDurationZero(examDetails.duration)}
       />
+
       {isFinishModalOpen && (
         <FinishExamModal
           closeModal={() => setIsFinishModalOpen(false)}

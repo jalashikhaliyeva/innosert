@@ -7,7 +7,7 @@ function ExamFooter({
   showPreviousButton,
 }) {
   return (
-    <div className="flex justify-end gap-4 p-4 bg-white shadow-md">
+    <div className="flex justify-end gap-4 p-4 bg-white shadow-md z-30">
       {showPreviousButton && (
         <button
           onClick={onPrevious}
