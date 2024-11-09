@@ -8,9 +8,7 @@ import AciqSual from "./AciqSual";
 import KombinasiyaSuali from "./KombinasiyaSuali";
 import CompanyContext from "@/shared/context/CompanyContext";
 
-const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
-  ssr: false,
-});
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 
 function EditQuestionSection({
   selectedOption,
@@ -36,10 +34,7 @@ function EditQuestionSection({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      require("froala-editor/js/plugins.pkgd.min.js");
-      require("froala-editor/js/plugins/image.min.js");
-      require("froala-editor/js/plugins/video.min.js");
-      require("froala-editor/js/plugins/file.min.js");
+      require("react-quill/dist/quill.snow.css");
       setLoaded(true);
     }
   }, []);
@@ -79,6 +74,27 @@ function EditQuestionSection({
   if (!loaded) {
     return <Spinner />;
   }
+
+  // Define modules and formats for ReactQuill
+  const modules = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"],
+      [{ script: "sub" }, { script: "super" }],
+      ["link", "image", "video"],
+      ["undo", "redo"],
+    ],
+  };
+
+  const formats = [
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "script",
+    "link",
+    "image",
+    "video",
+  ];
 
   return (
     <>
@@ -127,39 +143,13 @@ function EditQuestionSection({
                 />
               ) : (
                 <div style={{ width: "100%" }} ref={editorRefTitle}>
-                  <FroalaEditorComponent
-                    tag="textarea"
-                    config={{
-                      key: "YOUR_LICENSE_KEY",
-                      attribution: false,
-                      quickInsertTags: [],
-                      imageUpload: true,
-                      toolbarButtons: [
-                        "bold",
-                        "italic",
-                        "underline",
-                        "strikeThrough",
-                        "subscript",
-                        "superscript",
-                        "|",
-                        "insertImage",
-                        "insertVideo",
-                        "insertFile",
-                        "|",
-                        "undo",
-                        "redo",
-                      ],
-                      imageAllowedTypes: ["jpeg", "jpg", "png", "gif"],
-                      videoUpload: true,
-                      fileUpload: true,
-                      charCounterCount: false,
-                      wordCounterCount: false,
-                      heightMin: "100",
-                      editorClass: "editor-custom-bg",
-                      toolbarContainerClass: "editor-toolbar-custom",
-                    }}
-                    model={titleText}
-                    onModelChange={(model) => setTitleText(model)}
+                  <ReactQuill
+                    value={titleText}
+                    onChange={setTitleText}
+                    modules={modules}
+                    formats={formats}
+                    theme="snow"
+                    style={{ minHeight: "100px" }}
                   />
                 </div>
               )}
@@ -186,40 +176,13 @@ function EditQuestionSection({
                 />
               ) : (
                 <div style={{ width: "100%" }} ref={editorRefCondition}>
-                  <FroalaEditorComponent
-                    tag="textarea"
-                    config={{
-                      key: "YOUR_LICENSE_KEY",
-                      attribution: false,
-                      quickInsertTags: [],
-                      imageUpload: true,
-                      toolbarButtons: [
-                        "bold",
-                        "italic",
-                        "underline",
-                        "strikeThrough",
-                        "subscript",
-                        "superscript",
-                        "|",
-                        "insertImage",
-                        "insertVideo",
-                        "insertFile",
-                        "|",
-                        "undo",
-                        "redo",
-                      ],
-                      imageAllowedTypes: ["jpeg", "jpg", "png", "gif"],
-                      videoUpload: true,
-                      fileUpload: true,
-                      charCounterCount: false,
-                      wordCounterCount: false,
-                      heightMin: "100",
-                      editorClass: "editor-custom-bg",
-                      toolbarSticky: false,
-                      toolbarContainerClass: "editor-toolbar-custom",
-                    }}
-                    model={conditionText}
-                    onModelChange={(model) => setConditionText(model)}
+                  <ReactQuill
+                    value={conditionText}
+                    onChange={setConditionText}
+                    modules={modules}
+                    formats={formats}
+                    theme="snow"
+                    style={{ minHeight: "100px" }}
                   />
                 </div>
               )}

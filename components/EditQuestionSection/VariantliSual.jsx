@@ -3,10 +3,9 @@ import { FaPlus } from "react-icons/fa6";
 import dynamic from "next/dynamic";
 import { IoCloseOutline } from "react-icons/io5";
 
-// Dynamically import FroalaEditorComponent with SSR disabled
-const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
-  ssr: false,
-});
+// Dynamically import ReactQuill with SSR disabled
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css"; // Import React Quill styles
 
 function VariantliSual({ answers, setAnswers }) {
   const answerRefs = useRef({});
@@ -88,6 +87,27 @@ function VariantliSual({ answers, setAnswers }) {
     };
   }, [currentEditor]);
 
+  // Define Quill modules and formats
+  const quillModules = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+      ["clean"], // Remove formatting button
+    ],
+  };
+
+  const quillFormats = [
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "link",
+    "image",
+  ];
+
   return (
     <div className="flex flex-col gap-3 w-full lg:w-1/2 px-4">
       <h2 className="text-textSecondaryDefault leading-8 text-2xl font-gilroy font-medium mb-5">
@@ -106,7 +126,6 @@ function VariantliSual({ answers, setAnswers }) {
               className="ml-2 mr-2"
             />
             {answer.correct && <span className="text-green600">Düz cavab</span>}
-            {/* Delete button for non-default variants */}
             {!answer.isDefault && (
               <button
                 className="ml-4 text-red-600 hover:text-red-800 text-2xl"
@@ -118,7 +137,6 @@ function VariantliSual({ answers, setAnswers }) {
           </div>
           <div className="flex items-center gap-2">
             {currentEditor !== `answer-${answer.id}` ? (
-              // Non-edit mode: Show placeholder if no text
               <div
                 className={`py-3 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full ${
                   answer.correct
@@ -137,7 +155,6 @@ function VariantliSual({ answers, setAnswers }) {
                 )}
               </div>
             ) : (
-              // Edit mode: Froala editor with placeholder
               <div
                 style={{ width: "100%" }}
                 ref={(el) => {
@@ -146,47 +163,20 @@ function VariantliSual({ answers, setAnswers }) {
                   }
                 }}
               >
-                <FroalaEditorComponent
-                  tag="textarea"
-                  config={{
-                    key: "YOUR_LICENSE_KEY",
-                    attribution: false,
-                    quickInsertTags: [],
-                    imageUpload: true,
-                    toolbarButtons: [
-                      "bold",
-                      "italic",
-                      "underline",
-                      "strikeThrough",
-                      "subscript",
-                      "superscript",
-                      "|",
-                      "insertImage",
-                      "insertVideo",
-                      "insertFile",
-                      "|",
-                      "undo",
-                      "redo",
-                    ],
-                    imageAllowedTypes: ["jpeg", "jpg", "png", "gif"],
-                    videoUpload: true,
-                    fileUpload: true,
-                    charCounterCount: false,
-                    wordCounterCount: false,
-                    heightMin: "100",
-                    editorClass: "editor-custom-bg",
-                    toolbarSticky: false,
-                    toolbarContainerClass: "editor-toolbar-custom",
-                    // placeholderText: "Variant mətnini əlavə edin",
-                  }}
-                  model={answer.text || ""}
-                  onModelChange={(model) => {
+                <ReactQuill
+                  theme="snow"
+                  placeholder="Variant mətnini əlavə edin"
+                  modules={quillModules}
+                  formats={quillFormats}
+                  value={answer.text}
+                  onChange={(content) => {
                     setAnswers((prevAnswers) =>
                       prevAnswers.map((ans) =>
-                        ans.id === answer.id ? { ...ans, text: model } : ans
+                        ans.id === answer.id ? { ...ans, text: content } : ans
                       )
                     );
                   }}
+                  className="quill-editor"
                 />
               </div>
             )}

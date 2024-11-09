@@ -4,10 +4,10 @@ import { useState, useRef, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { IoCloseOutline } from "react-icons/io5";
 import dynamic from "next/dynamic";
-// Dynamic import for Froala Editor
-const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
-  ssr: false,
-});
+
+// Dynamically import ReactQuill with SSR disabled
+const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
+import "react-quill/dist/quill.snow.css"; // Import React Quill styles
 
 function KombinasiyaSuali({
   kombinasiyaOptions,
@@ -19,18 +19,9 @@ function KombinasiyaSuali({
   const questionRefs = useRef({});
   const kombinasiyaRefs = useRef({});
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      require("froala-editor/js/plugins.pkgd.min.js");
-      require("froala-editor/js/plugins/image.min.js");
-      require("froala-editor/js/plugins/video.min.js");
-      require("froala-editor/js/plugins/file.min.js");
-    }
-  }, []);
-
   // Add a new kombinasiya option
   const handleAddKombinasiya = () => {
-    const newOptionId = String.fromCharCode(65 + kombinasiyaOptions.length); // D, E, F, etc.
+    const newOptionId = String.fromCharCode(65 + kombinasiyaOptions.length); // A, B, C, etc.
     setKombinasiyaOptions([
       ...kombinasiyaOptions,
       {
@@ -159,6 +150,27 @@ function KombinasiyaSuali({
     };
   }, []);
 
+  // Define Quill modules and formats
+  const quillModules = {
+    toolbar: [
+      ["bold", "italic", "underline", "strike"],
+      [{ list: "ordered" }, { list: "bullet" }],
+      ["link", "image"],
+      ["clean"], // Remove formatting button
+    ],
+  };
+
+  const quillFormats = [
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "list",
+    "bullet",
+    "link",
+    "image",
+  ];
+
   return (
     <div className="flex flex-col gap-3 w-full px-4">
       <h2 className="text-textSecondaryDefault leading-8 text-2xl font-gilroy font-medium mb-5">
@@ -166,6 +178,7 @@ function KombinasiyaSuali({
       </h2>
 
       <div className="flex w-full justify-between">
+        {/* Questions Section */}
         <div className="flex w-[48%] flex-col gap-2">
           {questions.map((question, index) => (
             <div key={question.id} className="flex flex-col mb-4 gap-2">
@@ -205,48 +218,21 @@ function KombinasiyaSuali({
                       }
                     }}
                   >
-                    <FroalaEditorComponent
-                      tag="textarea"
-                      config={{
-                        key: "YOUR_LICENSE_KEY",
-                        attribution: false,
-                        quickInsertTags: [],
-                        imageUpload: true,
-                        toolbarButtons: [
-                          "bold",
-                          "italic",
-                          "underline",
-                          "strikeThrough",
-                          "subscript",
-                          "superscript",
-                          "|",
-                          "insertImage",
-                          "insertVideo",
-                          "insertFile",
-                          "|",
-                          "undo",
-                          "redo",
-                        ],
-                        imageAllowedTypes: ["jpeg", "jpg", "png", "gif"],
-                        videoUpload: true,
-                        fileUpload: true,
-                        charCounterCount: false,
-                        wordCounterCount: false,
-                        heightMin: "100",
-                        editorClass: "editor-custom-bg",
-                        toolbarSticky: false,
-                        toolbarContainerClass: "editor-toolbar-custom",
+                    <ReactQuill
+                      theme="snow"
+                      placeholder="Sualı daxil edin"
+                      modules={quillModules}
+                      formats={quillFormats}
+                      value={question.questionText}
+                      onChange={(content) => {
+                        handleQuestionTextChange(question.id, content);
                       }}
-                      model={question.questionText}
-                      onModelChange={(model) => {
-                        handleQuestionTextChange(question.id, model);
-                      }}
+                      className="quill-editor"
                     />
                   </div>
                 )}
               </div>
 
-              {/* Dropdown Input */}
               {/* Dropdown Input */}
               <div style={{ position: "relative" }}>
                 <div
@@ -325,6 +311,7 @@ function KombinasiyaSuali({
           </button>
         </div>
 
+        {/* Kombinasiya Options Section */}
         <div className="flex w-[48%] flex-col">
           {kombinasiyaOptions.map((kombinasiya) => (
             <div key={kombinasiya.id} className="flex flex-col mb-4">
@@ -363,42 +350,16 @@ function KombinasiyaSuali({
                       }
                     }}
                   >
-                    <FroalaEditorComponent
-                      tag="textarea"
-                      config={{
-                        key: "YOUR_LICENSE_KEY",
-                        attribution: false,
-                        quickInsertTags: [],
-                        imageUpload: true,
-                        toolbarButtons: [
-                          "bold",
-                          "italic",
-                          "underline",
-                          "strikeThrough",
-                          "subscript",
-                          "superscript",
-                          "|",
-                          "insertImage",
-                          "insertVideo",
-                          "insertFile",
-                          "|",
-                          "undo",
-                          "redo",
-                        ],
-                        imageAllowedTypes: ["jpeg", "jpg", "png", "gif"],
-                        videoUpload: true,
-                        fileUpload: true,
-                        charCounterCount: false,
-                        wordCounterCount: false,
-                        heightMin: "100",
-                        editorClass: "editor-custom-bg",
-                        toolbarSticky: false,
-                        toolbarContainerClass: "editor-toolbar-custom",
+                    <ReactQuill
+                      theme="snow"
+                      placeholder="Kombinasiya mətnini əlavə edin"
+                      modules={quillModules}
+                      formats={quillFormats}
+                      value={kombinasiya.text}
+                      onChange={(content) => {
+                        handleKombinasiyaTextChange(kombinasiya.id, content);
                       }}
-                      model={kombinasiya.text}
-                      onModelChange={(model) => {
-                        handleKombinasiyaTextChange(kombinasiya.id, model);
-                      }}
+                      className="quill-editor"
                     />
                   </div>
                 )}
