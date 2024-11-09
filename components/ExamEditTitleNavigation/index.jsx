@@ -4,7 +4,7 @@ import { FaRegCircleCheck } from "react-icons/fa6";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
 
-function ExamEditTitleNavigation() {
+function ExamEditTitleNavigation({onSubmit}) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Variantli sual"); // Default option
   const dropdownRef = useRef(null); // Ref to the dropdown
@@ -87,7 +87,11 @@ function ExamEditTitleNavigation() {
           Sualı sil
         </button>
 
-        <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-green600 hover:bg-green600Hover active:bg-green600Pressed whitespace-nowrap">
+        <button
+          onClick={onSubmit} 
+         
+          className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-green600 hover:bg-green600Hover active:bg-green600Pressed whitespace-nowrap"
+        >
           <FaRegCircleCheck className="text-white w-5 h-5" />
           Yadda saxla
         </button>

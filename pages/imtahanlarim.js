@@ -10,9 +10,9 @@ import TitleExamsPage from "@/components/TitleExamsPage";
 import { useSavedExams } from "@/shared/context/SavedExamsContext";
 
 function Imtahanlarim() {
-  const { savedExams } = useSavedExams(); // Use saved exams from context
+  const { savedExams } = useSavedExams();
   const [exams, setExams] = useState([]);
-  const [activeTab, setActiveTab] = useState("paid"); // State to track active tab
+  const [activeTab, setActiveTab] = useState("paid");
 
   useEffect(() => {
     const fetchExams = async () => {
@@ -32,7 +32,7 @@ function Imtahanlarim() {
         const result = await response.json();
 
         if (result.status) {
-          setExams(result.data); // Set fetched exams to state
+          setExams(result.data);
         } else {
           console.error("Failed to fetch exams:", result.message);
         }
@@ -44,17 +44,14 @@ function Imtahanlarim() {
     fetchExams();
   }, []);
 
-  // Filter exams based on the active tab
   const filteredExams =
-    activeTab === "paid"
-      ? exams.filter((exam) => exam.paid) // Show paid exams
-      : savedExams; // Show saved exams from context
+    activeTab === "paid" ? exams.filter((exam) => exam.paid) : savedExams;
 
   return (
     <>
       <HeaderInternal />
       <div className="flex">
-        <div className="hidden md:block  md:w-[20%]">
+        <div className="hidden md:block md:w-[20%]">
           <Sidebar />
         </div>
 
@@ -62,7 +59,15 @@ function Imtahanlarim() {
           <InternalContainer>
             <Breadcrumb />
             <TitleExamsPage activeTab={activeTab} setActiveTab={setActiveTab} />
-            <ExamCard widthClass="w-[31.4%]" exams={filteredExams} />
+            {filteredExams.length > 0 ? (
+              <ExamCard widthClass="w-[31.4%]" exams={filteredExams} />
+            ) : (
+              <p className="text-neutral700 text-lg font-gilroy mt-4 flex justify-center items-center ">
+                {activeTab === "paid"
+                  ? "Heç bir ödənişli imtahan tapılmadı."
+                  : "Heç bir seçilmiş imtahan tapılmadı."}
+              </p>
+            )}
           </InternalContainer>
         </div>
       </div>

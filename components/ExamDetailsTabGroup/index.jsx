@@ -9,6 +9,7 @@ import { LuSearch } from "react-icons/lu";
 import { useRouter } from "next/router";
 import TableComponent from "../CreateExamTabGroup/TableComponent";
 import axios from "axios";
+import QuestionsExamDetails from "../CreateExamTabGroup/QuestionsExamDetail";
 
 function ExamDetailsTabGroup({ examDetailsSingle }) {
   const [activeTab, setActiveTab] = useState("general");
@@ -26,7 +27,7 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
         console.log(examDetailsSingle.slug, "examDetailsSingle.name");
 
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/exam/questions/${examDetailsSingle.slug}`,
+          `https://innocert-admin.markup.az/api/exam/questions/${i}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -57,7 +58,15 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
     switch (activeTab) {
       case "questions":
         return (
-          <TableComponent
+          // <TableComponent
+          //     questions={questions}
+          //     selectedRows={selectedRows}
+          //     setSelectedRows={setSelectedRows}
+          //     handleDelete={handleDelete}
+          //     handleEdit={handleEdit}
+          //     searchTerm={searchTerm}
+          //   />
+          <QuestionsExamDetails
             questions={questions}
             selectedRows={selectedRows}
             setSelectedRows={setSelectedRows}

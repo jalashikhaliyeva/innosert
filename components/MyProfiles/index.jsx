@@ -463,19 +463,21 @@ function MyProfiles() {
 
       if (response.ok) {
         toast.success("Parol uğurla dəyişdirildi.");
-        // Optionally, reset the form fields
         setOldPassword("");
         setNewPassword("");
         setConfirmPassword("");
+      } else if (data.message === "errors.ERROR_406") {
+        // Show a custom error message for incorrect password
+        toast.error("Mövcud şifrə səhvdir. Yenidən yoxlayın.");
       } else {
-        // Handle errors returned by the API
-        toast.error(`Xəta: ${data.message || "Parol dəyişdirilə bilmədi."}`);
+        // General error message for other cases
+        const errorMessage = data.message || "Parol dəyişdirilə bilmədi.";
+        toast.error(`Xəta: ${errorMessage}`);
       }
     } catch (error) {
-      // Handle network or unexpected errors
       toast.error(`Xəta baş verdi: ${error.message}`);
     } finally {
-      setLoading(false); // Stop loading state
+      setLoading(false);
     }
   };
 
@@ -899,137 +901,139 @@ function MyProfiles() {
                       </div>
 
                       <form onSubmit={handleChangePassword}>
-      {/* Old Password Field */}
-      <div className="mb-4 relative">
-        <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-          Mövcud Şifrəniz
-        </label>
-        <input
-          type={oldPasswordVisible ? "text" : "password"}
-          value={oldPassword}
-          placeholder="********"
-          onChange={(e) => setOldPassword(e.target.value)}
-          className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
-            // Optionally, add validation if needed
-            ""
-          }`}
-          required
-        />
-        <button
-          type="button"
-          onClick={() => setOldPasswordVisible(!oldPasswordVisible)}
-          className="absolute inset-y-0 right-0 top-6 flex items-center justify-center pr-3"
-        >
-          {oldPasswordVisible ? (
-            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
-          ) : (
-            <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
-          )}
-        </button>
-      </div>
+                        {/* Old Password Field */}
+                        <div className="mb-4 relative">
+                          <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
+                            Mövcud Şifrəniz
+                          </label>
+                          <input
+                            type={oldPasswordVisible ? "text" : "password"}
+                            value={oldPassword}
+                            placeholder="********"
+                            onChange={(e) => setOldPassword(e.target.value)}
+                            className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
+                              // Optionally, add validation if needed
+                              ""
+                            }`}
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setOldPasswordVisible(!oldPasswordVisible)
+                            }
+                            className="absolute inset-y-0 right-0 top-6 flex items-center justify-center pr-3"
+                          >
+                            {oldPasswordVisible ? (
+                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                            ) : (
+                              <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                            )}
+                          </button>
+                        </div>
 
-      {/* New Password Field */}
-      <div className="mb-4 relative">
-        <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-          Yeni Şifrə
-        </label>
-        <input
-          type={newPasswordVisible ? "text" : "password"}
-          value={newPassword}
-            placeholder="********"
-          onChange={handleNewPasswordChange}
-          className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
-            newPasswordError
-              ? "border-red-500 bg-red-50"
-              : ""
-          }`}
-          required
-        />
-        <button
-          type="button"
-          onClick={() => setNewPasswordVisible(!newPasswordVisible)}
-          className="absolute inset-y-0 right-0 top-6 flex items-center pr-3"
-        >
-          {newPasswordVisible ? (
-            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
-          ) : (
-            <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
-          )}
-        </button>
-        {newPasswordError && (
-          <p className="mt-1 text-red-500 text-sm">
-            {newPasswordError}
-          </p>
-        )}
-      </div>
+                        {/* New Password Field */}
+                        <div className="mb-4 relative">
+                          <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
+                            Yeni Şifrə
+                          </label>
+                          <input
+                            type={newPasswordVisible ? "text" : "password"}
+                            value={newPassword}
+                            placeholder="********"
+                            onChange={handleNewPasswordChange}
+                            className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
+                              newPasswordError ? "border-red-500 bg-red-50" : ""
+                            }`}
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setNewPasswordVisible(!newPasswordVisible)
+                            }
+                            className="absolute inset-y-0 right-0 top-6 flex items-center pr-3"
+                          >
+                            {newPasswordVisible ? (
+                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                            ) : (
+                              <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                            )}
+                          </button>
+                          {newPasswordError && (
+                            <p className="mt-1 text-red-500 text-sm">
+                              {newPasswordError}
+                            </p>
+                          )}
+                        </div>
 
-      {/* Confirm Password Field */}
-      <div className="mb-4 relative">
-        <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-        Şifrəni təsdiqləyin
-        </label>
-        <input
-          type={confirmPasswordVisible ? "text" : "password"}
-          value={confirmPassword}
-            placeholder="********"
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10"
-          required
-        />
-        <button
-          type="button"
-          onClick={() =>
-            setConfirmPasswordVisible(!confirmPasswordVisible)
-          }
-          className="absolute inset-y-0 right-0 top-6 flex items-center pr-3"
-        >
-          {confirmPasswordVisible ? (
-            <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
-          ) : (
-            <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
-          )}
-        </button>
-      </div>
+                        {/* Confirm Password Field */}
+                        <div className="mb-4 relative">
+                          <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
+                            Şifrəni təsdiqləyin
+                          </label>
+                          <input
+                            type={confirmPasswordVisible ? "text" : "password"}
+                            value={confirmPassword}
+                            placeholder="********"
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10"
+                            required
+                          />
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setConfirmPasswordVisible(!confirmPasswordVisible)
+                            }
+                            className="absolute inset-y-0 right-0 top-6 flex items-center pr-3"
+                          >
+                            {confirmPasswordVisible ? (
+                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                            ) : (
+                              <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                            )}
+                          </button>
+                        </div>
 
-      {/* Submit Button */}
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={loading}
-          className={`bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 font-gilroy rounded-lg ${
-            loading ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {loading ? (
-            <div className="flex items-center justify-center">
-              <svg
-                className="animate-spin h-5 w-5 mr-3 text-white"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-              >
-                <circle
-                  className="opacity-25"
-                  cx="12"
-                  cy="12"
-                  r="10"
-                  stroke="currentColor"
-                  strokeWidth="4"
-                ></circle>
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                ></path>
-              </svg>
-              Gözləyin...
-            </div>
-          ) : (
-            "Şifrəni dəyiş"
-          )}
-        </button>
-      </div>
-    </form>
+                        {/* Submit Button */}
+                        <div className="flex justify-end">
+                          <button
+                            type="submit"
+                            disabled={loading}
+                            className={`bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 font-gilroy rounded-lg ${
+                              loading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
+                          >
+                            {loading ? (
+                              <div className="flex items-center justify-center">
+                                <svg
+                                  className="animate-spin h-5 w-5 mr-3 text-white"
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                  ></circle>
+                                  <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                                  ></path>
+                                </svg>
+                                Gözləyin...
+                              </div>
+                            ) : (
+                              "Şifrəni dəyiş"
+                            )}
+                          </button>
+                        </div>
+                      </form>
                     </div>
                   </div>
                 )}

@@ -323,7 +323,7 @@ function ReportTable({ selectedRows, setSelectedRows, data }) {
                         {item.status === true ? "Tamamlandı" : "Gözlənilir"}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-linkBlue !text-base flex items-center sticky right-0 bg-white z-10">
+                    <td className="px-4 py-3 text-linkBlue !text-base flex items-center sticky right-0 z-10">
                       <button onClick={() => handleDetailNavigation(item.id)}>
                         Bax &gt;
                       </button>

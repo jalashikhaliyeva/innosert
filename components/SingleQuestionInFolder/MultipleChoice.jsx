@@ -8,7 +8,7 @@ function MultipleChoice({ selectedQuestion }) {
         dangerouslySetInnerHTML={{ __html: selectedQuestion?.question }}
       ></h2>
       <div className="flex flex-col gap-4">
-        {selectedQuestion?.answers.map((answer, index) => (
+        {selectedQuestion?.answers?.map((answer, index) => (
           <div
             key={answer.id}
             className={`flex items-center w-full md:w-[70%] lg:w-[50%] p-2 rounded-xl border font-gilroy ${

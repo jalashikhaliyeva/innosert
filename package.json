@@ -22,6 +22,7 @@
     "embla-carousel-autoplay": "^8.2.0",
     "embla-carousel-react": "^8.2.0",
     "framer-motion": "^11.5.5",
+    "he": "^1.2.0",
     "heroicons": "^2.1.5",
     "html-react-parser": "^5.1.15",
     "i18next": "^23.14.0",

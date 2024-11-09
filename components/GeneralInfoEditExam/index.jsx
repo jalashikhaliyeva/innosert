@@ -1,4 +1,3 @@
-// src/components/GeneralInfoEditExam.js
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { FaPen, FaKey } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
@@ -14,16 +13,16 @@ function GeneralInfoEditExam() {
     setTimeForQuestion,
     isGeneralInfoValid,
     setIsGeneralInfoValid,
+    
     updateExamDetails,
     examDetails, // Get examDetails from context
   } = useContext(UserContext);
 
-  console.log(selectedCategory, "selectedCategoryyy");
-  console.log(selectedSubcategory, "selectedSubcategory");
-  console.log(timeForQuestion, "timeForQuestion");
-  console.log(examDetails, "examDetails");
+  useEffect(() => {
+    const isValid = examDetails.name && examDetails.desc && examDetails.duration;
+    setIsGeneralInfoValid(!!isValid);
+  }, [examDetails, setIsGeneralInfoValid]);
 
-  // Initialize form values
   const [values, setValues] = useState(["", "", "", "", "00:00:00"]);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
@@ -165,7 +164,11 @@ function GeneralInfoEditExam() {
 
   // Initialize form values from examDetails
   useEffect(() => {
-    if (examDetails) {
+    if (
+      examDetails &&
+      selectedCategory.length > 0 &&
+      selectedSubcategory.length > 0
+    ) {
       setValues([
         examDetails.name || "",
         examDetails.desc || "",
@@ -185,16 +188,11 @@ function GeneralInfoEditExam() {
       }
 
       // Handle category initialization
-      if (examDetails.category) {
-        try {
-          const parsedCategories = JSON.parse(examDetails.category); // Parse the stringified array
-          const items = combinedList.filter((item) =>
-            parsedCategories.includes(item.name)
-          );
-          setSelectedItems(items);
-        } catch (error) {
-          console.error("Error parsing category:", error);
-        }
+      if (examDetails.category_id) {
+        const items = combinedList.filter((item) =>
+          examDetails.category_id.includes(item.id)
+        );
+        setSelectedItems(items);
       }
 
       setHasSubmitted(true); // Since details are loaded
@@ -244,7 +242,7 @@ function GeneralInfoEditExam() {
     setIsGeneralInfoValid(isFormValid);
 
     // Update exam details if the form is valid and not yet submitted
-    if (isFormValid && !hasSubmitted) {
+    if (isFormValid && !hasSubmitted && selectedItems.length > 0) {
       const payload = {
         name: examName,
         desc: examDesc,

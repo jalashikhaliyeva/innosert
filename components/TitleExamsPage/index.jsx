@@ -42,8 +42,8 @@ function TitleExamsPage({ activeTab, setActiveTab }) {
             <span>Seçilənlər</span>
           </button>
         </div>
-     
-{/* 
+
+        {/* 
         <FilterCategories
           isModalOpen={isFilterModalOpen}
           setIsModalOpen={setIsFilterModalOpen}

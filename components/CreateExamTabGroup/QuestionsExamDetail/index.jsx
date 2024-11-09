@@ -4,160 +4,35 @@ import { BsTrash3 } from "react-icons/bs";
 import { VscEdit } from "react-icons/vsc";
 import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
-import { useRouter } from "next/router";
 import { FiRefreshCw } from "react-icons/fi";
+import { useRouter } from "next/router";
 import { UserContext } from "@/shared/context/UserContext";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
-function TableComponent({
+function QuestionsExamDetails({
   selectedRows,
   setSelectedRows,
+  openDeleteModal,
   questions,
-  showActionButtons = false,
-  showDeleteButton = false,
+  searchTerm,
 }) {
   console.log(questions, "QuestionsTableCompany from API add quest");
-  const data = questions;
+  // const data = questions;
 
-  const {
-    setSelectedQuestion,
-    selectedQuestionsForExam,
-    setSelectedQuestionsForExam,
-    timeForQuestion,
-    setIsQuestionsValid,
-  } = useContext(UserContext);
-  useEffect(() => {
-    const isValid = selectedQuestionsForExam.length > 0;
-    setIsQuestionsValid(isValid);
-  }, [selectedQuestionsForExam, setIsQuestionsValid]);
+  const { setSelectedQuestion } = useContext(UserContext);
+  const filteredQuestions = questions.filter((question) =>
+    question.question.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const data = filteredQuestions;
 
-  // **Handler for the Add Button**
-  const handleAdd = () => {
-    // Filter the selected questions based on selectedRows
-    const selectedQuestions = data.filter((question) =>
-      selectedRows.includes(question.id)
-    );
-
-    // Map selected questions to include minute and second if timeForQuestion is true
-    const selectedQuestionsWithTime = selectedQuestions.map((q) => ({
-      ...q,
-      minute: timeForQuestion ? questionTimes[q.id]?.minute ?? 0 : undefined,
-      second: timeForQuestion ? questionTimes[q.id]?.second ?? 0 : undefined,
-    }));
-
-    // Update the context by appending new questions with time data
-    setSelectedQuestionsForExam((prevSelectedQuestions) => {
-      // Create a Set of existing question IDs to prevent duplicates
-      const existingQuestionIds = new Set(
-        prevSelectedQuestions.map((q) => q.id)
-      );
-
-      // Filter out any questions that are already selected
-      const newUniqueQuestions = selectedQuestionsWithTime.filter(
-        (q) => !existingQuestionIds.has(q.id)
-      );
-
-      // Append the unique new questions with time data
-      return [...prevSelectedQuestions, ...newUniqueQuestions];
-    });
-
-    // Optional: Provide feedback to the user
-    toast.success(`${selectedQuestions.length} question(s) added to the exam.`);
-    console.log(
-      selectedQuestionsWithTime,
-      "question(s) added to the exam with time"
-    );
-
-    // Optional: Clear the selection after adding
-    setSelectedRows([]);
-  };
-
-  // **Initialize questionTimes from selectedQuestionsForExam**
-  useEffect(() => {
-    const initialTimes = {};
-    selectedQuestionsForExam.forEach((q) => {
-      if (q.minute !== undefined && q.second !== undefined) {
-        initialTimes[q.id] = { minute: q.minute, second: q.second };
-      }
-    });
-    setQuestionTimes(initialTimes);
-  }, [selectedQuestionsForExam]);
-
-  // **Initialize minutes and seconds when timeForQuestion changes**
-  useEffect(() => {
-    if (timeForQuestion) {
-      setSelectedQuestionsForExam((prevSelectedQuestions) =>
-        prevSelectedQuestions.map((q) => ({
-          ...q,
-          minute: q.minute ?? 0,
-          second: q.second ?? 0,
-        }))
-      );
-    } else {
-      // Optionally, remove minute and second if timeForQuestion is disabled
-      setSelectedQuestionsForExam((prevSelectedQuestions) =>
-        prevSelectedQuestions.map((q) => {
-          const { minute, second, ...rest } = q;
-          return rest;
-        })
-      );
-      setQuestionTimes({});
-    }
-  }, [timeForQuestion, setSelectedQuestionsForExam]);
-
-  // **Update Validation Logic**
-  useEffect(() => {
-    if (!timeForQuestion) {
-      setIsQuestionsValid(selectedQuestionsForExam.length >= 10);
-    } else {
-      const allTimesValid = selectedQuestionsForExam.every(
-        (q) => q.minute > 0 || q.second > 0
-      );
-      setIsQuestionsValid(
-        selectedQuestionsForExam.length >= 10 && allTimesValid
-      );
-
-      // Optional: Notify user if validation fails
-      if (selectedQuestionsForExam.length >= 10 && !allTimesValid) {
-        toast.warning(
-          "Hər bir sual üçün ən azı bir sıfırdan fərqli vaxt dəyəri olmalıdır."
-        );
-      }
-    }
-  }, [selectedQuestionsForExam, timeForQuestion, setIsQuestionsValid]);
-
-  const handleRemoveQuestion = (id) => {
-    // Remove the question from selectedQuestionsForExam
-    setSelectedQuestionsForExam((prevQuestions) =>
-      prevQuestions.filter((question) => question.id !== id)
-    );
-
-    // If the removed question is in selectedRows, remove it
-    setSelectedRows((prevSelectedRows) =>
-      prevSelectedRows.filter((rowId) => rowId !== id)
-    );
-
-    // Remove the time entry for the removed question
-    setQuestionTimes((prevTimes) => {
-      const updatedTimes = { ...prevTimes };
-      delete updatedTimes[id];
-      return updatedTimes;
-    });
-
-    // Provide feedback to the user
-    toast.success("Question removed from the exam.");
-  };
-
-  // Adjusted levelColors to match your data
+  // Define level colors
   const levelColors = {
     Çətin: "bg-redLow",
     Orta: "bg-violetLow",
     Asan: "bg-orangeLow",
   };
 
+  // Handle checkbox change for individual rows
   const handleCheckboxChange = (id) => {
-    // Ensure selectedRows is an array before accessing it
     const rows = Array.isArray(selectedRows) ? selectedRows : [];
 
     if (rows.includes(id)) {
@@ -167,51 +42,23 @@ function TableComponent({
     }
   };
 
-  // **State for time per question**
-  const [questionTimes, setQuestionTimes] = useState({});
-
-  const handleMinutesChange = (id, value) => {
-    const minute = Math.max(0, Math.min(59, Number(value)));
-    setQuestionTimes((prevTimes) => ({
-      ...prevTimes,
-      [id]: {
-        ...prevTimes[id],
-        minute,
-      },
-    }));
-
-    // Update selectedQuestionsForExam
-    setSelectedQuestionsForExam((prevSelectedQuestions) =>
-      prevSelectedQuestions.map((q) => (q.id === id ? { ...q, minute } : q))
-    );
-  };
-
-  const handleSecondsChange = (id, value) => {
-    const second = Math.max(0, Math.min(59, Number(value)));
-    setQuestionTimes((prevTimes) => ({
-      ...prevTimes,
-      [id]: {
-        ...prevTimes[id],
-        second,
-      },
-    }));
-
-    // Update selectedQuestionsForExam
-    setSelectedQuestionsForExam((prevSelectedQuestions) =>
-      prevSelectedQuestions.map((q) => (q.id === id ? { ...q, second } : q))
-    );
-  };
-
   const router = useRouter();
+
+  // Handle edit action
   const handleEdit = (question) => {
     console.log(question, "handle edit");
     setSelectedQuestion(question);
-    // Navigate to the sual-redakte page with question data in query params
     router.push({
       pathname: "/sual-redakte",
     });
   };
 
+  // Handle delete action
+  const handleDeleteClick = (id) => {
+    openDeleteModal(id);
+  };
+
+  // Handle row click to view question details
   const handleClick = (question) => {
     console.log(question, "handle click");
     setSelectedQuestion(question);
@@ -224,6 +71,7 @@ function TableComponent({
   const [openFilter, setOpenFilter] = useState(null);
   const [levelFilter, setLevelFilter] = useState([]);
   const [questionOrder, setQuestionOrder] = useState(null);
+  const [timeOrder, setTimeOrder] = useState(null); // New state for time sorting
   const [pointsFilter, setPointsFilter] = useState({ min: "", max: "" });
   const [dateFilter, setDateFilter] = useState({
     from: { year: "", month: "", day: "" },
@@ -241,8 +89,12 @@ function TableComponent({
     suallar: useRef(null),
     seviyye: useRef(null),
     xal: useRef(null),
+    vaxt: useRef(null), // New ref for Time filter
     tarix: useRef(null),
   };
+
+  // Determine if any question has non-zero minutes or seconds
+  const hasTime = data.some((q) => (q.minute || 0) > 0 || (q.second || 0) > 0);
 
   // Handle "select all" checkbox change
   const handleSelectAllChange = (e) => {
@@ -282,18 +134,14 @@ function TableComponent({
     };
   }, [openFilter, dropdownRefs]);
 
+  // Utility function to strip HTML tags
   const stripHtml = (html) => html.replace(/<\/?[^>]+(>|$)/g, "");
 
+  // Filter data based on date, points, and level
   const filteredData = data
     ?.filter((item) => {
-      // Include items without 'created_at'
-      if (!item.created_at) return true;
-
       const { from, to } = dateFilter;
       const itemDate = new Date(item.created_at);
-
-      // Exclude items with invalid 'created_at'
-      if (isNaN(itemDate)) return false;
 
       let fromDate = new Date(-8640000000000000); // Minimum date
       let toDate = new Date(8640000000000000); // Maximum date
@@ -319,26 +167,44 @@ function TableComponent({
       return itemScore >= minPoints && itemScore <= maxPoints;
     })
     .filter((item) => {
-      if (levelFilter.length === 0) return true;
+      if (levelFilter.length === 0) {
+        return true;
+      }
       return levelFilter.includes(item.level);
     });
 
   // Sorting logic
-  const sortedData = questionOrder
-    ? [...filteredData]?.sort((a, b) => {
-        const aTitle = stripHtml(a.title);
-        const bTitle = stripHtml(b.title);
-        if (questionOrder === "asc") {
-          return aTitle.localeCompare(bTitle);
-        } else {
-          return bTitle.localeCompare(aTitle);
-        }
-      })
-    : filteredData;
+  let sortedData = [...filteredData];
 
-  const pageCount = Math.ceil(sortedData?.length / itemsPerPage);
+  // Sort by question title if applicable
+  if (questionOrder) {
+    sortedData.sort((a, b) => {
+      const aTitle = stripHtml(a.title);
+      const bTitle = stripHtml(b.title);
+      if (questionOrder === "asc") {
+        return aTitle.localeCompare(bTitle);
+      } else {
+        return bTitle.localeCompare(aTitle);
+      }
+    });
+  }
 
-  const paginatedData = sortedData?.slice(
+  // Sort by time if applicable
+  if (timeOrder && hasTime) {
+    sortedData.sort((a, b) => {
+      const aTotalSeconds = (a.minute || 0) * 60 + (a.second || 0);
+      const bTotalSeconds = (b.minute || 0) * 60 + (b.second || 0);
+      if (timeOrder === "asc") {
+        return aTotalSeconds - bTotalSeconds;
+      } else {
+        return bTotalSeconds - aTotalSeconds;
+      }
+    });
+  }
+
+  const pageCount = Math.ceil(sortedData.length / itemsPerPage);
+
+  const paginatedData = sortedData.slice(
     currentPage * itemsPerPage,
     (currentPage + 1) * itemsPerPage
   );
@@ -347,6 +213,7 @@ function TableComponent({
   const resetFilters = () => {
     setLevelFilter([]);
     setQuestionOrder(null);
+    setTimeOrder(null); // Reset time sorting
     setPointsFilter({ min: "", max: "" });
     setDateFilter({
       from: { year: "", month: "", day: "" },
@@ -359,10 +226,11 @@ function TableComponent({
   return (
     <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
       {/* Table */}
-      <div className="w-full overflow-auto max-h-[340px] relative">
+      <div className="w-full overflow-x-auto min-h-[400px] flex flex-col relative">
         <table className="min-w-full table-auto border-collapse border-borderTableCel">
           <thead className="border-b border-borderTableCel">
             <tr>
+              {/* Select All Checkbox */}
               <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
                 <input
                   type="checkbox"
@@ -372,6 +240,8 @@ function TableComponent({
                   onChange={handleSelectAllChange}
                 />
               </th>
+
+              {/* Index Column */}
               <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
                 #
               </th>
@@ -385,7 +255,7 @@ function TableComponent({
               >
                 <div className="flex items-center gap-4">
                   Suallar
-                  <IoFunnelOutline />
+                  {/* <IoFunnelOutline /> */}
                 </div>
                 {openFilter === "suallar" && (
                   <div
@@ -428,7 +298,7 @@ function TableComponent({
               >
                 <div className="flex items-center gap-4">
                   Səviyyə
-                  <IoFunnelOutline />
+                  {/* <IoFunnelOutline /> */}
                 </div>
                 {openFilter === "seviyye" && (
                   <div
@@ -438,7 +308,6 @@ function TableComponent({
                   >
                     <label className="block hover:bg-gray-100 px-2 py-1 rounded">
                       <input
-                        className="mr-2"
                         type="checkbox"
                         checked={levelFilter.includes("Asan")}
                         onChange={(e) => {
@@ -504,12 +373,12 @@ function TableComponent({
               >
                 <div className="flex items-center gap-4">
                   Xal
-                  <IoFunnelOutline />
+                  {/* <IoFunnelOutline /> */}
                 </div>
-                {openFilter === "xal" && (
+                {/* {openFilter === "xal" && (
                   <div
                     ref={dropdownRefs.xal}
-                    className="absolute z-20 mt-2 bg-white  border rounded shadow p-2 w-60"
+                    className="absolute z-20 mt-2 bg-white border rounded shadow p-2 w-60"
                     onClick={(e) => e.stopPropagation()}
                   >
                     <div className="flex items-center space-x-2">
@@ -523,7 +392,7 @@ function TableComponent({
                             min: e.target.value,
                           }))
                         }
-                        className="hover:bg-inputBgHover  border rounded px-2 py-1 w-20"
+                        className="hover:bg-inputBgHover border rounded px-2 py-1 w-20"
                       />
                       <span>-</span>
                       <input
@@ -546,17 +415,195 @@ function TableComponent({
                       Tətbiq et
                     </button>
                   </div>
-                )}
+                )} */}
               </th>
 
-              {timeForQuestion && (
-                <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
-                  Vaxt təyin etmək
-                </th>
+              {/* Conditionally Render Time Headers */}
+              {hasTime && (
+                <>
+                  {/* Dəqiqə Header */}
+                  <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
+                    Dəqiqə
+                  </th>
+
+                  {/* Saniyə Header */}
+                  <th className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy">
+                    Saniyə
+                  </th>
+                </>
               )}
+
+              {/* Tarix Header with Dropdown */}
+              <th
+                className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
+                onClick={() =>
+                  setOpenFilter(openFilter === "tarix" ? null : "tarix")
+                }
+              >
+                <div className="flex items-center gap-4">
+                  Tarix
+                  {/* <IoFunnelOutline /> */}
+                </div>
+                {/* {openFilter === "tarix" && (
+                  <div
+                    ref={dropdownRefs.tarix}
+                    className="absolute mt-2 bg-white border rounded shadow-lg p-4 w-72 -ml-48"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <div className="flex flex-col space-y-4">
+                    
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          Başlanğıc Tarix
+                        </label>
+                        <div className="flex space-x-2 mt-1">
+                          <select
+                            value={dateFilter.from.year}
+                            onChange={(e) =>
+                              setDateFilter((prev) => ({
+                                ...prev,
+                                from: {
+                                  ...prev.from,
+                                  year: e.target.value,
+                                },
+                              }))
+                            }
+                            className="border rounded px-2 py-1 w-1/3"
+                          >
+                            <option value="">İl</option>
+                            {years.map((year) => (
+                              <option key={year} value={year}>
+                                {year}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            value={dateFilter.from.month}
+                            onChange={(e) =>
+                              setDateFilter((prev) => ({
+                                ...prev,
+                                from: {
+                                  ...prev.from,
+                                  month: e.target.value,
+                                },
+                              }))
+                            }
+                            className="border rounded px-2 py-1 w-1/3"
+                          >
+                            <option value="">Ay</option>
+                            {months.map((month) => (
+                              <option key={month} value={month}>
+                                {month}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            value={dateFilter.from.day}
+                            onChange={(e) =>
+                              setDateFilter((prev) => ({
+                                ...prev,
+                                from: {
+                                  ...prev.from,
+                                  day: e.target.value,
+                                },
+                              }))
+                            }
+                            className="border rounded px-2 py-1 w-1/3"
+                          >
+                            <option value="">Gün</option>
+                            {days.map((day) => (
+                              <option key={day} value={day}>
+                                {day}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+             
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                          Son Tarix
+                        </label>
+                        <div className="flex space-x-2 mt-1">
+                          <select
+                            value={dateFilter.to.year}
+                            onChange={(e) =>
+                              setDateFilter((prev) => ({
+                                ...prev,
+                                to: {
+                                  ...prev.to,
+                                  year: e.target.value,
+                                },
+                              }))
+                            }
+                            className="border rounded px-2 py-1 w-1/3"
+                          >
+                            <option value="">İl</option>
+                            {years.map((year) => (
+                              <option key={year} value={year}>
+                                {year}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            value={dateFilter.to.month}
+                            onChange={(e) =>
+                              setDateFilter((prev) => ({
+                                ...prev,
+                                to: {
+                                  ...prev.to,
+                                  month: e.target.value,
+                                },
+                              }))
+                            }
+                            className="border rounded px-2 py-1 w-1/3"
+                          >
+                            <option value="">Ay</option>
+                            {months.map((month) => (
+                              <option key={month} value={month}>
+                                {month}
+                              </option>
+                            ))}
+                          </select>
+                          <select
+                            value={dateFilter.to.day}
+                            onChange={(e) =>
+                              setDateFilter((prev) => ({
+                                ...prev,
+                                to: {
+                                  ...prev.to,
+                                  day: e.target.value,
+                                },
+                              }))
+                            }
+                            className="border rounded px-2 py-1 w-1/3"
+                          >
+                            <option value="">Gün</option>
+                            {days.map((day) => (
+                              <option key={day} value={day}>
+                                {day}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+
+                      <button
+                        className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded w-full"
+                        onClick={() => setOpenFilter(null)}
+                      >
+                        Tətbiq et
+                      </button>
+                    </div>
+                  </div>
+                )} */}
+              </th>
+
+              {/* Reset Filters Button */}
               <th
                 className="relative flex items-center gap-4 px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={resetFilters} // Added onClick handler
+                onClick={resetFilters}
               >
                 Sıfırla
                 <FiRefreshCw />
@@ -564,27 +611,22 @@ function TableComponent({
             </tr>
           </thead>
           <tbody>
-            {paginatedData?.length > 0 ? (
+            {paginatedData.length > 0 ? (
               paginatedData.map((item, indexInPage) => {
                 const customIndex =
                   currentPage * itemsPerPage + indexInPage + 1;
-                const plainTitle = stripHtml(item?.title);
+                const plainTitle = stripHtml(item.question);
                 const displayedTitle =
                   plainTitle.length > 49
                     ? plainTitle.substring(0, 49) + "..."
                     : plainTitle;
 
-                // Get current time for the question, default to 0 if not set
-                const currentTime = questionTimes[item.id] ?? {
-                  minute: item.minute ?? 0,
-                  second: item.second ?? 0,
-                };
-
                 return (
                   <tr
-                    key={item?.id}
-                    className="bg-tableBgDefault border-b border-borderTableCel "
+                    key={item.id}
+                    className="bg-tableBgDefault border-b border-borderTableCel"
                   >
+                    {/* Select Checkbox */}
                     <td className="px-4 py-2">
                       <input
                         type="checkbox"
@@ -595,22 +637,28 @@ function TableComponent({
                         onChange={() => handleCheckboxChange(item.id)}
                       />
                     </td>
+
+                    {/* Index */}
                     <td className="px-4 py-2">{customIndex}</td>
 
+                    {/* Suallar */}
                     <td
                       onClick={() => handleClick(item)}
                       className="px-4 py-2 relative group cursor-pointer"
                     >
-                      {displayedTitle}
+                      <div
+                        dangerouslySetInnerHTML={{ __html: displayedTitle }}
+                      />
 
                       {/* Tooltip */}
-                      <div className="absolute !text-xs bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black  px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                      <div className="absolute !text-xs bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                         <div dangerouslySetInnerHTML={{ __html: item.title }} />
                       </div>
 
                       <span className="absolute left-0 bottom-0 w-0 h-[2px] bg-blue-300 transition-all duration-300 group-hover:w-full"></span>
                     </td>
 
+                    {/* Səviyyə */}
                     <td className="px-4 py-2 w-[100px]">
                       <div
                         className={`${
@@ -620,70 +668,43 @@ function TableComponent({
                         {item.level}
                       </div>
                     </td>
+
+                    {/* Xal */}
                     <td className="px-4 py-2">{item.score}</td>
-                    {timeForQuestion && (
-                      <td className="px-4 py-2">
-                        <div className="flex items-start space-x-4">
-                          {/* Minutes Section */}
-                          <div className="flex flex-col items-center">
-                            <label
-                              htmlFor={`minute-${item.id}`}
-                              className="text-[10px] mb-1"
-                            >
-                              Minute
-                            </label>
-                            <input
-                              id={`minute-${item.id}`}
-                              type="number"
-                              min="0"
-                              max="59"
-                              value={currentTime.minute}
-                              onChange={(e) =>
-                                handleMinutesChange(item.id, e.target.value)
-                              }
-                              className="w-12 p-0 text-center focus:outline-none focus:border-blue-500 border rounded"
-                            />
-                          </div>
 
-                          {/* Separator */}
-                          <span className="self-end text-lg">:</span>
-
-                          {/* Seconds Section */}
-                          <div className="flex flex-col items-center">
-                            <label
-                              htmlFor={`second-${item.id}`}
-                              className="text-[10px] mb-1"
-                            >
-                              Second
-                            </label>
-                            <input
-                              id={`second-${item.id}`}
-                              type="number"
-                              min="0"
-                              max="59"
-                              value={currentTime.second}
-                              onChange={(e) =>
-                                handleSecondsChange(item.id, e.target.value)
-                              }
-                              className="w-12 p-0 text-center focus:outline-none focus:border-blue-500 border rounded"
-                            />
-                          </div>
-                        </div>
-                      </td>
-                    )}
-                    <td className="sticky right-0 bg-white z-10 sm:static px-2 md:px-4 py-2 ">
-                      <div className="flex items-center">
-                        {showDeleteButton && (
-                          <div className="relative flex items-center group">
-                            <BsTrash3
-                              onClick={() => handleRemoveQuestion(item.id)}
-                              className="mx-2 size-5 cursor-pointer text-red400 hover:bg-gray-100"
-                            />
-                            <span className="absolute bottom-full mb-2 hidden px-2 py-1 text-base text-gray-700 bg-white border  rounded-md whitespace-nowrap group-hover:block">
-                              Bu sualı yalnız imtahandan silin
+                    {/* Conditionally Render Time Cells */}
+                    {hasTime && (
+                      <>
+                        {/* Dəqiqə */}
+                        <td className="px-4 py-2">
+                          <div className="flex items-center justify-center bg-gray-100 border border-gray-300 rounded px-2 py-1">
+                            <span className="font-mono text-sm text-gray-700">
+                              {String(item.minute).padStart(2, "0")}
                             </span>
                           </div>
-                        )}
+                        </td>
+
+                        {/* Saniyə */}
+                        <td className="px-4 py-2">
+                          <div className="flex items-center justify-center bg-gray-100 border border-gray-300 rounded px-2 py-1">
+                            <span className="font-mono text-sm text-gray-700">
+                              {String(item.second).padStart(2, "0")}
+                            </span>
+                          </div>
+                        </td>
+                      </>
+                    )}
+
+                    {/* Tarix */}
+                    <td className="px-4 py-2">{item.created_at}</td>
+
+                    {/* Actions */}
+                    <td className="sticky right-0 bg-white z-10 sm:static px-2 md:px-4 py-2">
+                      <div className="flex items-center">
+                        <BsTrash3
+                          onClick={() => handleDeleteClick(item.id)}
+                          className="mx-2 size-5 cursor-pointer text-red400 hover:bg-gray-100"
+                        />
                         <VscEdit
                           onClick={() => handleEdit(item)}
                           className="mx-2 size-5 cursor-pointer text-brandBlue400 hover:bg-gray-100"
@@ -696,7 +717,7 @@ function TableComponent({
             ) : (
               <tr>
                 <td
-                  colSpan={timeForQuestion ? "7" : "6"}
+                  colSpan={hasTime ? "8" : "7"}
                   className="px-4 py-2 text-center text-gray-500"
                 >
                   Heç bir nəticə tapılmadı.
@@ -758,40 +779,8 @@ function TableComponent({
           )}
         </div>
       </div>
-      {/* Conditionally Render Action Buttons */}
-      {showActionButtons && (
-        <div className="flex gap-2 justify-end mt-3">
-          <button className="bg-buttonSecondaryDefault hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed py-2 px-4 text-base font-normal leading-6 font-gilroy text-grayButtonText rounded-lg">
-            Ləğv et
-          </button>
-          <button
-            className={`py-2 px-4 text-base font-normal leading-6 font-gilroy text-white rounded-lg 
-      ${
-        selectedRows.length === 0
-          ? "bg-gray-300 cursor-not-allowed"
-          : "bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
-      }`}
-            disabled={selectedRows.length === 0}
-            onClick={handleAdd} // **Attach the handler here**
-          >
-            Əlavə et
-          </button>
-        </div>
-      )}
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </div>
   );
 }
 
-export default TableComponent;
+export default QuestionsExamDetails;
