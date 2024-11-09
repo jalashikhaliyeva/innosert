@@ -9,6 +9,7 @@ function UserProvider({ children }) {
   const [lastQuery, setLastQuery] = useState(() => {
     return localStorage.getItem("lastQuery") || null;
   });
+  const [loading, setLoading] = useState(true);
   const [examDetailsSingle, setExamDetailsSingle] = useState(null);
   const [percentage, setPercentage] = useState(null);
   const [clickedExam, setClickedExam] = useState(() => {
@@ -97,11 +98,30 @@ function UserProvider({ children }) {
         console.log(userData, "userData context");
       } else {
         toast.error("Failed to fetch user data");
+        setUser(null);
       }
     } catch (error) {
       toast.error(`An error occurred: ${error.message}`);
+      setUser(null);
+    } finally {
+      setLoading(false);
     }
   }, []);
+
+  const login = useCallback(async (token) => {
+    localStorage.setItem("token", token);
+    await fetchUserData(); // Fetch and set user data immediately
+  }, [fetchUserData]);
+
+  const logout = useCallback(() => {
+    localStorage.removeItem("token");
+    setUser(null);
+    // Optionally, you can clear other related states here
+  }, []);
+
+  useEffect(() => {
+    fetchUserData();
+  }, [fetchUserData]);
 
   useEffect(() => {
     if (lastQuery !== null) {
@@ -193,6 +213,9 @@ function UserProvider({ children }) {
         setClickedExam,
         percentage,
         setPercentage,
+        login,
+        logout,
+        loading,
       }}
     >
       {children}

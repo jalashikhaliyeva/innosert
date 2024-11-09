@@ -1,3 +1,4 @@
+// src/components/ExamCard.js
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css"; // Main Swiper styles
 import "swiper/css/pagination"; // Pagination styles if you're using pagination
@@ -69,6 +70,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
     router.pathname === "/imtahanlarim" ||
     router.pathname.startsWith("/kateqoriyalar/") ||
     router.pathname.startsWith("/imtahanlar/");
+
   return (
     <>
       <div className="block md:hidden">

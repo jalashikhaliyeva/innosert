@@ -30,7 +30,7 @@ import NotificationsDropdown from "../NotificationsDropdown";
 
 const HeaderInternal = () => {
   const { user, setSearchExam } = useContext(UserContext);
-
+  
   const [searchValue, setSearchValue] = useState("");
   const searchInputRef = useRef(null);
   const router = useRouter();
@@ -45,7 +45,6 @@ const HeaderInternal = () => {
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
   const [showOnlyCategories, setShowOnlyCategories] = useState(false);
   const [currentCategory, setCurrentCategory] = useState(null);
-
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const hideTimeout = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -320,12 +319,11 @@ const HeaderInternal = () => {
   const handleSearchChange = async (e) => {
     const query = e.target.value.trim(); // Trim any whitespace
     setSearchValue(query);
-  
+
     if (query.length === 0) {
       setSearchExam([]); // Clear search results from context if input is empty
       return;
     }
-  
 
     try {
       const token = localStorage.getItem("token");
@@ -344,7 +342,7 @@ const HeaderInternal = () => {
       if (response.ok) {
         const data = await response.json();
         console.log(data, "data search exam");
-        
+
         setSearchExam(data.exams); // Store exams in context
       } else {
         console.error("Search API response error:", response.status);
@@ -865,17 +863,17 @@ const HeaderInternal = () => {
 
                 {/* Search */}
                 {showSearch && (
-                <div className="flex items-center bg-bodyColor border border-inputBorder rounded-full mx-20 px-4 py-2 focus-within:border-inputRingFocus">
-                <CiSearch className="text-inputPlaceholderText size-6" />
-                <input
-                  type="text"
-                  placeholder="Imtahan axtar"
-                  value={searchValue}
-                  onChange={handleSearchChange} // Add the change handler
-                  ref={searchInputRef}
-                  className="ml-2 text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
-                />
-              </div>
+                  <div className="flex items-center bg-bodyColor border border-inputBorder rounded-full mx-20 px-4 py-2 focus-within:border-inputRingFocus">
+                    <CiSearch className="text-inputPlaceholderText size-6" />
+                    <input
+                      type="text"
+                      placeholder="Imtahan axtar"
+                      value={searchValue}
+                      onChange={handleSearchChange} // Add the change handler
+                      ref={searchInputRef}
+                      className="ml-2 text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
+                    />
+                  </div>
                 )}
               </nav>
             </div>

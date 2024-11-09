@@ -1,4 +1,5 @@
-import { useState } from "react";
+// src/components/LoginModal.js
+import { useContext, useState } from "react";
 import { useRouter } from "next/router";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin, FaFacebook } from "react-icons/fa";
@@ -10,6 +11,7 @@ import {
   HiOutlineEye,
   HiOutlineEyeOff,
 } from "react-icons/hi";
+import { UserContext } from "@/shared/context/UserContext";
 
 export default function LoginModal({
   isOpen,
@@ -18,6 +20,8 @@ export default function LoginModal({
   onForgotPasswordClick,
 }) {
   const [email, setEmail] = useState("");
+  const { login } = useContext(UserContext);
+  
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [inputError, setInputError] = useState(false);
@@ -45,8 +49,8 @@ export default function LoginModal({
     onOpenRegisterModal();
   };
 
-  const handleForgotPasswordClick = () => {
-    if (onClose) onClose();
+  const handleForgotPassword = () => {
+    onClose();
     if (onForgotPasswordClick) onForgotPasswordClick();
   };
 
@@ -72,17 +76,17 @@ export default function LoginModal({
       );
 
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const errorData = await response.json();
+        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
       }
 
       const data = await response.json();
       if (data?.data?.token) {
-        localStorage.setItem("token", data?.data?.token);
+        await login(data.data.token); // Use context's login function
         if (data.message === "successful login") {
           toast.success("Uğurla daxil oldunuz!");
-          setTimeout(() => {
-            router.push("/home");
-          }, 800);
+          onClose();
+          router.push("/home");
         }
       } else {
         toast.error(
@@ -105,6 +109,8 @@ export default function LoginModal({
     setFocusedInput(input);
     setInputError(false); // Reset error when user focuses on the input
   };
+
+  if (!isOpen) return null;
 
   return (
     <>
@@ -191,7 +197,7 @@ export default function LoginModal({
               <div className="flex flex-col">
                 <div className="mt-3 mb-4">
                   <a
-                    onClick={handleForgotPasswordClick}
+                    onClick={handleForgotPassword}
                     className="cursor-pointer font-normal text-brandBlue700 hover:text-brandBlue200 text-base font-gilroy"
                   >
                     Şifrəni unutmusan?

@@ -87,7 +87,6 @@ function Home({ openRegisterModal, openLoginModal }) {
     return <Spinner />;
   }
 
-  // Ensure mounted is true before using client-side-only code
   if (!mounted) {
     return <Spinner />; // Render nothing until the component has mounted on the client
   }

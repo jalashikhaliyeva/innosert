@@ -343,95 +343,95 @@ const Header = ({
               Haqqımızda
             </p>
 
-              {/* Dropdown for "İmtahanlar" */}
-        <div
-          className="relative"
-          onMouseEnter={() => setDropdownOpen(true)}
-          onMouseLeave={() => {
-            setDropdownOpen(false);
-            setOpenSubmenu(null);
-          }}
-        >
-          <button
-            id="dropdownDelayButton"
-            className="text-textSecondaryDefault text-lg inline-flex items-center font-gilroy font-medium focus:outline-none text-center py-3 px-4 hover:text-textHoverBlue"
-            type="button"
-          >
-            İmtahanlar
-          </button>
+            {/* Dropdown for "İmtahanlar" */}
+            <div
+              className="relative"
+              onMouseEnter={() => setDropdownOpen(true)}
+              onMouseLeave={() => {
+                setDropdownOpen(false);
+                setOpenSubmenu(null);
+              }}
+            >
+              <button
+                id="dropdownDelayButton"
+                className="text-textSecondaryDefault text-lg inline-flex items-center font-gilroy font-medium focus:outline-none text-center py-3 px-4 hover:text-textHoverBlue"
+                type="button"
+              >
+                İmtahanlar
+              </button>
 
-          {/* Dropdown menu */}
-          <div
-            className={`absolute z-10 text-lg bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-80 transition-all duration-300 ease-in-out transform ${
-              isDropdownOpen
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-4 pointer-events-none"
-            }`}
-          >
-            <ul className="divide-y divide-gray-200 px-4">
-              {mainCategories?.slice(0, 5).map((category) => (
-                <li
-                  key={category.id}
-                  className="relative group"
-                  onMouseEnter={() => setOpenSubmenu(category.name)}
-                  onMouseLeave={() => setOpenSubmenu(null)}
-                >
-                  <p
-                    onClick={() => handleCategoryClick(category)}
-                    className="cursor-pointer block text-lg my-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
-                  >
-                    {category.name}
-                    {getSubcategories(category.name).length > 0 && (
-                      <MdKeyboardArrowRight className="mt-1 ml-2" />
-                    )}
-                  </p>
-
-                  {/* Submenu */}
-                  {getSubcategories(category.name).length > 0 && (
-                    <div
-                      className={`absolute left-full top-0 mt-0 ml-1 bg-white rounded-lg shadow-lg w-48 z-20 transition-all duration-300 ease-in-out transform ${
-                        openSubmenu === category.name
-                          ? "opacity-100 translate-x-0"
-                          : "opacity-0 -translate-x-4 pointer-events-none"
-                      }`}
+              {/* Dropdown menu */}
+              <div
+                className={`absolute z-10 text-lg bg-white divide-y divide-gray-100 rounded-lg shadow-lg w-80 transition-all duration-300 ease-in-out transform ${
+                  isDropdownOpen
+                    ? "opacity-100 translate-y-0"
+                    : "opacity-0 -translate-y-4 pointer-events-none"
+                }`}
+              >
+                <ul className="divide-y divide-gray-200 px-4">
+                  {mainCategories?.slice(0, 5).map((category) => (
+                    <li
+                      key={category.id}
+                      className="relative group"
+                      onMouseEnter={() => setOpenSubmenu(category.name)}
+                      onMouseLeave={() => setOpenSubmenu(null)}
                     >
-                      {getSubcategories(category.name).map((sub) => (
-                        <ul
-                          className="text-lg divide-y divide-gray-100 py-1"
-                          key={sub.id}
-                        >
-                          <li className="border-b border-gray-100">
-                            <p
-                              onClick={() =>
-                                handleSubcategoryClick(
-                                  category.slug,
-                                  sub.slug
-                                )
-                              }
-                              className="cursor-pointer block px-4 py-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue"
-                            >
-                              {sub.name}
-                            </p>
-                          </li>
-                        </ul>
-                      ))}
-                    </div>
-                  )}
-                </li>
-              ))}
+                      <p
+                        onClick={() => handleCategoryClick(category)}
+                        className="cursor-pointer block text-lg my-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
+                      >
+                        {category.name}
+                        {getSubcategories(category.name).length > 0 && (
+                          <MdKeyboardArrowRight className="mt-1 ml-2" />
+                        )}
+                      </p>
 
-              {/* "Others" option */}
-              {mainCategories?.length > 5 && (
-                <li
-                  className="cursor-pointer block text-lg my-2  hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
-                  onClick={() => setLoginModalOpen(true)} // Open login modal
-                >
-               Digər
-                </li>
-              )}
-            </ul>
-          </div>
-        </div>
+                      {/* Submenu */}
+                      {getSubcategories(category.name).length > 0 && (
+                        <div
+                          className={`absolute left-full top-0 mt-0 ml-1 bg-white rounded-lg shadow-lg w-48 z-20 transition-all duration-300 ease-in-out transform ${
+                            openSubmenu === category.name
+                              ? "opacity-100 translate-x-0"
+                              : "opacity-0 -translate-x-4 pointer-events-none"
+                          }`}
+                        >
+                          {getSubcategories(category.name).map((sub) => (
+                            <ul
+                              className="text-lg divide-y divide-gray-100 py-1"
+                              key={sub.id}
+                            >
+                              <li className="border-b border-gray-100">
+                                <p
+                                  onClick={() =>
+                                    handleSubcategoryClick(
+                                      category.slug,
+                                      sub.slug
+                                    )
+                                  }
+                                  className="cursor-pointer block px-4 py-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue"
+                                >
+                                  {sub.name}
+                                </p>
+                              </li>
+                            </ul>
+                          ))}
+                        </div>
+                      )}
+                    </li>
+                  ))}
+
+                  {/* "Others" option */}
+                  {mainCategories?.length > 5 && (
+                    <li
+                      className="cursor-pointer block text-lg my-2  hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
+                      onClick={() => setLoginModalOpen(true)} // Open login modal
+                    >
+                      Digər
+                    </li>
+                  )}
+                </ul>
+              </div>
+            </div>
             <p
               onClick={() => handleScrollToSection("contact")}
               className="cursor-pointer font-gilroy font-medium text-lg text-textSecondaryDefault py-3 px-4 hover:text-textHoverBlue"
