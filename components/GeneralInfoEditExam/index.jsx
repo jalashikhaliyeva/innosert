@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
+// GeneralInfoEditExam.js
+import React, { useState, useRef, useEffect, useContext, useMemo } from "react";
 import { FaPen, FaKey } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
 import { UserContext } from "@/shared/context/UserContext";
@@ -13,11 +14,13 @@ function GeneralInfoEditExam() {
     setTimeForQuestion,
     isGeneralInfoValid,
     setIsGeneralInfoValid,
-    
     updateExamDetails,
-    examDetails, // Get examDetails from context
+    examDetails,
   } = useContext(UserContext);
 
+
+  console.log(examDetails, "examDetailsss");
+  
   useEffect(() => {
     const isValid = examDetails.name && examDetails.desc && examDetails.duration;
     setIsGeneralInfoValid(!!isValid);
@@ -30,18 +33,21 @@ function GeneralInfoEditExam() {
   const [isInfoHoveredSixth, setIsInfoHoveredSixth] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
-  const combinedList = [
-    ...(selectedCategory || []).map((cat) => ({
-      name: cat.name,
-      type: "category",
-      id: cat.id,
-    })),
-    ...(selectedSubcategory || []).map((sub) => ({
-      name: sub.name,
-      type: "subcategory",
-      id: sub.id,
-    })),
-  ];
+  const combinedList = useMemo(
+    () => [
+      ...(selectedCategory || []).map((cat) => ({
+        name: cat.name,
+        type: "category",
+        id: cat.id,
+      })),
+      ...(selectedSubcategory || []).map((sub) => ({
+        name: sub.name,
+        type: "subcategory",
+        id: sub.id,
+      })),
+    ],
+    [selectedCategory, selectedSubcategory]
+  );
 
   const handleItemSelection = (itemName) => {
     const selectedItem = combinedList.find((item) => item.name === itemName);
@@ -82,11 +88,7 @@ function GeneralInfoEditExam() {
       setCode("");
       setHasSubmitted(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isKodlu]);
-
-  const [isRadio1CheckedSixth, setIsRadio1CheckedSixth] = useState(false);
-  const [isRadio2CheckedSixth, setIsRadio2CheckedSixth] = useState(false);
 
   const textareaRefs = [
     useRef(null),
@@ -162,17 +164,12 @@ function GeneralInfoEditExam() {
     }
   }
 
-  // Initialize form values from examDetails
   useEffect(() => {
-    if (
-      examDetails &&
-      selectedCategory.length > 0 &&
-      selectedSubcategory.length > 0
-    ) {
+    if (examDetails && combinedList.length > 0) {
       setValues([
         examDetails.name || "",
         examDetails.desc || "",
-        "", // Assuming the third value is not part of examDetails
+        "",
         examDetails.price !== undefined
           ? examDetails.price.toString() + " ₼"
           : "",
@@ -187,28 +184,28 @@ function GeneralInfoEditExam() {
         setIsKodlu(false);
       }
 
-      // Handle category initialization
+      console.log(examDetails.category_id, "examDetails.category_id");
+      
+
       if (examDetails.category_id) {
+        const categoryIds = examDetails.category_id.map(Number);
         const items = combinedList.filter((item) =>
-          examDetails.category_id.includes(item.id)
+          categoryIds.includes(Number(item.id))
         );
         setSelectedItems(items);
       }
 
-      setHasSubmitted(true); // Since details are loaded
+      setHasSubmitted(true);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [examDetails, selectedCategory, selectedSubcategory]);
+  }, [examDetails, combinedList]);
 
   useEffect(() => {
-    // Trim all relevant values
     const examName = values[0].trim();
     const examDesc = values[1].trim();
     const examPrice = values[3].trim();
     const examDuration = values[4].trim();
     const isCodeValid = isKodlu ? code.trim() !== "" : true;
 
-    // Check if form fields are filled
     const areFieldsFilled =
       examName !== "" &&
       examDesc !== "" &&
@@ -216,21 +213,15 @@ function GeneralInfoEditExam() {
       examPrice !== "" &&
       isCodeValid;
 
-    // Initialize form validity
     let isFormValid = areFieldsFilled;
 
-    // Additional validation when setting overall duration
     if (!timeForQuestion) {
-      // Parse the duration to extract hours, minutes, and seconds
       const durationParts = examDuration.split(":").map(Number);
       const [hours, minutes, seconds] = durationParts;
-
-      // Ensure at least one of the time components is greater than zero
       const isDurationValid = hours > 0 || minutes > 0 || seconds > 0;
 
       isFormValid = isFormValid && isDurationValid;
 
-      // Optional: Notify user if duration is invalid
       if (areFieldsFilled && !isDurationValid && !hasSubmitted) {
         toast.error(
           "Ümumi müddət 00:00:00 ola bilməz. Zəhmət olmasa, ən azı bir hissəni doldurun."
@@ -238,10 +229,8 @@ function GeneralInfoEditExam() {
       }
     }
 
-    // Set the validity state
     setIsGeneralInfoValid(isFormValid);
 
-    // Update exam details if the form is valid and not yet submitted
     if (isFormValid && !hasSubmitted && selectedItems.length > 0) {
       const payload = {
         name: examName,
@@ -249,7 +238,7 @@ function GeneralInfoEditExam() {
         price: parseFloat(examPrice.replace("₼", "").trim()),
         code: isKodlu ? code : null,
         ...(timeForQuestion === false && { duration: examDuration }),
-        category_id: selectedItems.map((item) => item.id), // Always an array
+        category_id: selectedItems.map((item) => item.id),
       };
 
       updateExamDetails(payload);
@@ -274,7 +263,6 @@ function GeneralInfoEditExam() {
           Detallar
         </h2>
         <div className="flex flex-col gap-4 w-full">
-          {/* First Textarea */}
           <div className="w-full">
             <p className="font-gilroy text-xl text-gray200 mb-1">
               İmtahanın adı
@@ -292,7 +280,6 @@ function GeneralInfoEditExam() {
             </div>
           </div>
 
-          {/* Second Textarea */}
           <div className="w-full">
             <p className="font-gilroy text-xl text-gray200 mb-1">
               İmtahan haqqında
@@ -310,8 +297,6 @@ function GeneralInfoEditExam() {
             </div>
           </div>
 
-          {/* Third Section - Category Dropdown */}
-          {/* Category and Subcategory Dropdown */}
           <div className="w-full">
             <p className="font-gilroy text-xl text-gray200 mb-1">
               Kateqoriya və Subkateqoriya Seçimi
@@ -398,7 +383,6 @@ function GeneralInfoEditExam() {
             </div>
           </div>
 
-          {/* Fourth Textarea */}
           <div className="w-full">
             <p className="font-gilroy text-xl text-gray200">İmtahan qiyməti</p>
             <div className="group flex w-full py-3 px-4 items-center border border-buttonPrimaryDefault hover:border-inputBorderHover rounded-lg bg-inputBgDefault hover:bg-inputBgHover">
@@ -414,7 +398,6 @@ function GeneralInfoEditExam() {
             </div>
           </div>
 
-          {/* Fifth Section - Time Settings */}
           <div className="mt-8 w-full">
             <p className="font-medium leading-8 font-gilroy text-2xl text-textSecondaryDefault mb-5 flex items-center gap-3">
               Imtahan müddətinin təyin olunması
@@ -482,7 +465,6 @@ function GeneralInfoEditExam() {
             )}
           </div>
 
-          {/* Sixth Section - Exam Code Settings */}
           <div className="mt-8">
             <p className="font-medium leading-8 font-gilroy text-2xl text-textSecondaryDefault mb-5 flex items-center gap-3">
               Imtahan kodunun təyin olunması

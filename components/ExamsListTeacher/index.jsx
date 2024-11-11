@@ -43,24 +43,21 @@ const ExamsListTeacher = ({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Combine exams and folders into a single array with a type field
   const combinedItems = useMemo(() => {
     const folders = (exams.folders || []).map((folder) => ({
       ...folder,
       type: "folder",
-      date: folder.created_at || folder.updated_at, // Assuming folders have a created_at or updated_at field
+      date: folder.created_at || folder.updated_at,
     }));
 
     const examsList = (exams.exams || []).map((exam) => ({
       ...exam,
       type: "exam",
-      date: exam.date || exam.created_at, // Ensure exams have a date field for sorting
+      date: exam.date || exam.created_at,
     }));
 
     return [...folders, ...examsList];
   }, [exams]);
-
-  // Sorting combined items
   const sortedItems = useMemo(() => {
     const sorted = [...combinedItems];
     if (sortOption === "Son Yaradilan") {
@@ -74,13 +71,14 @@ const ExamsListTeacher = ({
     }
     return sorted;
   }, [combinedItems, sortOption]);
-
-  const handleCheckboxChange = (itemSlug, isChecked, type) => {
+  const handleCheckboxChange = (item, isChecked) => {
     setSelectedExams((prevSelectedExams) => {
       if (isChecked) {
-        return [...prevSelectedExams, itemSlug];
+        return [...prevSelectedExams, item];
       } else {
-        return prevSelectedExams.filter((slug) => slug !== itemSlug);
+        return prevSelectedExams.filter(
+          (selectedItem) => selectedItem.slug !== item.slug
+        );
       }
     });
   };
@@ -93,6 +91,8 @@ const ExamsListTeacher = ({
       // Navigate to the exam details
 
       setExamDetailsSingle(item);
+      console.log(item, "item exam to edit");
+      
       router.push(`/imtahan-detallari`); // Assuming you want to pass the exam slug
     }
   };
@@ -116,10 +116,10 @@ const ExamsListTeacher = ({
                 <input
                   type="checkbox"
                   className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-                  checked={selectedExams.includes(item.slug)}
-                  onChange={(e) =>
-                    handleCheckboxChange(item.slug, e.target.checked, item.type)
-                  }
+                  checked={selectedExams.some(
+                    (selectedItem) => selectedItem.slug === item.slug
+                  )}
+                  onChange={(e) => handleCheckboxChange(item, e.target.checked)}
                 />
 
                 <IoMdMore
@@ -237,12 +237,12 @@ const ExamsListTeacher = ({
                     </div>
                     <div className="relative group">
                       <h3 className="text-base font-gilroy leading-7.5 text-brandBlue700 font-medium truncate md:max-w-xs max-w-[60px]">
-                        {item.name.length > 14
-                          ? `${item.name.slice(0, 14)}...`
-                          : item.name}
+                        {item?.name?.length > 14
+                          ? `${item?.name.slice(0, 14)}...`
+                          : item?.name}
                       </h3>
 
-                      {item.name.length > 14 && (
+                      {item?.name?.length > 14 && (
                         <span className="absolute left-0 bottom-full mb-2 hidden group-hover:block bg-white border text-black text-xs rounded px-2 py-1 whitespace-nowrap">
                           {item.name}
                         </span>
@@ -253,33 +253,45 @@ const ExamsListTeacher = ({
                   {item.type === "folder" ? (
                     <div>
                       {item.sub_folder && item.sub_folder.length > 0 ? (
-                        item.sub_folder.map((subFolder, index) => (
-                          <span
-                            key={index}
-                            className="relative inline-block group text-arrowButtonGray cursor-pointer"
-                          >
-                            {subFolder.length > 10
-                              ? subFolder.slice(0, 10) + "..."
-                              : subFolder}
+                        <div className="relative inline-block group text-arrowButtonGray cursor-pointer">
+                          {/* Display up to 9 subfolders */}
+                          <div className="text-3.5 font-gilroy  truncate max-w-[15ch] mx-auto">
+                            {item.sub_folder
+                              .slice(0, 9)
+                              .map((subFolder, index) => (
+                                <span key={index}>
+                                  {index ===
+                                  item.sub_folder.slice(0, 9).length - 1
+                                    ? subFolder.length > 5
+                                      ? subFolder.slice(0, 5) + "..."
+                                      : subFolder
+                                    : subFolder.length > 5
+                                    ? subFolder.slice(0, 5)
+                                    : subFolder}
+                                  {index !==
+                                    item.sub_folder.slice(0, 9).length - 1 &&
+                                    ", "}
+                                </span>
+                              ))}
+                            {item.sub_folder.length > 9 && <span>...</span>}
+                          </div>
 
-                            {/* Tooltip */}
-                            <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black text-sm px-3 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                              {subFolder}
-                            </div>
-
-                            {index !== item.sub_folder.length - 1 && (
-                              <span>, </span>
-                            )}
-                          </span>
-                        ))
+                          {/* Single Tooltip displaying all subfolders */}
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
+                            {item.sub_folder.join(", ")}
+                          </div>
+                        </div>
                       ) : (
-                        <div className="relative group text-arrowButtonGray !text-base font-gilroy cursor-pointer">
-                          {"Bu qovluqda imtahan yoxdur.".length > 17
-                            ? "Bu qovluqda imtahan yoxdur.".slice(0, 17) + "..."
-                            : "Bu qovluqda imtahan yoxdur."}
+                        <div className="relative group text-arrowButtonGray font-gilroy !text-base cursor-pointer">
+                          <span className="truncate max-w-[15ch]">
+                            {"Bu qovluqda imtahan yoxdur.".length > 17
+                              ? "Bu qovluqda imtahan yoxdur.".substring(0, 17) +
+                                "..."
+                              : "Bu qovluqda imtahan yoxdur."}
+                          </span>
 
-                          {/* Tooltip */}
-                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black text-sm px-3 py-1 rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                          {/* Tooltip for the no subfolder case */}
+                          <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 px-2 py-1 bg-white text-gray-800 text-xs rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-10">
                             Bu qovluqda imtahan yoxdur.
                           </div>
                         </div>
@@ -339,13 +351,11 @@ const ExamsListTeacher = ({
                   <input
                     type="checkbox"
                     className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-                    checked={selectedExams.includes(item.slug)}
+                    checked={selectedExams.some(
+                      (selectedItem) => selectedItem.slug === item.slug
+                    )}
                     onChange={(e) =>
-                      handleCheckboxChange(
-                        item.slug,
-                        e.target.checked,
-                        item.type
-                      )
+                      handleCheckboxChange(item, e.target.checked)
                     }
                   />
                 )}

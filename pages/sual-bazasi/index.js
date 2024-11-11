@@ -109,6 +109,7 @@ function SualBazasi() {
                   sortOption={sortOption}
                   setSortOption={setSortOption}
                   selectedFiles={selectedFiles}
+                  onDelete={deleteFolder}
                   openModal={() => setIsModalOpen(true)}
                 />
 

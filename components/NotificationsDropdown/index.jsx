@@ -43,6 +43,10 @@ const NotificationsDropdown = () => {
         );
         if (response.data.status) {
           setNotifications(response.data.data.notifications);
+          console.log(
+            response.data.data.notifications,
+            "response.data.data.notifications"
+          );
         }
       } catch (error) {
         console.error("Failed to fetch notifications:", error);
@@ -106,7 +110,7 @@ const NotificationsDropdown = () => {
 
       {isNotificationOpen && (
         <div
-          className={`absolute font-gilroy right-0 mt-2 w-[560px] bg-white shadow-lg rounded-lg py-3 px-5 z-50 transition-all duration-300 ease-in-out transform ${
+          className={`absolute font-gilroy right-0 mt-2 w-[560px] h-[300px] overflow-y-auto bg-white shadow-lg rounded-lg py-3 px-5 z-50 transition-all duration-300 ease-in-out transform ${
             isVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
           }`}
         >

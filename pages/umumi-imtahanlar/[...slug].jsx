@@ -1,4 +1,4 @@
-// [...slug].js
+// [...slug].jsx
 import React, { useEffect, useState, useContext } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import HeaderInternal from "@/components/HeaderInternal";
@@ -9,7 +9,7 @@ import SubExamsListTeacher from "@/components/SubExamsListTeacher";
 import SubExamsListNavigationTeacher from "@/components/SubExamsListNavigationTeacher";
 import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 import AddExamSubFolderModal from "@/components/AddExamSubFolderModal"; // Updated import
-import DeleteModal from "@/components/DeleteModal";
+import DeleteExamModal from "@/components/DeleteExamModal"; // Correct modal import
 import EditExamModal from "@/components/EditExamModal";
 import axios from "axios";
 import CompanyContext from "@/shared/context/CompanyContext";
@@ -19,26 +19,28 @@ import AddExamModal from "@/components/AddExamModal";
 import { UserContext } from "@/shared/context/UserContext";
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 import CompanySidebar from "@/components/CompanySidebar";
+import EditExamFolderModal from "@/components/EditExamFolderModal"; // Ensure this import exists
 
 function SubImtahan() {
   const { user } = useContext(UserContext);
   const router = useRouter();
   const { slug } = router.query;
-
   const [folders, setFolders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const { selectedCompany } = useContext(CompanyContext);
 
   // Modal States
   const [viewMode, setViewMode] = useState("grid");
   const [sortOption, setSortOption] = useState("Son Yaradilan");
   const [selectedExams, setSelectedExams] = useState([]);
+  const [selectedExamsToDelete, setSelectedExamsToDelete] = useState([]); // New state
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isAddExamModalOpen, setIsAddExamModalOpen] = useState(false);
   const [isEditExamModalOpen, setIsEditExamModalOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
+  const [isEditFolderModalOpen, setIsEditFolderModalOpen] = useState(false);
+  const [selectedFolder, setSelectedFolder] = useState(null);
 
   // Handlers for modals
   const openAddExamModal = () => setIsAddExamModalOpen(true);
@@ -53,6 +55,23 @@ function SubImtahan() {
   const openDeleteModal = () => setIsDeleteModalOpen(true);
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
+  // Handler to open delete modal with selected exams
+  const openDeleteMultipleModal = () => {
+    setSelectedExamsToDelete(selectedExams);
+    setIsDeleteModalOpen(true);
+  };
+
+  // **Define openEditFolderModal Here**
+  const openEditFolderModal = (folder) => {
+    setSelectedFolder(folder);
+    setIsEditFolderModalOpen(true);
+  };
+
+  const closeEditFolderModal = () => {
+    setSelectedFolder(null);
+    setIsEditFolderModalOpen(false);
+  };
+
   // Extract the last slug segment
   const slugParam = Array.isArray(slug) ? slug[slug.length - 1] : slug;
 
@@ -64,7 +83,7 @@ function SubImtahan() {
       console.log("Slug Param:", slugParam);
 
       // Proceed only if token and slugParam are valid
-      if (token && slugParam) {
+      if (token && slugParam && selectedCompany?.id) {
         const response = await axios.get(
           `https://innocert-admin.markup.az/api/get-exams/${slugParam}`,
           {
@@ -77,8 +96,10 @@ function SubImtahan() {
         console.log("Fetched sub folders data:", response.data.data);
         setFolders(response.data.data);
       } else {
-        console.error("Token or Slug Param is missing");
-        setError("Authentication token or folder identifier is missing.");
+        console.error("Token, Slug Param, or Company ID is missing");
+        setError(
+          "Authentication token, folder identifier, or company information is missing."
+        );
       }
     } catch (error) {
       if (error.response) {
@@ -96,24 +117,55 @@ function SubImtahan() {
     }
   };
 
+  console.log(folders, "setFolders");
+
   // Handlers for adding, editing, and deleting folders
-  // const addNewFolder = (newFolder) => {
-  //   setFolders((prevFolders) => [...prevFolders, newFolder]);
-  //   fetchFolders();
-  // };
+  const addNewFolder = (newFolder) => {
+    setFolders((prevFolders) => ({
+      ...prevFolders,
+      folders: [...prevFolders.folders, newFolder],
+    }));
+    // Optionally, you can refetch or update the state accordingly
+  };
 
   const updateFolder = (updatedFolder) => {
-    setFolders((prevFolders) =>
-      prevFolders.map((folder) =>
+    setFolders((prevFolders) => ({
+      ...prevFolders,
+      folders: prevFolders.folders.map((folder) =>
         folder.id === updatedFolder.id ? updatedFolder : folder
-      )
-    );
+      ),
+    }));
   };
 
   const deleteFolder = (folderId) => {
-    setFolders((prevFolders) =>
-      prevFolders.filter((folder) => folder.id !== folderId)
-    );
+    setFolders((prevFolders) => ({
+      ...prevFolders,
+      folders: prevFolders.folders.filter((folder) => folder.id !== folderId),
+    }));
+  };
+
+  const deleteSelectedItems = (deletedItemIds) => {
+    // Remove the deleted items from the folders state
+    setFolders((prevFolders) => {
+      const updatedFolders = { ...prevFolders };
+      // Remove deleted exams
+      if (updatedFolders.exams) {
+        updatedFolders.exams = updatedFolders.exams.filter(
+          (exam) => !deletedItemIds.includes(exam.id)
+        );
+      }
+      // Remove deleted folders
+      if (updatedFolders.folders) {
+        updatedFolders.folders = updatedFolders.folders.filter(
+          (folder) => !deletedItemIds.includes(folder.id)
+        );
+      }
+      return updatedFolders;
+    });
+    // Clear selectedExams and close modal
+    setSelectedExams([]);
+    setSelectedExamsToDelete([]);
+    closeDeleteModal();
   };
 
   useEffect(() => {
@@ -121,7 +173,7 @@ function SubImtahan() {
       fetchFolders();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [router.isReady, slugParam]);
+  }, [router.isReady, slugParam, selectedCompany]);
 
   if (!router.isReady) {
     return <div>Loading...</div>;
@@ -141,13 +193,13 @@ function SubImtahan() {
         <HeaderInternal />
       </div>
       <div className="block lg:hidden">
-      {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
-      {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
+        {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
       <div className="flex">
         <div className="hidden lg:block md:w-[20%]">
-        {user?.data.roles === "Teacher" && <TeacherSidebar />}
-        {user?.data.roles === "Owner" && <CompanySidebar />}
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
@@ -159,7 +211,7 @@ function SubImtahan() {
               setSortOption={setSortOption}
               selectedExams={selectedExams}
               openAddExamModal={openAddExamModal}
-              openDeleteModal={openDeleteModal}
+              openDeleteModal={openDeleteMultipleModal} // Use the new handler
             />
             <ExamListCompany
               exams={folders}
@@ -168,7 +220,8 @@ function SubImtahan() {
               selectedExams={selectedExams}
               setSelectedExams={setSelectedExams}
               openEditExamModal={openEditExamModal}
-              openDeleteExamModal={openDeleteModal}
+              openDeleteExamModal={openDeleteMultipleModal} // Use the new handler
+              openEditFolderModal={openEditFolderModal} // Now correctly defined
             />
           </InternalContainer>
         </div>
@@ -176,26 +229,28 @@ function SubImtahan() {
 
       {/* Modals */}
       {isAddExamModalOpen && (
-        // <AddExamSubFolderModal
-        //   closeModal={closeAddExamModal}
-        //   // addNewFolder={addNewFolder}
-        //   slugParam={slugParam} // Passing the slugParam as a prop
-        // />
-        <AddExamModal closeModal={closeAddExamModal} />
+        <AddExamModal
+          closeModal={closeAddExamModal}
+          addNewFolder={addNewFolder}
+        />
       )}
       {isEditExamModalOpen && (
         <EditExamModal exam={selectedExam} closeModal={closeEditExamModal} />
       )}
-      {isDeleteModalOpen && (
-        <DeleteModal
-          onCancel={closeDeleteModal}
-          onDelete={() => {
-            // Handle delete action here, possibly using selectedExams
-            closeDeleteModal();
-          }}
+      {isEditFolderModalOpen && (
+        <EditExamFolderModal
+          folder={selectedFolder}
+          closeModal={closeEditFolderModal}
+          onFolderUpdate={updateFolder}
         />
       )}
-      {/* If you need AddExamFolderModal, ensure it's included similarly */}
+      {isDeleteModalOpen && (
+        <DeleteExamModal
+          selectedItems={selectedExamsToDelete}
+          onDelete={deleteSelectedItems}
+          onCancel={closeDeleteModal}
+        />
+      )}
     </>
   );
 }

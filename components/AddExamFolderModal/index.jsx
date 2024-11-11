@@ -6,7 +6,7 @@ import CompanyContext from "@/shared/context/CompanyContext";
 
 function AddExamFolderModal({ closeModal, addNewFolder }) {
   console.log(addNewFolder, "addNewFolder");
-  
+
   const [folderName, setFolderName] = useState("");
   const [inputError, setInputError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);

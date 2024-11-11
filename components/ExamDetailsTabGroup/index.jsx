@@ -27,7 +27,7 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
         console.log(examDetailsSingle.slug, "examDetailsSingle.name");
 
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/exam/questions/${i}`,
+          `https://innocert-admin.markup.az/api/exam/questions/${examDetailsSingle.slug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

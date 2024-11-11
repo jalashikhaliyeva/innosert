@@ -1,5 +1,3 @@
-// for company
-
 import React, { useContext, useEffect, useState } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import HeaderInternal from "@/components/HeaderInternal";
@@ -27,35 +25,15 @@ function UmumiImtahanlar() {
   const [selectedExamsToDelete, setSelectedExamsToDelete] = useState([]);
 
   const { selectedCompany } = useContext(CompanyContext);
-  // console.log(selectedCompany.id, "selectedCompany umumi");
   const openDeleteMultipleModal = () => {
     setSelectedExamsToDelete(selectedExams);
     setIsDeleteModalOpen(true);
   };
-  const deleteSelectedExams = () => {
-    selectedExamsToDelete.forEach((examId) => {
-      deleteExam(examId);
-    });
-    setSelectedExams([]);
-    closeDeleteModal();
-  };
-  
-  const deleteSelectedFolders = () => {
-    selectedExamsToDelete.forEach((folderId) => {
-      deleteFolder(folderId);
-    });
-    setSelectedExams([]);
-    closeDeleteModal();
-  };
-    
+
   // Fetch folders from the API
   const fetchFolders = async () => {
     try {
       const token = localStorage.getItem("token");
-      console.log(token, "Token");
-      console.log(selectedCompany?.id, "selectedCompany ID");
-
-      // Proceed only if token and selectedCompany.id are valid
       if (token && selectedCompany?.id) {
         const response = await axios.get(
           "https://innocert-admin.markup.az/api/get-exams",
@@ -66,21 +44,12 @@ function UmumiImtahanlar() {
             },
           }
         );
-        console.log(response.data.data, "Fetched folders data");
         setFolders(response.data.data);
       } else {
         console.error("Token or Company ID is missing");
       }
     } catch (error) {
-      if (error.response) {
-        // console.error("Error fetching folders:", error.response.data);
-        console.error("Status:", error.response.status);
-        // console.error("Headers:", error.response.headers);
-      } else if (error.request) {
-        console.error("Error with the request:", error.request);
-      } else {
-        console.error("General error message:", error.message);
-      }
+      console.error("Error fetching folders:", error);
     }
   };
 
@@ -100,12 +69,14 @@ function UmumiImtahanlar() {
   };
 
   const updateFolder = (updatedFolder) => {
-    setFolders((prevFolders) =>
-      prevFolders.map((folder) =>
+    setFolders((prevFolders) => ({
+      ...prevFolders,
+      folders: prevFolders.folders.map((folder) =>
         folder.id === updatedFolder.id ? updatedFolder : folder
-      )
-    );
+      ),
+    }));
   };
+
   const deleteFolder = (folderId) => {
     setFolders((prevFolders) => ({
       ...prevFolders,
@@ -114,7 +85,6 @@ function UmumiImtahanlar() {
   };
 
   const deleteExam = (examId) => {
-    console.log(examId, "examId");
     setFolders((prevFolders) => ({
       ...prevFolders,
       exams: prevFolders.exams.filter((exam) => exam.id !== examId),
@@ -129,7 +99,6 @@ function UmumiImtahanlar() {
   const [isAddExamModalOpen, setIsAddExamModalOpen] = useState(false);
   const [isEditExamModalOpen, setIsEditExamModalOpen] = useState(false);
   const [selectedExam, setSelectedExam] = useState(null);
-  // Inside UmumiImtahanlar component
   const [isEditFolderModalOpen, setIsEditFolderModalOpen] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState(null);
 
@@ -140,7 +109,7 @@ function UmumiImtahanlar() {
   const closeEditFolderModal = () => {
     setSelectedFolder(null);
     setIsEditFolderModalOpen(false);
-  }; // Function to handle folder updates
+  };
   const handleFolderUpdate = (updatedFolder) => {
     setFolders((prevFolders) => ({
       ...prevFolders,
@@ -162,8 +131,31 @@ function UmumiImtahanlar() {
   const openDeleteModal = () => setIsDeleteModalOpen(true);
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
   const openDeleteExamModal = (item) => {
-    setSelectedExam(item); // Set the item (exam or folder) to delete
+    setSelectedExamsToDelete([item]); // Set the item (exam or folder) to delete
     setIsDeleteModalOpen(true);
+  };
+
+  const deleteSelectedItems = (deletedItemIds) => {
+    // Remove the deleted items from the folders state
+    setFolders((prevFolders) => {
+      const updatedFolders = { ...prevFolders };
+      // Remove deleted exams
+      if (updatedFolders.exams) {
+        updatedFolders.exams = updatedFolders.exams.filter(
+          (exam) => !deletedItemIds.includes(exam.id)
+        );
+      }
+      // Remove deleted folders
+      if (updatedFolders.folders) {
+        updatedFolders.folders = updatedFolders.folders.filter(
+          (folder) => !deletedItemIds.includes(folder.id)
+        );
+      }
+      return updatedFolders;
+    });
+    // Clear selectedExams and close modal
+    setSelectedExams([]);
+    closeDeleteModal();
   };
 
   return (
@@ -171,7 +163,7 @@ function UmumiImtahanlar() {
       <div className="hidden lg:block ">
         <HeaderInternal />
       </div>
-      <div className="block  lg:hidden">
+      <div className="block lg:hidden">
         {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
         {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
@@ -190,7 +182,7 @@ function UmumiImtahanlar() {
               setSortOption={setSortOption}
               selectedExams={selectedExams}
               openAddExamModal={openAddExamModal}
-              openDeleteModal={openDeleteMultipleModal} 
+              openDeleteModal={openDeleteMultipleModal}
             />
             <ExamListCompany
               exams={folders}
@@ -231,17 +223,9 @@ function UmumiImtahanlar() {
       )}
       {isDeleteModalOpen && (
         <DeleteExamModal
-          item={selectedExam}
+          selectedItems={selectedExamsToDelete}
+          onDelete={deleteSelectedItems}
           onCancel={closeDeleteModal}
-          closeModal={closeModal}
-          onDelete={() => {
-            if (selectedExam.type === "folder") {
-              deleteFolder(selectedExam.id);
-            } else {
-              deleteExam(selectedExam.id);
-            }
-            closeDeleteModal();
-          }}
         />
       )}
     </>

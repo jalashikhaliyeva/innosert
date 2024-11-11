@@ -19,39 +19,15 @@ import { getSettingInfo } from "../services/getSettingInfo";
 
 const OPTIONS = { loop: true };
 
-function Home({ openRegisterModal, openLoginModal }) {
+function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
   const faqRef = useRef(null);
   const footerRef = useRef(null);
   const certificateRef = useRef(null);
   const [mounted, setMounted] = useState(false);
-  const [landingInfo, setLandingInfo] = useState(null);
-  const [settingInfo, setSettingInfo] = useState(null);
   const router = useRouter();
-
-  // Fetch data based on the current locale
-  const fetchData = async (locale) => {
-    try {
-      const landingData = await getLandingInfo(locale);
-      const settingData = await getSettingInfo(locale);
-
-      const mappedSlides = settingData.category?.map((item) => ({
-        imageSrc: item.image,
-        text: item.name,
-      }));
-
-      setLandingInfo(landingData);
-      setSettingInfo({
-        slides: mappedSlides,
-        map: settingData?.contact?.map,
-      });
-    } catch (error) {
-      console.error("Failed to fetch landing or setting info:", error);
-    }
-  };
 
   useEffect(() => {
     setMounted(true);
-    fetchData(router.locale); // Fetch data initially based on locale
 
     if (typeof window !== "undefined" && router) {
       const scrollToSection = () => {
@@ -79,6 +55,26 @@ function Home({ openRegisterModal, openLoginModal }) {
   // Fetch data whenever the locale changes
   useEffect(() => {
     if (router.locale) {
+      const fetchData = async (locale) => {
+        try {
+          const landingData = await getLandingInfo(locale);
+          const settingData = await getSettingInfo(locale);
+
+          const mappedSlides = settingData.category?.map((item) => ({
+            imageSrc: item.image,
+            text: item.name,
+          }));
+
+          setLandingInfo(landingData);
+          setSettingInfo({
+            slides: mappedSlides,
+            map: settingData?.contact?.map,
+          });
+        } catch (error) {
+          console.error("Failed to fetch landing or setting info:", error);
+        }
+      };
+
       fetchData(router.locale); // Re-fetch data when locale changes
     }
   }, [router.locale]);
@@ -91,19 +87,31 @@ function Home({ openRegisterModal, openLoginModal }) {
     return <Spinner />; // Render nothing until the component has mounted on the client
   }
 
+  const scrollToFaq = () => {
+    if (faqRef.current) {
+      faqRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const scrollToFooter = () => {
+    if (footerRef.current) {
+      footerRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  const scrollToCertificate = () => {
+    if (certificateRef.current) {
+      certificateRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <main>
       <Header
         openRegisterModal={openRegisterModal}
-        scrollToFaq={() =>
-          faqRef.current.scrollIntoView({ behavior: "smooth" })
-        }
-        scrollToFooter={() =>
-          footerRef.current.scrollIntoView({ behavior: "smooth" })
-        }
-        scrollToCertificate={() =>
-          certificateRef.current.scrollIntoView({ behavior: "smooth" })
-        }
+        scrollToFaq={scrollToFaq}
+        scrollToFooter={scrollToFooter}
+        scrollToCertificate={scrollToCertificate}
       />
 
       <HeroHome
@@ -118,7 +126,7 @@ function Home({ openRegisterModal, openLoginModal }) {
         ref={certificateRef}
       />
       <ConnectOrCreateExamSection title={landingInfo?.titles[1]} />
-      <HowConnectToExamSection ata={landingInfo?.about_participation} />
+      <HowConnectToExamSection data={landingInfo?.about_participation} />
       <HowtoCreateAnExamSection data={landingInfo?.about_exam} />
       {landingInfo?.advantage && (
         <OurAdvantagesSection data={landingInfo.advantage} />
@@ -127,7 +135,10 @@ function Home({ openRegisterModal, openLoginModal }) {
         <Faq ref={faqRef} faqs={landingInfo?.faqs} />
       </Container>
 
-      <Footer ref={footerRef} />
+      <Footer
+        ref={footerRef}
+        scrollToFaq={scrollToFaq} // Pass the scrollToFaq function as a prop
+      />
     </main>
   );
 }

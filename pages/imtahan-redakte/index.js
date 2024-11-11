@@ -8,7 +8,6 @@ import { UserContext } from "@/shared/context/UserContext";
 import Container from "@/components/Container";
 import CreateExamTabGroup from "@/components/CreateExamTabGroup";
 import axios from "axios";
-import CompanyContext from "@/shared/context/CompanyContext";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 import ExamEditTitleNavigation from "@/components/ExamEditTitleNavigation";
@@ -17,18 +16,23 @@ function ImtahanRedakte() {
   const {
     examToEdit,
     updateExamDetails,
-    selectedQuestionsForExam, // Add this line
+    selectedQuestionsForExam,
     setSelectedQuestionsForExam,
     isGeneralInfoValid,
     isQuestionsValid,
     examDetails,
   } = useContext(UserContext);
+
   console.log(examToEdit, "examToEdit");
+  console.log(examDetails, "examDetailsas");
 
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const { selectedCompany, selectedCategory, selectedSubcategory } =
-    useContext(CompanyContext);
+    useContext(UserContext);
+
+  console.log(selectedCategory, "selectedCategory");
+  console.log(selectedSubcategory, "selectedSubcategory");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
@@ -102,11 +106,13 @@ function ImtahanRedakte() {
         })),
       ];
 
+      console.log(combinedList, "combinedList");
+
       // Map category names to their corresponding IDs
       const mappedCategoryIds = parsedCategory
         .map((name) => {
           const found = combinedList.find((item) => item.name === name);
-          return found ? found.id : null;
+          return found ? Number(found.id) : null; // Ensure ID is a number
         })
         .filter(Boolean); // Remove any null values
 
@@ -116,7 +122,7 @@ function ImtahanRedakte() {
         desc: examToEdit.desc || "",
         price:
           examToEdit.price !== undefined ? examToEdit.price.toString() : "",
-        code: examToEdit.code || "",
+        ...(examToEdit.code ? { code: examToEdit.code } : {}),
         duration: examToEdit.duration || "00:00:00",
         category_id: mappedCategoryIds, // Now an array of IDs
       });
@@ -129,7 +135,7 @@ function ImtahanRedakte() {
         name: "",
         desc: "",
         price: "",
-        code: "",
+        ...(false && { code: "" }), // This line ensures code is omitted
         duration: "00:00:00",
         category_id: [],
       });
@@ -150,11 +156,6 @@ function ImtahanRedakte() {
       enqueueSnackbar("Form is not valid. Please check your inputs.", {
         variant: "error",
       });
-      return;
-    }
-
-    if (!selectedCompany) {
-      enqueueSnackbar("Company information is missing.", { variant: "error" });
       return;
     }
 
@@ -185,13 +186,19 @@ function ImtahanRedakte() {
         return formattedQuestion;
       });
 
+      // Destructure code from examDetails
+      const { code, ...otherDetails } = examDetails;
+
+      // Conditionally include code if it's not empty
       const requestBody = {
-        ...examDetails,
+        ...otherDetails,
+        ...(code ? { code } : {}),
         question: formattedQuestions,
       };
 
+      console.log(requestBody, "requestBody");
+
       // Always use the update API endpoint
-      // const encodedSlug = encodeURIComponent(slugParam);
       const encodedSlug = examToEdit.id;
       const apiEndpoint = `https://innocert-admin.markup.az/api/exam/update/${encodedSlug}`;
 
@@ -212,75 +219,6 @@ function ImtahanRedakte() {
       setIsSubmitting(false);
     }
   };
-
-  // ImtahanRedakte.js
-  useEffect(() => {
-    if (
-      examToEdit &&
-      selectedCategory?.length > 0 &&
-      selectedSubcategory?.length > 0
-    ) {
-      // Parse category if it's a JSON string
-      const parsedCategory =
-        typeof examToEdit.category === "string"
-          ? JSON.parse(examToEdit.category)
-          : examToEdit.category;
-
-      console.log("Parsed Category:", parsedCategory);
-
-      // Build a combined list of categories and subcategories
-      const combinedList = [
-        ...(selectedCategory || []).map((cat) => ({
-          name: cat.name,
-          type: "category",
-          id: cat.id,
-        })),
-        ...(selectedSubcategory || []).map((sub) => ({
-          name: sub.name,
-          type: "subcategory",
-          id: sub.id,
-        })),
-      ];
-
-      console.log("Combined List:", combinedList);
-
-      // Map category names to their corresponding IDs
-      const mappedCategoryIds = parsedCategory
-        .map((name) => {
-          const found = combinedList.find(
-            (item) =>
-              item.name.toLowerCase().trim() === name.toLowerCase().trim()
-          );
-          return found ? found.id : null;
-        })
-        .filter(Boolean); // Remove any null values
-
-      console.log("Mapped Category IDs:", mappedCategoryIds);
-
-      // Update exam details in context with mapped category IDs
-      updateExamDetails({
-        name: examToEdit.name || "",
-        desc: examToEdit.desc || "",
-        price:
-          examToEdit.price !== undefined ? examToEdit.price.toString() : "",
-        code: examToEdit.code || "",
-        duration: examToEdit.duration || "00:00:00",
-        category_id: mappedCategoryIds, // Now an array of IDs
-      });
-
-      // Fetch questions from API
-      fetchQuestions();
-    } else if (examToEdit) {
-      console.log("Categories are not loaded yet.");
-    }
-  }, [
-    examToEdit,
-    selectedCategory,
-    selectedSubcategory,
-    updateExamDetails,
-    setSelectedQuestionsForExam,
-    enqueueSnackbar,
-  ]);
 
   return (
     <>

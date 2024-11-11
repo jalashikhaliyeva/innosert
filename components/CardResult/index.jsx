@@ -33,7 +33,7 @@ function CardResult({ data }) {
         <p className="font-gilroy text-xl text-grayButtonText font-normal leading-6">
           {data.created_at}
         </p>
-        <ProgressPieChart percentage={data.totalScore} />
+        <ProgressPieChart percentage={data.percentage} />
       </div>
       <div>
         <div className="flex flex-row gap-5 items-center justify-center">

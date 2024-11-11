@@ -5,22 +5,19 @@ import Spinner from "@/components/Spinner";
 import { UserContext } from "@/shared/context/UserContext";
 import React, { useContext } from "react";
 
+// If response.data.data is a number
 function ImtahanNeticeleri() {
   const { percentage } = useContext(UserContext);
   console.log(percentage, "percentage");
 
   if (percentage === null) {
-    return (
-      <>
-        <Spinner />
-      </>
-    );
+    return <Spinner />;
   }
 
   return (
     <>
       <ExamResultHeader />
-      {percentage.percentage > 30 ? (
+      {percentage > 30 ? (
         <ExamEndSucces percentage={percentage} />
       ) : (
         <ExamEndFail percentage={percentage} />
@@ -28,5 +25,6 @@ function ImtahanNeticeleri() {
     </>
   );
 }
+
 
 export default ImtahanNeticeleri;

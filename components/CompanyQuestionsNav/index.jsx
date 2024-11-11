@@ -10,10 +10,10 @@ function CompanyQuestionsNav({
   setViewMode,
   sortOption,
   setSortOption,
-  isCheckboxSelected,
   selectedFiles,
   openModal,
-  openDeleteModal,
+  onDelete,
+  openDeleteModal, // Ensure this prop is received
 }) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
 
@@ -27,10 +27,10 @@ function CompanyQuestionsNav({
       <h1 className="text-2xl font-medium leading-8">Sual Toplusu</h1>
 
       {selectedFiles.length > 0 ? (
-        // Show the delete section when a checkbox is selected
+        // Show the delete section when folders are selected
         <div className="flex flex-row gap-4">
           <button
-            onClick={openDeleteModal}
+            onClick={onDelete} // Trigger bulk delete modal
             className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed"
           >
             <BsTrash3 className="fill-white text-white" />
@@ -54,7 +54,7 @@ function CompanyQuestionsNav({
               </div>
               {isSortMenuOpen && (
                 <div className="py-4 px-5 absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-xl shadow-md z-10">
-                  <ul className="divide-y divide-gray-200 ">
+                  <ul className="divide-y divide-gray-200">
                     <li
                       className="py-2 px-4 hover:bg-gray-100 cursor-pointer whitespace-nowrap rounded-md"
                       onClick={() => handleSortOptionClick("Son Yaradilan")}
@@ -114,7 +114,7 @@ function CompanyQuestionsNav({
               className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
             >
               <FaPlus className="fill-white text-white" />
-              Əlavə et
+              Əlavə Et
             </button>
           </div>
         </div>

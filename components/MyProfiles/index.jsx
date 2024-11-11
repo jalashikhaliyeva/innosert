@@ -51,48 +51,9 @@ function MyProfiles() {
   const [newPasswordVisible, setNewPasswordVisible] = useState(false);
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);
   const [newPasswordError, setNewPasswordError] = useState("");
-
-  // SVG Icons
-  const EyeIcon = (
-    <svg
-      className="h-5 w-5 text-gray-500"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-      />
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-      />
-    </svg>
-  );
-
-  const EyeOffIcon = (
-    <svg
-      className="h-5 w-5 text-gray-500"
-      xmlns="http://www.w3.org/2000/svg"
-      fill="none"
-      viewBox="0 0 24 24"
-      stroke="currentColor"
-    >
-      <path
-        strokeLinecap="round"
-        strokeLinejoin="round"
-        strokeWidth={2}
-        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.269-2.943-9.543-7a10.05 10.05 0 011.432-2.637M9.878 9.878a3 3 0 104.242 4.242M3 3l18 18"
-      />
-    </svg>
-  );
-
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [oldPasswordError, setOldPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [companyImagePreview, setCompanyImagePreview] = useState(null);
   const handleCompanyImageChange = (e) => {
     const file = e.target.files[0];
@@ -415,13 +376,34 @@ function MyProfiles() {
   // Handler function for changing password
   const handleChangePassword = async (e) => {
     e.preventDefault();
+    setIsSubmitted(true);
 
-    // Reset previous errors
+    // Reset errors
+    setOldPasswordError("");
     setNewPasswordError("");
+    setConfirmPasswordError("");
 
+    let valid = true;
     // Validate that new password meets length requirement
-    if (newPassword.length < 8) {
+    if (!newPassword) {
+      setNewPasswordError("Yeni şifrəni daxil edin.");
+      valid = false;
+    } else if (newPassword.length < 8) {
       setNewPasswordError("Yeni parol ən azı 8 simvoldan ibarət olmalıdır.");
+      valid = false;
+    }
+    if (!oldPassword) {
+      setOldPasswordError("Mövcud şifrənizi daxil edin.");
+      valid = false;
+    }
+    if (!confirmPassword) {
+      setConfirmPasswordError("Şifrəni təsdiqləyin.");
+      valid = false;
+    } else if (newPassword !== confirmPassword) {
+      setConfirmPasswordError("Şifrələr uyğun gəlmir.");
+      valid = false;
+    }
+    if (!valid) {
       return;
     }
 
@@ -585,7 +567,7 @@ function MyProfiles() {
               ? "Şirkət yarat" // If the company creation form is open
               : showCompanies
               ? "Şirkətlərim" // If viewing companies
-              : "Hesablarım" // If viewing user profile
+              : "Hesabım" // If viewing user profile
           }
         </h2>
       </div>
@@ -599,7 +581,7 @@ function MyProfiles() {
                 }`}
                 onClick={() => setShowCompanies(false)}
               >
-                Hesablarım
+                Hesabım
               </button>
               <button
                 className={`text-base px-4 py-2 h-10 rounded-lg font-normal font-gilroy leading-6 ${
@@ -874,6 +856,7 @@ function MyProfiles() {
                         )}
                       </div>
                     </div>
+
                     {/* Right Side - Form with Tabs */}
                     <div>
                       {/* Tabs */}
@@ -900,7 +883,7 @@ function MyProfiles() {
                         </button>
                       </div>
 
-                      <form onSubmit={handleChangePassword}>
+                      <form onSubmit={handleChangePassword} noValidate>
                         {/* Old Password Field */}
                         <div className="mb-4 relative">
                           <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
@@ -912,10 +895,10 @@ function MyProfiles() {
                             placeholder="********"
                             onChange={(e) => setOldPassword(e.target.value)}
                             className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
-                              // Optionally, add validation if needed
-                              ""
+                              isSubmitted && oldPasswordError
+                                ? "border-red-500 bg-red-50"
+                                : ""
                             }`}
-                            required
                           />
                           <button
                             type="button"
@@ -925,11 +908,16 @@ function MyProfiles() {
                             className="absolute inset-y-0 right-0 top-6 flex items-center justify-center pr-3"
                           >
                             {oldPasswordVisible ? (
-                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
                             ) : (
-                              <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                              <AiOutlineEye className="h-5 w-5 text-gray-500" />
                             )}
                           </button>
+                          {isSubmitted && oldPasswordError && (
+                            <p className="mt-1 text-red-500 text-sm">
+                              {oldPasswordError}
+                            </p>
+                          )}
                         </div>
 
                         {/* New Password Field */}
@@ -941,11 +929,12 @@ function MyProfiles() {
                             type={newPasswordVisible ? "text" : "password"}
                             value={newPassword}
                             placeholder="********"
-                            onChange={handleNewPasswordChange}
+                            onChange={(e) => setNewPassword(e.target.value)}
                             className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
-                              newPasswordError ? "border-red-500 bg-red-50" : ""
+                              isSubmitted && newPasswordError
+                                ? "border-red-500 bg-red-50"
+                                : ""
                             }`}
-                            required
                           />
                           <button
                             type="button"
@@ -955,12 +944,12 @@ function MyProfiles() {
                             className="absolute inset-y-0 right-0 top-6 flex items-center pr-3"
                           >
                             {newPasswordVisible ? (
-                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
                             ) : (
-                              <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                              <AiOutlineEye className="h-5 w-5 text-gray-500" />
                             )}
                           </button>
-                          {newPasswordError && (
+                          {isSubmitted && newPasswordError && (
                             <p className="mt-1 text-red-500 text-sm">
                               {newPasswordError}
                             </p>
@@ -977,8 +966,11 @@ function MyProfiles() {
                             value={confirmPassword}
                             placeholder="********"
                             onChange={(e) => setConfirmPassword(e.target.value)}
-                            className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10"
-                            required
+                            className={`mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none pr-10 ${
+                              isSubmitted && confirmPasswordError
+                                ? "border-red-500 bg-red-50"
+                                : ""
+                            }`}
                           />
                           <button
                             type="button"
@@ -988,11 +980,16 @@ function MyProfiles() {
                             className="absolute inset-y-0 right-0 top-6 flex items-center pr-3"
                           >
                             {confirmPasswordVisible ? (
-                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                              <AiOutlineEyeInvisible className="h-5 w-5 text-gray-500" />
                             ) : (
-                              <AiOutlineEye className="h-5 w-5 text-gray-500 flex items-center justify-center" />
+                              <AiOutlineEye className="h-5 w-5 text-gray-500" />
                             )}
                           </button>
+                          {isSubmitted && confirmPasswordError && (
+                            <p className="mt-1 text-red-500 text-sm">
+                              {confirmPasswordError}
+                            </p>
+                          )}
                         </div>
 
                         {/* Submit Button */}

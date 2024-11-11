@@ -52,6 +52,7 @@ function AddExamModal({ closeModal, addNewFolder }) {
           router.pathname.startsWith("/umumi-imtahanlar/") && (
             <AddExamSubFolderModal
               slugParam={slugParam}
+              addNewFolder={addNewFolder}
               closeModal={closeAllModals}
             />
           )

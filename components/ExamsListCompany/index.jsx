@@ -16,7 +16,6 @@ function ExamListCompany({
   console.log(exams, "folders exam list company ");
   const examsData = exams;
 
-
   // State to manage selected exams
   //   const [selectedExams, setSelectedExams] = useState([]);
 

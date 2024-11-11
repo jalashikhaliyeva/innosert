@@ -5,21 +5,22 @@ function HowConnectToExamSection(props) {
   console.log(props.ata, " ata HowConnectToExamSection");
 
   return (
-    <div  >
-      <h2 data-aos="fade-up"
-    data-aos-anchor-placement="center-bottom" className="font-gilroy text-textSecondaryDefault text-2xl md:text-4xl font-medium text-center mt-20 mb-10">
+    <div>
+      <h2
+        data-aos="fade-up"
+        data-aos-anchor-placement="center-bottom"
+        className="font-gilroy text-textSecondaryDefault text-2xl md:text-4xl font-medium text-center mt-20 mb-10"
+      >
         Imtahanda necə iştirak edim?
       </h2>
       <Container>
         <div className="bg-blue200 flex flex-col lg:flex-row items-center justify-center gap-5 lg:py-20 lg:px-36 px-10 py-10 rounded-xl">
-          {props.ata.map((item, index) => (
+          {props?.ata?.map((item, index) => (
             <div
               key={item.id}
               className="w-full lg:w-[27%] p-5 bg-grayBox flex flex-col gap-7 rounded-md"
             >
-              <div
-                className="bg-grayTextColor text-brandBlue500 w-9 h-9 flex items-center justify-center rounded-lg text-xl font-gilroy"
-              >
+              <div className="bg-grayTextColor text-brandBlue500 w-9 h-9 flex items-center justify-center rounded-lg text-xl font-gilroy">
                 {`0${index + 1}`}
               </div>
               <div>

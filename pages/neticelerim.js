@@ -11,11 +11,14 @@ import ProgressPieChart from "@/components/ProgressPieChart";
 import Sidebar from "@/components/Sidebar";
 import TitleNavigation from "@/components/TitleNavigation";
 import Spinner from "@/components/Spinner";
+import ReactPaginate from "react-paginate";
 
 function Neticelerim() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -30,8 +33,9 @@ function Neticelerim() {
           }
         );
         setResults(response.data.data);
+        console.log(response.data.data, "resuls");
+
         setLoading(false);
-        console.log(response.data.data, "response.data.data");
       } catch (err) {
         setError(err);
         setLoading(false);
@@ -41,14 +45,29 @@ function Neticelerim() {
     fetchResults();
   }, []);
 
-  if (loading) return <p><Spinner /></p>;
+  if (loading)
+    return (
+      <p>
+        <Spinner />
+      </p>
+    );
   if (error) return <p>Error loading results.</p>;
+
+  // Pagination logic
+  const pageCount = Math.ceil(results.length / itemsPerPage);
+  const handlePageClick = (selectedPage) => {
+    setCurrentPage(selectedPage.selected);
+  };
+  const paginatedResults = results.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
 
   return (
     <>
       <HeaderInternal />
       <div className="flex">
-        <div className="hidden md:block  md:w-[20%]">
+        <div className="hidden md:block md:w-[20%]">
           <Sidebar />
         </div>
         <div className="w-full md:w-[80%]">
@@ -56,14 +75,41 @@ function Neticelerim() {
             <Breadcrumb />
             <TitleNavigation />
             <div className="flex flex-wrap gap-4 items-center justify-center">
-              {results.length > 0 ? (
-                results.map((result) => (
+              {paginatedResults.length > 0 ? (
+                paginatedResults.map((result) => (
                   <CardResult key={result.id} data={result} />
                 ))
               ) : (
                 <p>No results found.</p>
               )}
             </div>
+            {pageCount > 1 && (
+              <div className="flex justify-center mt-4 mb-10">
+                <ReactPaginate
+                  previousLabel={"<"}
+                  nextLabel={">"}
+                  breakLabel={"..."}
+                  pageCount={pageCount}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName="flex justify-center items-center gap-2"
+                  pageClassName="inline-block"
+                  pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200"
+                  activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault"
+                  previousClassName={currentPage === 0 ? "text-gray-300" : ""}
+                  previousLinkClassName={
+                    currentPage === 0 ? "cursor-not-allowed" : ""
+                  }
+                  nextClassName={
+                    currentPage === pageCount - 1 ? "text-gray-300" : ""
+                  }
+                  nextLinkClassName={
+                    currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
+                  }
+                />
+              </div>
+            )}
           </InternalContainer>
         </div>
       </div>

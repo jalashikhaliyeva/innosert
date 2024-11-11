@@ -1,16 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 
+// Dynamically import react-apexcharts to prevent SSR issues
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const ProgressPieChart = ({ percentage }) => {
-  const [inView, setInView] = useState(false);
-  const [series, setSeries] = useState([0, 0, 100]); // Initial state: 0% Correct, 0% Wrong, 100% Not Answered
+  const [series, setSeries] = useState([]); // Initialize as empty
+  const chartRef = useRef(null); // Reference to the chart container
 
+  console.log(percentage, "percentage");
+  
+  // Chart configuration options
   const options = {
     chart: {
       type: "donut",
+      animations: {
+        enabled: true,
+        easing: 'easeinout',
+        speed: 800,
+        animateGradually: {
+          enabled: true,
+          delay: 150,
+        },
+        dynamicAnimation: {
+          enabled: true,
+          speed: 350,
+        },
+      },
     },
     plotOptions: {
       pie: {
@@ -30,7 +47,7 @@ const ProgressPieChart = ({ percentage }) => {
               show: true,
               showAlways: true,
               label: "",
-              formatter: () => `${series[0]}%`, // Display Correct Answers percentage
+              formatter: () => `${percentage}%`, // Display Correct Answers percentage
               style: {
                 fontSize: "20px",
                 fontWeight: "bold",
@@ -75,49 +92,37 @@ const ProgressPieChart = ({ percentage }) => {
     },
   };
 
+  // Effect to update the series based on the percentage prop
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setInView(true); // Trigger animation when in view
-
-          // Ensure the percentage is between 0 and 100
-          const correct = Math.min(Math.max(percentage, 0), 100);
-
-          // Example distribution: 20% of remaining for Wrong Answers
-          const wrong = Math.min(
-            Math.max((100 - correct) * 0.2, 0),
-            100 - correct
-          );
-          const notAnswered = 100 - correct - wrong;
-
-          setSeries([correct, wrong, notAnswered]);
-        }
-      },
-      {
-        threshold: 0.2, // Trigger when 20% of the component is in view
-      }
-    );
-
-    const element = document.getElementById("progress-chart");
-    if (element) {
-      observer.observe(element);
+    if (typeof percentage !== "number") {
+      console.warn(
+        "ProgressPieChart: 'percentage' prop is not a number:",
+        percentage
+      );
+      return;
     }
 
-    return () => {
-      if (element) observer.unobserve(element);
-    };
-  }, [percentage]); // Re-run effect if 'percentage' changes
+    // Ensure the percentage is within 0-100
+    const correct = Math.min(Math.max(percentage, 0), 100);
+    // Example distribution: 20% of the remaining for Wrong Answers
+    const wrong = Math.min((100 - correct) * 0.2, 100 - correct);
+    const notAnswered = 100 - correct - wrong;
+
+    console.log("Updating series:", [correct, wrong, notAnswered]);
+
+    setSeries([correct, wrong, notAnswered]);
+  }, [percentage]);
 
   return (
     <motion.div
-      id="progress-chart"
+      ref={chartRef} // Attach ref to the div
       initial={{ opacity: 0, y: 20 }} // Start hidden and slightly offset
-      animate={inView ? { opacity: 1, y: 0 } : {}} // Animate when in view
+      animate={{ opacity: 1, y: 0 }} // Animate to visible when component mounts
       transition={{ duration: 0.9 }} // Animation duration
     >
-      <Chart options={options} series={series} type="donut" width="180" />{" "}
-      {/* Adjusted width */}
+      {series.length > 0 && (
+        <Chart options={options} series={series} type="donut" width="180" />
+      )}
     </motion.div>
   );
 };

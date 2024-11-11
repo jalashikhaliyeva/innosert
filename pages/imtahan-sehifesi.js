@@ -7,6 +7,7 @@ import MultipleChoiceQuestion from "@/components/MultipleChoiceQuestion";
 import OpenQuestion from "@/components/OpenQuestion";
 import InternalContainer from "@/components/InternalContainer";
 import ExamSidebar from "@/components/ExamSidebar";
+import { IoWarningOutline } from "react-icons/io5";
 import { UserContext } from "@/shared/context/UserContext";
 import axios from "axios";
 import FinishExamModal from "@/components/FinishExam/FinishExamModal";
@@ -45,18 +46,23 @@ function ImtahanSehifesi() {
   const [loading, setLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState([]);
+  const [modalContent, setModalContent] = useState("");
+  const [showWarningModal, setShowWarningModal] = useState(false);
   const examAreaRef = useRef(null);
   const router = useRouter();
   const [reports, setReports] = useState([]);
+  const [outsideLeaveCount, setOutsideLeaveCount] = useState(0);
+  const [examStartTime, setExamStartTime] = useState(null);
+  const [examFinishTime, setExamFinishTime] = useState(null);
+  const [timeRemaining, setTimeRemaining] = useState(null);
+  const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
+
+  // **Initialize the ref to prevent multiple increments**
+  const hasQuestionChanged = useRef(false);
 
   const handleReportSubmit = (newReports) => {
     setReports((prevReports) => [...prevReports, ...newReports]);
   };
-  const [examStartTime, setExamStartTime] = useState(null);
-  const [examFinishTime, setExamFinishTime] = useState(null);
-  const [timeRemaining, setTimeRemaining] = useState(null);
-
-  const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
 
   useEffect(() => {
     const fetchExamData = async () => {
@@ -72,12 +78,17 @@ function ImtahanSehifesi() {
         );
 
         if (response.data.status) {
+          let fetchedQuestions = response.data.data.question;
+
+          // Optional: Shuffle questions if needed
+          // fetchedQuestions = shuffleArray(fetchedQuestions);
+
           setExamData(response.data.data);
           setExamStartTime(new Date());
 
           console.log(response.data.data, "response.data.data");
 
-          setUserAnswers(Array(response.data.data.question.length).fill(null));
+          setUserAnswers(Array(fetchedQuestions.length).fill(null));
         } else {
           console.error(response.data.message);
         }
@@ -101,11 +112,14 @@ function ImtahanSehifesi() {
   useEffect(() => {
     if (!examData || !examDetails || !currentQuestionData) return;
 
+    // **Reset the ref when currentQuestion changes**
+    hasQuestionChanged.current = false;
+
     if (isDurationZero(examDetails.duration)) {
-      // Exam does not have total duration, per-question timing
+      // Per-question timing
       const questionDuration = currentQuestionData.duration;
 
-      if (!questionDuration) {
+      if (!questionDuration || parseDuration(questionDuration) === 0) {
         setTimeRemaining(null);
         return;
       }
@@ -126,19 +140,29 @@ function ImtahanSehifesi() {
     if (!examData || !examDetails || !questionsData) return;
     if (timeRemaining === null) return;
 
+    console.log(`Time Remaining: ${timeRemaining}`);
+    console.log(
+      `Current Question: ${currentQuestion + 1}/${questionsData.length}`
+    );
+
     if (timeRemaining <= 0) {
-      if (isDurationZero(examDetails.duration)) {
-        // Per-question timing
-        if (currentQuestion < questionsData.length - 1) {
-          setCurrentQuestion(currentQuestion + 1);
+      if (!hasQuestionChanged.current) {
+        hasQuestionChanged.current = true;
+        console.log("Time up for current question. Moving to next question.");
+
+        if (isDurationZero(examDetails.duration)) {
+          // Per-question timing
+          if (currentQuestion < questionsData.length - 1) {
+            setCurrentQuestion((prevQuestion) => prevQuestion + 1);
+          } else {
+            // Open the finish exam modal if it's the last question
+            setIsFinishModalOpen(true);
+          }
         } else {
-          // Open the finish exam modal if it's the last question
+          // Total exam timing
+          // Finish the exam
           setIsFinishModalOpen(true);
         }
-      } else {
-        // Total exam timing
-        // Finish the exam
-        setIsFinishModalOpen(true);
       }
       return;
     }
@@ -150,7 +174,7 @@ function ImtahanSehifesi() {
     return () => clearTimeout(timerId);
   }, [timeRemaining, currentQuestion, examDetails, questionsData, examData]);
 
-  // Now the conditional returns
+  // Conditional rendering for loading and exam data
   if (loading) {
     return (
       <div>
@@ -163,14 +187,13 @@ function ImtahanSehifesi() {
     return <div>Exam data not found.</div>;
   }
 
-  // Rest of your code...
-
   const handleNextQuestion = () => {
     if (currentQuestion < questionsData.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+      const nextQuestionIndex = currentQuestion + 1;
+      setCurrentQuestion((prevQuestion) => prevQuestion + 1);
       // Reset timeRemaining for the new question if per-question timing
       if (isDurationZero(examDetails.duration)) {
-        const questionDuration = questionsData[currentQuestion + 1].duration;
+        const questionDuration = questionsData[nextQuestionIndex].duration;
         const durationInSeconds = parseDuration(questionDuration);
         setTimeRemaining(durationInSeconds);
       }
@@ -182,10 +205,11 @@ function ImtahanSehifesi() {
 
   const handlePreviousQuestion = () => {
     if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
+      const prevQuestionIndex = currentQuestion - 1;
+      setCurrentQuestion((prevQuestion) => prevQuestion - 1);
       // Reset timeRemaining for the previous question if per-question timing
       if (isDurationZero(examDetails.duration)) {
-        const questionDuration = questionsData[currentQuestion - 1].duration;
+        const questionDuration = questionsData[prevQuestionIndex].duration;
         const durationInSeconds = parseDuration(questionDuration);
         setTimeRemaining(durationInSeconds);
       }
@@ -266,16 +290,16 @@ function ImtahanSehifesi() {
               submittedAnswer: userAnswer || "",
             };
 
-            case "Uyğunlaşdırma Sual": // Combination Question
+          case "Uyğunlaşdırma Sual": // Combination Question
             if (userAnswer && userAnswer.length > 0) {
               const submittedAnswer = {};
               userAnswer.forEach((pair) => {
                 const keyIndex = pair.questionIndex;
                 const keyValue = question.answers.key[keyIndex]; // Get the key string
-          
+
                 // Use the selectedOptionIds directly since they now contain the correct IDs
                 const valueValues = pair.selectedOptionIds;
-          
+
                 submittedAnswer[keyValue] = valueValues;
               });
               return {
@@ -288,7 +312,6 @@ function ImtahanSehifesi() {
                 submittedAnswer: {},
               };
             }
-          
 
           default:
             return null;
@@ -326,8 +349,10 @@ function ImtahanSehifesi() {
 
       if (response.data.status) {
         console.log(response.data, "exam finish status");
-        const percentage = response.data.data;
-        setPercentage(response.data.data);
+        const percentageData = response.data.data;
+        setPercentage(percentageData);
+        console.log(response.data.data, "response.data.data");
+
         router.push("/imtahan-neticeleri");
       } else {
         console.error(response.data.message);
@@ -339,9 +364,35 @@ function ImtahanSehifesi() {
     }
   };
 
+  const handleMouseLeave = () => {
+    console.log("Mouse left the exam area");
+
+    if (outsideLeaveCount === 0) {
+      setOutsideLeaveCount(1);
+      setModalContent(
+        "Siz imtahan sahəsindən kənara çıxdınız! Yenidən bunu etsəniz, imtahan bitiriləcək."
+      );
+      setShowWarningModal(true);
+      console.log("Displaying first warning modal");
+    } else {
+      console.log("Ending the exam");
+      setModalContent(
+        "Limitdən kənara çıxma sayınız dolub! İmtahan bitirildi."
+      );
+      setShowWarningModal(true);
+      setTimeout(() => {
+        router.push("/imtahan-neticeleri");
+      }, 2400);
+    }
+  };
+
   // ImtahanSehifesi component
   return (
-    <div className="h-screen flex flex-col" ref={examAreaRef}>
+    <div
+      className="h-screen flex flex-col"
+      ref={examAreaRef}
+      onMouseLeave={handleMouseLeave}
+    >
       <ExamHeader
         className="flex-shrink-0"
         clickedExam={clickedExam}
@@ -390,6 +441,51 @@ function ImtahanSehifesi() {
           closeModal={() => setIsFinishModalOpen(false)}
           handleFinishExam={handleFinishExam}
         />
+      )}
+
+      {showWarningModal && (
+        <div
+          onClick={() => setShowWarningModal(false)}
+          className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]"
+        >
+          <div className="bg-white rounded-xl shadow-lg p-6 w-96">
+            {/* Icon */}
+            <div className="flex justify-center mb-4">
+              <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-100">
+                <IoWarningOutline
+                  style={{ fontSize: "32px", color: "red", fill: "red" }}
+                />
+              </div>
+            </div>
+
+            {/* Title */}
+            <h3
+              className="text-lg font-semibold text-gray-900 text-center"
+              style={{ fontFamily: "Gilroy" }}
+            >
+              Diqqət!
+            </h3>
+
+            {/* Description */}
+            <p
+              className="text-sm text-gray-800 text-center mt-2"
+              style={{ fontFamily: "Gilroy" }}
+            >
+              {modalContent}
+            </p>
+
+            {/* Button */}
+            <div className="mt-6 flex justify-center w-full">
+              <button
+                onClick={() => setShowWarningModal(false)}
+                className="py-2 px-4 bg-errorButtonDefault w-full text-white rounded-lg hover:bg-errorButtonHover active:bg-errorButtonPressed focus:outline-none"
+                style={{ fontFamily: "Gilroy" }}
+              >
+                Oldu
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );

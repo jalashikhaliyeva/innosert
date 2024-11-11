@@ -1,19 +1,13 @@
-// QuestionFiles.jsx (components/CompanyQuestionsFiles/index.jsx)
-
-// QuestionFiles.jsx
-
 import { useRouter } from "next/router";
 import React, { useEffect, useRef, useState } from "react";
 import { CiEdit } from "react-icons/ci";
 import { IoMdMore } from "react-icons/io";
 import { BsTrash } from "react-icons/bs";
-import Link from "next/link";
 
 const QuestionFiles = ({
   files,
   viewMode,
   sortOption,
-  setIsCheckboxSelected,
   selectedFiles,
   setSelectedFiles,
   openEditFolderModal,
@@ -27,7 +21,10 @@ const QuestionFiles = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target)
+      ) {
         setDropdownVisible(null);
       }
     };
@@ -38,24 +35,21 @@ const QuestionFiles = ({
     };
   }, []);
 
-  const handleCheckboxChange = (fileUrl, isChecked) => {
+  const handleCheckboxChange = (fileId, isChecked) => {
+    console.log(`File ID: ${fileId}, Checked: ${isChecked}`);
     setSelectedFiles((prevSelectedFiles) => {
       if (isChecked) {
-        // Add the file to the selection if it is checked
-        return [...prevSelectedFiles, fileUrl];
+        console.log("Adding to selectedFiles:", fileId);
+        return [...prevSelectedFiles, fileId];
       } else {
-        // Remove the file from the selection if it is unchecked
-        return prevSelectedFiles.filter((url) => url !== fileUrl);
+        console.log("Removing from selectedFiles:", fileId);
+        return prevSelectedFiles.filter((id) => id !== fileId);
       }
     });
   };
 
   const handleBoxClick = (file) => {
-    if (file.subfolder && file.subfolder.length > 0) {
-      router.push(`/sual-bazasi/${file.slug}`);
-    } else {
-      router.push(`/sual-bazasi/${file.slug}`);
-    }
+    router.push(`/sual-bazasi/${file.slug}`);
   };
 
   const sortedFiles = [...files];
@@ -81,16 +75,16 @@ const QuestionFiles = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {sortedFiles.map((file, index) => (
             <div
-              key={file.slug}
+              key={file.slug} // Ensure unique key
               className="relative flex flex-col p-6 rounded-[10px] border border-gray-100 bg-white shadow-createBox"
             >
               <div className="flex w-full justify-between items-center mb-4">
                 <input
                   type="checkbox"
                   className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-                  checked={selectedFiles.includes(file.url)}
+                  checked={selectedFiles.includes(file.id)} // Use file.id
                   onChange={(e) =>
-                    handleCheckboxChange(file.url, e.target.checked)
+                    handleCheckboxChange(file.id, e.target.checked)
                   }
                 />
 
@@ -110,7 +104,7 @@ const QuestionFiles = ({
                   >
                     <ul>
                       <li
-                        className="flex items-center  gap-2  px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                        className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
                         onClick={() => {
                           openEditFolderModal(file);
                           setDropdownVisible(null); // Close the dropdown
@@ -120,7 +114,7 @@ const QuestionFiles = ({
                         Redaktə et
                       </li>
                       <li
-                        className="flex items-center  gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                        className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
                         onClick={() => {
                           openDeleteFolderModal(file);
                           setDropdownVisible(null); // Close the dropdown
@@ -141,6 +135,7 @@ const QuestionFiles = ({
                 <p className="flex flex-col w-full">
                   <div className="flex items-center space-x-2">
                     <div className="text-yellow-500">
+                      {/* SVG Icon */}
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="28px"
@@ -174,7 +169,7 @@ const QuestionFiles = ({
                   </div>
 
                   <div className="relative group">
-                    <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium  truncate cursor-pointer max-w-[15ch] mx-auto">
+                    <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium truncate cursor-pointer max-w-[15ch] mx-auto">
                       {file.sub_folder && file.sub_folder.length > 0
                         ? file.sub_folder.join(" ~ ")
                         : "Hazırda fayl yoxdur"}
@@ -201,7 +196,7 @@ const QuestionFiles = ({
           {sortedFiles.map((file, index) => (
             <div
               onClick={() => handleBoxClick(file)}
-              key={file.slug}
+              key={file.slug} // Ensure unique key
               className="cursor-pointer relative flex items-center p-5 rounded-[10px] border border-gray-100 bg-white shadow-createBox"
             >
               <a className="flex items-center w-full">
@@ -209,14 +204,15 @@ const QuestionFiles = ({
                 <input
                   type="checkbox"
                   className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-                  checked={selectedFiles.includes(file.url)}
+                  checked={selectedFiles.includes(file.id)} // Use file.id
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) =>
-                    handleCheckboxChange(file.url, e.target.checked)
+                    handleCheckboxChange(file.id, e.target.checked)
                   }
                 />
                 {/* Folder Icon */}
                 <div className="text-yellow-500 mr-4">
+                  {/* SVG Icon */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="28px"
@@ -251,7 +247,7 @@ const QuestionFiles = ({
                   </div>
 
                   <div className="relative group">
-                    <div className="text-3.5  font-gilroy mt-1.5 text-arrowButtonGray font-medium justify-start truncate cursor-pointer max-w-[30ch] mx-auto">
+                    <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium justify-start truncate cursor-pointer max-w-[30ch] mx-auto">
                       {file.sub_folder && file.sub_folder.length > 0
                         ? file.sub_folder.join(" ~ ")
                         : "Hazırda fayl yoxdur"}
@@ -288,8 +284,7 @@ const QuestionFiles = ({
                         <ul>
                           <li
                             className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
+                            onClick={() => {
                               openEditFolderModal(file);
                               setDropdownVisible(null); // Close the dropdown
                             }}
@@ -299,8 +294,7 @@ const QuestionFiles = ({
                           </li>
                           <li
                             className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                            onClick={(e) => {
-                              e.stopPropagation();
+                            onClick={() => {
                               openDeleteFolderModal(file);
                               setDropdownVisible(null); // Close the dropdown
                             }}
