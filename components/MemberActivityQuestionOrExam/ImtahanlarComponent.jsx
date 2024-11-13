@@ -7,14 +7,13 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import EditExamModal from "@/components/EditExamModal";
 import DeleteExamModal from "@/components/DeleteExamModal";
 import Spinner from "../Spinner";
-
+import { useTranslation } from "react-i18next";
 function ImtahanlarComponent({ viewMode, sortOption, id }) {
   const { selectedCompany } = useContext(CompanyContext);
   const [examsData, setExamsData] = useState({ exams: [], folders: [] });
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
-
   // State for Modals
   const [isEditExamModalOpen, setIsEditExamModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -22,7 +21,7 @@ function ImtahanlarComponent({ viewMode, sortOption, id }) {
 
   // State to manage selected exams
   const [selectedExams, setSelectedExams] = useState([]);
-
+  const { t } = useTranslation();
   useEffect(() => {
     if (id && selectedCompany && token) {
       const fetchExams = async () => {
@@ -116,7 +115,7 @@ function ImtahanlarComponent({ viewMode, sortOption, id }) {
       {examsData.exams.length === 0 ? (
         <div className="flex items-center justify-center ">
           <p className="font-gilroy text-grayButtonText text-lg">
-            Bu istifadəçi üçün imtahan mövcud deyil.
+            {t("messages.noExamsForUser")}
           </p>
         </div>
       ) : (

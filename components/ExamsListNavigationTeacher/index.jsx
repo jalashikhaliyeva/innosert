@@ -4,7 +4,7 @@ import { BsGrid } from "react-icons/bs";
 import { VscListSelection } from "react-icons/vsc";
 import { FaPlus } from "react-icons/fa6";
 import { BsTrash3 } from "react-icons/bs";
-
+import { useTranslation } from 'react-i18next';
 function ExamsListNavigationTeacher({
   viewMode,
   setViewMode,
@@ -15,7 +15,7 @@ function ExamsListNavigationTeacher({
   openDeleteModal,
 }) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-
+ const { t } = useTranslation();
   const handleSortOptionClick = (option) => {
     setSortOption(option);
     setIsSortMenuOpen(false);
@@ -23,7 +23,7 @@ function ExamsListNavigationTeacher({
 
   return (
     <div className="flex justify-between relative font-gilroy">
-      <h1 className="text-2xl font-medium leading-8">İmtahanlar Siyahısı</h1>
+      <h1 className="text-2xl font-medium leading-8">{t('titles.examList')}</h1>
 
       {selectedExams.length > 0 ? (
         <div className="flex flex-row gap-4">
@@ -32,7 +32,7 @@ function ExamsListNavigationTeacher({
             className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed"
           >
             <BsTrash3 className="fill-white text-white" />
-            Sil
+            {t('actions.delete')}
           </button>
         </div>
       ) : (
@@ -47,7 +47,7 @@ function ExamsListNavigationTeacher({
               >
                 <TbArrowsSort />
                 <p className="text-base text-textSecondaryDefault leading-6">
-                  Sırala
+                {t('actions.sort')}
                 </p>
               </div>
               {isSortMenuOpen && (
@@ -57,13 +57,13 @@ function ExamsListNavigationTeacher({
                       className="py-2 px-4 hover:bg-gray-100 cursor-pointer whitespace-nowrap rounded-md"
                       onClick={() => handleSortOptionClick("Son Yaradilan")}
                     >
-                      Son Yaradılan
+              {t('actions.newest')}
                     </li>
                     <li
                       className="py-2 px-4 hover:bg-gray-100 cursor-pointer whitespace-nowrap rounded-md"
                       onClick={() => handleSortOptionClick("Ilk Yaradilan")}
                     >
-                      İlk Yaradılan
+             {t('actions.oldest')}
                     </li>
                     <li
                       className="py-2 px-4 hover:bg-gray-100 cursor-pointer whitespace-nowrap rounded-md"
@@ -110,7 +110,7 @@ function ExamsListNavigationTeacher({
               className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
             >
               <FaPlus className="fill-white text-white" />
-              Əlavə et
+              {t('actions.add')}
             </button>
           </div>
         </div>

@@ -1,10 +1,11 @@
+// CompanyQuestionsNav.jsx
 import React, { useState } from "react";
 import { TbArrowsSort } from "react-icons/tb";
 import { BsGrid } from "react-icons/bs";
 import { VscListSelection } from "react-icons/vsc";
 import { FaPlus, FaTrash } from "react-icons/fa6";
 import { BsTrash3 } from "react-icons/bs";
-
+import { useTranslation } from "react-i18next";
 function CompanyQuestionsNav({
   viewMode,
   setViewMode,
@@ -13,10 +14,11 @@ function CompanyQuestionsNav({
   selectedFiles,
   openModal,
   onDelete,
-  openDeleteModal, // Ensure this prop is received
+  openDeleteFolderModal,
+  openBulkDeleteModal, // Receive the bulk delete function
 }) {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
-
+  const { t } = useTranslation();
   const handleSortOptionClick = (option) => {
     setSortOption(option);
     setIsSortMenuOpen(false);
@@ -30,11 +32,11 @@ function CompanyQuestionsNav({
         // Show the delete section when folders are selected
         <div className="flex flex-row gap-4">
           <button
-            onClick={onDelete} // Trigger bulk delete modal
+            onClick={openBulkDeleteModal} // Trigger bulk delete modal
             className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed"
           >
             <BsTrash3 className="fill-white text-white" />
-            Sil
+            {t("actions.delete")}
           </button>
         </div>
       ) : (
@@ -49,7 +51,7 @@ function CompanyQuestionsNav({
               >
                 <TbArrowsSort />
                 <p className="text-base text-textSecondaryDefault leading-6">
-                  Sırala
+                  {t("actions.sort")}
                 </p>
               </div>
               {isSortMenuOpen && (
@@ -59,13 +61,13 @@ function CompanyQuestionsNav({
                       className="py-2 px-4 hover:bg-gray-100 cursor-pointer whitespace-nowrap rounded-md"
                       onClick={() => handleSortOptionClick("Son Yaradilan")}
                     >
-                      Son Yaradilan
+                      {t("actions.newest")}
                     </li>
                     <li
                       className="py-2 px-4 hover:bg-gray-100 cursor-pointer whitespace-nowrap rounded-md"
                       onClick={() => handleSortOptionClick("Ilk Yaradilan")}
                     >
-                      Ilk Yaradilan
+                      {t("actions.oldest")}
                     </li>
                     <li
                       className="py-2 px-4 hover:bg-gray-100 cursor-pointer whitespace-nowrap rounded-md"
@@ -114,7 +116,7 @@ function CompanyQuestionsNav({
               className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
             >
               <FaPlus className="fill-white text-white" />
-              Əlavə Et
+              {t("actions.add")}
             </button>
           </div>
         </div>

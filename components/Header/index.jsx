@@ -16,6 +16,7 @@ import { getSettingInfo } from "@/services/getSettingInfo";
 import { HiOutlineMenu } from "react-icons/hi";
 import { IoMdArrowBack } from "react-icons/io";
 import LanguageSwitcher from "@/shared/LanguageSwitcher";
+import { useTranslation } from "react-i18next";
 import OTP from "../OTP";
 
 const Header = ({
@@ -24,6 +25,7 @@ const Header = ({
   scrollToFaq,
   scrollToCertificate,
 }) => {
+  const { t } = useTranslation();
   const [settingInfo, setSettingInfo] = useState(null);
   const [isMenuOpen, setMenuOpen] = useState(false); // New state for menu visibility
   const { push, pathname } = useRouter();
@@ -340,7 +342,7 @@ const Header = ({
               onClick={() => push(ROUTER.ABOUT)}
               className="cursor-pointer font-gilroy font-medium text-lg text-textSecondaryDefault py-3 px-4 hover:text-textHoverBlue"
             >
-              Haqqımızda
+              {t("about")}
             </p>
 
             {/* Dropdown for "İmtahanlar" */}
@@ -357,7 +359,7 @@ const Header = ({
                 className="text-textSecondaryDefault text-lg inline-flex items-center font-gilroy font-medium focus:outline-none text-center py-3 px-4 hover:text-textHoverBlue"
                 type="button"
               >
-                İmtahanlar
+                {t("exams")}
               </button>
 
               {/* Dropdown menu */}
@@ -436,7 +438,7 @@ const Header = ({
               onClick={() => handleScrollToSection("contact")}
               className="cursor-pointer font-gilroy font-medium text-lg text-textSecondaryDefault py-3 px-4 hover:text-textHoverBlue"
             >
-              Əlaqə
+              {t("contact")}
             </p>
             <p
               onClick={() => handleScrollToSection("faq")}
@@ -463,7 +465,7 @@ const Header = ({
                 fontFamily="var(--fontGilroy)"
                 fontWeight="500"
               >
-                Daxil ol
+                {t("login")}
               </Button>
             </div>
             <div onClick={openRegisterModal}>
@@ -482,7 +484,7 @@ const Header = ({
                 fontFamily="var(--fontGilroy)"
                 fontWeight="500"
               >
-                Qeydiyyatdan keç
+                {t("registerBtn")}
               </Button>
             </div>
           </div>

@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import CompanyContext from "@/shared/context/CompanyContext";
 import Spinner from "../Spinner";
-
+import { useTranslation } from "react-i18next";
 // Utility function to strip HTML tags
 const stripHTML = (html) => {
   const div = document.createElement("div");
@@ -15,6 +15,7 @@ const stripHTML = (html) => {
 };
 
 function SuallarComponent({ id }) {
+  const { t } = useTranslation();
   const { selectedCompany } = useContext(CompanyContext);
   const [token, setToken] = useState(null);
 
@@ -269,7 +270,7 @@ function SuallarComponent({ id }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                  Suallar
+                  {t("labels.questions")}
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "suallar" && (
@@ -311,7 +312,7 @@ function SuallarComponent({ id }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                  Səviyyə
+                  {t("labels.level")}
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "seviyye" && (
@@ -386,7 +387,7 @@ function SuallarComponent({ id }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                  Xal
+                  {t("labels.points")}
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "xal" && (
@@ -440,7 +441,7 @@ function SuallarComponent({ id }) {
                   }
                 >
                   <div className="flex items-center gap-4 font-gilroy">
-                    Vaxt
+                    {t("labels.time")}
                     <IoFunnelOutline />
                   </div>
                   {openFilter === "vaxt" && (
@@ -494,7 +495,7 @@ function SuallarComponent({ id }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                  Tarix
+                  {t("labels.date")}
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "tarix" && (
@@ -708,7 +709,7 @@ function SuallarComponent({ id }) {
                   colSpan={showTimeColumn ? "7" : "6"} // Adjust colspan based on 'Vaxt' column visibility
                   className="px-4 py-2 text-center text-gray-500"
                 >
-                  Heç bir nəticə tapılmadı.
+                  {t("labels.noResults")}
                 </td>
               </tr>
             )}
@@ -720,7 +721,7 @@ function SuallarComponent({ id }) {
           {/* Items Per Page Selector */}
           <div className="flex items-center space-x-2">
             <label htmlFor="itemsPerPage" className="mr-2">
-              Səhifə başına sual:
+              {t("members.itemsPerPage")}
             </label>
             <select
               id="itemsPerPage"

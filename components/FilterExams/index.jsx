@@ -7,7 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { MdNavigateNext } from "react-icons/md";
 import { RiLoopRightLine } from "react-icons/ri";
 import { UserContext } from "@/shared/context/UserContext";
-
+import { useTranslation } from 'next-i18next';
 function FilterCategories() {
   const {
     selectedCategory,
@@ -16,7 +16,7 @@ function FilterCategories() {
     filteredExams,
     setIsCategoriesFilterValid,
   } = useContext(UserContext);
-
+  const { t } = useTranslation();
   console.log(filteredExams, "filteredExams");
 
   const combinedList = [
@@ -254,7 +254,7 @@ function FilterCategories() {
               onClick={() => setIsModalOpen(true)}
             >
               <IoFilter />
-              Ətraflı axtarış
+              {t('advanced_search')}
               {getActiveFilterCount() > 0 && (
                 <span className="absolute top-1 right-2 transform translate-x-1/2 -translate-y-1/2 bg-brandBlue200 text-white text-sm rounded-full px-2 py-1">
                   {getActiveFilterCount()}

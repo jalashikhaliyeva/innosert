@@ -3,8 +3,9 @@ import { TbQuestionMark } from "react-icons/tb";
 import { FaClipboardList } from "react-icons/fa";
 import SuallarComponent from "./SuallarComponent";
 import ImtahanlarComponent from "./ImtahanlarComponent";
-
-function MemberActivityQuestionOrExam({id}) {
+import { useTranslation } from "react-i18next";
+function MemberActivityQuestionOrExam({ id }) {
+  const { t } = useTranslation();
   const [activeView, setActiveView] = useState("suallar");
 
   return (
@@ -31,7 +32,7 @@ function MemberActivityQuestionOrExam({id}) {
               fill={activeView === "suallar" ? "#3366FF" : "#79797A"} // Color changes based on active view
             />
           </svg>
-          Suallar
+          {t("labels.questions")}
         </button>
 
         {/* İmtahanlar Tab */}
@@ -55,15 +56,15 @@ function MemberActivityQuestionOrExam({id}) {
               fill={activeView === "imtahanlar" ? "#3366FF" : "#79797A"} // Color changes based on active view
             />
           </svg>
-          İmtahanlar
+          {t("labels.exams")}
         </button>
       </div>
 
       {/* Conditional Rendering */}
       {activeView === "suallar" ? (
-        <SuallarComponent id={id}  />
+        <SuallarComponent id={id} />
       ) : (
-        <ImtahanlarComponent  id={id} />
+        <ImtahanlarComponent id={id} />
       )}
     </>
   );

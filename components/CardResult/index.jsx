@@ -1,9 +1,10 @@
 import React from "react";
 import ProgressPieChart from "../ProgressPieChart";
 import { useRouter } from "next/router";
-
+import { useTranslation } from "react-i18next";
 function CardResult({ data }) {
   const router = useRouter();
+  const { t } = useTranslation();
 
   const handleExamClick = () => {
     router.push(`/etrafli/${data.exam_slug}`);
@@ -43,7 +44,7 @@ function CardResult({ data }) {
             </p>
             <div className="flex flex-row items-center justify-center gap-2">
               <p className="w-4 h-4 border-2 border-chartGreen bg-chartGreen rounded-full"></p>
-              <p>Düz</p>
+              <p>{t("terms.correct")}</p>
             </div>
           </div>
           <div className="flex flex-col">
@@ -52,7 +53,7 @@ function CardResult({ data }) {
             </p>
             <div className="flex flex-row items-center justify-center gap-2">
               <p className="w-4 h-4 border-2 border-chartRed bg-chartRed rounded-full"></p>
-              <p>Səhv</p>
+              <p>{t("terms.wrong")}</p>
             </div>
           </div>
           <div className="flex flex-col">
@@ -61,7 +62,7 @@ function CardResult({ data }) {
             </p>
             <div className="flex flex-row items-center justify-center gap-2">
               <p className="w-4 h-4 border-2 border-chartYellow bg-chartYellow rounded-full"></p>
-              <p>Boş</p>
+              <p>{t("terms.empty")}</p>
             </div>
           </div>
         </div>

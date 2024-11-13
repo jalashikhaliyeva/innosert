@@ -12,11 +12,12 @@ import { UserContext } from "@/shared/context/UserContext";
 import { FaRegTrashCan } from "react-icons/fa6";
 import { AiOutlineEyeInvisible } from "react-icons/ai";
 import { AiOutlineEye } from "react-icons/ai";
+import { useTranslation } from "next-i18next";
 function MyProfiles() {
   // const [user, setUser] = useState(null);
   const { user, setUser, fetchUserData } = useContext(UserContext);
   console.log(user, " MyProfiles user teacher");
-
+  const { t } = useTranslation();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [companies, setCompanies] = useState([]);
@@ -562,13 +563,11 @@ function MyProfiles() {
     <div className="mt-6">
       <div className="mb-6">
         <h2 className="text-2xl leading-8 font-gilroy font-medium">
-          {
-            isCreatingCompany
-              ? "Şirkət yarat" // If the company creation form is open
-              : showCompanies
-              ? "Şirkətlərim" // If viewing companies
-              : "Hesabım" // If viewing user profile
-          }
+          {isCreatingCompany
+            ? t("titles.createCompany")
+            : showCompanies
+            ? t("titles.myCompanies")
+            : t("titles.myAccount")}
         </h2>
       </div>
       <div className="flex flex-col md:flex-row justify-between">
@@ -581,7 +580,7 @@ function MyProfiles() {
                 }`}
                 onClick={() => setShowCompanies(false)}
               >
-                Hesabım
+                {t("my_account")}
               </button>
               <button
                 className={`text-base px-4 py-2 h-10 rounded-lg font-normal font-gilroy leading-6 ${
@@ -589,14 +588,14 @@ function MyProfiles() {
                 }`}
                 onClick={toggleShowCompanies}
               >
-                Şirkətlərim
+                {t("my_companies")}
               </button>
             </div>
             <button
               onClick={toggleModal}
-              className="bg-buttonPrimaryDefault w-[44%] md:w-[13%]  hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
+              className="bg-buttonPrimaryDefault w-[48%] md:w-[13%]  hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
             >
-              <FaPlus className="mt-1 mr-2" /> Şirkət yarat
+              <FaPlus className="mt-1 mr-2" /> {t("create_company")}
             </button>
           </>
         )}
@@ -631,11 +630,11 @@ function MyProfiles() {
                       .map((role) => {
                         switch (role.trim()) {
                           case "Teacher":
-                            return "Müəllim";
+                            return t("teacher");
                           case "Student":
-                            return "İstifadəçi";
+                            return t("user");
                           case "Owner":
-                            return "Sahibkar";
+                            return t("entrepreneur");
                           default:
                             return role;
                         }
@@ -649,7 +648,7 @@ function MyProfiles() {
                   onClick={toggleForm}
                   className="text-textSecondaryDefault font-gilroy text-xs md:text-base leading-6 font-normal cursor-pointer flex items-center px-4 py-2"
                 >
-                  <span className="hidden sm:block">Məlumatlar</span>
+                  <span className="hidden sm:block">{t("information")}</span>
                   <span className="ml-2">
                     {isFormOpen ? (
                       <IoChevronUpSharp className="size-3" />
@@ -704,7 +703,7 @@ function MyProfiles() {
                               className="px-4 py-3 text-errorButtonDefault hover:text-errorButtonHover rounded-lg font-gilroy text-base font-normal leading-6 relative z-10"
                               style={{ zIndex: 10 }}
                             >
-                              Şəkili sil
+                              {t("delete_picture")}
                             </button>
                           )}
                           <button
@@ -717,7 +716,7 @@ function MyProfiles() {
                             className="px-4 py-3 text-grayButtonText bg-buttonGhostPressed hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed rounded-lg font-gilroy text-base font-normal leading-6 relative z-10"
                             style={{ zIndex: 10 }}
                           >
-                            Şəkili dəyiş
+                            {t("change_picture")}
                           </button>
                         </div>
                       </div>
@@ -734,7 +733,7 @@ function MyProfiles() {
                           }`}
                           onClick={() => setActiveTab("general")}
                         >
-                          Məlumatlar
+                          {t("information")}
                         </button>
                         <button
                           className={`px-4 py-2 rounded-lg font-gilroy ${
@@ -744,7 +743,7 @@ function MyProfiles() {
                           }`}
                           onClick={() => setActiveTab("password")}
                         >
-                          Şifrəni dəyişdir
+                          {t("change_password")}
                         </button>
                       </div>
 
@@ -752,7 +751,7 @@ function MyProfiles() {
                       <form onSubmit={handleSave}>
                         <div className="mb-4">
                           <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-                            Ad
+                            {t("first_name")}
                           </label>
                           <input
                             type="text"
@@ -764,7 +763,7 @@ function MyProfiles() {
 
                         <div className="mb-4">
                           <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-                            Soyad
+                            {t("last_name")}
                           </label>
                           <input
                             type="text"
@@ -775,7 +774,9 @@ function MyProfiles() {
                         </div>
 
                         <div className="mb-4">
-                          <label className="block text-gray-700">Email</label>
+                          <label className="block text-gray-700">
+                            {t("email")}
+                          </label>
                           <input
                             type="email"
                             value={email}
@@ -784,7 +785,9 @@ function MyProfiles() {
                           />
                         </div>
                         <div className="mb-4">
-                          <label className="block text-gray-700">Nömrə</label>
+                          <label className="block text-gray-700">
+                            {t("phone_number")}
+                          </label>
                           <InputMask
                             mask="+994 99 999 99 99"
                             value={mobile}
@@ -823,10 +826,10 @@ function MyProfiles() {
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                                   ></path>
                                 </svg>
-                                Gözləyin...
+                                {t("please_wait")}
                               </div>
                             ) : (
-                              "Yadda saxla"
+                              t("save")
                             )}
                           </button>
                         </div>
@@ -869,7 +872,7 @@ function MyProfiles() {
                           }`}
                           onClick={() => setActiveTab("general")}
                         >
-                          Məlumatlar
+                          {t("information")}
                         </button>
                         <button
                           className={`px-4 py-2 rounded-lg font-gilroy ${
@@ -879,7 +882,7 @@ function MyProfiles() {
                           }`}
                           onClick={() => setActiveTab("password")}
                         >
-                          Şifrəni dəyişdir
+                          {t("change_password")}
                         </button>
                       </div>
 
@@ -887,7 +890,7 @@ function MyProfiles() {
                         {/* Old Password Field */}
                         <div className="mb-4 relative">
                           <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-                            Mövcud Şifrəniz
+                            {t("current_password")}
                           </label>
                           <input
                             type={oldPasswordVisible ? "text" : "password"}
@@ -923,7 +926,7 @@ function MyProfiles() {
                         {/* New Password Field */}
                         <div className="mb-4 relative">
                           <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-                            Yeni Şifrə
+                            {t("new_password")}
                           </label>
                           <input
                             type={newPasswordVisible ? "text" : "password"}
@@ -959,7 +962,7 @@ function MyProfiles() {
                         {/* Confirm Password Field */}
                         <div className="mb-4 relative">
                           <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-                            Şifrəni təsdiqləyin
+                            {t("confirm_password")}
                           </label>
                           <input
                             type={confirmPasswordVisible ? "text" : "password"}
@@ -1130,7 +1133,7 @@ function MyProfiles() {
                                 <div className="grid grid-cols-2 gap-4 mb-4">
                                   <div>
                                     <label className="block text-textSecondaryDefault font-gilroy text-base leading-6">
-                                      Şirkətin adı
+                                      {t("form.companyName")}
                                     </label>
                                     <input
                                       readOnly
@@ -1143,7 +1146,7 @@ function MyProfiles() {
 
                                   <div>
                                     <label className="block text-gray-700">
-                                      VOEN
+                                      {t("form.voen")}
                                     </label>
                                     <input
                                       readOnly
@@ -1155,7 +1158,7 @@ function MyProfiles() {
 
                                   <div>
                                     <label className="block text-gray-700">
-                                      Email
+                                      {t("form.email")}
                                     </label>
                                     <input
                                       readOnly
@@ -1167,7 +1170,7 @@ function MyProfiles() {
 
                                   <div>
                                     <label className="block text-gray-700">
-                                      Nömrə
+                                      {t("form.phone")}
                                     </label>
                                     <InputMask
                                       readOnly
@@ -1180,7 +1183,7 @@ function MyProfiles() {
 
                                   <div>
                                     <label className="block text-gray-700">
-                                      Adres
+                                      {t("form.address")}
                                     </label>
                                     <input
                                       readOnly
@@ -1192,7 +1195,7 @@ function MyProfiles() {
 
                                   <div>
                                     <label className="block text-gray-700">
-                                      Ətraflı
+                                      {t("form.details")}
                                     </label>
                                     <input
                                       readOnly
@@ -1212,7 +1215,7 @@ function MyProfiles() {
               </ul>
             ) : (
               <p className="text-neutral700 font-gilroy text-lg flex items-center justify-center">
-                Heç bir şirkət tapılmadı.
+                {t("form.noCompanyFound")}
               </p>
             )}
           </div>
@@ -1236,7 +1239,10 @@ function MyProfiles() {
               </div>
             ) : (
               <div className="w-full h-[220px] bg-gray-200 flex items-center justify-center rounded-lg">
-                <span className="text-gray-500">Heç bir şəkil yüklənməyib</span>
+                <span className="text-gray-500">
+                  {" "}
+                  {t("form.noImageUploaded")}
+                </span>
               </div>
             )}
             <div className="relative mt-4 w-full flex justify-end">
@@ -1247,7 +1253,7 @@ function MyProfiles() {
                 }
                 className="px-4 py-3 text-grayButtonText bg-buttonGhostPressed hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed rounded-lg font-gilroy text-base font-normal leading-6 flex-shrink-0"
               >
-                Şəkili dəyiş
+                {t("form.changeImage")}
               </button>
             </div>
 
@@ -1261,7 +1267,7 @@ function MyProfiles() {
             {/* Conditional red helper text when the image is not uploaded */}
             {!companyImage && inputError && (
               <p className="text-inputRingError text-sm mt-2">
-                Zəhmət olmasa şəkil yükləyin.
+                {t("form.uploadImage")}
               </p>
             )}
           </div>
@@ -1272,7 +1278,7 @@ function MyProfiles() {
           >
             <div className="mb-4">
               <label className="block text-textSecondaryDefault text-base leading-6 font-gilroy">
-                Şirkətin adı
+                {t("form.companyName")}
               </label>
               <input
                 type="text"
@@ -1287,14 +1293,14 @@ function MyProfiles() {
               />
               {inputError && !companyName && (
                 <p className="text-inputRingError text-sm mt-1">
-                  Ad daxil edilməlidir.
+                  {t("form.nameRequired")}
                 </p>
               )}
             </div>
 
             <div className="mb-4">
               <label className="block text-textSecondaryDefault text-base leading-6 font-gilroy">
-                VOEN
+                {t("form.voen")}
               </label>
               <input
                 type="text"
@@ -1309,14 +1315,14 @@ function MyProfiles() {
               />
               {inputError && !companyVOEN && (
                 <p className="text-inputRingError text-sm mt-1">
-                  VOEN daxil edilməlidir.
+                  {t("form.voenRequired")}
                 </p>
               )}
             </div>
 
             <div className="mb-4">
               <label className="block text-textSecondaryDefault text-base leading-6 font-gilroy">
-                Email
+                {t("form.email")}
               </label>
               <input
                 type="email"
@@ -1331,14 +1337,14 @@ function MyProfiles() {
               />
               {inputError && !companyEmail && (
                 <p className="text-inputRingError text-sm mt-1">
-                  Email daxil edilməlidir.
+                  {t("form.emailRequired")}
                 </p>
               )}
             </div>
 
             <div className="mb-4">
               <label className="block text-textSecondaryDefault text-base leading-6 font-gilroy">
-                Nömrə
+                {t("form.phone")}
               </label>
               <InputMask
                 mask="+994 99 999 99 99"
@@ -1353,14 +1359,14 @@ function MyProfiles() {
               />
               {inputError && !companyPhoneNumber && (
                 <p className="text-inputRingError text-sm mt-1">
-                  Nömrə daxil edilməlidir.
+                  {t("form.phoneRequired")}
                 </p>
               )}
             </div>
 
             <div className="mb-4">
               <label className="block text-textSecondaryDefault text-base leading-6 font-gilroy">
-                Addres
+                {t("form.address")}
               </label>
               <input
                 type="text"
@@ -1375,14 +1381,14 @@ function MyProfiles() {
               />
               {inputError && !companyAddress && (
                 <p className="text-inputRingError text-sm mt-1">
-                  Addres daxil edilməlidir.
+                  {t("form.addressRequired")}
                 </p>
               )}
             </div>
 
             <div className="mb-4">
               <label className="block text-textSecondaryDefault text-base leading-6 font-gilroy">
-                Ətraflı
+                {t("form.details")}
               </label>
               <input
                 type="text"
@@ -1397,7 +1403,7 @@ function MyProfiles() {
               />
               {inputError && !companyDetail && (
                 <p className="text-inputRingError text-sm mt-1">
-                  Ətraflı məlumat daxil edilməlidir.
+                  {t("form.detailsRequired")}
                 </p>
               )}
             </div>
@@ -1408,7 +1414,7 @@ function MyProfiles() {
                 onClick={handleCancelCreation}
                 className="bg-buttonGhostPressed hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed text-gray-700 px-4 py-2 rounded-lg font-gilroy"
               >
-                Ləğv et
+                {t("form.cancel")}
               </button>
               <button
                 type="submit"
@@ -1439,10 +1445,10 @@ function MyProfiles() {
                         d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                       ></path>
                     </svg>
-                    Gözləyin...
+                    {t("form.wait")}
                   </div>
                 ) : (
-                  "Şirkət yarat"
+                  t("form.createCompany")
                 )}
               </button>
             </div>

@@ -6,6 +6,7 @@ import { FaLinkedin, FaFacebook } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 import {
   HiOutlineLockClosed,
   HiOutlineEye,
@@ -21,7 +22,8 @@ export default function LoginModal({
 }) {
   const [email, setEmail] = useState("");
   const { login } = useContext(UserContext);
-  
+
+  const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [inputError, setInputError] = useState(false);
@@ -58,7 +60,7 @@ export default function LoginModal({
     e.preventDefault();
     if (!email || !password) {
       setInputError(true);
-      toast.error("Zəhmət olmasa bütün sahələri doldurun.");
+      toast.error(t("toastMessages.fillAllFields"));
       return;
     }
     setInputError(false);
@@ -77,27 +79,27 @@ export default function LoginModal({
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
+        throw new Error(
+          errorData.message || `HTTP error! status: ${response.status}`
+        );
       }
 
       const data = await response.json();
       if (data?.data?.token) {
         await login(data.data.token); // Use context's login function
         if (data.message === "successful login") {
-          toast.success("Uğurla daxil oldunuz!");
+          toast.success(t("toastMessages.loginSuccess"));
           onClose();
           router.push("/home");
         }
       } else {
-        toast.error(
-          "Daxil olma uğursuz oldu. Zəhmət olmasa yenidən cəhd edin."
-        );
+        toast.error(t("toastMessages.loginFailed"));
         setEmail(""); // Clear the email field
         setPassword(""); // Clear the password field
       }
     } catch (error) {
       console.error("Error logging in:", error);
-      toast.warning("Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.");
+      toast.warning(t("toastMessages.generalError"));
       setEmail(""); // Clear the email field
       setPassword(""); // Clear the password field
     } finally {
@@ -130,7 +132,7 @@ export default function LoginModal({
               &times;
             </button>
             <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-brandBlue500">
-              Innosertə xoş gəlmisən!
+              {t("register.welcome")}
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-3">
@@ -155,7 +157,7 @@ export default function LoginModal({
                   {/* Conditional rendering of the helper text */}
                   {inputError && !email && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Email daxil edilməlidir.
+                      {t("register.emailRequired")}
                     </p>
                   )}
                 </div>
@@ -176,7 +178,7 @@ export default function LoginModal({
                         ? "border-inputRingFocus"
                         : "border-inputBorder"
                     } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
-                    placeholder="Şifrə"
+                    placeholder={t("register.passwordPlaceholder")}
                   />
                   <button
                     type="button"
@@ -188,7 +190,7 @@ export default function LoginModal({
                   {/* Conditional rendering of the helper text */}
                   {inputError && !password && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Şifrə daxil edilməlidir.
+                      {t("register.passwordRequired")}
                     </p>
                   )}
                 </div>
@@ -200,7 +202,7 @@ export default function LoginModal({
                     onClick={handleForgotPassword}
                     className="cursor-pointer font-normal text-brandBlue700 hover:text-brandBlue200 text-base font-gilroy"
                   >
-                    Şifrəni unutmusan?
+                    {t("uiElements.forgotPassword")}
                   </a>
                 </div>
                 <div className="flex items-center mb-4">
@@ -214,7 +216,7 @@ export default function LoginModal({
                     htmlFor="remember_me"
                     className="ml-2 block text-sm text-neutralBlack font-gilroy"
                   >
-                    Hesabımı yadda saxla
+                    {t("uiElements.rememberMe")}
                   </label>
                 </div>
               </div>
@@ -251,7 +253,7 @@ export default function LoginModal({
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                           ></path>
                         </svg>
-                        Gözləyin...
+                        {t("register.loading")}
                       </div>
                     ) : (
                       "Daxil ol"
@@ -264,14 +266,14 @@ export default function LoginModal({
                     onClick={handleOpenRegister}
                     className="w-full font-gilroy flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-grayButtonText bg-grayLineFooter hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
                   >
-                    Hesab yarat
+                    {t("uiElements.createAccount")}
                   </button>
                 </div>
               </div>
               <div className="flex items-center justify-center mt-6">
                 <div className="flex-1 border-t border-gray-300"></div>
                 <span className="mx-8 text-lg text-gray-500 font-gilroy  whitespace-nowrap">
-                  Və ya
+                  {t("uiElements.or")}
                 </span>
                 <div className="flex-1 border-t border-gray-300"></div>
               </div>

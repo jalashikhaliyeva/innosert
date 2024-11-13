@@ -8,8 +8,10 @@ import { FaBookmark, FaRegBookmark } from "react-icons/fa6";
 import { useRouter } from "next/router";
 import { UserContext } from "@/shared/context/UserContext";
 import { useSavedExams } from "@/shared/context/SavedExamsContext";
+import { useTranslation } from "react-i18next";
 
 function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user, setClickedExam } = useContext(UserContext); // Get user from UserContext
   const { savedExams, addExamToSaved, removeExamFromSaved } = useSavedExams();
@@ -177,13 +179,13 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                           onClick={() => handleLoginOrRulesClick(exam)}
                           className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                         >
-                          Daxil ol
+                          {t("login")}
                         </button>
                         <button
                           onClick={() => handleDetailClick(exam.slug)}
                           className="py-3 px-4 h-11 w-full font-gilroy leading-6 rounded-md bg-buttonSecondaryDefault text-grayButtonText hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
                         >
-                          Ətraflı
+                          {t("learn_more")}
                         </button>
                       </div>
                     </div>
@@ -286,13 +288,13 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                         onClick={() => handleLoginOrRulesClick(exam)}
                         className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                       >
-                        Daxil ol
+                        {t("login")}
                       </button>
                       <button
                         onClick={() => handleDetailClick(exam.slug)}
                         className="py-3 px-4 h-11 w-full font-gilroy leading-6 rounded-md bg-buttonSecondaryDefault text-grayButtonText hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
                       >
-                        Ətraflı
+                        {t("learn_more")}
                       </button>
                     </div>
                   </div>
@@ -396,13 +398,13 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                     onClick={() => handleLoginOrRulesClick(exam)}
                     className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                   >
-                    Daxil ol
+                    {t("login")}
                   </button>
                   <button
                     onClick={() => handleDetailClick(exam.slug)}
                     className="py-3 px-4 h-11 w-full font-gilroy leading-6 rounded-md bg-buttonSecondaryDefault text-grayButtonText hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
                   >
-                    Ətraflı
+                    {t("learn_more")}
                   </button>
                 </div>
               </div>

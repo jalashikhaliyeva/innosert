@@ -11,9 +11,10 @@ import Image from "next/image";
 import CompanyContext from "@/shared/context/CompanyContext";
 import Link from "next/link";
 import { UserContext } from "@/shared/context/UserContext";
-
+import { useTranslation } from "next-i18next";
 function Sidebar() {
   const { user } = useContext(UserContext);
+  const { t } = useTranslation();
 
   console.log(user?.data, "user data sidebaeee");
 
@@ -103,7 +104,7 @@ function Sidebar() {
                   <RiBuildingLine className="size-6 fill-grayText" />
 
                   <p className="text-lg font-gilroy font-normal leading-6 text-grayText">
-                    Şirkət seç
+                    {t("select_company")}
                   </p>
                   {companyDropdownOpen ? (
                     <FiChevronUp className="ml-2 text-grayText" />
@@ -166,7 +167,7 @@ function Sidebar() {
                   isActive("/neticelerim") ? "text-brandBlue500" : ""
                 }`}
               >
-                Nəticələrim
+                {t("my_results")}
               </span>
             </Link>
           </li>
@@ -187,7 +188,7 @@ function Sidebar() {
                   isActive("/imtahanlarim") ? "text-brandBlue500" : ""
                 }`}
               >
-                İmtahanlarım
+                {t("my_exams")}
               </span>
             </Link>
           </li>
@@ -208,7 +209,7 @@ function Sidebar() {
                   isActive("/sertifikatlarim") ? "text-brandBlue500" : ""
                 }`}
               >
-                Sertifikatlarım
+                {t("my_certificates")}
               </span>
             </Link>
           </li>
@@ -229,7 +230,7 @@ function Sidebar() {
                   isActive("/balansim") ? "text-brandBlue500" : ""
                 }`}
               >
-                Balansım
+                {t("my_balance")}
               </span>
             </Link>
           </li>
@@ -256,7 +257,7 @@ function Sidebar() {
                     : "text-grayText"
                 }`}
               >
-                Hesablarım
+                {t("my_accounts")}
               </span>
             </Link>
           </li>

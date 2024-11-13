@@ -69,6 +69,13 @@ const QuestionFiles = ({
     sortedFiles.sort((a, b) => b.name.localeCompare(a.name));
   }
 
+  const handleSelect = (folder) => {
+    if (selectedFiles.includes(folder)) {
+      setSelectedFiles(selectedFiles.filter((f) => f.id !== folder.id));
+    } else {
+      setSelectedFiles([...selectedFiles, folder]);
+    }
+  };
   return (
     <div className="py-6">
       {viewMode === "grid" ? (
@@ -82,10 +89,8 @@ const QuestionFiles = ({
                 <input
                   type="checkbox"
                   className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-                  checked={selectedFiles.includes(file.id)} // Use file.id
-                  onChange={(e) =>
-                    handleCheckboxChange(file.id, e.target.checked)
-                  }
+                  checked={selectedFiles.includes(file)}
+                  onChange={() => handleSelect(file)}
                 />
 
                 <IoMdMore
@@ -204,11 +209,9 @@ const QuestionFiles = ({
                 <input
                   type="checkbox"
                   className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-                  checked={selectedFiles.includes(file.id)} // Use file.id
+                  checked={selectedFiles.includes(file)}
                   onClick={(e) => e.stopPropagation()}
-                  onChange={(e) =>
-                    handleCheckboxChange(file.id, e.target.checked)
-                  }
+                  onChange={() => handleSelect(file)}
                 />
                 {/* Folder Icon */}
                 <div className="text-yellow-500 mr-4">

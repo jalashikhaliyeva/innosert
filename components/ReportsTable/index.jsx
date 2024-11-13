@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
+import { useTranslation } from "react-i18next";
 
-const ReportsTable = ({ reportData, filteredDateRange}) => {
+const ReportsTable = ({ reportData, filteredDateRange }) => {
   const data = reportData?.history || []; // Use the history data from reportData
-
+  const { t } = useTranslation();
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 10;
   const pageCount = Math.ceil(data.length / itemsPerPage);
@@ -11,14 +12,16 @@ const ReportsTable = ({ reportData, filteredDateRange}) => {
   const handlePageClick = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
-  
+
   const filteredData = data.filter((item) => {
     const itemDate = new Date(item.tarix);
     const fromDate = new Date(filteredDateRange?.from);
     const toDate = new Date(filteredDateRange?.to);
 
-    return (!filteredDateRange?.from || itemDate >= fromDate) &&
-           (!filteredDateRange?.to || itemDate <= toDate);
+    return (
+      (!filteredDateRange?.from || itemDate >= fromDate) &&
+      (!filteredDateRange?.to || itemDate <= toDate)
+    );
   });
 
   const paginatedData = data.slice(
@@ -29,11 +32,11 @@ const ReportsTable = ({ reportData, filteredDateRange}) => {
   return (
     <div className="mt-6">
       <h1 className="text-2xl font-gilroy font-medium leading-8 mb-6">
-        Tarixçə
+        {t("table.history")}
       </h1>
       {filteredData.length === 0 ? (
         <p className="text-gray-400 font-gilroy text-lg flex items-center justify-center">
-          Hal hazırda məlumat yoxdur
+          {t("table.noData")}
         </p>
       ) : (
         <div className="w-full overflow-x-auto min-h-[400px] justify-between flex flex-col">
@@ -44,22 +47,22 @@ const ReportsTable = ({ reportData, filteredDateRange}) => {
                   ID
                 </th>
                 <th className="px-4 py-4 text-left font-medium text-textSecondaryDefault font-gilroy">
-                  Ad Soyad
+                  {t("table.fullName")}
                 </th>
                 <th className="px-4 py-4 text-left font-medium text-textSecondaryDefault font-gilroy">
-                  Məlumat
+                  {t("table.information")}
                 </th>
                 <th className="px-4 py-4 text-left font-medium text-textSecondaryDefault font-gilroy">
-                  Tarix
+                  {t("table.date")}
                 </th>
                 <th className="px-4 py-4 text-left font-medium text-textSecondaryDefault font-gilroy">
-                  Status
+                  {t("table.type")}
                 </th>
                 <th className="px-4 py-4 text-left font-medium text-textSecondaryDefault font-gilroy">
-                  Status
+                  {t("table.status")}
                 </th>
                 <th className="px-4 py-4 text-left font-medium text-textSecondaryDefault font-gilroy">
-                  Məbləğ
+                  {t("table.amount")}
                 </th>
               </tr>
             </thead>

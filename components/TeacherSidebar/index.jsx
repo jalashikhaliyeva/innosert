@@ -18,8 +18,10 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import { FiUsers } from "react-icons/fi";
 import { CgFileDocument } from "react-icons/cg";
 import { FiAlertOctagon } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 function TeacherSidebar() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [activeCompanies, setActiveCompanies] = useState([]); // Only active companies
   const [companyLogo, setCompanyLogo] = useState("");
@@ -145,7 +147,7 @@ function TeacherSidebar() {
                   isActive(`/sual-bazasi`) ? "text-brandBlue500" : ""
                 }`}
               >
-                Suallar toplusu
+                {t("navigation.questionBank")}
               </span>
             </Link>
           </li>
@@ -176,7 +178,7 @@ function TeacherSidebar() {
                   isActive(`/umumi-imtahanlar`) ? "text-brandBlue500" : ""
                 }`}
               >
-                İmtahanlar
+                {t("navigation.exams")}
               </span>
             </Link>
           </li>
@@ -194,7 +196,7 @@ function TeacherSidebar() {
                   isActive(`/xeta-bildirisleri`) ? "text-brandBlue500" : ""
                 }`}
               >
-                Bildirlən xətalar
+                {t("navigation.reportedErrors")}
               </span>
             </Link>
           </li>

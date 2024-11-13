@@ -1,7 +1,8 @@
 import React from "react";
 import { LuSearch } from "react-icons/lu";
-
+import { useTranslation } from 'react-i18next';
 function ReportSingleNavigationTitle({ reportData, setSearchTerm }) {
+  const { t } = useTranslation();
   const question =
     reportData && reportData.length > 0 ? reportData[0].question : "";
 
@@ -11,10 +12,10 @@ function ReportSingleNavigationTitle({ reportData, setSearchTerm }) {
 
   return (
     <div className="flex flex-col lg:flex-row justify-between items-center relative font-gilroy mb-5">
-      <h1
+     <h1
         className="text-2xl font-medium leading-8 mb-4 md:mb-0"
         dangerouslySetInnerHTML={{
-          __html: ` ${question} sualında xətalar`,
+          __html: `${question} ${t('messages.errorsInQuestion')}`,
         }}
       ></h1>
 
@@ -22,7 +23,7 @@ function ReportSingleNavigationTitle({ reportData, setSearchTerm }) {
         <LuSearch className="text-inputPlaceholderText size-6 flex-shrink-0" />
         <input
           type="text"
-          placeholder="Axtar"
+          placeholder={t('placeholders.search')}
           onChange={handleSearchChange} // Update search term
           className="ml-2 w-full text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
         />

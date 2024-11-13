@@ -14,6 +14,8 @@ import LoginModal from "@/components/Login";
 import { UserContext } from "@/shared/context/UserContext";
 import axios from "axios";
 import Spinner from "@/components/Spinner";
+import { useRouter } from "next/router";
+import { useTranslation } from "react-i18next";
 
 function Home() {
   const {
@@ -26,7 +28,15 @@ function Home() {
     searchExam, // Access search results from context
     setSearchExam,
   } = useContext(UserContext);
-
+  const router = useRouter();
+  const lang = router.locale || "az"; // Default to "az" if locale is not set
+  const { t } = useTranslation();
+  const [allExams, setAllExams] = useState({});
+  const [mostViewedExams, setMostViewedExams] = useState({});
+  const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   console.log(searchExam, "searchExam");
   const combinedList = [
     ...(selectedCategory || []).map((cat) => ({
@@ -42,13 +52,6 @@ function Home() {
       slug: sub.slug || "", // Ensure slug is set here
     })),
   ];
-
-  const [allExams, setAllExams] = useState({});
-  const [mostViewedExams, setMostViewedExams] = useState({});
-  const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
-  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const closeModals = () => {
     setExamRulesModalOpen(false);
@@ -76,6 +79,7 @@ function Home() {
           {
             headers: {
               Authorization: `Bearer ${token}`,
+              "Accept-Language": lang,
             },
           }
         );
@@ -95,7 +99,7 @@ function Home() {
     };
 
     fetchExams();
-  }, []);
+  }, [lang]);
 
   const groupExamsByCategory = (exams) => {
     const grouped = {};
@@ -179,9 +183,7 @@ function Home() {
             <FilterCategories />
             {filteredExams !== null && filteredExams.length === 0 ? (
               <div className="flex justify-center items-center h-64">
-                <p className="text-gray-500 text-xl">
-                  Heç bir imtahan tapılmadı.
-                </p>
+                <p className="text-gray-500 text-xl">{t("no_exams_found")}</p>
               </div>
             ) : Object.keys(displayedExamsByCategory).length > 0 ? (
               Object.keys(displayedExamsByCategory).map((category) => {
@@ -207,9 +209,7 @@ function Home() {
               })
             ) : (
               <div className="flex justify-center items-center h-64">
-                <p className="text-gray-500 text-xl">
-                  Heç bir imtahan tapılmadı.
-                </p>
+                <p className="text-gray-500 text-xl">{t("no_exams_found")}</p>
               </div>
             )}
           </>

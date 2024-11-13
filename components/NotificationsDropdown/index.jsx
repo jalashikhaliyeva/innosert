@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import { TbBell } from "react-icons/tb";
 import { useRouter } from "next/router";
 import axios from "axios";
+import { useTranslation } from "next-i18next";
 
 const NotificationsDropdown = () => {
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
@@ -10,7 +11,7 @@ const NotificationsDropdown = () => {
   const [isVisible, setIsVisible] = useState(false);
   const hideTimeout = useRef(null);
   const router = useRouter();
-
+  const { t } = useTranslation();
   const handleNotificationMouseEnter = () => {
     clearTimeout(hideTimeout.current);
     setIsNotificationOpen(true);
@@ -64,12 +65,12 @@ const NotificationsDropdown = () => {
       differenceInTime / (1000 * 60 * 60 * 24)
     );
 
-    if (differenceInDays === 0) return "Bu gün";
-    if (differenceInDays === 1) return "Dünən";
-    return `${differenceInDays} gün əvvəl`;
+    if (differenceInDays === 0) return t("today");
+    if (differenceInDays === 1) return t("yesterday");
+    return `${differenceInDays} ${t("days_ago_suffix")}`;
   };
 
-  const handleNotificationClick = async (id, link) => {
+  const handleNotificationClick = async (id, link, type) => {
     const token = localStorage.getItem("token");
     try {
       await axios.post(
@@ -82,7 +83,7 @@ const NotificationsDropdown = () => {
         }
       );
 
-      // Update the notification as read locally (if needed)
+      // Update the notification as read locally
       setNotifications((prevNotifications) =>
         prevNotifications.map((notification) =>
           notification.id === id
@@ -91,8 +92,14 @@ const NotificationsDropdown = () => {
         )
       );
 
-      // Redirect to the link if provided
-      if (link) {
+      // Redirect based on the notification type
+      if (type === "Nəticələrim") {
+        router.push("/neticelerim");
+      } else if (type === "Category") {
+        router.push("/home");
+      } else if (type === "Blog") {
+        router.push("/bloq");
+      } else if (link) {
         router.push(link);
       }
     } catch (error) {
@@ -115,7 +122,7 @@ const NotificationsDropdown = () => {
           }`}
         >
           <h2 className="font-medium text-lg mb-2 pb-2 text-center border-b">
-            Bildirişlər
+            {t("notifications")}
           </h2>
           <ul className="divide-y divide-gray-200">
             {notifications.map((notification) => (
@@ -123,7 +130,11 @@ const NotificationsDropdown = () => {
                 key={notification.id}
                 className="py-2  flex justify-between items-center pb-2 cursor-pointer"
                 onClick={() =>
-                  handleNotificationClick(notification.id, notification.link)
+                  handleNotificationClick(
+                    notification.id,
+                    notification.link,
+                    notification.type
+                  )
                 }
               >
                 <div className="flex">
@@ -146,7 +157,7 @@ const NotificationsDropdown = () => {
                             : "text-blue-600"
                         } underline mx-1`}
                       >
-                        Nəticələrim
+                        {notification.type}
                       </span>
                     )}
                   </p>

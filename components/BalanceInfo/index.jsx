@@ -1,8 +1,9 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const Balance = () => {
   const [balance, setBalance] = useState(100); // Example starting balance
-
+  const { t } = useTranslation();
   const increaseBalance = () => {
     setBalance(balance + 10); // Logic to increase balance
   };
@@ -17,7 +18,7 @@ const Balance = () => {
           className="flex justify-center items-center w-[201px] py-[13px] bg-buttonPrimaryDefault text-white rounded-lg hover:bg-[#253543]"
           onClick={increaseBalance}
         >
-          + Balansı artır
+          {t("actions.increaseBalance")}
         </button>
       </div>
     </div>

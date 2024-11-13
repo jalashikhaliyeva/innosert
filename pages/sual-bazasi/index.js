@@ -1,3 +1,4 @@
+// SualBazasi.jsx
 import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import Breadcrumb from "@/components/Breadcrumb";
@@ -13,12 +14,14 @@ import DeleteFolderModal from "@/components/DeleteFolderModal";
 import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 import TeacherSidebar from "@/components/TeacherSidebar";
-import QuestionsTableCompany from "@/components/QuestionsTableCompany"; // Import this component
+import QuestionsTableCompany from "@/components/QuestionsTableCompany";
 import { UserContext } from "@/shared/context/UserContext";
-import { TbFolder, TbTable } from "react-icons/tb"; // Import icons
+import { TbFolder, TbTable } from "react-icons/tb";
 import Spinner from "@/components/Spinner";
-
+import { useTranslation } from "react-i18next";
+import BulkDeleteFolderModal from "@/components/BulkDeleteFolderModal";
 function SualBazasi() {
+  const { t } = useTranslation();
   const { user } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("folders");
@@ -28,6 +31,7 @@ function SualBazasi() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditFolderModalOpen, setIsEditFolderModalOpen] = useState(false);
   const [isDeleteFolderModalOpen, setIsDeleteFolderModalOpen] = useState(false);
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false); // New state for bulk delete
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [files, setFiles] = useState([]);
 
@@ -60,7 +64,7 @@ function SualBazasi() {
   // Handlers for adding, editing, and deleting folders
   const addNewFolder = (newFolder) => {
     setFiles((prevFiles) => [...prevFiles, newFolder]);
-    fetchFiles();
+    // No need to fetch again if you already added the folder
   };
 
   const updateFolder = (updatedFolder) => {
@@ -73,6 +77,22 @@ function SualBazasi() {
 
   const deleteFolder = (folderId) => {
     setFiles((prevFiles) => prevFiles.filter((file) => file.id !== folderId));
+  };
+
+  const bulkDeleteFolders = (folderIds) => {
+    setFiles((prevFiles) =>
+      prevFiles.filter((file) => !folderIds.includes(file.id))
+    );
+  };
+
+  // Functions to open modals
+  const openDeleteFolderModal = (folder) => {
+    setSelectedFolder(folder);
+    setIsDeleteFolderModalOpen(true);
+  };
+
+  const openBulkDeleteModal = () => {
+    setIsBulkDeleteModalOpen(true);
   };
 
   // Determine if the user is a Teacher
@@ -109,8 +129,9 @@ function SualBazasi() {
                   sortOption={sortOption}
                   setSortOption={setSortOption}
                   selectedFiles={selectedFiles}
-                  onDelete={deleteFolder}
+                  openDeleteFolderModal={openDeleteFolderModal}
                   openModal={() => setIsModalOpen(true)}
+                  openBulkDeleteModal={openBulkDeleteModal} // Pass the bulk delete function
                 />
 
                 {/* Conditional Rendering Based on User Role */}
@@ -126,10 +147,7 @@ function SualBazasi() {
                       setSelectedFolder(folder);
                       setIsEditFolderModalOpen(true);
                     }}
-                    openDeleteFolderModal={(folder) => {
-                      setSelectedFolder(folder);
-                      setIsDeleteFolderModalOpen(true);
-                    }}
+                    openDeleteFolderModal={openDeleteFolderModal}
                   />
                 ) : (
                   // Render Tabs and Conditional Components for Other Roles
@@ -145,7 +163,7 @@ function SualBazasi() {
                         onClick={() => setActiveTab("folders")}
                       >
                         <TbFolder className="size-6" />
-                        Mənim Qovluqlarım
+                        {t("navigation.myFolders")}
                       </button>
                       <button
                         className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
@@ -156,7 +174,7 @@ function SualBazasi() {
                         onClick={() => setActiveTab("questions")}
                       >
                         <TbTable className="size-6" />
-                        Sual Bazası
+                        {t("navigation.questionBank")}
                       </button>
                     </div>
 
@@ -172,10 +190,7 @@ function SualBazasi() {
                           setSelectedFolder(folder);
                           setIsEditFolderModalOpen(true);
                         }}
-                        openDeleteFolderModal={(folder) => {
-                          setSelectedFolder(folder);
-                          setIsDeleteFolderModalOpen(true);
-                        }}
+                        openDeleteFolderModal={openDeleteFolderModal}
                       />
                     )}
 
@@ -195,11 +210,19 @@ function SualBazasi() {
             />
           )}
 
-          {isDeleteFolderModalOpen && (
+          {isDeleteFolderModalOpen && selectedFolder && (
             <DeleteFolderModal
               folder={selectedFolder}
               closeModal={() => setIsDeleteFolderModalOpen(false)}
               onDelete={deleteFolder}
+            />
+          )}
+
+          {isBulkDeleteModalOpen && selectedFiles.length > 0 && (
+            <BulkDeleteFolderModal
+              folders={selectedFiles}
+              closeModal={() => setIsBulkDeleteModalOpen(false)}
+              onDelete={bulkDeleteFolders}
             />
           )}
 

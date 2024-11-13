@@ -5,8 +5,9 @@ import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import LoginModal from "../Login";
 import { UserContext } from "@/shared/context/UserContext";
-
+import { useTranslation } from 'react-i18next';
 function MemberActivity({ data, searchTerm }) {
+  const { t } = useTranslation();
   const { setMemberActivitySingle } = useContext(UserContext);
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
@@ -140,7 +141,7 @@ function MemberActivity({ data, searchTerm }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                  Üzv adı
+                {t('members.memberName')}
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "fullName" && (
@@ -184,7 +185,7 @@ function MemberActivity({ data, searchTerm }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                  Paylaşılan sual sayı
+                {t('members.sharedQuestionCount')}
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "publishedQuestions" && (
@@ -220,7 +221,7 @@ function MemberActivity({ data, searchTerm }) {
                 }
               >
                 <div className="flex items-center gap-4">
-                  Paylaşılan imtahan sayı
+                {t('members.sharedExamCount')}
                   <IoFunnelOutline />
                 </div>
                 {openFilter === "publishedExams" && (
@@ -264,7 +265,7 @@ function MemberActivity({ data, searchTerm }) {
                   <td className="px-4 py-3">{item.exam_count}</td>
                   <td className="px-4 py-3 text-linkBlue !text-base">
                     <button onClick={() => handleDetailNavigation(item.id)}>
-                      Bax &gt;
+                    {t('buttons.view')} &gt;
                     </button>
                   </td>
                 </tr>
@@ -272,7 +273,7 @@ function MemberActivity({ data, searchTerm }) {
             ) : (
               <tr>
                 <td colSpan="4" className="px-4 py-3 text-center text-gray-500">
-                  No results found.
+                {t('members.noResults')}
                 </td>
               </tr>
             )}
@@ -281,7 +282,7 @@ function MemberActivity({ data, searchTerm }) {
         <div className="flex justify-between items-center mt-5 pb-5">
           <div className="flex items-center space-x-2">
             <label htmlFor="itemsPerPage" className="mr-2">
-              Items per page:
+            {t('members.itemsPerPage')}
             </label>
             <select
               id="itemsPerPage"

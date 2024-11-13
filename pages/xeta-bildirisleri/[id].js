@@ -8,8 +8,12 @@ import ReportSingleNavigationTitle from "@/components/ReportSingleNavigationTitl
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 import CompanyContext from "@/shared/context/CompanyContext";
 import { useRouter } from "next/router";
+import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
+import { UserContext } from "@/shared/context/UserContext";
+import TeacherSidebar from "@/components/TeacherSidebar";
 
 function ReportsSingle() {
+  const { user } = useContext(UserContext);
   const router = useRouter();
   const { id } = router.query;
   const { selectedCompany } = useContext(CompanyContext);
@@ -49,7 +53,6 @@ function ReportsSingle() {
     fetchReportData();
   }, [id, selectedCompany]);
 
-
   const filteredData = reportData
     ? reportData.filter(
         (item) =>
@@ -68,11 +71,13 @@ function ReportsSingle() {
         <HeaderInternal />
       </div>
       <div className="block lg:hidden">
-        <OwnerDashboardHeader />
+      {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
       <div className="flex">
         <div className="hidden lg:block md:w-[20%]">
-          <CompanySidebar />
+        {user?.data.roles === "Teacher" && <TeacherSidebar />}
+        {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
 
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">

@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 import DeleteMemberModal from "@/components/DeleteMemberModal";
 import { UserContext } from "@/shared/context/UserContext";
 import CompanyContext from "@/shared/context/CompanyContext";
-
+import { useTranslation } from "react-i18next";
 function MembersTable({
   selectedRows,
   setSelectedRows,
@@ -20,7 +20,7 @@ function MembersTable({
   const router = useRouter();
   const { user } = useContext(UserContext); // Get user from UserContext
   // const { user } = useContext(CompanyContext);
-
+  const { t } = useTranslation();
   const { selectedCompany } = useContext(CompanyContext);
   console.log(selectedCompany, "selectedCompany in Uzvler of company");
 
@@ -271,17 +271,13 @@ function MembersTable({
       {Array.isArray(data) && data.length === 0 ? (
         <div className="flex justify-center items-center relative min-h-[400px]">
           <p className="text-gray-500 font-gilroy text-center text-wrap text-lg">
-            Hazırda üzv yoxdur.<br></br> Əlavə etmək üçün, &apos;Üzv əlavə
-            et&apos; düyməsinə klik edərək yalnız qeydiyyatdan keçmiş üzvləri
-            əlavə edə bilərsiniz.
+            {t("members.noMembers")}
           </p>
         </div>
       ) : paginatedData.length === 0 ? (
         <div className="flex justify-center items-center min-h-[400px]">
           <p className="text-gray-500 font-gilroy text-center text-wrap text-lg">
-            Hazırda üzv yoxdur. <br></br> Əlavə etmək üçün, &apos;Üzv əlavə
-            et&apos; düyməsinə klik edərək yalnız qeydiyyatdan keçmiş üzvləri
-            əlavə edə bilərsiniz.
+            {t("members.noMembers")}
           </p>
         </div>
       ) : (
@@ -313,7 +309,7 @@ function MembersTable({
                     }
                   >
                     <div className="flex relative items-center gap-4">
-                      Ad Soyad
+                      {t("members.fullName")}
                       <IoFunnelOutline />
                     </div>
                     {openFilter === "fullname" && (
@@ -355,7 +351,7 @@ function MembersTable({
                     }
                   >
                     <div className="flex items-center gap-4">
-                      Elektron poçt ünvanı
+                      {t("members.email")}
                       <IoFunnelOutline />
                     </div>
                     {openFilter === "email" && (
@@ -388,7 +384,7 @@ function MembersTable({
                     }
                   >
                     <div className="flex items-center gap-4">
-                      Mobil nömrə
+                      {t("members.phoneNumber")}
                       <IoFunnelOutline />
                     </div>
                     {openFilter === "mobile" && (
@@ -421,7 +417,7 @@ function MembersTable({
                     }
                   >
                     <div className="flex items-center gap-4">
-                      Qatılma tarixi
+                      {t("members.joinDate")}
                       <IoFunnelOutline />
                     </div>
                     {openFilter === "date" && (
@@ -582,7 +578,7 @@ function MembersTable({
                       className="flex items-center gap-4"
                       onClick={resetFilters}
                     >
-                      Yenilə
+                      {t("members.refresh")}
                       <RiLoopLeftLine />
                     </button>
                   </th>
@@ -666,7 +662,7 @@ function MembersTable({
                       colSpan="8"
                       className="px-4 py-3 text-center text-gray-500"
                     >
-                      No results found.
+                      {t("members.noResults")}
                     </td>
                   </tr>
                 )}
@@ -678,7 +674,7 @@ function MembersTable({
             {/* Items Per Page Selector */}
             <div className="flex items-center space-x-2">
               <label htmlFor="itemsPerPage" className="mr-2">
-                Səhifə başına element:
+                {t("members.itemsPerPage")}
               </label>
               <select
                 id="itemsPerPage"

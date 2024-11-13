@@ -1,7 +1,8 @@
 import React from "react";
 import { IoLogOutOutline } from "react-icons/io5";
-
+import { useTranslation } from "react-i18next";
 export default function LogoutModal({ show, onClose }) {
+  const { t } = useTranslation();
   const handleBackgroundClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose(); // Close the modal if clicked outside
@@ -33,13 +34,19 @@ export default function LogoutModal({ show, onClose }) {
         </div>
 
         {/* Title */}
-        <h3 className="text-lg font-semibold text-gray-900 text-center" style={{ fontFamily: "Gilroy" }}>
-        Çıxış et
+        <h3
+          className="text-lg font-semibold text-gray-900 text-center"
+          style={{ fontFamily: "Gilroy" }}
+        >
+          {t("confirmation.logout")}
         </h3>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 text-center mt-2" style={{ fontFamily: "Gilroy" }}>
-          Çıxış etmək istədiyinizə əminsinizmi? <br></br> Bu əməliyyat geri alına bilməz.
+        <p
+          className="text-sm text-gray-600 text-center mt-2"
+          style={{ fontFamily: "Gilroy" }}
+        >
+          {t("confirmation.logoutConfirmation")}
         </p>
 
         {/* Buttons */}
@@ -49,14 +56,14 @@ export default function LogoutModal({ show, onClose }) {
             className="w-full py-2 px-4 mr-2 bg-buttonSecondaryDefault text-gray-700 rounded-lg hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed focus:outline-none"
             style={{ fontFamily: "Gilroy" }}
           >
-            Xeyr
+            {t("confirmation.no")}
           </button>
           <button
             onClick={handleLogout}
             className="w-full py-2 px-4 ml-2 bg-errorButtonDefault text-white rounded-lg hover:bg-errorButtonHover active:bg-errorButtonPressed focus:outline-none"
             style={{ fontFamily: "Gilroy" }}
           >
-            Bəli
+            {t("confirmation.yes")}
           </button>
         </div>
       </div>

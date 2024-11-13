@@ -3,12 +3,12 @@ import ReactPaginate from "react-paginate";
 import { IoFunnelOutline } from "react-icons/io5";
 import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
-
+import { useTranslation } from "react-i18next";
 function ReportTable({ selectedRows, setSelectedRows, data }) {
   console.log(data, "data report table");
 
   const router = useRouter(); // Initialize useRouter hook
-
+  const { t } = useTranslation();
   // State declarations
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page set to 10
@@ -162,7 +162,7 @@ function ReportTable({ selectedRows, setSelectedRows, data }) {
                   }
                 >
                   <div className="flex items-center gap-4">
-                    Sual başlığı
+                    {t("labels.questionTitle")}
                     <IoFunnelOutline />
                   </div>
                   {openFilter === "title" && (
@@ -203,7 +203,7 @@ function ReportTable({ selectedRows, setSelectedRows, data }) {
                   }
                 >
                   <div className="flex items-center gap-4">
-                    Bildirilən xəta sayı
+                    {t("labels.reportedErrorCount")}
                     <IoFunnelOutline />
                   </div>
                   {openFilter === "count" && (
@@ -236,7 +236,7 @@ function ReportTable({ selectedRows, setSelectedRows, data }) {
                   }
                 >
                   <div className="flex items-center gap-4">
-                    Status
+                    {t("labels.status")}
                     <IoFunnelOutline />
                   </div>
 
@@ -325,7 +325,7 @@ function ReportTable({ selectedRows, setSelectedRows, data }) {
                     </td>
                     <td className="px-4 py-3 text-linkBlue !text-base flex items-center sticky right-0 z-10">
                       <button onClick={() => handleDetailNavigation(item.id)}>
-                        Bax &gt;
+                        {t("buttons.view")} &gt;
                       </button>
                     </td>
                   </tr>
@@ -336,7 +336,7 @@ function ReportTable({ selectedRows, setSelectedRows, data }) {
                     colSpan="5"
                     className="px-4 py-3 text-center text-gray-500"
                   >
-                    Nəticə tapılmadı.
+                    {t("labels.noResults")}
                   </td>
                 </tr>
               )}
@@ -348,7 +348,7 @@ function ReportTable({ selectedRows, setSelectedRows, data }) {
           {/* Items Per Page Selector */}
           <div className="flex items-center space-x-2">
             <label htmlFor="itemsPerPage" className="mr-2">
-              Səhifə başına element:
+              {t("labels.itemsPerPage")}
             </label>
             <select
               id="itemsPerPage"

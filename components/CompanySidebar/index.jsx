@@ -18,8 +18,9 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import { FiUsers } from "react-icons/fi";
 import { CgFileDocument } from "react-icons/cg";
 import { FiAlertOctagon } from "react-icons/fi";
-
+import { useTranslation } from "react-i18next";
 function CompanySidebar() {
+  const { t } = useTranslation();
   const [user, setUser] = useState(null);
   const [activeCompanies, setActiveCompanies] = useState([]); // Only active companies
   const [companyLogo, setCompanyLogo] = useState("");
@@ -139,7 +140,7 @@ function CompanySidebar() {
                   isActive(`/hesabatlar`) ? "text-brandBlue500" : ""
                 }`}
               >
-                Hesabatlar
+                {t("navigation.reports")}
               </span>
             </Link>
           </li>
@@ -157,7 +158,7 @@ function CompanySidebar() {
                   isActive(`/uzvler`) ? "text-brandBlue500" : ""
                 }`}
               >
-                Üzvlər
+                {t("navigation.members")}
               </span>
             </Link>
           </li>
@@ -177,7 +178,7 @@ function CompanySidebar() {
                   isActive(`/sual-bazasi`) ? "text-brandBlue500" : ""
                 }`}
               >
-                Sual Bazası
+                {t("navigation.questionBank")}
               </span>
             </Link>
           </li>
@@ -208,7 +209,7 @@ function CompanySidebar() {
                   isActive(`/umumi-imtahanlar`) ? "text-brandBlue500" : ""
                 }`}
               >
-                İmtahanlar
+                {t("navigation.exams")}
               </span>
             </Link>
           </li>
@@ -227,7 +228,7 @@ function CompanySidebar() {
                   isActive(`/xeta-bildirisleri`) ? "text-brandBlue500" : ""
                 }`}
               >
-                Xəta bildirişləri
+                {t("navigation.errorNotifications")}
               </span>
             </Link>
           </li>

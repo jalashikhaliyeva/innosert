@@ -12,13 +12,14 @@ import Sidebar from "@/components/Sidebar";
 import TitleNavigation from "@/components/TitleNavigation";
 import Spinner from "@/components/Spinner";
 import ReactPaginate from "react-paginate";
-
+import { useTranslation } from 'react-i18next';
 function Neticelerim() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 6;
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchResults = async () => {
@@ -80,7 +81,7 @@ function Neticelerim() {
                   <CardResult key={result.id} data={result} />
                 ))
               ) : (
-                <p>No results found.</p>
+                <p>{t('noResults')}</p>
               )}
             </div>
             {pageCount > 1 && (

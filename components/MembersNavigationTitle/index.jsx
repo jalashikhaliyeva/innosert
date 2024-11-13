@@ -1,6 +1,7 @@
 import React from "react";
 import { LuUserPlus, LuSearch } from "react-icons/lu";
 import { BsTrash } from "react-icons/bs";
+import { useTranslation } from 'react-i18next';
 function MembersNavigationTitle({
   openModal,
   selectedRows,
@@ -8,10 +9,12 @@ function MembersNavigationTitle({
   openDeleteModal,
   searchTerm,
   setSearchTerm,
-}) {
+})
+{
+  const { t } = useTranslation();
   return (
     <div className="flex md:flex-row flex-col justify-between relative font-gilroy">
-      <h1 className="text-2xl font-medium leading-8">Üzvlər</h1>
+      <h1 className="text-2xl font-medium leading-8">{t('members.title')}</h1>
 
       {/* Conditional rendering based on selectedRows */}
       {selectedRows?.length === 0 ? (
@@ -20,7 +23,7 @@ function MembersNavigationTitle({
             <LuSearch className="text-inputPlaceholderText size-6 flex-shrink-0" />
             <input
               type="text"
-              placeholder="Axtar"
+              placeholder={t('placeholders.search')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="ml-2 w-full text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
@@ -31,7 +34,7 @@ function MembersNavigationTitle({
             onClick={openModal}
           >
             <LuUserPlus className="size-5 text-white" />
-            Üzv əlavə et
+            {t('members.addMember')}
           </button>
         </div>
       ) : (
@@ -42,7 +45,8 @@ function MembersNavigationTitle({
             onClick={() => openDeleteModal()}
           >
             <BsTrash className="size-5 text-white" />
-            Seçilmiş üzvləri sil
+            {t('members.deleteSelectedMembers')}
+
           </button>
         </div>
       )}

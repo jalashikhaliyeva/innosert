@@ -4,7 +4,7 @@ import { GoMail } from "react-icons/go";
 import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useTranslation } from "next-i18next";
 export default function EmailVerificationModal({
   isOpen,
   onClose,
@@ -18,7 +18,7 @@ export default function EmailVerificationModal({
   const [hydrated, setHydrated] = useState(false);
   const [emailError, setEmailError] = useState(false); // Track if email has an error
   const [isFocused, setIsFocused] = useState(false); // Track if input is focused
-
+  const { t } = useTranslation();
   useEffect(() => {
     setHydrated(true);
   }, []);
@@ -28,8 +28,7 @@ export default function EmailVerificationModal({
 
   // Function to validate email format
   const validateEmail = (email) => {
-    const emailPattern =
-      /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
     return emailPattern.test(email);
   };
 
@@ -39,7 +38,7 @@ export default function EmailVerificationModal({
     // Check if the email format is invalid
     if (!validateEmail(email)) {
       setEmailError(true); // Set error state
-      toast.error("Zəhmət olmasa düzgün email daxil edin.");
+      toast.error(t("emailVerify.invalidEmail"));
       return; // Stop form submission
     }
 
@@ -63,7 +62,7 @@ export default function EmailVerificationModal({
         console.log(data.data.code, "data email verify");
 
         console.log("Verification successful.");
-        toast.success("E-poçt doğrulaması uğurla başa çatdı!");
+        toast.success(t("emailVerify.verificationSuccess"));
 
         setEmailForOTP(email); // Set the email for OTPmodal
         onClose(); // Close the EmailVerificationModal
@@ -72,12 +71,12 @@ export default function EmailVerificationModal({
         console.log(
           `Error: ${data.message || "Verification failed. Please try again."}`
         );
-        toast.error("Doğrulama uğursuz oldu. Yenidən cəhd edin.");
+        toast.error(t("emailVerify.verificationFailed"));
       }
     } catch (error) {
       console.error("Error verifying email:", error);
       console.log("An unexpected error occurred. Please try again.");
-      toast.warning("Gözlənilməz xəta baş verdi. Yenidən cəhd edin.");
+      toast.warning(t("emailVerify.unexpectedError"));
     }
   };
 
@@ -111,10 +110,10 @@ export default function EmailVerificationModal({
         </div>
 
         <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-brandBlue500">
-          Email Doğrulama
+          {t("emailVerify.verification")}
         </h2>
         <p className="text-center font-gilroy text-grayButtonText text-base mb-4">
-          Email ünvanınızı daxil edin.
+          {t("emailVerify.enterEmail")}
         </p>
         <form onSubmit={handleVerifyEmail}>
           <div className="mb-6 relative">
@@ -142,11 +141,11 @@ export default function EmailVerificationModal({
                   ? "focus:border-red-500" // Focus state with error
                   : "focus:border-inputRingFocus" // Normal focus border
               }`}
-              placeholder="Enter your email"
+              placeholder={t("emailVerify.placeholder")}
             />
             {emailError && !isFocused && (
               <p className="text-red-500 text-sm mt-1">
-                Zəhmət olmasa düzgün email daxil edin.
+                {t("emailVerify.invalidEmail")}
               </p>
             )}
           </div>
@@ -157,7 +156,7 @@ export default function EmailVerificationModal({
                 type="submit"
                 className="w-full font-gilroy flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
               >
-                Təsdiq edin
+                {t("emailVerify.confirm")}
               </button>
             </div>
           </div>

@@ -27,10 +27,10 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import { FaRegCircleUser } from "react-icons/fa6";
 import MobileLanguageSwitcher from "@/shared/MobileLanguageSwitcher";
 import NotificationsDropdown from "../NotificationsDropdown";
-
+import { useTranslation } from "next-i18next";
 const HeaderInternal = () => {
   const { user, setSearchExam } = useContext(UserContext);
-  
+  const { t } = useTranslation();
   const [searchValue, setSearchValue] = useState("");
   const searchInputRef = useRef(null);
   const router = useRouter();
@@ -779,7 +779,7 @@ const HeaderInternal = () => {
                     className="text-textSecondaryDefault text-lg inline-flex items-center font-medium focus:outline-none text-center py-3 hover:text-textHoverBlue"
                     type="button"
                   >
-                    Kateqoriyalar
+                    {t("categories")}
                   </button>
 
                   {/* Dropdown Menu */}
@@ -858,7 +858,7 @@ const HeaderInternal = () => {
                   onClick={() => handleClick("/bloq")}
                   className="cursor-pointer font-medium text-lg text-textSecondaryDefault py-3 hover:text-textHoverBlue"
                 >
-                  Bloq
+                  {t("blog")}
                 </p>
 
                 {/* Search */}
@@ -867,7 +867,7 @@ const HeaderInternal = () => {
                     <CiSearch className="text-inputPlaceholderText size-6" />
                     <input
                       type="text"
-                      placeholder="Imtahan axtar"
+                      placeholder={t("search_exam_placeholder")}
                       value={searchValue}
                       onChange={handleSearchChange} // Add the change handler
                       ref={searchInputRef}
@@ -909,7 +909,7 @@ const HeaderInternal = () => {
                         <p className="cursor-pointer flex items-center w-full px-4 py-2 rounded-lg text-textSecondaryDefault hover:bg-gray-100">
                           <FaRegCircleUser className="size-5 mr-2 fill-grayText" />
                           <span className="text-lg font-gilroy font-normal leading-6 text-textSecondaryDefault">
-                            Profilim
+                            {t("my_profile")}
                           </span>
                         </p>
                       </Link>
@@ -926,7 +926,7 @@ const HeaderInternal = () => {
                           >
                             <RiBuildingLine className="size-[20px] fill-grayText" />
                             <p className="text-md font-gilroy  font-normal leading-6 text-textSecondaryDefault">
-                              Şirkətlərim
+                              {t("my_companies")}
                             </p>
                             {companyDropdownOpen ? (
                               <FiChevronUp className="ml-2 text-grayText" />
@@ -986,7 +986,7 @@ const HeaderInternal = () => {
                       >
                         <MdOutlineLogout className="size-5 mr-2 fill-grayText" />
                         <span className="text-lg font-gilroy font-light leading-6">
-                          Çıxış
+                          {t("logout")}
                         </span>
                       </a>
                     </li>

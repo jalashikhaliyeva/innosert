@@ -1,11 +1,13 @@
 import React from "react";
 import { TbUsers } from "react-icons/tb";
+import { useTranslation } from "react-i18next";
 
 function MembersTableorActivityNavigation({
   activeView,
   setActiveView,
   memberCount,
 }) {
+  const { t } = useTranslation();
   return (
     <>
       <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
@@ -18,7 +20,7 @@ function MembersTableorActivityNavigation({
           onClick={() => setActiveView("edit")}
         >
           <TbUsers className="size-6" />
-          Üzv siyahısı ({memberCount})
+          {t("members.memberList")} ({memberCount})
         </button>
         <button
           className={`flex items-center gap-2 text-base  lg:text-lg px-4 py-3 rounded-lg font-gilroy font-normal leading-6 ${
@@ -67,7 +69,7 @@ function MembersTableorActivityNavigation({
               </clipPath>
             </defs>
           </svg>
-          Üzv aktivliyi
+          {t("members.memberActivity")}
         </button>
       </div>
     </>

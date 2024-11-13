@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import ReactPaginate from "react-paginate";
 import YuklemelerimTable from "../BalanceYuklemeler"; // Make sure to import your other component
-
+import { useTranslation } from "react-i18next";
 const ParentComponent = () => {
+  const { t } = useTranslation();
   const [showTable, setShowTable] = useState(true); // State to toggle between tables
 
   const data = [
@@ -110,7 +111,7 @@ const ParentComponent = () => {
           }`}
           onClick={() => setShowTable(true)} // Show the balance table
         >
-          Tarixçə
+          {t("labels.history")}
         </button>
         <button
           className={`ml-2 text-base px-4 py-2 h-10 rounded-lg font-gilroy font-normal leading-6 ${
@@ -118,7 +119,7 @@ const ParentComponent = () => {
           }`}
           onClick={() => setShowTable(false)} // Show the YuklemelerimTable
         >
-          Yükləmələrim
+          {t("labels.downloads")}
         </button>
       </div>
       {/* Conditionally render the table or Yükləmələrim based on the selected view */}
@@ -133,16 +134,16 @@ const ParentComponent = () => {
                     ID
                   </th>
                   <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                    Məlumat
+                    {t("labels.information")}
                   </th>
                   <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                    Tarix
+                    {t("labels.date")}
                   </th>
                   <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                    Status
+                    {t("labels.status")}
                   </th>
                   <th className="px-4 py-2 text-left bg-grayTextColor text-textSecondaryDefault font-gilroy">
-                    Məbləğ
+                    {t("labels.amount")}
                   </th>
                 </tr>
               </thead>

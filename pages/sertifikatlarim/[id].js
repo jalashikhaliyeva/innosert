@@ -8,8 +8,9 @@ import { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin, FaFacebook } from "react-icons/fa";
 import ExamResultHeader from "@/components/FinishExam/ExamResultHeader";
-
+import { useTranslation } from "react-i18next";
 function CertificateDetail({ certificate }) {
+  const { t } = useTranslation();
   const router = useRouter();
   const { id } = router.query;
 
@@ -86,7 +87,7 @@ function CertificateDetail({ certificate }) {
             onClick={downloadCertificate}
           >
             <HiOutlineSave className="size-5" />
-            Endir
+            {t("actions.download")}
           </button>
         </div>
 
@@ -102,7 +103,7 @@ function CertificateDetail({ certificate }) {
             >
               <div>
                 <p className="font-gilroy text-lg text-textSecondaryDefault font-medium">
-                  Sertifikatını paylaş
+                  {t("actions.shareCertificate")}
                 </p>
               </div>
 
@@ -132,7 +133,7 @@ function CertificateDetail({ certificate }) {
                     className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 bg-buttonPrimaryDefault text-white rounded"
                     onClick={copyToClipboard}
                   >
-                    {copySuccess ? "Kopyalandı" : "Kopyala"}
+                    {copySuccess ? t("actions.copied") : t("actions.copy")}
                   </button>
                 </div>
               </div>

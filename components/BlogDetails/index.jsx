@@ -36,6 +36,8 @@ function BlogDetails({ dynamicName }) {
         }
       );
 
+      // console.log(response, "response");
+
       if (!response.ok) {
         // Handle HTTP errors
         const errorData = await response.json();
@@ -43,6 +45,7 @@ function BlogDetails({ dynamicName }) {
       }
 
       const data = await response.json();
+      console.log(data, "data");
 
       if (data.status) {
         setBlog(data.data);
@@ -64,15 +67,14 @@ function BlogDetails({ dynamicName }) {
     }
   }, [dynamicName]);
 
-
   // Inside BlogDetails component
-useEffect(() => {
-  if (dynamicName) {
-    fetchBlogDetails(dynamicName);
-    // Update view count locally
-    updateViewCount(dynamicName, blog ? blog.views : 0);
-  }
-}, [dynamicName]);
+  useEffect(() => {
+    if (dynamicName) {
+      fetchBlogDetails(dynamicName);
+      // Update view count locally
+      updateViewCount(dynamicName, blog ? blog.views : 0);
+    }
+  }, [dynamicName]);
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">

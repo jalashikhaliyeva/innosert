@@ -8,8 +8,9 @@ import MyProfiles from "@/components/MyProfiles";
 import Sidebar from "@/components/Sidebar";
 import TitleExamsPage from "@/components/TitleExamsPage";
 import { useSavedExams } from "@/shared/context/SavedExamsContext";
-
+import { useTranslation } from 'react-i18next';
 function Imtahanlarim() {
+  const { t } = useTranslation();
   const { savedExams } = useSavedExams();
   const [exams, setExams] = useState([]);
   const [activeTab, setActiveTab] = useState("paid");
@@ -62,11 +63,11 @@ function Imtahanlarim() {
             {filteredExams.length > 0 ? (
               <ExamCard widthClass="w-[31.4%]" exams={filteredExams} />
             ) : (
-              <p className="text-neutral700 text-lg font-gilroy mt-4 flex justify-center items-center ">
-                {activeTab === "paid"
-                  ? "Heç bir ödənişli imtahan tapılmadı."
-                  : "Heç bir seçilmiş imtahan tapılmadı."}
-              </p>
+              <p className="text-neutral700 text-lg font-gilroy mt-4 flex justify-center items-center">
+              {activeTab === "paid"
+                ? t('messages.noPaidExam')
+                : t('messages.noSelectedExam')}
+            </p>
             )}
           </InternalContainer>
         </div>

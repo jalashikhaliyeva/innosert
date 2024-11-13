@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { IoCalendarClearOutline } from "react-icons/io5";
 import { MdKeyboardArrowDown } from "react-icons/md";
+import { useTranslation } from "react-i18next";
 
 function ReportTitleNavigationCalendar({ onFilterChange }) {
+  const { t } = useTranslation();
   // State management
   const [openFilter, setOpenFilter] = useState(false);
   const [dateFilter, setDateFilter] = useState({
@@ -52,11 +54,15 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
         : null;
     const displayFrom =
       from.year || from.month || from.day
-        ? `${from.year}-${String(from.month).padStart(2, "0")}-${String(from.day).padStart(2, "0")}`
+        ? `${from.year}-${String(from.month).padStart(2, "0")}-${String(
+            from.day
+          ).padStart(2, "0")}`
         : "";
     const displayTo =
       to.year || to.month || to.day
-        ? `${to.year}-${String(to.month).padStart(2, "0")}-${String(to.day).padStart(2, "0")}`
+        ? `${to.year}-${String(to.month).padStart(2, "0")}-${String(
+            to.day
+          ).padStart(2, "0")}`
         : "";
     setInputValue(`${displayFrom} - ${displayTo}`);
 
@@ -70,7 +76,7 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
 
   return (
     <div className="flex justify-between items-center relative font-gilroy mb-5">
-      <h1 className="text-2xl font-medium leading-8">Hesabat</h1>
+      <h1 className="text-2xl font-medium leading-8">{t("labels.report")}</h1>
 
       <div className="relative w-[27%] z-20">
         <div
@@ -81,7 +87,7 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
           <IoCalendarClearOutline className="text-inputPlaceholderText size-5 flex-shrink-0" />
           <input
             type="text"
-            placeholder="Axtar"
+            placeholder={t("placeholders.search")}
             value={inputValue}
             readOnly
             onClick={(e) => {
@@ -105,7 +111,7 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
               {/* From Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Başlanğıc Tarix
+                  {t("filters.startDate")}
                 </label>
                 <div className="flex space-x-2 mt-1">
                   <select
@@ -173,7 +179,7 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
               {/* To Date */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">
-                  Son Tarix
+                  {t("filters.endDate")}
                 </label>
                 <div className="flex space-x-2 mt-1">
                   <select
@@ -242,7 +248,7 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
                 className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded w-full"
                 onClick={applyFilter}
               >
-                Tətbiq et
+                {t("filters.apply")}
               </button>
             </div>
           </div>

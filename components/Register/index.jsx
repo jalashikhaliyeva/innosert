@@ -3,6 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin, FaFacebook, FaRegUserCircle } from "react-icons/fa";
 import { GoMail } from "react-icons/go";
 import { FiPhone } from "react-icons/fi";
+import { useTranslation } from "next-i18next";
 import {
   HiOutlineLockClosed,
   HiOutlineEye,
@@ -16,6 +17,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
+  const { t } = useTranslation();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -92,12 +94,12 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
       !mobile
     ) {
       setInputError(true);
-      toast.error("Zəhmət olmasa bütün sahələri doldurun.");
+      toast.error(t("toastMessages.fillAllFields"));
       return;
     }
     if (password !== confirmPassword) {
       setPasswordMismatchError(true);
-      toast.error("Şifrələr uyğun deyil.");
+      toast.error(t("toastMessages.passwordsDoNotMatch"));
       return;
     }
     setLoading(true);
@@ -118,7 +120,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
         const token = data.data.access_token;
         localStorage.setItem("token", token);
 
-        toast.success("Uğurla qeydiyyatdan keçdiniz!");
+        toast.success(t("toastMessages.registrationSuccess"));
 
         setTimeout(() => {
           onClose(); // Close the modal
@@ -126,11 +128,11 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
         }, 2000);
       } else {
         console.error("Validation error details:", data.message);
-        toast.error(`Qeydiyyat uğursuz oldu.`);
+        toast.error(t("toastMessages.registrationFailed"));
       }
     } catch (error) {
       console.error("Error during registration:", error);
-      toast.warning("Qeydiyyat zamanı xəta baş verdi.");
+      toast.warning(t("toastMessages.registrationError"));
     } finally {
       setLoading(false);
     }
@@ -154,7 +156,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
               &times;
             </button>
             <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-brandBlue500">
-              Innosertə xoş gəlmisən!
+              {t("register.welcome")}
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-3.5">
@@ -173,11 +175,11 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                         ? "border-inputRingFocus"
                         : "border-inputBorder"
                     } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
-                    placeholder="Ad"
+                    placeholder={t("register.firstNamePlaceholder")}
                   />
                   {inputError && !firstName && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Ad daxil edilməlidir.
+                      {t("register.firstNameRequired")}
                     </p>
                   )}
                 </div>
@@ -197,11 +199,11 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                         ? "border-inputRingFocus"
                         : "border-inputBorder"
                     } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
-                    placeholder="Soyad"
+                    placeholder={t("register.lastNamePlaceholder")}
                   />
                   {inputError && !lastName && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Soyad daxil edilməlidir.
+                      {t("register.lastNameRequired")}
                     </p>
                   )}
                 </div>
@@ -225,7 +227,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   />
                   {inputError && !email && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Email daxil edilməlidir.
+                      {t("register.emailRequired")}
                     </p>
                   )}
                 </div>
@@ -245,7 +247,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                         ? "border-inputRingFocus"
                         : "border-inputBorder"
                     } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
-                    placeholder="Şifrə təyin et"
+                    placeholder={t("register.passwordPlaceholder")}
                   />
                   <button
                     type="button"
@@ -256,7 +258,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   </button>
                   {inputError && !password && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Şifrə daxil edilməlidir.
+                      {t("register.passwordRequired")}
                     </p>
                   )}
                 </div>
@@ -277,7 +279,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                         ? "border-inputRingFocus"
                         : "border-inputBorder"
                     } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
-                    placeholder="Şifrəni təkrar et"
+                    placeholder={t("register.confirmPasswordPlaceholder")}
                   />
                   <button
                     type="button"
@@ -292,12 +294,12 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   </button>
                   {inputError && !confirmPassword && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Şifrəni təkrar daxil edilməlidir.
+                      {t("register.confirmPasswordRequired")}
                     </p>
                   )}
                   {passwordMismatchError && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Şifrələr uyğun deyil.
+                      {t("register.passwordsNotMatch")}
                     </p>
                   )}
                 </div>
@@ -317,11 +319,11 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                         ? "border-inputRingFocus"
                         : "border-inputBorder"
                     } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
-                    placeholder="Mobil nömrə"
+                    placeholder={t("register.phonePlaceholder")}
                   />
                   {inputError && !mobile && (
                     <p className="text-inputRingError text-sm mt-1">
-                      Nömrə daxil edilməlidir.
+                      {t("register.phoneRequired")}
                     </p>
                   )}
                 </div>
@@ -339,7 +341,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                     htmlFor="remember_me"
                     className="ml-2 block text-sm text-neutralBlack font-gilroy"
                   >
-                    Hesabımı yadda saxla
+                    {t("register.rememberMe")}
                   </label>
                 </div>
               </div>
@@ -376,10 +378,10 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
                           ></path>
                         </svg>
-                        Gözləyin...
+                        {t("register.loading")}
                       </div>
                     ) : (
-                      "Növbəti"
+                      t("register.next")
                     )}
                   </button>
                 </div>
@@ -389,11 +391,11 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                     onClick={handleOpenLogin}
                     className="w-full font-gilroy flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-grayButtonText bg-grayLineFooter hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
                   >
-                    Hesabın var?
+                    {t("register.hasAccount")}
                   </button>
                 </div>
               </div>
-              <div className="flex items-center justify-center mt-6">
+              {/* <div className="flex items-center justify-center mt-6">
                 <div className="flex-1 border-t border-gray-300"></div>
                 <span className="mx-8 text-lg text-gray-500 font-gilroy whitespace-nowrap">
                   Və ya
@@ -411,7 +413,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                 <button className="rounded-full bg-gray-100 p-4">
                   <FaFacebook className="h-8 w-8 fill-[#0866FF]" />
                 </button>
-              </div>
+              </div> */}
             </form>
           </div>
         </div>
