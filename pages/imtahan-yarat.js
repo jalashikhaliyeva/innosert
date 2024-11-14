@@ -23,7 +23,8 @@ function ImtahanYarat() {
   const { selectedCompany } = useContext(CompanyContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isFormValid = isGeneralInfoValid && isQuestionsValid;
+  const hasEnoughQuestions = selectedQuestionsForExam.length >= 10; // New condition
+  const isFormValid = isGeneralInfoValid && isQuestionsValid && hasEnoughQuestions; // Updated validation
 
   console.log(examDetails, "examDetails");
   console.log(selectedQuestionsForExam, "selectedQuestionsForExam API conn");
@@ -38,14 +39,18 @@ function ImtahanYarat() {
   const handleSubmit = async () => {
     // Validation Checks
     if (!isFormValid) {
-      enqueueSnackbar("Form is not valid. Please check your inputs.", {
-        variant: "error",
-      });
+      if (!hasEnoughQuestions) {
+        enqueueSnackbar("Ən azı 10 sual seçməlisiniz.", { variant: "error" });
+      } else {
+        enqueueSnackbar("Form düzgün deyil. Zəhmət olmasa məlumatlarınızı yoxlayın.", {
+          variant: "error",
+        });
+      }
       return;
     }
 
     if (!selectedCompany) {
-      enqueueSnackbar("Company information is missing.", { variant: "error" });
+      enqueueSnackbar("Şirkət məlumatları mövcud deyil.", { variant: "error" });
       return;
     }
 
@@ -107,7 +112,7 @@ function ImtahanYarat() {
       const response = await axios.post(apiEndpoint, requestBody, { headers });
 
       console.log("API Response:", response.data);
-      enqueueSnackbar("Exam created successfully!", { variant: "success" });
+      enqueueSnackbar("İmtahan uğurla yaradıldı!", { variant: "success" });
 
       // Redirect to the exams list or another appropriate page
       router.push("/umumi-imtahanlar");
@@ -116,7 +121,7 @@ function ImtahanYarat() {
     } catch (err) {
       console.error("API Error:", err);
       enqueueSnackbar(
-        err.response?.data?.message || err.message || "An error occurred.",
+        err.response?.data?.message || err.message || "Xəta baş verdi.",
         { variant: "error" }
       );
     } finally {
@@ -131,8 +136,9 @@ function ImtahanYarat() {
         <Breadcrumb />
         <ExamCreateTitleNavigation
           isFormValid={isFormValid}
-          onSubmit={handleSubmit} // Pass handleSubmit as a prop
+          onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
+          hasEnoughQuestions={hasEnoughQuestions} // Pass the new prop
         />
         <CreateExamTabGroup />
       </Container>
