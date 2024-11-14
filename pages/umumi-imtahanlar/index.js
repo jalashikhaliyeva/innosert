@@ -45,6 +45,8 @@ function UmumiImtahanlar() {
           }
         );
         setFolders(response.data.data);
+        console.log(response.data.data , "response.data.data");
+        
       } else {
         console.error("Token or Company ID is missing");
       }

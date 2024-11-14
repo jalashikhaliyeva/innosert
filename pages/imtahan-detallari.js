@@ -14,7 +14,7 @@ import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/Teach
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 
 function ImtahanDetallari() {
-  const { user, examDetailsSingle } = useContext(UserContext);
+  const { user, examDetailsSingle , setExamToEdit } = useContext(UserContext);
   console.log(examDetailsSingle, "examDetailsSingle");
 
   // console.log(user.data.roles, "user imtahan detallari");
@@ -53,7 +53,7 @@ function ImtahanDetallari() {
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
-            <ExamDetailsTabGroup examDetailsSingle={examDetailsSingle} />
+            <ExamDetailsTabGroup examDetailsSingle={examDetailsSingle}     setExamToEdit={setExamToEdit} />
           </InternalContainer>
         </div>
       </div>

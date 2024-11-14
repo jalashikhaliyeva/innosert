@@ -1,75 +1,83 @@
-import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+// pages/kateqoriyalar/[category].jsx
+
+import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useRef, useState } from "react";
-import withModalManagement from "@/shared/hoc/withModalManagement";
-import Spinner from "@/components/Spinner";
-import { getLandingInfo } from "@/services/getLandingInfo";
-import { getSettingInfo } from "@/services/getSettingInfo";
-import Container from "@/components/Container";
-import ExamCard from "@/components/ExamCard";
-import SortTitleExams from "@/components/SortTitleExams";
+import { useTranslation } from "react-i18next";
+import axios from "axios";
 import HeaderInternal from "@/components/HeaderInternal";
-import { UserContext } from "@/shared/context/UserContext";
+import Container from "@/components/Container";
+import SortTitleExams from "@/components/SortTitleExams";
+import ExamCard from "@/components/ExamCard";
+import Spinner from "@/components/Spinner";
+import Footer from "@/components/Footer";
 import ExamRulesModal from "@/components/ExamRulesModal";
 import LoginModal from "@/components/Login";
+import withModalManagement from "@/shared/hoc/withModalManagement";
+import { UserContext } from "@/shared/context/UserContext";
 
-function CategoryPage({ openRegisterModal, openLoginModal }) {
+function CategoryPage() {
   const router = useRouter();
-  const { user } = useContext(UserContext);
   const { category } = router.query;
-  console.log(category, "router.query");
+  const { user } = useContext(UserContext);
+  const { t, i18n } = useTranslation();
+  const lang = i18n.language || "az";
 
   const [exams, setExams] = useState([]);
   const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch exams based on category slug
-  useEffect(() => {
-    const fetchExams = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const response = await fetch(
-          `https://innocert-admin.markup.az/api/exams/${category}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await response.json();
-        console.log(data.data, "data CategoryPage");
-
-        setExams(data.data); // Set the exams from the API response
-      } catch (error) {
-        console.error("Failed to fetch exams:", error);
-      } finally {
-        setLoading(false); // Set loading to false once data is fetched
-      }
-    };
-
-    if (category) {
-      fetchExams();
+  const handleLoginOrRulesClick = () => {
+    if (user) {
+      setExamRulesModalOpen(true);
+    } else {
+      setLoginModalOpen(true);
     }
-  }, [category]);
+  };
 
-  // Function to close both modals
   const closeModals = () => {
     setExamRulesModalOpen(false);
     setLoginModalOpen(false);
   };
 
-  const handleLoginOrRulesClick = () => {
-    if (user) {
-      setExamRulesModalOpen(true); // Open exam rules modal if logged in
-    } else {
-      setLoginModalOpen(true); // Open login modal if not logged in
-    }
-  };
+  useEffect(() => {
+    const fetchExams = async () => {
+      if (!category) return; // Wait until category is available
+
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          throw new Error(t("authentication_token_not_found"));
+        }
+
+        const response = await axios.get(
+          `https://innocert-admin.markup.az/api/exams/${category}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Accept-Language": lang,
+            },
+          }
+        );
+
+        if (response.status === 200) {
+          setExams(response.data.data); // Adjust based on your API response structure
+        } else {
+          throw new Error(t("failed_to_fetch_exams"));
+        }
+      } catch (err) {
+        console.error(err);
+        setError(
+          err.response?.data?.message || err.message || t("an_error_occurred")
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchExams();
+  }, [category, lang, t]);
 
   return (
     <main>
@@ -79,17 +87,23 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
         <Container>
           <SortTitleExams category={category} />
           {loading ? (
-            <Spinner />
+            <div className="flex justify-center items-center h-64">
+              <Spinner />
+            </div>
+          ) : error ? (
+            <div className="flex justify-center items-center h-64">
+              <p className="text-red-500">{error}</p>
+            </div>
           ) : exams?.length > 0 ? (
             <ExamCard
+              exams={exams}
               openLoginModal={handleLoginOrRulesClick}
               openRegisterModal={handleLoginOrRulesClick}
               widthClass="w-[23.8%]"
-              exams={exams} // Pass the dynamic exams data
             />
           ) : (
             <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
-              &quot;{category}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
+              "{category}" {t("no_exams_available_for_category")}
             </p>
           )}
         </Container>

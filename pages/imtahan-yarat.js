@@ -24,7 +24,8 @@ function ImtahanYarat() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const hasEnoughQuestions = selectedQuestionsForExam.length >= 10; // New condition
-  const isFormValid = isGeneralInfoValid && isQuestionsValid && hasEnoughQuestions; // Updated validation
+  const isFormValid =
+    isGeneralInfoValid && isQuestionsValid && hasEnoughQuestions; // Updated validation
 
   console.log(examDetails, "examDetails");
   console.log(selectedQuestionsForExam, "selectedQuestionsForExam API conn");
@@ -42,9 +43,12 @@ function ImtahanYarat() {
       if (!hasEnoughQuestions) {
         enqueueSnackbar("Ən azı 10 sual seçməlisiniz.", { variant: "error" });
       } else {
-        enqueueSnackbar("Form düzgün deyil. Zəhmət olmasa məlumatlarınızı yoxlayın.", {
-          variant: "error",
-        });
+        enqueueSnackbar(
+          "Form düzgün deyil. Zəhmət olmasa məlumatlarınızı yoxlayın.",
+          {
+            variant: "error",
+          }
+        );
       }
       return;
     }

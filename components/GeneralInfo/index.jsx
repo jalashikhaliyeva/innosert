@@ -44,21 +44,22 @@ function GeneralInfo({ examDetailsSingle }) {
           </p>
         </div>
         <div className="bg-boxGrayBodyColor py-3 px-6 rounded-lg flex flex-col gap-2 justify-center items-center lg:items-baseline">
-          <h4 className="font-gilroy text-textSecondaryDefault tracking-036 text-lg">
-            Kateqoriyalar
-          </h4>
+  <h4 className="font-gilroy text-textSecondaryDefault tracking-036 text-lg">
+    Kateqoriyalar
+  </h4>
 
-          <div className="flex flex-row gap-2">
-            {categories.map((category, index) => (
-              <p
-                key={index}
-                className="font-gilroy text-lg tracking-036 text-textSecondaryDefault rounded-md bg-purple200 px-4 py-2"
-              >
-                {category}
-              </p>
-            ))}
-          </div>
-        </div>
+  <div className="flex flex-row flex-wrap gap-2">
+    {categories.map((category, index) => (
+      <p
+        key={index}
+        className="font-gilroy text-lg tracking-036 text-textSecondaryDefault rounded-md bg-purple200 px-4 py-2"
+      >
+        {category}
+      </p>
+    ))}
+  </div>
+</div>
+
       </div>
     </div>
   );

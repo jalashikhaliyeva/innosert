@@ -71,14 +71,14 @@ function ExamCreateTitleNavigation({
 
             {/* Tooltip */}
             {!hasEnoughQuestions && (
-      <div className="absolute bottom-full mb-2  -ml-10 left-1/2 transform -translate-x-1/2 w-max opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-      <div className="flex items-center p-3 bg-red-50 border border-red-200 rounded-lg shadow-lg font-gilroy ">
-        <FaExclamationCircle className="text-red-500 w-5 h-5 flex-shrink-0 mt-1" />
-        <p className="ml-2 text-sm text-red-600">
-          Ən azı <strong>10 sual</strong> seçməlisiniz.
-        </p>
-      </div>
-      </div>
+              <div className="absolute bottom-full mb-2  -ml-10 left-1/2 transform -translate-x-1/2 w-max opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <div className="flex items-center p-3 bg-red-50 border border-red-200 rounded-lg shadow-lg font-gilroy ">
+                  <FaExclamationCircle className="text-red-500 w-5 h-5 flex-shrink-0 mt-1" />
+                  <p className="ml-2 text-sm text-red-600">
+                    Ən azı <strong>10 sual</strong> seçməlisiniz.
+                  </p>
+                </div>
+              </div>
             )}
           </div>
         </div>

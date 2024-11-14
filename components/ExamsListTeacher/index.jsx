@@ -44,13 +44,13 @@ const ExamsListTeacher = ({
   }, []);
 
   const combinedItems = useMemo(() => {
-    const folders = (exams.folders || []).map((folder) => ({
+    const folders = (exams?.folders || []).map((folder) => ({
       ...folder,
       type: "folder",
       date: folder.created_at || folder.updated_at,
     }));
 
-    const examsList = (exams.exams || []).map((exam) => ({
+    const examsList = (exams?.exams || []).map((exam) => ({
       ...exam,
       type: "exam",
       date: exam.date || exam.created_at,

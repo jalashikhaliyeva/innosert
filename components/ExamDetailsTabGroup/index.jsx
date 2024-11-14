@@ -11,7 +11,7 @@ import TableComponent from "../CreateExamTabGroup/TableComponent";
 import axios from "axios";
 import QuestionsExamDetails from "../CreateExamTabGroup/QuestionsExamDetail";
 
-function ExamDetailsTabGroup({ examDetailsSingle }) {
+function ExamDetailsTabGroup({ examDetailsSingle , setExamToEdit}) {
   const [activeTab, setActiveTab] = useState("general");
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -119,6 +119,7 @@ function ExamDetailsTabGroup({ examDetailsSingle }) {
           <button
             className="flex items-center justify-center gap-2 py-2 px-3 sm:py-3 sm:px-4 h-10 sm:h-11 text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary font-gilroy"
             onClick={() => {
+              setExamToEdit(examDetailsSingle);
               router.push("/imtahan-redakte");
             }}
           >
