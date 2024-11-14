@@ -16,7 +16,7 @@ import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-
+import ReactPaginate from "react-paginate";
 function Home() {
   const {
     user,
@@ -25,7 +25,7 @@ function Home() {
     filteredExams,
     setPrivateExam,
     privateExam,
-    searchExam, // Access search results from context
+    searchExam,
     setSearchExam,
   } = useContext(UserContext);
   const router = useRouter();
@@ -37,7 +37,11 @@ function Home() {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  console.log(searchExam, "searchExam");
+
+  // Pagination state
+  const [currentPage, setCurrentPage] = useState(0); // react-paginate uses zero-based indexing
+  const itemsPerPage = 4; // Show 4 categories per page
+
   const combinedList = [
     ...(selectedCategory || []).map((cat) => ({
       name: cat.name,
@@ -123,6 +127,18 @@ function Home() {
     return groupExamsByCategory(filteredExams);
   }, [filteredExams, allExams]);
 
+  const categoryNames = Object.keys(displayedExamsByCategory);
+  const pageCount = Math.ceil(categoryNames.length / itemsPerPage);
+
+  const handlePageClick = (selectedItem) => {
+    setCurrentPage(selectedItem.selected);
+  };
+
+  const paginatedCategoryNames = categoryNames.slice(
+    currentPage * itemsPerPage,
+    (currentPage + 1) * itemsPerPage
+  );
+
   if (loading) {
     return (
       <>
@@ -185,8 +201,8 @@ function Home() {
               <div className="flex justify-center items-center h-64">
                 <p className="text-gray-500 text-xl">{t("no_exams_found")}</p>
               </div>
-            ) : Object.keys(displayedExamsByCategory).length > 0 ? (
-              Object.keys(displayedExamsByCategory).map((category) => {
+            ) : paginatedCategoryNames.length > 0 ? (
+              paginatedCategoryNames.map((category) => {
                 const isUncategorized =
                   category.toLowerCase() === "uncategorized";
 
@@ -210,6 +226,34 @@ function Home() {
             ) : (
               <div className="flex justify-center items-center h-64">
                 <p className="text-gray-500 text-xl">{t("no_exams_found")}</p>
+              </div>
+            )}
+
+            {pageCount > 1 && (
+              <div className="flex justify-center mt-8">
+                <ReactPaginate
+                  previousLabel={"<"}
+                  nextLabel={">"}
+                  breakLabel={"..."}
+                  pageCount={pageCount}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName="flex justify-center items-center gap-2 w-full"
+                  pageClassName="inline-block"
+                  pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
+                  activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
+                  previousClassName={currentPage === 0 ? "text-gray-300" : ""}
+                  previousLinkClassName={
+                    currentPage === 0 ? "cursor-not-allowed" : ""
+                  }
+                  nextClassName={
+                    currentPage === pageCount - 1 ? "text-gray-300" : ""
+                  }
+                  nextLinkClassName={
+                    currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
+                  }
+                />
               </div>
             )}
           </>

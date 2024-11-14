@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+// src/components/Footer.js
+import React, { useEffect, useState, useContext } from "react";
 import { FaInstagram } from "react-icons/fa";
 import { RiFacebookBoxLine } from "react-icons/ri";
 import { PiLinkedinLogoBold } from "react-icons/pi";
@@ -7,10 +8,14 @@ import Image from "next/image";
 import Container from "../Container";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { UserContext } from "@/shared/context/UserContext"; // Import UserContext
 
 const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
   const [settingInfo, setSettingInfo] = useState(null);
   const router = useRouter();
+
+  // Access user state from UserContext
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
     const fetchSettingInfo = async () => {
@@ -30,12 +35,13 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
     router.push("/haqqimizda");
   };
 
-  const handleFaqClick = () => {
+  const handleFaqClick = (e) => {
     if (router.pathname === "/") {
+      e.preventDefault(); // Prevent navigation
       scrollToFaq();
     } else {
       localStorage.setItem("scrollToSection", "faq");
-      router.push("/");
+      // Navigation will occur normally
     }
   };
 
@@ -46,12 +52,14 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
     >
       <Container>
         <div className="flex justify-between border-b-[1px] border-footerGrayText pb-7">
-          <Image
-            src="/logo/logo-innosert.png"
-            width={118}
-            height={38}
-            alt="logo"
-          />
+          <Link href="/">
+            <Image
+              src="/logo/logo-innosert.png"
+              width={118}
+              height={38}
+              alt="logo"
+            />
+          </Link>
           <div className="flex gap-5">
             <FaInstagram className="size-8 fill-neutralWhite cursor-pointer" />
             <PiLinkedinLogoBold className="size-8 fill-neutralWhite cursor-pointer" />
@@ -76,18 +84,39 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
               <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5 whitespace-nowrap">
                 Sayt xəritəsi
               </h6>
+              {/* Home Link */}
+              <Link
+                href="/"
+                className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
+              >
+                Ana Səhifə
+              </Link>
+
+              {/* Haqqımızda Button */}
               <button
                 onClick={handleAboutClick}
                 className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
               >
                 Haqqımızda
               </button>
-              <button
-                onClick={handleFaqClick}
-                className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
-              >
-                FAQ
-              </button>
+
+              {/* Conditionally Render Bloq or FAQ as Links */}
+              {user ? (
+                <Link
+                  href="/bloq"
+                  className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
+                >
+                  Bloq
+                </Link>
+              ) : (
+                <Link
+                  href="/"
+                  onClick={handleFaqClick}
+                  className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
+                >
+                  FAQ
+                </Link>
+              )}
             </div>
 
             <div className="flex flex-col">

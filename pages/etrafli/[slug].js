@@ -17,6 +17,7 @@ import Footer from "@/components/Footer";
 import HeaderInternal from "@/components/HeaderInternal";
 
 import JoinButtonandPriceExam from "@/components/JoinButtonandPriceExam";
+import Spinner from "@/components/Spinner";
 
 import React from "react";
 
@@ -26,7 +27,11 @@ function ExamName({ examData, error }) {
   }
 
   if (!examData) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
   }
 
   console.log(examData, "examData");

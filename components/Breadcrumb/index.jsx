@@ -35,7 +35,7 @@ const Breadcrumb = () => {
   const pathSegments = router.asPath
     .split("/")
     .filter((segment) => segment)
-    .map((segment) => decodeURIComponent(segment)); // Decode URL components
+    .map((segment) => decodeURIComponent(segment.split('?')[0])); // Remove query parameters
 
   // Function to format labels if not in mapping
   const formatLabel = (segment) => {
@@ -93,7 +93,7 @@ const Breadcrumb = () => {
         </span>
       </Link>
 
-      {/* Render dynamic breadcrumb items */}
+      {/* Render static separator and profile link if not on /bloq path */}
       {!isBloqPath && (
         <>
           <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
@@ -107,6 +107,7 @@ const Breadcrumb = () => {
         </>
       )}
 
+      {/* Render dynamic breadcrumb items */}
       {breadcrumbItems}
     </div>
   );

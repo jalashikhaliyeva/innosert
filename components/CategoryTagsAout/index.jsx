@@ -6,8 +6,8 @@ function CategoryTagsAbout({ examData }) {
 
   return (
     <div className="flex-1 overflow-hidden relative">
-      <div className="flex gap-4">
-        <div className="flex flex-row gap-2">
+      <div className="flex flex-wrap gap-4">
+        <div className="flex flex-row flex-wrap gap-2">
           {categories.map((category, index) => (
             <button
               key={index}
