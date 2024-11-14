@@ -100,6 +100,19 @@ function BlogDetails({ dynamicName }) {
 
   return (
     <div className="max-w-4xl mx-auto">
+        {/* Image */}
+        {blog.image && (
+          <div className="w-full h-auto rounded-md px-4">
+            <Image
+              src={blog.image}
+              alt={blog.title}
+              width={800} // Adjust width as needed
+              height={600} // Adjust height as needed
+              layout="responsive"
+              className="rounded-md"
+            />
+          </div>
+        )}
       {/* Post Container */}
       <div className="bg-white font-gilroy px-10 py-8 rounded-lg shadow-md">
         {/* Post Metadata */}
@@ -127,19 +140,7 @@ function BlogDetails({ dynamicName }) {
           dangerouslySetInnerHTML={{ __html: blog.content }}
         />
 
-        {/* Image */}
-        {blog.image && (
-          <div className="w-full h-auto rounded-md px-4">
-            <Image
-              src={blog.image}
-              alt={blog.title}
-              width={800} // Adjust width as needed
-              height={600} // Adjust height as needed
-              layout="responsive"
-              className="rounded-md"
-            />
-          </div>
-        )}
+      
       </div>
     </div>
   );
