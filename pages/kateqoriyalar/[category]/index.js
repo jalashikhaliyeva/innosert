@@ -103,7 +103,7 @@ function CategoryPage() {
             />
           ) : (
             <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
-              "{category}" {t("no_exams_available_for_category")}
+              &quot;{category}&quot; {t("no_exams_available_for_category")}
             </p>
           )}
         </Container>
