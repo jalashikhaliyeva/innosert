@@ -5,19 +5,19 @@ import { motion } from "framer-motion";
 // Dynamically import react-apexcharts to prevent SSR issues
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const ProgressPieChart = ({ percentage }) => {
+const ProgressPieChart = ({ correct, wrong, empty }) => {
   const [series, setSeries] = useState([]); // Initialize as empty
   const chartRef = useRef(null); // Reference to the chart container
 
-  console.log(percentage, "percentage");
-  
+  console.log({ correct, wrong, empty }, "Counts");
+
   // Chart configuration options
   const options = {
     chart: {
       type: "donut",
       animations: {
         enabled: true,
-        easing: 'easeinout',
+        easing: "easeinout",
         speed: 800,
         animateGradually: {
           enabled: true,
@@ -47,7 +47,11 @@ const ProgressPieChart = ({ percentage }) => {
               show: true,
               showAlways: true,
               label: "",
-              formatter: () => `${percentage}%`, // Display Correct Answers percentage
+              formatter: () => {
+                const total = correct + wrong + empty;
+                const percentage = total === 0 ? 0 : Math.round((correct / total) * 100);
+                return `${percentage}%`;
+              }, // Display Correct Answers percentage
               style: {
                 fontSize: "20px",
                 fontWeight: "bold",
@@ -70,7 +74,7 @@ const ProgressPieChart = ({ percentage }) => {
     tooltip: {
       enabled: true, // Show values on hover
       y: {
-        formatter: (val) => `${val}%`, // Format tooltip to show percentage
+        formatter: (val) => `${val}`, // Format tooltip to show count
       },
     },
     responsive: [
@@ -92,26 +96,21 @@ const ProgressPieChart = ({ percentage }) => {
     },
   };
 
-  // Effect to update the series based on the percentage prop
+  // Effect to update the series based on the counts props
   useEffect(() => {
-    if (typeof percentage !== "number") {
-      console.warn(
-        "ProgressPieChart: 'percentage' prop is not a number:",
-        percentage
-      );
-      return;
+    // Ensure all counts are numbers and non-negative
+    const c = Math.max(Number(correct) || 0, 0);
+    const w = Math.max(Number(wrong) || 0, 0);
+    const e = Math.max(Number(empty) || 0, 0);
+
+    // Only update if there's at least one count
+    if (c + w + e > 0) {
+      console.log("Updating series:", [c, w, e]);
+      setSeries([c, w, e]);
+    } else {
+      setSeries([]);
     }
-
-    // Ensure the percentage is within 0-100
-    const correct = Math.min(Math.max(percentage, 0), 100);
-    // Example distribution: 20% of the remaining for Wrong Answers
-    const wrong = Math.min((100 - correct) * 0.2, 100 - correct);
-    const notAnswered = 100 - correct - wrong;
-
-    console.log("Updating series:", [correct, wrong, notAnswered]);
-
-    setSeries([correct, wrong, notAnswered]);
-  }, [percentage]);
+  }, [correct, wrong, empty]);
 
   return (
     <motion.div

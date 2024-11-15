@@ -1,3 +1,4 @@
+// BlogGrid.jsx
 import React, { useContext, useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { MdOutlineRemoveRedEye } from "react-icons/md";
@@ -64,6 +65,8 @@ function BlogGrid() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const { viewCounts } = useContext(ViewCountContext);
+  const router = useRouter();
+  const { locale } = router;
 
   const fetchBlogs = async (page = 1) => {
     setLoading(true);
@@ -78,6 +81,7 @@ function BlogGrid() {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
+            "Accept-Language": locale,
           },
         }
       );
@@ -103,7 +107,7 @@ function BlogGrid() {
     link.rel = "stylesheet";
     link.href = "https://fonts.googleapis.com/icon?family=Material+Icons";
     document.head.appendChild(link);
-  }, []);
+  }, [locale]);
 
   const handlePageClick = (data) => {
     const selectedPage = data.selected + 1;
@@ -137,7 +141,6 @@ function BlogGrid() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {blogs.map((blog) => {
-              // Override blog.views if present in viewCounts
               const updatedBlog = viewCounts[blog.slug]
                 ? { ...blog, views: viewCounts[blog.slug] }
                 : blog;

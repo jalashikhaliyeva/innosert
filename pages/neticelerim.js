@@ -12,7 +12,7 @@ import Sidebar from "@/components/Sidebar";
 import TitleNavigation from "@/components/TitleNavigation";
 import Spinner from "@/components/Spinner";
 import ReactPaginate from "react-paginate";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 function Neticelerim() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -81,7 +81,7 @@ function Neticelerim() {
                   <CardResult key={result.id} data={result} />
                 ))
               ) : (
-                <p>{t('noResults')}</p>
+                <p>{t("noResults")}</p>
               )}
             </div>
             {pageCount > 1 && (

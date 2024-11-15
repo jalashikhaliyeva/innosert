@@ -8,7 +8,7 @@ import MyProfiles from "@/components/MyProfiles";
 import Sidebar from "@/components/Sidebar";
 import TitleExamsPage from "@/components/TitleExamsPage";
 import { useSavedExams } from "@/shared/context/SavedExamsContext";
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from "react-i18next";
 function Imtahanlarim() {
   const { t } = useTranslation();
   const { savedExams } = useSavedExams();
@@ -31,6 +31,7 @@ function Imtahanlarim() {
         );
 
         const result = await response.json();
+        console.log(result.data, "paid exams");
 
         if (result.status) {
           setExams(result.data);
@@ -64,10 +65,10 @@ function Imtahanlarim() {
               <ExamCard widthClass="w-[31.4%]" exams={filteredExams} />
             ) : (
               <p className="text-neutral700 text-lg font-gilroy mt-4 flex justify-center items-center">
-              {activeTab === "paid"
-                ? t('messages.noPaidExam')
-                : t('messages.noSelectedExam')}
-            </p>
+                {activeTab === "paid"
+                  ? t("messages.noPaidExam")
+                  : t("messages.noSelectedExam")}
+              </p>
             )}
           </InternalContainer>
         </div>

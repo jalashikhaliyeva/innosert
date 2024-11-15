@@ -2,6 +2,7 @@ import React from "react";
 import ProgressPieChart from "../ProgressPieChart";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+
 function CardResult({ data }) {
   const router = useRouter();
   const { t } = useTranslation();
@@ -34,7 +35,12 @@ function CardResult({ data }) {
         <p className="font-gilroy text-xl text-grayButtonText font-normal leading-6">
           {data.created_at}
         </p>
-        <ProgressPieChart percentage={data.percentage} />
+        {/* Pass the individual counts instead of percentage */}
+        <ProgressPieChart
+          correct={data.correct}
+          wrong={data.wrong}
+          empty={data.blank}
+        />
       </div>
       <div>
         <div className="flex flex-row gap-5 items-center justify-center">

@@ -406,7 +406,7 @@ function ImtahanSehifesi() {
       <div className="flex-1 overflow-auto flex">
         {/* Fixed Sidebar */}
         {!isDurationZero(examDetails.duration) && (
-          <div className="fixed z-10 left-0 top-20 bottom-30 w-[20%] h-[100vh] overflow-y-auto shadow-md">
+          <div className="hidden lg:block fixed z-10 left-0 top-20 bottom-30 w-[20%] h-[100vh] overflow-y-auto shadow-md ">
             <ExamSidebar
               questions={questionsData}
               currentQuestion={currentQuestion}
@@ -419,7 +419,7 @@ function ImtahanSehifesi() {
         {/* Main Content Area with Left Margin for Sidebar */}
         <div
           className={`flex-1  overflow-auto ${
-            isDurationZero(examDetails.duration) ? "ml-0" : "ml-[20%]"
+            isDurationZero(examDetails.duration) ? "ml-0" : "ml-0  lg:ml-[20%]"
           }`}
         >
           <InternalContainer>

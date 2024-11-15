@@ -340,7 +340,7 @@ function FilterCategories() {
 
         {showCategories && canScrollPrev && (
           <button
-            className="absolute left-4 top-1/2 transform -translate-y-1/2 text-textSecondaryDefault z-10 bg-white rounded-full p-2 shadow-md"
+            className="hidden md:block absolute left-4 top-1/2 transform -translate-y-1/2 text-textSecondaryDefault z-10 bg-white rounded-full p-2 shadow-md"
             onClick={() => emblaApi && emblaApi.scrollPrev()}
             aria-label="Scroll Left"
           >
@@ -350,7 +350,7 @@ function FilterCategories() {
 
         {showCategories && canScrollNext && (
           <button
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 z-10 bg-white rounded-full p-2 shadow-md"
+            className="hidden md:block absolute right-4 top-1/2 transform -translate-y-1/2 text-gray-400 z-10 bg-white rounded-full p-2 shadow-md"
             onClick={() => emblaApi && emblaApi.scrollNext()}
             aria-label="Scroll Right"
           >

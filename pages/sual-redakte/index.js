@@ -28,6 +28,7 @@ function SualRedakte() {
   const [answers, setAnswers] = useState([]);
   const [kombinasiyaOptions, setKombinasiyaOptions] = useState([]);
   const [kombinasiyaQuestions, setKombinasiyaQuestions] = useState([]);
+  console.log(selectedQuestion, "selectedQuestion");
 
   const typeMapping = {
     "Variantlı Sual": "Variantli sual",
@@ -38,6 +39,7 @@ function SualRedakte() {
   };
 
   useEffect(() => {
+    
     if (selectedQuestion) {
       const mappedOption = typeMapping[selectedQuestion.type];
       setSelectedOption(mappedOption);

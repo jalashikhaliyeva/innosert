@@ -159,6 +159,7 @@ function SualYarat() {
       toast.error("Zəhmət olmasa bütün sahələri doldurun.");
       return;
     }
+    console.log(data, "data posted");
 
     fetch(
       `https://innocert-admin.markup.az/api/questions/create/${lastQuery}`,
@@ -170,8 +171,12 @@ function SualYarat() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
+        
       }
+      
     )
+
+    
       .then((response) => response.json())
       .then((body) => {
         if (body.status === true) {
