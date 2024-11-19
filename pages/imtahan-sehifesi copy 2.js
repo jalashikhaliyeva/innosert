@@ -62,6 +62,7 @@ function ImtahanSehifesi() {
     return tmp.textContent || tmp.innerText || "";
   };
 
+  // **Initialize the ref to prevent multiple increments**
   const hasQuestionChanged = useRef(false);
 
   const handleReportSubmit = (newReports) => {
@@ -83,8 +84,15 @@ function ImtahanSehifesi() {
 
         if (response.data.status) {
           let fetchedQuestions = response.data.data.question;
+          console.log("Exam Questions:", fetchedQuestions);
+          // Optional: Shuffle questions if needed
+          // fetchedQuestions = shuffleArray(fetchedQuestions);
+
           setExamData(response.data.data);
           setExamStartTime(new Date());
+
+          console.log(response.data.data, "response.data.data");
+
           setUserAnswers(Array(fetchedQuestions.length).fill(null));
         } else {
           console.error(response.data.message);
@@ -108,16 +116,23 @@ function ImtahanSehifesi() {
 
   useEffect(() => {
     if (!examData || !examDetails || !currentQuestionData) return;
+
+    // **Reset the ref when currentQuestion changes**
     hasQuestionChanged.current = false;
+
     if (isDurationZero(examDetails.duration)) {
+      // Per-question timing
       const questionDuration = currentQuestionData.duration;
+
       if (!questionDuration || parseDuration(questionDuration) === 0) {
         setTimeRemaining(null);
         return;
       }
+
       const durationInSeconds = parseDuration(questionDuration);
       setTimeRemaining(durationInSeconds);
     } else {
+      // Exam has total duration
       if (timeRemaining === null) {
         const durationInSeconds = parseDuration(examDetails.duration);
         setTimeRemaining(durationInSeconds);
@@ -125,78 +140,46 @@ function ImtahanSehifesi() {
     }
   }, [currentQuestion, examData]);
 
+  // Time management useEffect
   useEffect(() => {
     if (!examData || !examDetails || !questionsData) return;
     if (timeRemaining === null) return;
+
+    console.log(`Time Remaining: ${timeRemaining}`);
+    console.log(
+      `Current Question: ${currentQuestion + 1}/${questionsData.length}`
+    );
+
     if (timeRemaining <= 0) {
       if (!hasQuestionChanged.current) {
         hasQuestionChanged.current = true;
+        console.log("Time up for current question. Moving to next question.");
+
         if (isDurationZero(examDetails.duration)) {
+          // Per-question timing
           if (currentQuestion < questionsData.length - 1) {
             setCurrentQuestion((prevQuestion) => prevQuestion + 1);
           } else {
+            // Open the finish exam modal if it's the last question
             setIsFinishModalOpen(true);
           }
         } else {
+          // Total exam timing
+          // Finish the exam
           setIsFinishModalOpen(true);
         }
       }
       return;
     }
+
     const timerId = setTimeout(() => {
       setTimeRemaining((prevTime) => prevTime - 1);
     }, 1000);
+
     return () => clearTimeout(timerId);
   }, [timeRemaining, currentQuestion, examDetails, questionsData, examData]);
 
-  useEffect(() => {
-    const handleUserExit = () => {
-      if (outsideLeaveCount === 0) {
-        setOutsideLeaveCount(1);
-        setModalContent(
-          "Siz imtahan sahəsindən kənara çıxdınız! Yenidən bunu etsəniz, imtahan bitiriləcək."
-        );
-        setShowWarningModal(true);
-      } else {
-        setModalContent(
-          "Limitdən kənara çıxma sayınız dolub! İmtahan bitirildi."
-        );
-        setShowWarningModal(true);
-        setTimeout(() => {
-          router.push("/imtahan-neticeleri");
-        }, 2400);
-      }
-    };
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        handleUserExit();
-      }
-    };
-
-    const handleWindowBlur = () => {
-      handleUserExit();
-    };
-
-    const handleBeforeUnload = (e) => {
-      if (outsideLeaveCount === 0) {
-        e.preventDefault();
-        e.returnValue = "";
-        handleUserExit();
-      }
-    };
-
-    document.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("blur", handleWindowBlur);
-    window.addEventListener("beforeunload", handleBeforeUnload);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("blur", handleWindowBlur);
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, [outsideLeaveCount, router]);
-
+  // Conditional rendering for loading and exam data
   if (loading) {
     return (
       <div>
@@ -213,12 +196,14 @@ function ImtahanSehifesi() {
     if (currentQuestion < questionsData.length - 1) {
       const nextQuestionIndex = currentQuestion + 1;
       setCurrentQuestion((prevQuestion) => prevQuestion + 1);
+      // Reset timeRemaining for the new question if per-question timing
       if (isDurationZero(examDetails.duration)) {
         const questionDuration = questionsData[nextQuestionIndex].duration;
         const durationInSeconds = parseDuration(questionDuration);
         setTimeRemaining(durationInSeconds);
       }
     } else {
+      // Open the finish exam modal
       setIsFinishModalOpen(true);
     }
   };
@@ -227,6 +212,7 @@ function ImtahanSehifesi() {
     if (currentQuestion > 0) {
       const prevQuestionIndex = currentQuestion - 1;
       setCurrentQuestion((prevQuestion) => prevQuestion - 1);
+      // Reset timeRemaining for the previous question if per-question timing
       if (isDurationZero(examDetails.duration)) {
         const questionDuration = questionsData[prevQuestionIndex].duration;
         const durationInSeconds = parseDuration(questionDuration);
@@ -237,6 +223,7 @@ function ImtahanSehifesi() {
 
   const handleQuestionClick = (index) => {
     setCurrentQuestion(index);
+    // If you have per-question timing, reset the timeRemaining for the new question
     if (isDurationZero(examDetails.duration)) {
       const questionDuration = questionsData[index].duration;
       const durationInSeconds = parseDuration(questionDuration);
@@ -244,6 +231,7 @@ function ImtahanSehifesi() {
     }
   };
 
+  // Function to update user's answer for the current question
   const setUserAnswer = (answer) => {
     const newAnswers = [...userAnswers];
     newAnswers[currentQuestion] = answer;
@@ -259,13 +247,14 @@ function ImtahanSehifesi() {
   const formatDateTime = (date) => {
     const pad = (n) => (n < 10 ? "0" + n : n);
     const day = pad(date.getDate());
-    const month = pad(date.getMonth() + 1);
+    const month = pad(date.getMonth() + 1); // Months are zero-based
     const year = date.getFullYear();
     const hours = pad(date.getHours());
     const minutes = pad(date.getMinutes());
     return `${hours}:${minutes} ${day}.${month}.${year}`;
   };
 
+  // Determine which question component to render
   const renderQuestionComponent = () => {
     const commonProps = {
       key: currentQuestionData.id,
@@ -294,22 +283,24 @@ function ImtahanSehifesi() {
         const questionId = question.id;
 
         switch (question.type) {
-          case "Variantlı Sual":
+          case "Variantlı Sual": // Multiple Choice Question
             return {
               questionId: questionId,
               submittedAnswer: userAnswer ? [userAnswer] : [],
             };
-          case "Açıq sual":
+
+          case "Açıq sual": // Open Question
             return {
               questionId: questionId,
               submittedAnswer: userAnswer || "",
             };
-          case "Uyğunlaşdırma Sual":
+
+          case "Uyğunlaşdırma Sual": // Combination Question
             if (userAnswer && userAnswer.length > 0) {
               const submittedAnswer = {};
               userAnswer.forEach((pair) => {
-                const keyId = pair.questionId;
-                const valueIds = pair.selectedOptionIds;
+                const keyId = pair.questionId; // Use the key ID
+                const valueIds = pair.selectedOptionIds; // These are the value IDs
                 submittedAnswer[keyId] = valueIds;
               });
               return {
@@ -322,6 +313,7 @@ function ImtahanSehifesi() {
                 submittedAnswer: {},
               };
             }
+
           default:
             return null;
         }
@@ -334,7 +326,7 @@ function ImtahanSehifesi() {
       setLoading(true);
       setExamFinishTime(new Date());
 
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token"); // Adjust the key as needed
       const slug = clickedExam.slug;
 
       const data = {
@@ -344,6 +336,7 @@ function ImtahanSehifesi() {
         report_question: reports,
         answers: buildAnswersArray(),
       };
+      console.log("Data to be posted:", data);
 
       const response = await axios.post(
         `https://innocert-admin.markup.az/api/start-exam/${slug}`,
@@ -356,8 +349,11 @@ function ImtahanSehifesi() {
       );
 
       if (response.data.status) {
+        console.log(response.data, "exam finish status");
         const percentageData = response.data.data;
         setPercentage(percentageData);
+        console.log(response.data.data, "response.data.data");
+
         router.push("/imtahan-neticeleri");
       } else {
         console.error(response.data.message);
@@ -370,13 +366,17 @@ function ImtahanSehifesi() {
   };
 
   const handleMouseLeave = () => {
+    console.log("Mouse left the exam area");
+
     if (outsideLeaveCount === 0) {
       setOutsideLeaveCount(1);
       setModalContent(
         "Siz imtahan sahəsindən kənara çıxdınız! Yenidən bunu etsəniz, imtahan bitiriləcək."
       );
       setShowWarningModal(true);
+      console.log("Displaying first warning modal");
     } else {
+      console.log("Ending the exam");
       setModalContent(
         "Limitdən kənara çıxma sayınız dolub! İmtahan bitirildi."
       );
@@ -387,6 +387,7 @@ function ImtahanSehifesi() {
     }
   };
 
+  // ImtahanSehifesi component
   return (
     <div
       className="h-screen flex flex-col"
@@ -404,6 +405,7 @@ function ImtahanSehifesi() {
       />
 
       <div className="flex-1 overflow-auto flex">
+        {/* Fixed Sidebar */}
         {!isDurationZero(examDetails.duration) && (
           <div className="hidden lg:block fixed z-10 left-0 top-20 bottom-30 w-[20%] h-[100vh] overflow-y-auto shadow-md ">
             <ExamSidebar
@@ -416,7 +418,7 @@ function ImtahanSehifesi() {
         )}
 
         <div
-          className={`flex-1 overflow-auto ${
+          className={`flex-1  overflow-auto ${
             isDurationZero(examDetails.duration) ? "ml-0" : "ml-0  lg:ml-[20%]"
           }`}
         >
@@ -447,6 +449,7 @@ function ImtahanSehifesi() {
           className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]"
         >
           <div className="bg-white rounded-xl shadow-lg p-6 w-96">
+            {/* Icon */}
             <div className="flex justify-center mb-4">
               <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-100">
                 <IoWarningOutline
@@ -454,18 +457,24 @@ function ImtahanSehifesi() {
                 />
               </div>
             </div>
+
+            {/* Title */}
             <h3
               className="text-lg font-semibold text-gray-900 text-center"
               style={{ fontFamily: "Gilroy" }}
             >
               Diqqət!
             </h3>
+
+            {/* Description */}
             <p
               className="text-sm text-gray-800 text-center mt-2"
               style={{ fontFamily: "Gilroy" }}
             >
               {modalContent}
             </p>
+
+            {/* Button */}
             <div className="mt-6 flex justify-center w-full">
               <button
                 onClick={() => setShowWarningModal(false)}
