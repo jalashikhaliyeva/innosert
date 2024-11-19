@@ -1,3 +1,4 @@
+// ExamEndFail.jsx
 import React from "react";
 import ProgressPieChart from "../ProgressPieChart";
 import Image from "next/image";
@@ -15,7 +16,11 @@ function ExamEndFail({ percentage }) {
       <div className="flex flex-col items-center justify-center">
         <div className="flex flex-col md:flex-row gap-5 items-center">
           <div className="flex flex-col items-center">
-            <ProgressPieChart percentage={percentage.percentage} />
+            <ProgressPieChart
+              correct={percentage.correct}
+              wrong={percentage.wrong}
+              blank={percentage.blank}
+            />
             <p className="font-gilroy text-grayText text-lg sm:text-xl leading-8 font-medium text-center">
               Müvəffəqiyət faizi
             </p>

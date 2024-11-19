@@ -262,7 +262,7 @@ const QuestionFiles = ({
                     </div>
                   </div>
 
-                  <div className="ml-auto text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
+                  <div className=" text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
                     {file?.created_at}
                   </div>
                   <div

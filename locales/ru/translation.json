@@ -254,5 +254,29 @@
   "login": "Войти",
   "registerBtn": "Зарегистрироваться",
   "learn_more": "Подробнее",
-  "loadMore": "Загрузить еще"
+  "loadMore": "Загрузить еще",
+  "filter": "Фильтр",
+  "price": "Цена",
+  "exam_duration": "Продолжительность экзамена",
+  "selected_time": "Выберите продолжительность",
+  "category": "Категория",
+  "select_category": "Выберите категорию",
+  "0-1 hour range": "0-1 час",
+  "1-2 hour range": "1-2 часа",
+  "2-3 hour range": "2-3 часа",
+  "3 or more hours": "3 часа и больше",
+  "siteMap": {
+    "home": "Главная",
+    "aboutUs": "О нас",
+    "blog": "Блог",
+    "faq": "Вопросы и ответы",
+    "contact": "Контакт",
+    "address": "Адрес"
+  },
+  "footer": {
+    "copyright": "© 2024 İnnosert LLC - Все права защищены.",
+    "helpCenter": "Центр помощи",
+    "privacyPolicy": "Политика конфиденциальности",
+    "siteMap": "Карта сайта"
+  }
 }

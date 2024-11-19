@@ -8,7 +8,7 @@ function ExamResultHeader() {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push("/home");
+    router.push("/neticelerim");
   };
   return (
     <div className="py-5 shadow-Cardshadow">

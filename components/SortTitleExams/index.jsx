@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { BiSortAlt2 } from "react-icons/bi";
-
+import { useTranslation } from "react-i18next";
 function SortTitleExams({ category }) {
+  const { t } = useTranslation();
   // Accept the category prop
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -41,7 +42,7 @@ function SortTitleExams({ category }) {
           aria-expanded={isDropdownOpen}
         >
           <BiSortAlt2 className="text-xl text-textSecondaryDefault" />
-          Sırala
+          {t("actions.sort")}
         </button>
         {/* Dropdown Menu */}
         <div

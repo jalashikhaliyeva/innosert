@@ -255,5 +255,29 @@
   "login": "Daxil ol",
   "registerBtn": "Qeydiyyatdan keç",
   "learn_more": "Ətraflı",
-  "loadMore": "Daha Çox Yüklə"
+  "loadMore": "Daha Çox Yüklə",
+  "filter": "Filter",
+  "price": "Qiymət",
+  "exam_duration": "İmtahan müddəti",
+  "selected_time": "Müddət seçin",
+  "category": "Kateqoriya",
+  "select_category": "Kateqoriya seçin",
+  "0-1 hour range": "0-1 saat aralığı",
+  "1-2 hour range": "1-2 saat aralığı",
+  "2-3 hour range": "2-3 saat aralığı",
+  "3 or more hours": "3 və daha çox",
+  "siteMap": {
+    "home": "Ana Səhifə",
+    "aboutUs": "Haqqımızda",
+    "blog": "Bloq",
+    "faq": "FAQ",
+    "contact": "Əlaqə",
+    "address": "Ünvan"
+  },
+  "footer": {
+    "copyright": "© 2024 İnnosert LLC - Bütün hüquqlar qorunur.",
+    "helpCenter": "Kömək Mərkəzi",
+    "privacyPolicy": "Məxfilik Siyasəti",
+    "siteMap": "Sayt xəritəsi"
+  }
 }

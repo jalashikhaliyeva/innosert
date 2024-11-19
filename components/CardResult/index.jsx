@@ -2,6 +2,7 @@ import React from "react";
 import ProgressPieChart from "../ProgressPieChart";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
+import ProgressPieChartResults from "../ProgressPieChartResults";
 
 function CardResult({ data }) {
   const router = useRouter();
@@ -36,7 +37,7 @@ function CardResult({ data }) {
           {data.created_at}
         </p>
         {/* Pass the individual counts instead of percentage */}
-        <ProgressPieChart
+        <ProgressPieChartResults
           correct={data.correct}
           wrong={data.wrong}
           empty={data.blank}

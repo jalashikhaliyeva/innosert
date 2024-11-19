@@ -25,6 +25,10 @@ function EditQuestionSection({
   setKombinasiyaOptions,
   kombinasiyaQuestions,
   setKombinasiyaQuestions,
+  nextOptionId, // New prop
+  setNextOptionId, // New prop
+  nextQuestionId, // New prop
+  setNextQuestionId, // New prop
 }) {
   const { selectedCompany } = useContext(CompanyContext);
   const [loaded, setLoaded] = useState(false);
@@ -200,8 +204,12 @@ function EditQuestionSection({
           <KombinasiyaSuali
             kombinasiyaOptions={kombinasiyaOptions}
             setKombinasiyaOptions={setKombinasiyaOptions}
-            questions={kombinasiyaQuestions}
-            setQuestions={setKombinasiyaQuestions}
+            kombinasiyaQuestions={kombinasiyaQuestions}
+            setKombinasiyaQuestions={setKombinasiyaQuestions}
+            nextOptionId={nextOptionId} // New prop
+            setNextOptionId={setNextOptionId} // New prop
+            nextQuestionId={nextQuestionId} // New prop
+            setNextQuestionId={setNextQuestionId} // New prop
           />
         )}
       </div>

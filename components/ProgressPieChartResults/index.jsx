@@ -1,16 +1,17 @@
-// ProgressPieChart.jsx
 import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 
+// Dynamically import react-apexcharts to prevent SSR issues
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const ProgressPieChart = ({ correct, wrong, blank }) => {
-  const [series, setSeries] = useState([]);
-  const chartRef = useRef(null);
+const ProgressPieChartResults = ({ correct, wrong, empty }) => {
+  const [series, setSeries] = useState([]); // Initialize as empty
+  const chartRef = useRef(null); // Reference to the chart container
 
-  console.log({ correct, wrong, blank }, "Counts");
+  console.log({ correct, wrong, empty }, "Counts");
 
+  // Chart configuration options
   const options = {
     chart: {
       type: "donut",
@@ -47,10 +48,10 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
               showAlways: true,
               label: "",
               formatter: () => {
-                const total = correct + wrong + blank;
+                const total = correct + wrong + empty;
                 const percentage = total === 0 ? 0 : Math.round((correct / total) * 100);
                 return `${percentage}%`;
-              },
+              }, // Display Correct Answers percentage
               style: {
                 fontSize: "20px",
                 fontWeight: "bold",
@@ -68,12 +69,12 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
       lineCap: "round",
     },
     dataLabels: {
-      enabled: false,
+      enabled: false, // Hide data labels initially
     },
     tooltip: {
-      enabled: true,
+      enabled: true, // Show values on hover
       y: {
-        formatter: (val) => `${val}`,
+        formatter: (val) => `${val}`, // Format tooltip to show count
       },
     },
     responsive: [
@@ -95,25 +96,28 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
     },
   };
 
+  // Effect to update the series based on the counts props
   useEffect(() => {
+    // Ensure all counts are numbers and non-negative
     const c = Math.max(Number(correct) || 0, 0);
     const w = Math.max(Number(wrong) || 0, 0);
-    const b = Math.max(Number(blank) || 0, 0);
+    const e = Math.max(Number(empty) || 0, 0);
 
-    if (c + w + b > 0) {
-      console.log("Updating series:", [c, w, b]);
-      setSeries([c, w, b]);
+    // Only update if there's at least one count
+    if (c + w + e > 0) {
+      console.log("Updating series:", [c, w, e]);
+      setSeries([c, w, e]);
     } else {
       setSeries([]);
     }
-  }, [correct, wrong, blank]);
+  }, [correct, wrong, empty]);
 
   return (
     <motion.div
-      ref={chartRef}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.9 }}
+      ref={chartRef} // Attach ref to the div
+      initial={{ opacity: 0, y: 20 }} // Start hidden and slightly offset
+      animate={{ opacity: 1, y: 0 }} // Animate to visible when component mounts
+      transition={{ duration: 0.9 }} // Animation duration
     >
       {series.length > 0 && (
         <Chart options={options} series={series} type="donut" width="180" />
@@ -122,4 +126,4 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
   );
 };
 
-export default ProgressPieChart;
+export default ProgressPieChartResults;

@@ -7,7 +7,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { MdNavigateNext } from "react-icons/md";
 import { RiLoopRightLine } from "react-icons/ri";
 import { UserContext } from "@/shared/context/UserContext";
-import { useTranslation } from 'next-i18next';
+import { useTranslation } from "next-i18next";
 function FilterCategories() {
   const {
     selectedCategory,
@@ -40,12 +40,15 @@ function FilterCategories() {
   const [canScrollNext, setCanScrollNext] = useState(false);
 
   const timeOptions = [
-    { label: "0-1 saat aralığı", duration: [0, 60] },
-    { label: "1-2 saat aralığı", duration: [60, 120] },
-    { label: "2-3 saat aralığı", duration: [120, 180] },
-    { label: "3 və daha çox", duration: [180, 5000] },
+    { label: t("0-1 hour range"), duration: [0, 60] },
+    { label: t("1-2 hour range"), duration: [60, 120] },
+    { label: t("2-3 hour range"), duration: [120, 180] },
+    { label: t("3 or more hours"), duration: [180, 5000] },
   ];
 
+  {
+    t("0-1 hour range");
+  }
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -254,7 +257,7 @@ function FilterCategories() {
               onClick={() => setIsModalOpen(true)}
             >
               <IoFilter />
-              {t('advanced_search')}
+              {t("advanced_search")}
               {getActiveFilterCount() > 0 && (
                 <span className="absolute top-1 right-2 transform translate-x-1/2 -translate-y-1/2 bg-brandBlue200 text-white text-sm rounded-full px-2 py-1">
                   {getActiveFilterCount()}
@@ -373,12 +376,12 @@ function FilterCategories() {
             </button>
 
             <h2 className="font-gilroy text-center text-3xl font-medium text-buttonPrimaryDefault mb-10 leading-normal">
-              Filter
+              {t("filter")}
             </h2>
 
             <div className="flex flex-col mb-6">
               <p className="mb-3 font-gilroy text-textSecondaryDefault font-medium text-xl leading-7">
-                Qiymət
+                {t("price")}
               </p>
 
               <div className="flex gap-3">
@@ -430,7 +433,7 @@ function FilterCategories() {
 
             <div className="mb-6">
               <p className="mb-3 font-gilroy text-textSecondaryDefault font-medium text-xl leading-7">
-                İmtahan müddəti
+                {t("exam_duration")}
               </p>
               <div className="relative">
                 <div
@@ -480,7 +483,7 @@ function FilterCategories() {
 
             <div className="mb-4">
               <p className="mb-3 font-gilroy text-textSecondaryDefault font-medium text-xl leading-7">
-                Kateqoriya
+                {t("category")}
               </p>
               <div className="relative">
                 <div
@@ -532,7 +535,9 @@ function FilterCategories() {
                     </>
                   ) : (
                     <>
-                      <span className="text-[#B2B2B2]">Kateqoriya seçin</span>
+                      <span className="text-[#B2B2B2]">
+                        {t("select_category")}
+                      </span>
                       <div className="flex-1" />
                       <svg
                         className={`w-4 h-4 transition-transform text-[#B2B2B2]  ${
@@ -550,7 +555,7 @@ function FilterCategories() {
                 </div>
 
                 {isCategoryDropdownOpen && (
-                  <div className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-[7.5rem] overflow-y-scroll category-dropdown">
+                  <div className="absolute top-full left-0 z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-[170px] overflow-y-auto shadow-lg">
                     {combinedList.map((category, index) => {
                       const isSelected = selectedCategories.includes(
                         category.name
@@ -558,7 +563,7 @@ function FilterCategories() {
                       return (
                         <div
                           key={index}
-                          className={`py-2 px-4 font-gilroy hover:bg-gray-100 cursor-pointer flex justify-between items-center ${
+                          className={`py-2 px-4 hover:bg-gray-100 cursor-pointer flex justify-between items-center ${
                             isSelected ? "bg-gray-100" : ""
                           }`}
                           onClick={() => {
@@ -576,9 +581,7 @@ function FilterCategories() {
                             }
                           }}
                         >
-                          <span className="text-black font-gilroy">
-                            {category.name}
-                          </span>
+                          <span className="text-black">{category.name}</span>
                           {isSelected && (
                             <svg
                               className="w-4 h-4 text-blue-500"
@@ -619,7 +622,7 @@ function FilterCategories() {
                   applyFilters();
                 }}
               >
-                Axtar
+                {t("search")}
               </button>
             </div>
           </div>

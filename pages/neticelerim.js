@@ -13,6 +13,7 @@ import TitleNavigation from "@/components/TitleNavigation";
 import Spinner from "@/components/Spinner";
 import ReactPaginate from "react-paginate";
 import { useTranslation } from "react-i18next";
+
 function Neticelerim() {
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -33,8 +34,10 @@ function Neticelerim() {
             },
           }
         );
-        setResults(response.data.data);
-        console.log(response.data.data, "resuls");
+        // Reverse the results to show latest first
+        const reversedResults = [...response.data.data].reverse();
+        setResults(reversedResults);
+        console.log(reversedResults, "results");
 
         setLoading(false);
       } catch (err) {

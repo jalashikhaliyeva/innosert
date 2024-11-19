@@ -4,35 +4,24 @@ import { useState, useRef, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { IoCloseOutline } from "react-icons/io5";
 import dynamic from "next/dynamic";
+import "react-quill/dist/quill.snow.css"; // Import React Quill styles
 
 // Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css"; // Import React Quill styles
 
 function KombinasiyaSuali({
   kombinasiyaOptions,
   setKombinasiyaOptions,
-  questions,
-  setQuestions,
+  kombinasiyaQuestions,
+  setKombinasiyaQuestions,
+  nextOptionId,
+  setNextOptionId,
+  nextQuestionId,
+  setNextQuestionId,
 }) {
   const [currentEditor, setCurrentEditor] = useState(null);
   const questionRefs = useRef({});
   const kombinasiyaRefs = useRef({});
-
-  // Add a new kombinasiya option
-  const handleAddKombinasiya = () => {
-    const newOptionId = String.fromCharCode(65 + kombinasiyaOptions.length); // A, B, C, etc.
-    setKombinasiyaOptions([
-      ...kombinasiyaOptions,
-      {
-        id: newOptionId,
-        label: newOptionId,
-        correct: false,
-        text: "",
-        idInApi: null,
-      },
-    ]);
-  };
 
   // Handle text change for kombinasiya options
   const handleKombinasiyaTextChange = (id, text) => {
@@ -56,6 +45,16 @@ function KombinasiyaSuali({
     if (currentEditor === `kombinasiya-${id}`) {
       setCurrentEditor(null);
     }
+
+    // Also remove this option from any selectedOptions in questions
+    setKombinasiyaQuestions((prevQuestions) =>
+      prevQuestions.map((question) => ({
+        ...question,
+        selectedOptions: question.selectedOptions.filter(
+          (optId) => optId !== id
+        ),
+      }))
+    );
   };
 
   // Handle click on question text for editing
@@ -65,37 +64,55 @@ function KombinasiyaSuali({
 
   // Handle text change for questions
   const handleQuestionTextChange = (id, text) => {
-    setQuestions((prevQuestions) =>
+    setKombinasiyaQuestions((prevQuestions) =>
       prevQuestions.map((question) =>
         question.id === id ? { ...question, questionText: text } : question
       )
     );
   };
 
+  // Add a new kombinasiya option
+  const handleAddKombinasiya = () => {
+    const newOptionId = nextOptionId;
+    setKombinasiyaOptions([
+      ...kombinasiyaOptions,
+      {
+        id: newOptionId, // Use incremental ID
+        label: String.fromCharCode(65 + kombinasiyaOptions.length), // Assign labels A, B, C, etc.
+        correct: false,
+        text: "",
+        idInApi: null,
+      },
+    ]);
+    setNextOptionId(newOptionId + 1); // Increment the counter
+  };
+
   // Add a new question
   const handleAddQuestion = () => {
-    setQuestions((prevQuestions) => [
+    const newQuestionId = nextQuestionId;
+    setKombinasiyaQuestions((prevQuestions) => [
       ...prevQuestions,
       {
-        id: prevQuestions.length + 1,
+        id: newQuestionId, // Use incremental ID
         questionText: "",
         selectedOptions: [],
         idInApi: null,
         showDropdown: false,
       },
     ]);
+    setNextQuestionId(newQuestionId + 1); // Increment the counter
   };
 
   // Delete a question
   const handleDeleteQuestion = (id) => {
-    setQuestions((prevQuestions) =>
+    setKombinasiyaQuestions((prevQuestions) =>
       prevQuestions.filter((question) => question.id !== id)
     );
   };
 
   // Toggle dropdown for question options
   const handleDropdownToggle = (id) => {
-    setQuestions((prevQuestions) =>
+    setKombinasiyaQuestions((prevQuestions) =>
       prevQuestions.map((question) =>
         question.id === id
           ? { ...question, showDropdown: !question.showDropdown }
@@ -104,17 +121,15 @@ function KombinasiyaSuali({
     );
   };
 
-  // Handle option click to select/deselect options
-  const handleOptionClick = (optionLabel, questionId) => {
-    setQuestions((prevQuestions) =>
+  // Handle option click to select/deselect options by ID
+  const handleOptionClick = (optionId, questionId) => {
+    setKombinasiyaQuestions((prevQuestions) =>
       prevQuestions.map((question) => {
         if (question.id === questionId) {
-          const isSelected = question.selectedOptions?.includes(optionLabel);
+          const isSelected = question.selectedOptions?.includes(optionId);
           const newSelectedOptions = isSelected
-            ? (question.selectedOptions || []).filter(
-                (opt) => opt !== optionLabel
-              )
-            : [...(question.selectedOptions || []), optionLabel];
+            ? (question.selectedOptions || []).filter((opt) => opt !== optionId)
+            : [...(question.selectedOptions || []), optionId];
 
           return {
             ...question,
@@ -134,7 +149,7 @@ function KombinasiyaSuali({
       const isDropdown = event.target.closest(".dropdown-menu");
       const isToggle = event.target.closest(".dropdown-toggle");
       if (!isDropdown && !isToggle) {
-        setQuestions((prevQuestions) =>
+        setKombinasiyaQuestions((prevQuestions) =>
           prevQuestions.map((question) => ({
             ...question,
             showDropdown: false,
@@ -180,7 +195,7 @@ function KombinasiyaSuali({
       <div className="flex w-full justify-between">
         {/* Questions Section */}
         <div className="flex w-[48%] flex-col gap-2">
-          {questions.map((question, index) => (
+          {kombinasiyaQuestions.map((question, index) => (
             <div key={question.id} className="flex flex-col mb-4 gap-2">
               <div className="flex items-center justify-between">
                 <label
@@ -240,23 +255,29 @@ function KombinasiyaSuali({
                   onClick={() => handleDropdownToggle(question.id)}
                 >
                   {question.selectedOptions.length > 0 ? (
-                    question.selectedOptions.map((optionLabel) => (
-                      <span
-                        key={optionLabel}
-                        className="bg-buttonGhostPressed px-4 py-1 rounded-md mr-2 flex items-center gap-1"
-                      >
-                        {optionLabel}
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation(); // Prevent dropdown toggle
-                            handleOptionClick(optionLabel, question.id);
-                          }}
-                          className="ml-1 text-black hover:text-gray-700 text-xl size-5 focus:outline-none flex items-center justify-center"
+                    question.selectedOptions.map((optionId) => {
+                      const option = kombinasiyaOptions.find(
+                        (opt) => opt.id === optionId
+                      );
+                      if (!option) return null;
+                      return (
+                        <span
+                          key={optionId}
+                          className="bg-buttonGhostPressed px-4 py-1 rounded-md mr-2 flex items-center gap-1"
                         >
-                          &times;
-                        </button>
-                      </span>
-                    ))
+                          {option.label}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation(); // Prevent dropdown toggle
+                              handleOptionClick(optionId, question.id);
+                            }}
+                            className="ml-1 text-black hover:text-gray-700 text-xl size-5 focus:outline-none flex items-center justify-center"
+                          >
+                            &times;
+                          </button>
+                        </span>
+                      );
+                    })
                   ) : (
                     <span className="text-[#B2B2B2]">Cavabı əlavə edin</span>
                   )}
@@ -282,10 +303,10 @@ function KombinasiyaSuali({
                       <li
                         key={option.id}
                         onClick={() =>
-                          handleOptionClick(option.label, question.id)
+                          handleOptionClick(option.id, question.id)
                         }
                         className={`font-gilroy hover:bg-gray-100 flex justify-between items-center cursor-pointer py-2 px-4 ${
-                          question.selectedOptions.includes(option.label)
+                          question.selectedOptions.includes(option.id)
                             ? "bg-gray-200"
                             : ""
                         }`}

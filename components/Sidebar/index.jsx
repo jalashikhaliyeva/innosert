@@ -68,7 +68,7 @@ function Sidebar() {
 
   return (
     <div className="fixed h-screen w-72 bg-white shadow-sm border mt-[80px]">
-      <div className="p-4 mx-4 pt-8">
+      <div className="px-4 mx-4 pt-8">
         {/* Profile Section */}
         <div className="flex items-center mb-2 pb-3 border-b border-buttonGhostPressed">
           {!user?.data?.image || user.data.image === null ? (
@@ -98,7 +98,7 @@ function Sidebar() {
             <div className="mb-4">
               <div className="mb-4">
                 <div
-                  className="flex items-center space-x-4 py-2 pb-4 cursor-pointer rounded-lg border-b border-gray-200"
+                  className="flex items-center space-x-4 py-2 pb-4 cursor-pointer  border-b border-gray-200"
                   onClick={toggleCompanyDropdown}
                 >
                   <RiBuildingLine className="size-6 fill-grayText" />
@@ -120,7 +120,7 @@ function Sidebar() {
                   {activeCompanies.map((company) => (
                     <div
                       key={company.slug}
-                      className="flex items-center mb-2 cursor-pointer border-b border-buttonGhostPressed pb-2 hover:bg-gray-100 rounded-lg"
+                      className="flex items-center mb-2 cursor-pointer  pb-2 hover:bg-gray-100 rounded-lg"
                       onClick={() => handleCompanyClick(company)} // Navigate to company page
                     >
                       {company.logo ? (
@@ -148,7 +148,7 @@ function Sidebar() {
       </div>
 
       {/* Menu Items */}
-      <nav className="mt-10">
+      <nav className="">
         <ul className="mx-4">
           <li className="mb-4">
             <Link
