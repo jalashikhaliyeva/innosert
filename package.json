@@ -17,6 +17,7 @@
     "aos": "^2.3.4",
     "apexcharts": "^3.53.0",
     "axios": "^1.7.5",
+    "dompurify": "^3.2.0",
     "embla-carousel": "^8.2.0",
     "embla-carousel-auto-scroll": "^8.2.0",
     "embla-carousel-autoplay": "^8.2.0",

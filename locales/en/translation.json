@@ -236,7 +236,7 @@
     "rememberMe": "Remember me",
     "createAccount": "Create Account",
     "forgotPassword": "Forgot Password?",
-     "or": "Or"
+    "or": "Or"
   },
   "emailVerify": {
     "verification": "Email Verification",
@@ -253,5 +253,6 @@
   "contact": "Contact",
   "login": "Login",
   "registerBtn": "Register",
-   "learn_more": "Learn More"
+  "learn_more": "Learn More",
+  "loadMore": "Load More"
 }

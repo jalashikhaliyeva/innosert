@@ -56,6 +56,11 @@ function ImtahanSehifesi() {
   const [examFinishTime, setExamFinishTime] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
+  const stripHtml = (html) => {
+    const tmp = document.createElement("DIV");
+    tmp.innerHTML = html;
+    return tmp.textContent || tmp.innerText || "";
+  };
 
   // **Initialize the ref to prevent multiple increments**
   const hasQuestionChanged = useRef(false);
@@ -79,7 +84,7 @@ function ImtahanSehifesi() {
 
         if (response.data.status) {
           let fetchedQuestions = response.data.data.question;
-
+          console.log("Exam Questions:", fetchedQuestions);
           // Optional: Shuffle questions if needed
           // fetchedQuestions = shuffleArray(fetchedQuestions);
 
@@ -294,13 +299,9 @@ function ImtahanSehifesi() {
             if (userAnswer && userAnswer.length > 0) {
               const submittedAnswer = {};
               userAnswer.forEach((pair) => {
-                const keyIndex = pair.questionIndex;
-                const keyValue = question.answers.key[keyIndex]; // Get the key string
-
-                // Use the selectedOptionIds directly since they now contain the correct IDs
-                const valueValues = pair.selectedOptionIds;
-
-                submittedAnswer[keyValue] = valueValues;
+                const keyId = pair.questionId; // Use the key ID
+                const valueIds = pair.selectedOptionIds; // These are the value IDs
+                submittedAnswer[keyId] = valueIds;
               });
               return {
                 questionId: questionId,
@@ -364,34 +365,34 @@ function ImtahanSehifesi() {
     }
   };
 
-  const handleMouseLeave = () => {
-    console.log("Mouse left the exam area");
+  // const handleMouseLeave = () => {
+  //   console.log("Mouse left the exam area");
 
-    if (outsideLeaveCount === 0) {
-      setOutsideLeaveCount(1);
-      setModalContent(
-        "Siz imtahan sahəsindən kənara çıxdınız! Yenidən bunu etsəniz, imtahan bitiriləcək."
-      );
-      setShowWarningModal(true);
-      console.log("Displaying first warning modal");
-    } else {
-      console.log("Ending the exam");
-      setModalContent(
-        "Limitdən kənara çıxma sayınız dolub! İmtahan bitirildi."
-      );
-      setShowWarningModal(true);
-      setTimeout(() => {
-        router.push("/imtahan-neticeleri");
-      }, 2400);
-    }
-  };
+  //   if (outsideLeaveCount === 0) {
+  //     setOutsideLeaveCount(1);
+  //     setModalContent(
+  //       "Siz imtahan sahəsindən kənara çıxdınız! Yenidən bunu etsəniz, imtahan bitiriləcək."
+  //     );
+  //     setShowWarningModal(true);
+  //     console.log("Displaying first warning modal");
+  //   } else {
+  //     console.log("Ending the exam");
+  //     setModalContent(
+  //       "Limitdən kənara çıxma sayınız dolub! İmtahan bitirildi."
+  //     );
+  //     setShowWarningModal(true);
+  //     setTimeout(() => {
+  //       router.push("/imtahan-neticeleri");
+  //     }, 2400);
+  //   }
+  // };
 
   // ImtahanSehifesi component
   return (
     <div
       className="h-screen flex flex-col"
       ref={examAreaRef}
-      onMouseLeave={handleMouseLeave}
+      // onMouseLeave={handleMouseLeave}
     >
       <ExamHeader
         className="flex-shrink-0"
@@ -416,7 +417,6 @@ function ImtahanSehifesi() {
           </div>
         )}
 
-        {/* Main Content Area with Left Margin for Sidebar */}
         <div
           className={`flex-1  overflow-auto ${
             isDurationZero(examDetails.duration) ? "ml-0" : "ml-0  lg:ml-[20%]"

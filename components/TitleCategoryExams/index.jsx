@@ -25,7 +25,7 @@ function TitleCategoryExams({ categoryName, combinedList }) {
       </h5>
       <button
         onClick={handleSeeAllClick}
-        className="flex items-center justify-center font-gilroy text-base font-normal leading-6 text-textSecondaryDefault"
+        className="flex hover:text-textHoverBlue items-center justify-center font-gilroy text-base font-normal leading-6 text-textSecondaryDefault"
       >
         {t("see_all")}
         <FaAngleRight className="size-5 text-xl text-textSecondaryDefault fill-textSecondaryDefault" />

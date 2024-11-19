@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import WarningQuestion from "../WarningQuestion";
+import DOMPurify from "dompurify";
 
 // SVG for Checkmark
 const Checkmark = () => (
@@ -20,32 +21,36 @@ const Checkmark = () => (
   </svg>
 );
 
+// Strip HTML function using DOMPurify
+const stripHtml = (html) => {
+  return DOMPurify.sanitize(html, { ALLOWED_TAGS: [] });
+};
+
 function CombinationQuestion({
   questionData,
   userAnswer,
   setUserAnswer,
   onSubmitReport,
 }) {
-  console.log(questionData, "questionData");
-  // In CombinationQuestion component
-  const keysWithIds = questionData.answers.key.map((key, idx) => ({
-    id: idx,
-    value: key,
+  // Map keys and values with their ids
+  const keysWithIds = questionData.answers.key.map((keyItem) => ({
+    id: keyItem.id,
+    value: keyItem.key,
   }));
 
-  const answersWithIds = questionData.answers.value.map((answer) => ({
-    id: answer.id,
-    value: answer.value,
+  const valuesWithIds = questionData.answers.value.map((valueItem) => ({
+    id: valueItem.id,
+    value: valueItem.value,
   }));
-  
+
   const [selectedPairs, setSelectedPairs] = useState(userAnswer || []);
   const [openDropdowns, setOpenDropdowns] = useState({});
   const dropdownRefs = useRef({});
 
   // Handle selection toggle
-  const handleSelectionToggle = (questionIndex, answerId) => {
+  const handleSelectionToggle = (questionId, answerId) => {
     const existingPair = selectedPairs.find(
-      (pair) => pair.questionIndex === questionIndex
+      (pair) => pair.questionId === questionId
     );
 
     let updatedPair;
@@ -66,23 +71,23 @@ function CombinationQuestion({
       if (selectedOptionIds.length === 0) {
         updatedPair = null; // No selections left
       } else {
-        updatedPair = { questionIndex, selectedOptionIds };
+        updatedPair = { questionId, selectedOptionIds };
       }
     } else {
       // No existing pair, add new selection
-      updatedPair = { questionIndex, selectedOptionIds: [answerId] };
+      updatedPair = { questionId, selectedOptionIds: [answerId] };
     }
 
     let updatedPairs;
     if (updatedPair) {
       updatedPairs = selectedPairs.filter(
-        (pair) => pair.questionIndex !== questionIndex
+        (pair) => pair.questionId !== questionId
       );
       updatedPairs.push(updatedPair);
     } else {
       // Remove the pair if no selections
       updatedPairs = selectedPairs.filter(
-        (pair) => pair.questionIndex !== questionIndex
+        (pair) => pair.questionId !== questionId
       );
     }
 
@@ -91,10 +96,10 @@ function CombinationQuestion({
   };
 
   // Toggle the visibility of the dropdown
-  const toggleDropdown = (index) => {
+  const toggleDropdown = (id) => {
     setOpenDropdowns((prev) => ({
       ...prev,
-      [index]: !prev[index],
+      [id]: !prev[id],
     }));
   };
 
@@ -121,7 +126,7 @@ function CombinationQuestion({
   }, []);
 
   return (
-    <div className="py-6 px-4  min-h-[500px] mb-10 sm:py-10 sm:px-8 lg:px-32 w-full sm:w-[90%] lg:w-[85%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col justify-center mx-auto rounded-lg">
+    <div className="py-6 px-4 min-h-[500px] mb-10 sm:py-10 sm:px-8 lg:px-32 w-full sm:w-[90%] lg:w-[85%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col justify-center mx-auto rounded-lg">
       <WarningQuestion
         questionId={questionData.id}
         onSubmitReport={onSubmitReport}
@@ -135,9 +140,9 @@ function CombinationQuestion({
       <div className="flex flex-row">
         {/* Left Column: Numbered Questions with Toggle Divs */}
         <div className="flex flex-col space-y-6 font-gilroy w-1/2">
-          {questionData.answers.key.map((keyItem, index) => {
+          {keysWithIds.map((keyItem, index) => {
             const existingPair = selectedPairs.find(
-              (pair) => pair.questionIndex === index
+              (pair) => pair.questionId === keyItem.id
             );
             const selectedOptionIds = existingPair
               ? existingPair.selectedOptionIds
@@ -145,9 +150,9 @@ function CombinationQuestion({
 
             return (
               <div
-                key={index}
+                key={keyItem.id}
                 className="flex flex-row space-x-4 relative"
-                ref={(el) => (dropdownRefs.current[index] = el)} // Ref on parent container
+                ref={(el) => (dropdownRefs.current[keyItem.id] = el)}
               >
                 <div className="flex-1 flex flex-col space-y-2">
                   <span className="font-gilroy font-normal text-lg">
@@ -156,22 +161,22 @@ function CombinationQuestion({
                   <div
                     className="py-2 px-4 border rounded-lg font-gilroy text-grayButtonText text-lg w-full"
                     dangerouslySetInnerHTML={{
-                      __html: keyItem || "No question provided",
+                      __html: keyItem.value || "No question provided",
                     }}
                   ></div>
                   {/* Toggle Div to Show/Hide Answers */}
                   <div
                     className="py-2 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full flex justify-between items-center"
-                    onClick={() => toggleDropdown(index)}
+                    onClick={() => toggleDropdown(keyItem.id)}
                     tabIndex={0}
                     onKeyDown={(e) => {
                       if (e.key === "Enter" || e.key === " ") {
                         e.preventDefault();
-                        toggleDropdown(index);
+                        toggleDropdown(keyItem.id);
                       }
                     }}
                     aria-haspopup="listbox"
-                    aria-expanded={openDropdowns[index] ? "true" : "false"}
+                    aria-expanded={openDropdowns[keyItem.id] ? "true" : "false"}
                   >
                     {/* Display selected options or placeholder */}
                     <span>
@@ -179,9 +184,11 @@ function CombinationQuestion({
                         ? selectedOptionIds
                             .map(
                               (id) =>
-                                questionData.answers.value.find(
-                                  (answer) => answer.id === id
-                                )?.value || ""
+                                stripHtml(
+                                  valuesWithIds.find(
+                                    (answer) => answer.id === id
+                                  )?.value || ""
+                                )
                             )
                             .join(", ")
                         : "Cavabları əlavə edin"}
@@ -189,7 +196,7 @@ function CombinationQuestion({
                     {/* Dropdown Arrow Icon */}
                     <svg
                       className={`w-4 h-4 transition-transform ${
-                        openDropdowns[index] ? "transform rotate-180" : ""
+                        openDropdowns[keyItem.id] ? "transform rotate-180" : ""
                       }`}
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
@@ -206,12 +213,12 @@ function CombinationQuestion({
                   </div>
 
                   {/* Custom Dropdown for Answers */}
-                  {openDropdowns[index] && (
+                  {openDropdowns[keyItem.id] && (
                     <div
                       className="absolute z-10 top-full left-0 w-full bg-white border rounded-lg shadow-lg max-h-60 overflow-y-auto mt-1"
                       onClick={(e) => e.stopPropagation()} // Prevent closing on click inside
                     >
-                      {questionData.answers.value.map((answer) => {
+                      {valuesWithIds.map((answer) => {
                         const isSelected = selectedOptionIds.includes(
                           answer.id
                         );
@@ -220,22 +227,23 @@ function CombinationQuestion({
                             key={answer.id}
                             className="flex items-center justify-between px-4 py-2 hover:bg-gray-100 cursor-pointer"
                             onClick={() =>
-                              handleSelectionToggle(index, answer.id)
+                              handleSelectionToggle(keyItem.id, answer.id)
                             }
                             tabIndex={0}
                             onKeyDown={(e) => {
                               if (e.key === "Enter" || e.key === " ") {
                                 e.preventDefault();
-                                handleSelectionToggle(index, answer.id);
+                                handleSelectionToggle(keyItem.id, answer.id);
                               }
                             }}
                             role="option"
                             aria-selected={isSelected}
                           >
                             <span
-                              dangerouslySetInnerHTML={{ __html: answer.value }}
+                              dangerouslySetInnerHTML={{
+                                __html: answer.value,
+                              }}
                             />
-
                             {isSelected && <Checkmark />}
                           </div>
                         );
@@ -250,11 +258,11 @@ function CombinationQuestion({
         {/* Right Column: All Answers */}
         <div className="w-1/2 font-gilroy ml-4">
           <h3 className="font-normal mb-2 font-gilroy">Cavablar</h3>
-          {questionData.answers.value.map((answer) => (
+          {valuesWithIds.map((answer) => (
             <div
               key={answer.id}
               className="py-2 px-4 my-4 border rounded-lg hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full"
-              dangerouslySetInnerHTML={{ __html: answer.value }} // Render HTML content
+              dangerouslySetInnerHTML={{ __html: answer.value }}
             ></div>
           ))}
         </div>

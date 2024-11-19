@@ -60,6 +60,8 @@ const HeaderInternal = () => {
     clearTimeout(hideTimeout.current); // Clear any existing timeout
     setIsNotificationOpen(true);
   };
+  const dropdownTimer = useRef(null);
+  const submenuTimer = useRef(null);
 
   function handleSearchKeyDown(event) {
     if (event.key === "Enter") {
@@ -352,6 +354,46 @@ const HeaderInternal = () => {
     }
   };
 
+  // Function to handle mouse enter on the main dropdown
+  const handleDropdownMouseEnter = () => {
+    if (dropdownTimer.current) {
+      clearTimeout(dropdownTimer.current);
+      dropdownTimer.current = null;
+    }
+    setDropdownOpen(true);
+  };
+
+  // Function to handle mouse leave on the main dropdown
+  const handleDropdownMouseLeave = () => {
+    dropdownTimer.current = setTimeout(() => {
+      setDropdownOpen(false);
+      setOpenSubmenu(null);
+    }, 200); // 200ms delay
+  };
+
+  // Function to handle mouse enter on a submenu item
+  const handleSubmenuMouseEnter = (categoryName) => {
+    if (submenuTimer.current) {
+      clearTimeout(submenuTimer.current);
+      submenuTimer.current = null;
+    }
+    setOpenSubmenu(categoryName);
+  };
+
+  // Function to handle mouse leave on a submenu item
+  const handleSubmenuMouseLeave = () => {
+    submenuTimer.current = setTimeout(() => {
+      setOpenSubmenu(null);
+    }, 200); // 200ms delay
+  };
+
+  useEffect(() => {
+    // Cleanup timers on unmount
+    return () => {
+      if (dropdownTimer.current) clearTimeout(dropdownTimer.current);
+      if (submenuTimer.current) clearTimeout(submenuTimer.current);
+    };
+  }, []);
   return (
     <header className="markup fixed top-0 left-0 right-0 bg-bodyColor shadow-createBox z-30 font-gilroy">
       <Container>
@@ -746,10 +788,10 @@ const HeaderInternal = () => {
         </div>
         {/* Mobile and tablet menu end */}
 
-        {/* web header  start*/}
+        {/* web header start*/}
         <div className="hidden lg:block">
           <div className="flex justify-between items-center py-4">
-            <div className="flex  items-center gap-16">
+            <div className="flex items-center gap-16">
               <Link href="/home">
                 <Image
                   style={{
@@ -760,8 +802,8 @@ const HeaderInternal = () => {
                   className="cursor-pointer"
                   src="/logo/dark-logo-innosert.png"
                   alt="dark-logo-innosert"
-                  width={100}
-                  height={32}
+                  width={120}
+                  height={30}
                 />
               </Link>
 
@@ -769,11 +811,8 @@ const HeaderInternal = () => {
                 {/* Categories Dropdown */}
                 <div
                   className="relative"
-                  onMouseEnter={() => setDropdownOpen(true)}
-                  onMouseLeave={() => {
-                    setDropdownOpen(false);
-                    setOpenSubmenu(null);
-                  }}
+                  onMouseEnter={handleDropdownMouseEnter}
+                  onMouseLeave={handleDropdownMouseLeave}
                 >
                   <button
                     className="text-textSecondaryDefault text-lg inline-flex items-center font-medium focus:outline-none text-center py-3 hover:text-textHoverBlue"
@@ -795,8 +834,10 @@ const HeaderInternal = () => {
                         <li
                           key={category.id}
                           className="relative group"
-                          onMouseEnter={() => setOpenSubmenu(category.name)}
-                          onMouseLeave={() => setOpenSubmenu(null)}
+                          onMouseEnter={() =>
+                            handleSubmenuMouseEnter(category.name)
+                          }
+                          onMouseLeave={handleSubmenuMouseLeave}
                         >
                           <p
                             onClick={() => handleCategoryClick(category)}
@@ -861,17 +902,16 @@ const HeaderInternal = () => {
                   {t("blog")}
                 </p>
 
-                {/* Search */}
                 {showSearch && (
-                  <div className="flex items-center bg-bodyColor border border-inputBorder rounded-full mx-20 px-4 py-2 focus-within:border-inputRingFocus">
+                  <div className="group flex items-center bg-bodyColor border border-inputBorder rounded-full mx-20 px-4 py-2 focus-within:border-inputRingFocus hover:bg-gray-100">
                     <CiSearch className="text-inputPlaceholderText size-6" />
                     <input
                       type="text"
                       placeholder={t("search_exam_placeholder")}
                       value={searchValue}
-                      onChange={handleSearchChange} // Add the change handler
+                      onChange={handleSearchChange}
                       ref={searchInputRef}
-                      className="ml-2 text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
+                      className="ml-2 text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2 group-hover:bg-gray-100" // Add hover style
                     />
                   </div>
                 )}
@@ -996,7 +1036,7 @@ const HeaderInternal = () => {
             </div>
           </div>
         </div>
-        {/* web header  end*/}
+        {/* web header end*/}
       </Container>
       {/* Logout Modal */}
       <LogoutModal show={showLogoutModal} onClose={handleCloseLogoutModal} />

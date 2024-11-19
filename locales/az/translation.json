@@ -237,7 +237,7 @@
     "rememberMe": "Hesabımı yadda saxla",
     "createAccount": "Hesab yarat",
     "forgotPassword": "Şifrəni unutmusan?",
-     "or": "Və ya"
+    "or": "Və ya"
   },
   "emailVerify": {
     "verification": "Email Doğrulama",
@@ -254,5 +254,6 @@
   "contact": "Əlaqə",
   "login": "Daxil ol",
   "registerBtn": "Qeydiyyatdan keç",
-    "learn_more": "Ətraflı"
+  "learn_more": "Ətraflı",
+  "loadMore": "Daha Çox Yüklə"
 }

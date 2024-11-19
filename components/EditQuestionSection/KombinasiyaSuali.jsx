@@ -187,7 +187,7 @@ function KombinasiyaSuali({
                   htmlFor={`question-${question.id}`}
                   className="mb-3 block font-gilroy text-xl leading-6 font-normal text-brandBlue300"
                 >
-                  {question.id}. Sual
+                  {index + 1}. Sual
                 </label>
                 {/* Show delete button only for questions added after the third one */}
                 {index >= 3 && (

@@ -17,6 +17,7 @@ import Spinner from "@/components/Spinner";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import ReactPaginate from "react-paginate";
+
 function Home() {
   const {
     user,
@@ -37,10 +38,9 @@ function Home() {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState(0); // react-paginate uses zero-based indexing
-  const itemsPerPage = 4; // Show 4 categories per page
+  // Load More state
+  const [visibleCategories, setVisibleCategories] = useState(4); // Show 4 categories initially
+  const itemsPerLoad = 4; // Number of categories to load each time
 
   const combinedList = [
     ...(selectedCategory || []).map((cat) => ({
@@ -105,6 +105,11 @@ function Home() {
     fetchExams();
   }, [lang]);
 
+  useEffect(() => {
+    // Reset visible categories when exams change
+    setVisibleCategories(4);
+  }, [filteredExams]);
+
   const groupExamsByCategory = (exams) => {
     const grouped = {};
     exams.forEach((exam) => {
@@ -128,16 +133,7 @@ function Home() {
   }, [filteredExams, allExams]);
 
   const categoryNames = Object.keys(displayedExamsByCategory);
-  const pageCount = Math.ceil(categoryNames.length / itemsPerPage);
-
-  const handlePageClick = (selectedItem) => {
-    setCurrentPage(selectedItem.selected);
-  };
-
-  const paginatedCategoryNames = categoryNames.slice(
-    currentPage * itemsPerPage,
-    (currentPage + 1) * itemsPerPage
-  );
+  const paginatedCategoryNames = categoryNames.slice(0, visibleCategories);
 
   if (loading) {
     return (
@@ -229,31 +225,16 @@ function Home() {
               </div>
             )}
 
-            {pageCount > 1 && (
+            {categoryNames.length > visibleCategories && (
               <div className="flex justify-center mt-8">
-                <ReactPaginate
-                  previousLabel={"<"}
-                  nextLabel={">"}
-                  breakLabel={"..."}
-                  pageCount={pageCount}
-                  marginPagesDisplayed={2}
-                  pageRangeDisplayed={5}
-                  onPageChange={handlePageClick}
-                  containerClassName="flex justify-center items-center gap-2 w-full"
-                  pageClassName="inline-block"
-                  pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
-                  activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
-                  previousClassName={currentPage === 0 ? "text-gray-300" : ""}
-                  previousLinkClassName={
-                    currentPage === 0 ? "cursor-not-allowed" : ""
+                <button
+                  onClick={() =>
+                    setVisibleCategories(visibleCategories + itemsPerLoad)
                   }
-                  nextClassName={
-                    currentPage === pageCount - 1 ? "text-gray-300" : ""
-                  }
-                  nextLinkClassName={
-                    currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
-                  }
-                />
+                  className="flex items-center justify-center gap-2 p-3 h-11 text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary whitespace-nowrap"
+                >
+                  {t("loadMore")}
+                </button>
               </div>
             )}
           </>

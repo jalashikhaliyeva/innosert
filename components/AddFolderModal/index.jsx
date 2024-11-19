@@ -3,12 +3,13 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-function AddFolderModal({ closeModal, addNewFolder }) {
+function AddFolderModal({ closeModal, addNewFolder, fetchFiles }) {
   const [folderName, setFolderName] = useState("");
   const [inputError, setInputError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  // AddFolderModal.jsx
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!folderName) {
@@ -31,7 +32,8 @@ function AddFolderModal({ closeModal, addNewFolder }) {
       );
       console.log(response.data, "response add folder modal");
 
-      addNewFolder(response.data);
+      // Instead of adding the folder directly, re-fetch the files
+      await fetchFiles();
       closeModal();
     } catch (error) {
       console.error("Error creating folder:", error);
