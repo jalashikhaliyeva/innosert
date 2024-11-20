@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { TbArrowsSort } from "react-icons/tb";
 import { BsGrid } from "react-icons/bs";
 import { VscListSelection } from "react-icons/vsc";
-import { FaPlus, FaTrash } from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa6";
 import { BsTrash3 } from "react-icons/bs";
 import { useTranslation } from "react-i18next";
 function CompanyQuestionsNav({
@@ -33,7 +33,7 @@ function CompanyQuestionsNav({
         <div className="flex flex-row gap-4">
           <button
             onClick={openBulkDeleteModal} // Trigger bulk delete modal
-            className="flex items-center justify-center gap-4 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed"
+            className="flex items-center justify-center gap-2 py-3 px-4 h-11 w-full text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed"
           >
             <BsTrash3 className="fill-white text-white" />
             {t("actions.delete")}

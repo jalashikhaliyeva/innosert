@@ -666,7 +666,7 @@ function MyProfiles() {
                 transition: "max-height 0.3s ease",
                 overflow: "hidden",
               }}
-              className="overflow-hidden"
+              className="overflow-hidden mb-[100px]"
             >
               <div className="p-6 mt-4 bg-bodyColor rounded-3xl border">
                 {/* General Tab */}

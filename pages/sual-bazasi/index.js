@@ -83,6 +83,7 @@ function SualBazasi() {
     setFiles((prevFiles) =>
       prevFiles.filter((file) => !folderIds.includes(file.id))
     );
+    setSelectedFiles([]);
   };
 
   // Functions to open modals

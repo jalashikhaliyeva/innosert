@@ -1,3 +1,4 @@
+// SubFolderCard.jsx
 import React, { useState, useRef, useEffect } from "react";
 import { IoMdMore } from "react-icons/io";
 import { CiEdit } from "react-icons/ci";
@@ -34,12 +35,12 @@ const SubFolderCard = ({
     router.push(newPath);
   };
 
-  const handleCheckboxChange = (subfolderUrl, isChecked) => {
+  const handleCheckboxChange = (folderId, isChecked) => {
     setSelectedFiles((prevSelectedFiles) => {
       if (isChecked) {
-        return [...prevSelectedFiles, subfolderUrl];
+        return [...prevSelectedFiles, folderId];
       } else {
-        return prevSelectedFiles.filter((url) => url !== subfolderUrl);
+        return prevSelectedFiles.filter((id) => id !== folderId);
       }
     });
   };
@@ -50,7 +51,7 @@ const SubFolderCard = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {subFolders.map((subfolder, index) => (
             <div
-              key={subfolder.slug}
+              key={subfolder.id}
               className="relative flex flex-col p-6 rounded-[10px] border border-gray-100 bg-white shadow-createBox cursor-pointer"
               onClick={() => handleBoxClick(subfolder)}
             >
@@ -58,10 +59,10 @@ const SubFolderCard = ({
                 <input
                   type="checkbox"
                   className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder focus:outline-none"
-                  checked={selectedFiles.includes(subfolder.url)}
+                  checked={selectedFiles.includes(subfolder.id)}
                   onClick={(e) => e.stopPropagation()}
                   onChange={(e) =>
-                    handleCheckboxChange(subfolder.url, e.target.checked)
+                    handleCheckboxChange(subfolder.id, e.target.checked)
                   }
                 />
 
@@ -156,17 +157,17 @@ const SubFolderCard = ({
         <div className="flex flex-col gap-3">
           {subFolders.map((subfolder, index) => (
             <div
-              key={subfolder.slug}
+              key={subfolder.id}
               className="relative flex items-center p-5 rounded-[10px] border border-gray-100 bg-white shadow-createBox cursor-pointer"
               onClick={() => handleBoxClick(subfolder)}
             >
               <input
                 type="checkbox"
                 className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder focus:outline-none"
-                checked={selectedFiles.includes(subfolder.url)}
+                checked={selectedFiles.includes(subfolder.id)}
                 onClick={(e) => e.stopPropagation()}
                 onChange={(e) =>
-                  handleCheckboxChange(subfolder.url, e.target.checked)
+                  handleCheckboxChange(subfolder.id, e.target.checked)
                 }
               />
 
@@ -233,8 +234,7 @@ const SubFolderCard = ({
                     <ul>
                       <li
                         className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
+                        onClick={() => {
                           openEditFolderModal(subfolder);
                           setDropdownVisible(null);
                         }}
@@ -244,8 +244,7 @@ const SubFolderCard = ({
                       </li>
                       <li
                         className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                        onClick={(e) => {
-                          e.stopPropagation();
+                        onClick={() => {
                           openDeleteFolderModal(subfolder);
                           setDropdownVisible(null);
                         }}

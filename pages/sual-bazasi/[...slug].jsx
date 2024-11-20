@@ -1,3 +1,4 @@
+// DynamicSubFolderPage.jsx
 import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -14,12 +15,13 @@ import EditFolderModal from "@/components/EditFolderModal";
 import DeleteFolderModal from "@/components/DeleteFolderModal";
 import CreateSubFolderOrQuestion from "@/components/CreateSubFolderOrQuestion";
 import QuestionsTableCompany from "@/components/QuestionsTableCompany";
-import Questions from "@/components/Questions"; // Import Questions component
-import { TbFolder, TbTable } from "react-icons/tb"; // Import icons for tabs
+import Questions from "@/components/Questions";
+import { TbFolder, TbTable } from "react-icons/tb";
 import { UserContext } from "@/shared/context/UserContext";
 import CompanyContext from "@/shared/context/CompanyContext";
 import Spinner from "@/components/Spinner";
 import DeleteModal from "@/components/DeleteQuestionModal";
+import BulkDeleteFolderModal from "@/components/BulkDeleteFolderModal";
 
 const DynamicSubFolderPage = () => {
   const router = useRouter();
@@ -38,6 +40,7 @@ const DynamicSubFolderPage = () => {
   const [isEditFolderModalOpen, setIsEditFolderModalOpen] = useState(false);
   const [isDeleteFolderModalOpen, setIsDeleteFolderModalOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false);
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [folderToDelete, setFolderToDelete] = useState(null);
   const [questionToDelete, setQuestionToDelete] = useState(null);
@@ -158,6 +161,14 @@ const DynamicSubFolderPage = () => {
     setIsDeleteFolderModalOpen(true);
   };
 
+  const bulkDeleteFolders = (folderIds) => {
+    setSubFolders((prevFolders) =>
+      prevFolders.filter((folder) => !folderIds.includes(folder.id))
+    );
+    setSelectedFiles([]);
+    setIsBulkDeleteModalOpen(false);
+  };
+
   const isTeacher = user?.data.roles === "Teacher";
 
   return (
@@ -188,39 +199,36 @@ const DynamicSubFolderPage = () => {
                   setSortOption={setSortOption}
                   openModal={() => setIsModalOpen(true)}
                   selectedFiles={selectedFiles}
+                  openBulkDeleteModal={() => setIsBulkDeleteModalOpen(true)}
                 />
 
                 {!isTeacher && (
-                  <>
-                    {/* Tab Navigation */}
-                    <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
-                      <button
-                        className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
-                          activeTab === "folders"
-                            ? "bg-blue100 text-blue400"
-                            : "text-neutral700"
-                        }`}
-                        onClick={() => setActiveTab("folders")}
-                      >
-                        <TbFolder className="size-6" />
-                        Mənim Qovluqlarım
-                      </button>
-                      <button
-                        className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
-                          activeTab === "questions"
-                            ? "bg-blue100 text-blue400"
-                            : "text-neutral700"
-                        }`}
-                        onClick={() => setActiveTab("questions")}
-                      >
-                        <TbTable className="size-6" />
-                        Sual Bazası
-                      </button>
-                    </div>
-                  </>
+                  <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
+                    <button
+                      className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                        activeTab === "folders"
+                          ? "bg-blue100 text-blue400"
+                          : "text-neutral700"
+                      }`}
+                      onClick={() => setActiveTab("folders")}
+                    >
+                      <TbFolder className="size-6" />
+                      Mənim Qovluqlarım
+                    </button>
+                    <button
+                      className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                        activeTab === "questions"
+                          ? "bg-blue100 text-blue400"
+                          : "text-neutral700"
+                      }`}
+                      onClick={() => setActiveTab("questions")}
+                    >
+                      <TbTable className="size-6" />
+                      Sual Bazası
+                    </button>
+                  </div>
                 )}
 
-                {/* Conditional Rendering based on active tab */}
                 {activeTab === "folders" && (
                   <>
                     {subFolders.length > 0 && (
@@ -280,6 +288,15 @@ const DynamicSubFolderPage = () => {
             <DeleteModal
               onCancel={() => setIsDeleteModalOpen(false)}
               onDelete={handleDelete}
+            />
+          )}
+          {isBulkDeleteModalOpen && selectedFiles.length > 0 && (
+            <BulkDeleteFolderModal
+              folders={subFolders.filter((folder) =>
+                selectedFiles.includes(folder.id)
+              )}
+              closeModal={() => setIsBulkDeleteModalOpen(false)}
+              onDelete={bulkDeleteFolders}
             />
           )}
         </>

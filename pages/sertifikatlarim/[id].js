@@ -1,14 +1,12 @@
-// certificates/[id].js
 import Image from "next/image";
 import { FaShareFromSquare } from "react-icons/fa6";
 import { HiOutlineSave } from "react-icons/hi";
 import { FiLink } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { FcGoogle } from "react-icons/fc";
-import { FaLinkedin, FaFacebook } from "react-icons/fa";
-import ExamResultHeader from "@/components/FinishExam/ExamResultHeader";
+import { FaLinkedin, FaFacebook } from "react-icons/fa6"; // Import LinkedIn and Facebook icons
 import { useTranslation } from "react-i18next";
+
 function CertificateDetail({ certificate }) {
   const { t } = useTranslation();
   const router = useRouter();
@@ -47,15 +45,28 @@ function CertificateDetail({ certificate }) {
     );
   };
 
+  // Function to handle LinkedIn Share
+  const shareOnLinkedIn = () => {
+    const linkedInShareURL = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+      certificateURL
+    )}`;
+    window.open(linkedInShareURL, "_blank", "noopener,noreferrer");
+  };
+
+  // Function to handle Facebook Share
+  const shareOnFacebook = () => {
+    const facebookShareURL = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+      certificateURL
+    )}`;
+    window.open(facebookShareURL, "_blank", "noopener,noreferrer");
+  };
+
   // Function to handle the download
   const downloadCertificate = () => {
-    // Construct the full URL to the image
     const imageUrl = `${window.location.origin}${certificate.src}`;
-
-    // Create a temporary link element
     const link = document.createElement("a");
     link.href = imageUrl;
-    link.download = "certificate.png"; // You can set a default file name
+    link.download = "certificate.png";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -63,8 +74,6 @@ function CertificateDetail({ certificate }) {
 
   return (
     <>
-      <ExamResultHeader />
-
       <div className="flex flex-col items-center justify-center min-h-screen">
         <Image
           src={certificate.src}
@@ -74,7 +83,7 @@ function CertificateDetail({ certificate }) {
           className="object-contain"
         />
 
-        <div className="lg:w-[30%] w-[80%] m-5  flex flex-row gap-4 pt-3 mt-8">
+        <div className="lg:w-[30%] w-[80%] m-5 flex flex-row gap-4 pt-3 mt-8">
           <button
             className="flex items-center justify-center gap-3 py-3 px-4 h-11 w-full font-gilroy leading-6 rounded-md bg-buttonSecondaryDefault text-grayButtonText hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
             onClick={openModal}
@@ -91,7 +100,6 @@ function CertificateDetail({ certificate }) {
           </button>
         </div>
 
-        {/* Modal */}
         {isModalOpen && (
           <div
             className="flex flex-col fixed inset-0 z-50 items-center justify-center bg-black bg-opacity-50"
@@ -99,7 +107,7 @@ function CertificateDetail({ certificate }) {
           >
             <div
               className="bg-white p-5 rounded-lg m-5 md:m-0"
-              onClick={(e) => e.stopPropagation()} // Prevent modal from closing when clicking inside
+              onClick={(e) => e.stopPropagation()}
             >
               <div>
                 <p className="font-gilroy text-lg text-textSecondaryDefault font-medium">
@@ -108,13 +116,16 @@ function CertificateDetail({ certificate }) {
               </div>
 
               <div className="flex justify-center gap-4 mt-6">
-                <button className="rounded-full bg-gray-100 p-4">
-                  <FcGoogle className="h-8 w-8" />
-                </button>
-                <button className="rounded-full bg-gray-100 p-4">
+                <button
+                  className="rounded-full bg-gray-100 p-4 hover:bg-gray-200 transition-colors"
+                  onClick={shareOnLinkedIn}
+                >
                   <FaLinkedin className="h-8 w-8 fill-[#0A66C2]" />
                 </button>
-                <button className="rounded-full bg-gray-100 p-4">
+                <button
+                  className="rounded-full bg-gray-100 p-4 hover:bg-gray-200 transition-colors"
+                  onClick={shareOnFacebook}
+                >
                   <FaFacebook className="h-8 w-8 fill-[#0866FF]" />
                 </button>
               </div>
@@ -143,36 +154,6 @@ function CertificateDetail({ certificate }) {
       </div>
     </>
   );
-}
-
-export async function getStaticPaths() {
-  // Define the paths you want to pre-render
-  const paths = [
-    { params: { id: "1" } },
-    { params: { id: "2" } },
-    { params: { id: "3" } },
-    { params: { id: "4" } },
-    { params: { id: "5" } },
-  ];
-
-  return { paths, fallback: false };
-}
-
-export async function getStaticProps({ params }) {
-  // Fetch certificate data based on the ID
-  const certificates = [
-    { id: 1, src: "/img/Sertifikat1.png" },
-    { id: 2, src: "/img/Sertifikat1.png" },
-    { id: 3, src: "/img/Sertifikat1.png" },
-    { id: 4, src: "/img/Sertifikat1.png" },
-    { id: 5, src: "/img/Sertifikat1.png" },
-  ];
-
-  const certificate = certificates.find(
-    (cert) => cert.id.toString() === params.id
-  );
-
-  return { props: { certificate } };
 }
 
 export default CertificateDetail;

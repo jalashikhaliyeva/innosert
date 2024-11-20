@@ -14,42 +14,48 @@ function AddSubFolderModal({ closeModal, addNewSubFolder }) {
   const { slug } = router.query; //? thats is slug
   console.log(router.query, "sub folder Query");
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+// AddSubFolderModal.jsx
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!folderName) {
-      setInputError(true);
-      return;
-    }
+  if (!folderName) {
+    setInputError(true);
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
 
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      // Extract the last segment of the slug array
-      const folderPath = slug ? slug[slug.length - 1] : "";
+    // Extract the last segment of the slug array
+    const folderPath = slug ? slug[slug.length - 1] : "";
 
-      // Updated request to pass folderName in the body and include the last slug segment in the URL
-      const response = await axios.post(
-        `https://innocert-admin.markup.az/api/folder/create/${folderPath}`,
-        { name: folderName }, // Pass the subfolder name in the body
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+    // Updated request to pass folderName in the body and include the last slug segment in the URL
+    const response = await axios.post(
+      `https://innocert-admin.markup.az/api/folder/create/${folderPath}`,
+      { name: folderName }, // Pass the subfolder name in the body
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-      console.log(response.data, "response add SUB folder modal");
-      addNewSubFolder(response.data);
-      closeModal();
-    } catch (error) {
-      console.error("Error creating SUB folder:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    console.log(response.data, "response add SUB folder modal");
+
+    // Pass the complete folder data to the parent
+    const newSubFolder = response.data.data; // Adjust based on your API response structure
+    addNewSubFolder(newSubFolder);
+
+    closeModal();
+  } catch (error) {
+    console.error("Error creating SUB folder:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const handleInputChange = (e) => {
     setFolderName(e.target.value);
