@@ -960,59 +960,62 @@ const HeaderInternal = () => {
                       user?.data?.roles === "Teacher") &&
                       activeCompanies.length > 0 && (
                         <div className="relative z-50">
-                          <div
-                            className="flex items-center space-x-1 mb-2 mt-2 px-4 py-2 cursor-pointer rounded-lg hover:bg-gray-100"
-                            onClick={toggleCompanyDropdown}
-                          >
-                            <RiBuildingLine className="size-[20px] fill-grayText" />
-                            <p className="text-md font-gilroy  font-normal leading-6 text-textSecondaryDefault">
-                              {t("my_companies")}
-                            </p>
-                            {companyDropdownOpen ? (
-                              <FiChevronUp className="ml-2 text-grayText" />
-                            ) : (
-                              <FiChevronDown className="ml-2 text-grayText" />
-                            )}
-                          </div>
-
-                          {/* Dropdown menu for active companies */}
-                          {companyDropdownOpen && (
-                            <div className="relative w-full z-10 mt-2">
-                              {activeCompanies.map((company) => (
-                                <div
-                                  key={company.slug}
-                                  className="flex items-center cursor-pointer pb-2 px-4 py-2 hover:bg-gray-100 rounded-lg relative group"
-                                  onClick={() => handleCompanyClick(company)}
-                                >
-                                  {company.logo ? (
-                                    <Image
-                                      width={24}
-                                      height={24}
-                                      src={company.logo}
-                                      alt={company.name}
-                                      className="w-6 h-6 rounded-full mr-4 object-cover"
-                                    />
-                                  ) : (
-                                    <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4 ">
-                                      {company.name[0]}
-                                    </div>
-                                  )}
-                                  <p
-                                    className="font-gilroy text-base font-normal leading-6 max-w-[100px] truncate"
-                                    title={company.name} // Tooltip with full company name
-                                  >
-                                    {company.name}
-                                  </p>
-
-                                  {/* Custom tooltip */}
-                                  <div className="absolute left-0 bottom-full mb-2 p-2 min-w-max bg-white shadow-lg border z-20 text-textSecondaryDefault text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                    {company.name}
-                                  </div>
-                                </div>
-                              ))}
-                            </div>
+                        <div
+                          className="flex items-center space-x-1 mb-2 mt-2 px-4 py-2 cursor-pointer rounded-lg hover:bg-gray-100"
+                          onClick={toggleCompanyDropdown}
+                        >
+                          <RiBuildingLine className="size-[20px] fill-grayText" />
+                          <p className="text-md font-gilroy font-normal leading-6 text-textSecondaryDefault">
+                            {t("my_companies")}
+                          </p>
+                          {companyDropdownOpen ? (
+                            <FiChevronUp className="ml-2 text-grayText" />
+                          ) : (
+                            <FiChevronDown className="ml-2 text-grayText" />
                           )}
                         </div>
+                      
+                        {/* Dropdown menu for active companies */}
+                        {companyDropdownOpen && (
+                          <div className="relative w-full z-10 mt-2">
+                            {activeCompanies.map((company) => (
+                              <div
+                                key={company.slug}
+                                className="flex items-center cursor-pointer pb-2 px-4 py-2 hover:bg-gray-100 rounded-lg relative group"
+                                onClick={() => handleCompanyClick(company)}
+                              >
+                                {company.logo ? (
+                                  <Image
+                                    width={24}
+                                    height={24}
+                                    src={company.logo}
+                                    alt={company.name}
+                                    className="w-6 h-6 rounded-full mr-4 object-cover"
+                                  />
+                                ) : (
+                                  <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4">
+                                    {company.name[0]}
+                                  </div>
+                                )}
+                                <p
+                                  className="font-gilroy text-base font-normal leading-6 max-w-[100px] truncate"
+                                  title={company.name} // Tooltip with full company name
+                                >
+                                  {company.name}
+                                </p>
+                      
+                                {/* Custom tooltip */}
+                                {company.name.length > 9 && (
+                                  <div className="absolute right-full ml-2 top-1/2 -translate-y-1/2 p-2 min-w-max bg-white shadow-lg border z-20 text-textSecondaryDefault text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                    {company.name}
+                                  </div>
+                                )}
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      
                       )}
 
                     <li className="mb-2">
