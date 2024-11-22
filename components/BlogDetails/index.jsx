@@ -116,7 +116,7 @@ function BlogDetails({ dynamicName }) {
           <div className="flex items-center space-x-2">
             <MdOutlineRemoveRedEye className="text-grayButtonText" size={18} />
             <p>
-              {blog.views || 0} view{blog.views !== 1 ? "s" : ""}
+              {blog.view_count}
             </p>
           </div>
         </div>

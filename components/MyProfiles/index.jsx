@@ -593,7 +593,7 @@ function MyProfiles() {
             </div>
             <button
               onClick={toggleModal}
-              className="bg-buttonPrimaryDefault w-[48%] md:w-[13%]  hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
+              className="bg-buttonPrimaryDefault w-[41%] md:w-[13%]  hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
             >
               <FaPlus className="mt-1 mr-2" /> {t("create_company")}
             </button>
@@ -666,7 +666,7 @@ function MyProfiles() {
                 transition: "max-height 0.3s ease",
                 overflow: "hidden",
               }}
-              className="overflow-hidden mb-[100px]"
+              className="overflow-hidden"
             >
               <div className="p-6 mt-4 bg-bodyColor rounded-3xl border">
                 {/* General Tab */}
@@ -1052,7 +1052,7 @@ function MyProfiles() {
                     <>
                       <li
                         key={company.id}
-                        className="bg-bodyColor p-6 px-14 mt-4 mb-4 rounded-3xl border flex flex-col"
+                        className="bg-bodyColor p-6 px-6 md:px-14 mt-4 mb-4 rounded-3xl border flex flex-col"
                       >
                         <div className="flex justify-between items-center">
                           <div className="flex items-center ">
@@ -1065,11 +1065,11 @@ function MyProfiles() {
                             />
 
                             <div>
-                              <h3 className="text-xl font-gilroy font-medium leading-7 text-textSecondaryDefault mb-1">
+                              <h3 className="text-md md:text-xl font-gilroy font-medium leading-7 text-textSecondaryDefault mb-1">
                                 {company.name}
                               </h3>
                               <p
-                                className={`font-medium font-gilroy text-base ${
+                                className={`font-medium font-gilroy text-sm md:text-base ${
                                   company.status
                                     ? "text-green-500"
                                     : "text-yellow-500"
@@ -1080,20 +1080,20 @@ function MyProfiles() {
                             </div>
                           </div>
 
-                          <div>
-                            <button
-                              onClick={() => toggleDropdown(company.id)}
-                              className="text-textSecondaryDefault font-gilroy text-base leading-6 font-normal cursor-pointer flex items-center px-4 py-2"
-                            >
+                          <div
+                            className="flex items-center justify-center "
+                            onClick={() => toggleDropdown(company.id)}
+                          >
+                            <button className="hidden md:block text-textSecondaryDefault font-gilroy text-base leading-6 font-normal cursor-pointer flex items-center ">
                               Məlumatlar
-                              <span className="ml-2">
-                                {isOpen ? (
-                                  <IoChevronUpSharp className="size-3" />
-                                ) : (
-                                  <IoChevronDownSharp className="size-3" />
-                                )}
-                              </span>
                             </button>
+                            <span className="ml-2">
+                              {isOpen ? (
+                                <IoChevronUpSharp className="size-3" />
+                              ) : (
+                                <IoChevronDownSharp className="size-3" />
+                              )}
+                            </span>
                           </div>
                         </div>
                       </li>
@@ -1347,7 +1347,9 @@ function MyProfiles() {
                 {t("form.phone")}
               </label>
               <InputMask
-                mask="+994 99 999 99 99"
+                mask="+999 99 999 99 99" // Escaped '9's to make '994' static
+                maskChar=" " // Replaces '_' with space
+                alwaysShowMask={true} // Ensures the mask is always visibl=
                 value={companyPhoneNumber}
                 onChange={(e) => setCompanyPhoneNumber(e.target.value)}
                 className={`mt-2 py-3 px-4 w-full border text-textSecondaryDefault rounded-lg font-gilroy text-base bg-bodyColor focus:outline-none ${

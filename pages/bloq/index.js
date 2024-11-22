@@ -5,8 +5,11 @@ import Footer from "@/components/Footer";
 import HeaderInternal from "@/components/HeaderInternal";
 import LoginModal from "@/components/Login";
 import React, { useState } from "react";
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 
 function Blog() {
+  const { t } = useTranslation();
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
 
   const closeModals = () => {
@@ -15,6 +18,10 @@ function Blog() {
 
   return (
     <>
+    <Head>
+        <title>{t("blog")}</title>
+       
+      </Head>
       <HeaderInternal />
       <Container>
         <Breadcrumb />

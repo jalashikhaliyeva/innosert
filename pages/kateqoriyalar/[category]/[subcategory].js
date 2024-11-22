@@ -10,12 +10,15 @@ import SortTitleExams from "@/components/SortTitleExams";
 import { UserContext } from "@/shared/context/UserContext";
 import ExamRulesModal from "@/components/ExamRulesModal";
 import LoginModal from "@/components/Login";
+import { useTranslation } from "react-i18next";
+import Head from "next/head";
 
 const SubcategoryPage = ({ openRegisterModal, openLoginModal }) => {
   const router = useRouter();
   const { user } = useContext(UserContext);
   const { category, subcategory } = router.query;
   console.log(category, subcategory, "subcategory sub");
+  const { t } = useTranslation();
 
   const [exams, setExams] = useState([]);
   const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
@@ -70,6 +73,9 @@ const SubcategoryPage = ({ openRegisterModal, openLoginModal }) => {
 
   return (
     <div>
+      <Head>
+        <title>{t("categories")}</title>
+      </Head>
       <HeaderInternal />
 
       <section className="my-28">
@@ -86,7 +92,7 @@ const SubcategoryPage = ({ openRegisterModal, openLoginModal }) => {
             />
           ) : (
             <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
-            &quot;{subcategory}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
+              &quot;{subcategory}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
             </p>
           )}
         </Container>

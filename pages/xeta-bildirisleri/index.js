@@ -11,9 +11,11 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import { UserContext } from "@/shared/context/UserContext";
 import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 import TeacherSidebar from "@/components/TeacherSidebar";
-
+import { useTranslation } from "react-i18next";
+import Head from "next/head";
 function XetaBildirisleri() {
   const { user } = useContext(UserContext);
+  const { t } = useTranslation();
   const [selectedRows, setSelectedRows] = useState([]);
   const [reportData, setReportData] = useState([]);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
@@ -48,6 +50,9 @@ function XetaBildirisleri() {
 
   return (
     <>
+     <Head>
+        <title>{t("navigation.reportedErrors")}</title>
+      </Head>
       <div className="hidden lg:block ">
         <HeaderInternal />
       </div>

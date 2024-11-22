@@ -9,8 +9,10 @@ import HeaderInternal from "@/components/HeaderInternal";
 import BlogDetails from "@/components/BlogDetails";
 import Breadcrumb from "@/components/Breadcrumb";
 import Spinner from "@/components/Spinner";
+import { useTranslation } from "react-i18next";
 
 function BlogPost() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { slug } = router.query; // Changed from 'id' to 'slug'
 
@@ -21,6 +23,7 @@ function BlogPost() {
     return (
       <>
         <Head>
+        <title>{t("blog")}</title>
           <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/icon?family=Material+Icons"
@@ -41,6 +44,7 @@ function BlogPost() {
   return (
     <>
       <Head>
+      <title>{t("blog")}</title>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/icon?family=Material+Icons"

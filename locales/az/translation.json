@@ -279,5 +279,9 @@
     "helpCenter": "Kömək Mərkəzi",
     "privacyPolicy": "Məxfilik Siyasəti",
     "siteMap": "Sayt xəritəsi"
-  }
+  },
+  "views": "Baxış",
+  "examNotFound": "Kod səhvdir, imtahan tapılmadı.",
+  "examFound": "İmtahan uğurla tapıldı.",
+  "other": "Digər"
 }

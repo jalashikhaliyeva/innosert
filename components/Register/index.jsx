@@ -146,7 +146,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
           onClick={handleOutsideClick}
         >
           <div
-            className="bg-bodyColor rounded-3xl shadow-lg w-full max-w-md p-10 relative"
+            className="bg-bodyColor rounded-3xl shadow-lg w-full md:max-w-md md:p-10 p-7 max-w-[350px] relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button

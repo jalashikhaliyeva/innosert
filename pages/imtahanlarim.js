@@ -12,6 +12,7 @@ import { useSavedExams } from "@/shared/context/SavedExamsContext";
 import { useTranslation } from "react-i18next";
 import LoginModal from "@/components/Login";
 import ExamRulesModal from "@/components/ExamRulesModal"; // Import ExamRulesModal
+import Head from "next/head";
 
 function Imtahanlarim() {
   const { t } = useTranslation();
@@ -66,6 +67,9 @@ function Imtahanlarim() {
 
   return (
     <>
+      <Head>
+        <title>{t("titles.myExams")}</title>
+      </Head>
       <HeaderInternal />
       <div className="flex">
         <div className="hidden md:block md:w-[20%]">
@@ -93,10 +97,12 @@ function Imtahanlarim() {
           </InternalContainer>
         </div>
       </div>
-
       {/* Render Modals */}
       {isLoginModalOpen && <LoginModal onClose={closeLoginModal} />}
-      {isExamRulesModalOpen && <ExamRulesModal onClose={closeExamRulesModal} />} {/* Render ExamRulesModal */}
+      {isExamRulesModalOpen && (
+        <ExamRulesModal onClose={closeExamRulesModal} />
+      )}{" "}
+      {/* Render ExamRulesModal */}
     </>
   );
 }

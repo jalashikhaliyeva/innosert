@@ -5,10 +5,16 @@ import InternalContainer from "@/components/InternalContainer";
 import MyProfiles from "@/components/MyProfiles";
 import Sidebar from "@/components/Sidebar";
 import React from "react";
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 
 function Hesablarim() {
+  const { t } = useTranslation();
   return (
     <>
+      <Head>
+        <title>{t("my_accounts")}</title>
+      </Head>
       <HeaderInternal />
       <div className="flex">
         <div className="hidden md:block  md:w-[20%]">

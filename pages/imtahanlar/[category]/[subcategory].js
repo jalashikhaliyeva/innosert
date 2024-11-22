@@ -13,13 +13,15 @@ import ReactPaginate from "react-paginate";
 import ExamRulesModal from "@/components/ExamRulesModal";
 import LoginModal from "@/components/Login";
 import { UserContext } from "@/shared/context/UserContext";
-
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 const SubcategoryPage = ({
   openRegisterModal,
   openLoginModal,
   landingInfo: initialLandingInfo,
   settingInfo: initialSettingInfo,
 }) => {
+  const { t } = useTranslation();
   const router = useRouter();
   const { user } = useContext(UserContext);
   const { category, subcategory } = router.query;
@@ -128,6 +130,14 @@ const SubcategoryPage = ({
 
   return (
     <div>
+      <Head>
+        <title>{t("labels.exams")}</title>
+        {/* <meta name="description" content={landingInfo?.metatags?.meta_desc} />
+        <meta
+          name="keywords"
+          content={landingInfo?.metatags?.meta_keywords || "default, keywords"}
+        /> */}
+      </Head>
       <Header
         openRegisterModal={openRegisterModal}
         scrollToFaq={() =>
@@ -147,7 +157,7 @@ const SubcategoryPage = ({
 
           {loading ? (
             <Spinner />
-          ) : paginateExams.length > 0 ? (
+          ) : paginateExams?.length > 0 ? (
             <ExamCard
               openLoginModal={handleLoginOrRulesClick}
               openRegisterModal={handleLoginOrRulesClick}

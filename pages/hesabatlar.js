@@ -1,71 +1,3 @@
-// import Breadcrumb from "@/components/Breadcrumb";
-// import CompanySidebar from "@/components/CompanySidebar";
-// import HeaderInternal from "@/components/HeaderInternal";
-// import InternalContainer from "@/components/InternalContainer";
-// import ReportsTable from "@/components/ReportsTable";
-// import ReportStatistics from "@/components/ReportStatistics";
-// import ReportTitleNavigationCalendar from "@/components/ReportTitleNavigationCalendar";
-// import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
-// import SuallarTable from "@/components/SuallarTable";
-// import SuallarTableNavigationTitle from "@/components/SuallarTableNavigationTitle";
-// import CompanyContext from "@/shared/context/CompanyContext";
-// import axios from "axios";
-// import { useContext, useEffect, useState } from "react";
-
-// function Hesabatlar() {
-//   const [reportData, setReportData] = useState(null);
-//   const { selectedCompany } = useContext(CompanyContext);
-//   const [filteredDateRange, setFilteredDateRange] = useState(null);
-//   useEffect(() => {
-//     // Fetch the token from local storage
-//     const token = localStorage.getItem("token");
-
-//     if (token) {
-//       // Make the API call to fetch reports
-//       axios
-//         .get("https://innocert-admin.markup.az/api/me/reports", {
-//           headers: {
-//             Authorization: `Bearer ${token}`,
-//             "X-Company-ID": selectedCompany.id,
-//           },
-//         })
-//         .then((response) => {
-//           console.log(response.data.data, "response data report");
-
-//           setReportData(response.data.data);
-//         })
-//         .catch((error) => {
-//           console.error("Error fetching reports:", error);
-//         });
-//     }
-//   }, []);
-//   return (
-//     <>
-//       <div className="hidden lg:block ">
-//         <HeaderInternal />
-//       </div>
-//       <div className="block  lg:hidden">
-//         <OwnerDashboardHeader />
-//       </div>
-//       <div className="flex">
-//         <div className="hidden lg:block md:w-[20%]">
-//           <CompanySidebar />
-//         </div>
-
-//         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
-//           <InternalContainer>
-//             <Breadcrumb />
-//             <ReportTitleNavigationCalendar  setFilteredDateRange={setFilteredDateRange}  />
-//             <ReportStatistics reportData={reportData} />
-//             <ReportsTable reportData={reportData}  filteredDateRange={filteredDateRange}  />
-//           </InternalContainer>
-//         </div>
-//       </div>
-//     </>
-//   );
-// }
-
-// export default Hesabatlar;
 import Breadcrumb from "@/components/Breadcrumb";
 import CompanySidebar from "@/components/CompanySidebar";
 import HeaderInternal from "@/components/HeaderInternal";
@@ -76,12 +8,15 @@ import ReportTitleNavigationCalendar from "@/components/ReportTitleNavigationCal
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
 import CompanyContext from "@/shared/context/CompanyContext";
 import axios from "axios";
+import Head from "next/head";
 import { useContext, useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 function Hesabatlar() {
   const [reportData, setReportData] = useState(null);
   const { selectedCompany } = useContext(CompanyContext);
-  
+  const { t } = useTranslation();
+
   // New state for date filter
   const [dateFilter, setDateFilter] = useState({
     from: null, // Will hold Date objects
@@ -89,6 +24,12 @@ function Hesabatlar() {
   });
 
   useEffect(() => {
+    // Check if selectedCompany is available
+    if (!selectedCompany) {
+      console.warn("Selected company is not available.");
+      return;
+    }
+
     // Fetch the token from local storage
     const token = localStorage.getItem("token");
 
@@ -109,7 +50,7 @@ function Hesabatlar() {
           console.error("Error fetching reports:", error);
         });
     }
-  }, [selectedCompany.id]);
+  }, [selectedCompany]); // Depend on selectedCompany instead of selectedCompany.id
 
   // Function to handle date filter changes
   const handleDateFilterChange = (newFilter) => {
@@ -126,17 +67,17 @@ function Hesabatlar() {
       if (!item.tarix) return false;
 
       const itemDate = new Date(item.tarix);
-      
+
       // If both from and to are set
       if (from && to) {
         return itemDate >= from && itemDate <= to;
       }
-      
+
       // If only from is set
       if (from) {
         return itemDate >= from;
       }
-      
+
       // If only to is set
       if (to) {
         return itemDate <= to;
@@ -149,12 +90,24 @@ function Hesabatlar() {
 
   const filteredReportData = getFilteredReportData();
 
+  // Optional: Render a loading state if selectedCompany is not yet available
+  if (!selectedCompany) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>{t("loading")}</p>
+      </div>
+    );
+  }
+
   return (
     <>
+      <Head>
+        <title>{t("navigation.reports")}</title>
+      </Head>
       <div className="hidden lg:block ">
         <HeaderInternal />
       </div>
-      <div className="block  lg:hidden">
+      <div className="block lg:hidden">
         <OwnerDashboardHeader />
       </div>
       <div className="flex">
@@ -165,12 +118,14 @@ function Hesabatlar() {
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
-            
+
             {/* Pass the handler to ReportTitleNavigationCalendar */}
-            <ReportTitleNavigationCalendar onFilterChange={handleDateFilterChange} />
-            
+            <ReportTitleNavigationCalendar
+              onFilterChange={handleDateFilterChange}
+            />
+
             <ReportStatistics reportData={reportData} />
-            
+
             {/* Pass the filtered data to ReportsTable */}
             <ReportsTable reportData={{ history: filteredReportData }} />
           </InternalContainer>

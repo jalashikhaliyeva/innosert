@@ -8,8 +8,10 @@ import { getLandingInfo } from "@/services/getLandingInfo";
 import { getAboutInfo } from "@/services/getAboutInfo";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router"; // Import useRouter for language handling
-
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 function Haqqimizda({ landingInfo, openRegisterModal }) {
+  const { t } = useTranslation();
   const [aboutInfo, setAboutInfo] = useState(null);
   const router = useRouter(); // useRouter to get the locale
   // console.log(router.locale, "router locale about page");
@@ -32,8 +34,18 @@ function Haqqimizda({ landingInfo, openRegisterModal }) {
     return <Spinner />;
   }
 
+  console.log(aboutInfo, "aboutInfo");
+
   return (
     <>
+      <Head>
+        <title>{t("about")}</title>
+        <meta name="description" content={aboutInfo?.metatags?.meta_desc} />
+        <meta
+          name="keywords"
+          content={aboutInfo?.metatags?.meta_keywords || "default, keywords"}
+        />
+      </Head>
       <Header openRegisterModal={openRegisterModal} />
       <ImageSectionAbout aboutInfo={aboutInfo} />
       <AboutSection aboutInfo={aboutInfo} />

@@ -18,7 +18,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import LanguageSwitcher from "@/shared/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import OTP from "../OTP";
-
+// import { useRouter } from "next/router";
 const Header = ({
   openRegisterModal,
   scrollToFooter,
@@ -26,6 +26,8 @@ const Header = ({
   scrollToCertificate,
 }) => {
   const { t } = useTranslation();
+  const router = useRouter();
+  const lang = router.locale || "az";
   const [settingInfo, setSettingInfo] = useState(null);
   const [isMenuOpen, setMenuOpen] = useState(false); // New state for menu visibility
   const { push, pathname } = useRouter();
@@ -49,7 +51,7 @@ const Header = ({
   useEffect(() => {
     const fetchSettingInfo = async () => {
       try {
-        const data = await getSettingInfo();
+        const data = await getSettingInfo(lang);
         const categories = data?.category;
         setSettingInfo(categories);
       } catch (error) {
@@ -355,8 +357,9 @@ const Header = ({
               }}
             >
               <button
+                onClick={() => router.push("/imtahanlar")}
                 id="dropdownDelayButton"
-                className="text-textSecondaryDefault text-lg inline-flex items-center font-gilroy font-medium focus:outline-none text-center py-3 px-4 hover:text-textHoverBlue"
+                className="text-textSecondaryDefault cursor-pointer text-lg inline-flex items-center font-gilroy font-medium focus:outline-none text-center py-3 px-4 hover:text-textHoverBlue"
                 type="button"
               >
                 {t("exams")}
@@ -426,9 +429,10 @@ const Header = ({
                   {mainCategories?.length > 5 && (
                     <li
                       className="cursor-pointer block text-lg my-2  hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
-                      onClick={() => setLoginModalOpen(true)} // Open login modal
+                      //  onClick={() => setLoginModalOpen(true)}
+                      onClick={() => router.push("/imtahanlar")}
                     >
-                      Digər
+                      {t("other")}
                     </li>
                   )}
                 </ul>

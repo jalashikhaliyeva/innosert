@@ -62,7 +62,7 @@ function AddFolderModal({ closeModal, addNewFolder, fetchFiles }) {
         onClick={closeModal}
       ></div>
 
-      <div className="bg-boxGrayBodyColor z-50 p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[400px]">
+      <div className="bg-boxGrayBodyColor z-50 p-7 md:p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[300px] md:min-w-[400px]">
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 focus:outline-none"
           onClick={closeModal}

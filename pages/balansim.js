@@ -9,10 +9,16 @@ import BalanceTable from "@/components/BalanceTable";
 import BalanceHistory from "@/components/BalanceHistory";
 import React from "react";
 import TitleNavigation from "@/components/TitleNavigation";
+import { useTranslation } from "react-i18next";
+import Head from "next/head";
 
 function Balansim() {
+  const { t } = useTranslation();
   return (
     <>
+      <Head>
+        <title>{t("titles.balansim")}</title>
+      </Head>
       <HeaderInternal />
       <div className="flex">
         <div className="hidden md:block  md:w-[20%]">

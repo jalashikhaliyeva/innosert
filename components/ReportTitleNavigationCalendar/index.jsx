@@ -105,7 +105,7 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
         {openFilter && (
           <div
             ref={dropdownRef}
-            className="absolute mt-2 bg-white border rounded shadow-lg p-4 w-72"
+            className="absolute mt-2 bg-white border rounded shadow-lg p-4 w-72 -ml-56 lg:-ml-0"
           >
             <div className="flex flex-col space-y-4">
               {/* From Date */}

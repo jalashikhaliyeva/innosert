@@ -1,5 +1,4 @@
 // Home.jsx
-
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import HeaderInternal from "@/components/HeaderInternal";
 import Container from "@/components/Container";
@@ -17,6 +16,7 @@ import Spinner from "@/components/Spinner";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import ReactPaginate from "react-paginate";
+import Head from "next/head";
 
 function Home() {
   const {
@@ -165,6 +165,14 @@ function Home() {
 
   return (
     <>
+      <Head>
+        <title>{t("ana səhifə")}</title>
+        {/* <meta name="description" content={landingInfo?.metatags?.meta_desc} />
+        <meta
+          name="keywords"
+          content={landingInfo?.metatags?.meta_keywords || "default, keywords"}
+        /> */}
+      </Head>
       <HeaderInternal />
       <Container>
         <div className="mt-32 flex flex-row w-full justify-between items-start">

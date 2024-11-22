@@ -19,7 +19,6 @@ function AddMemberModal({ closeModal }) {
     return emailRegex.test(email);
   };
 
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!email || !isValidEmail(email)) {
@@ -27,14 +26,18 @@ function AddMemberModal({ closeModal }) {
       return;
     }
     setLoading(true);
-  
+
     try {
       const token = localStorage.getItem("token");
-      const response = await addMemberToCompany(email, token, selectedCompany.id);
+      const response = await addMemberToCompany(
+        email,
+        token,
+        selectedCompany.id
+      );
       console.log("User added successfully:", response);
-  
+
       toast.success("İstifadəçi uğurla əlavə olundu!"); // Show success toast
-  
+
       // Add a delay before closing the modal
       setTimeout(() => {
         setLoading(false);
@@ -46,7 +49,7 @@ function AddMemberModal({ closeModal }) {
       setLoading(false);
     }
   };
-  
+
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
   //   if (!email || !isValidEmail(email)) {
@@ -117,7 +120,7 @@ function AddMemberModal({ closeModal }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center  m-20 ">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black opacity-50"
@@ -125,7 +128,7 @@ function AddMemberModal({ closeModal }) {
       ></div>
 
       {/* Modal Content */}
-      <div className="bg-boxGrayBodyColor z-50 p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[400px] w-[500px]">
+      <div className="bg-boxGrayBodyColor z-50  p-5 md:p-10 flex flex-col gap-7 justify-center rounded-lg shadow-lg relative min-w-[300px]  md:min-w-[400px] w-[500px]">
         {/* Close Button */}
         <button
           className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 focus:outline-none"

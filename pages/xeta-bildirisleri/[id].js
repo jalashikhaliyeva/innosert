@@ -11,9 +11,12 @@ import { useRouter } from "next/router";
 import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 import { UserContext } from "@/shared/context/UserContext";
 import TeacherSidebar from "@/components/TeacherSidebar";
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 
 function ReportsSingle() {
   const { user } = useContext(UserContext);
+  const { t } = useTranslation();
   const router = useRouter();
   const { id } = router.query;
   const { selectedCompany } = useContext(CompanyContext);
@@ -67,17 +70,20 @@ function ReportsSingle() {
 
   return (
     <>
+      <Head>
+        <title>{t("navigation.reportedErrors")}</title>
+      </Head>
       <div className="hidden lg:block ">
         <HeaderInternal />
       </div>
       <div className="block lg:hidden">
-      {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
+        {user?.data.roles === "Teacher" && <TeacherDashboardHeader />}
         {user?.data.roles === "Owner" && <OwnerDashboardHeader />}
       </div>
       <div className="flex">
         <div className="hidden lg:block md:w-[20%]">
-        {user?.data.roles === "Teacher" && <TeacherSidebar />}
-        {user?.data.roles === "Owner" && <CompanySidebar />}
+          {user?.data.roles === "Teacher" && <TeacherSidebar />}
+          {user?.data.roles === "Owner" && <CompanySidebar />}
         </div>
 
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">

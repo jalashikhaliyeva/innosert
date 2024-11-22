@@ -6,11 +6,17 @@ import MyCertificates from "@/components/MyCertificates";
 import MyProfiles from "@/components/MyProfiles";
 import Sidebar from "@/components/Sidebar";
 import TitleNavigation from "@/components/TitleNavigation";
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 import React from "react";
 
 function Sertifikatlarim() {
+  const { t } = useTranslation();
   return (
     <>
+      <Head>
+        <title>{t("titles.sertifikatlarim")}</title>
+      </Head>
       <HeaderInternal />
       <div className="flex">
         <div className="hidden md:block  md:w-[20%]">

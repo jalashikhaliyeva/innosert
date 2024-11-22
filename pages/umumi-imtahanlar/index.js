@@ -18,12 +18,14 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import DeleteExamModal from "@/components/DeleteExamModal";
 import EditExamFolderModal from "@/components/EditExamFolderModal";
 import { UserContext } from "@/shared/context/UserContext";
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 
 function UmumiImtahanlar() {
   const { user } = useContext(UserContext);
   const [folders, setFolders] = useState([]);
   const [selectedExamsToDelete, setSelectedExamsToDelete] = useState([]);
-
+  const { t } = useTranslation();
   const { selectedCompany } = useContext(CompanyContext);
   const openDeleteMultipleModal = () => {
     setSelectedExamsToDelete(selectedExams);
@@ -45,8 +47,7 @@ function UmumiImtahanlar() {
           }
         );
         setFolders(response.data.data);
-        console.log(response.data.data , "response.data.data");
-        
+        console.log(response.data.data, "response.data.data");
       } else {
         console.error("Token or Company ID is missing");
       }
@@ -162,6 +163,9 @@ function UmumiImtahanlar() {
 
   return (
     <>
+      <Head>
+        <title>{t("navigation.exams")}</title>
+      </Head>
       <div className="hidden lg:block ">
         <HeaderInternal />
       </div>

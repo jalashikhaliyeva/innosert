@@ -10,9 +10,11 @@ import ReactPaginate from "react-paginate";
 import ExamRulesModal from "@/components/ExamRulesModal";
 import LoginModal from "@/components/Login";
 import { UserContext } from "@/shared/context/UserContext";
-
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 function CategoryPage({ openRegisterModal, openLoginModal }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const { user } = useContext(UserContext);
   const { category } = router.query;
   const [exams, setExams] = useState([]);
@@ -27,7 +29,8 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
   useEffect(() => {
     const fetchExams = async () => {
       try {
-        const token = typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        const token =
+          typeof window !== "undefined" ? localStorage.getItem("token") : null;
         const response = await fetch(
           `https://innocert-admin.markup.az/api/exams/${category}`,
           {
@@ -94,6 +97,14 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
 
   return (
     <main>
+      <Head>
+        <title>{t("labels.exams")}</title>
+        {/* <meta name="description" content={landingInfo?.metatags?.meta_desc} />
+        <meta
+          name="keywords"
+          content={landingInfo?.metatags?.meta_keywords || "default, keywords"}
+        /> */}
+      </Head>
       <Header
         openRegisterModal={openRegisterModal}
         scrollToFaq={() => {}}
@@ -150,14 +161,16 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
                     currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
                   }
                   nextLinkStyle={
-                    currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
+                    currentPage === pageCount - 1
+                      ? { cursor: "not-allowed" }
+                      : {}
                   }
                 />
               )}
             </>
           ) : (
             <p className="text-center font-gilroy text-lg text-gray-500 py-20">
-                &quot;{category}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
+              &quot;{category}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
             </p>
           )}
         </Container>

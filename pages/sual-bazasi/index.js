@@ -20,6 +20,8 @@ import { TbFolder, TbTable } from "react-icons/tb";
 import Spinner from "@/components/Spinner";
 import { useTranslation } from "react-i18next";
 import BulkDeleteFolderModal from "@/components/BulkDeleteFolderModal";
+import Head from "next/head";
+
 function SualBazasi() {
   const { t } = useTranslation();
   const { user } = useContext(UserContext);
@@ -101,6 +103,9 @@ function SualBazasi() {
 
   return (
     <>
+      <Head>
+        <title>{t("navigation.questionBank")}</title>
+      </Head>
       {loading ? (
         <Spinner />
       ) : (
@@ -119,7 +124,7 @@ function SualBazasi() {
               {user?.data.roles === "Owner" && <CompanySidebar />}
             </div>
 
-            <div className="w-[80%]">
+            <div className="w-full lg:w-[80%]">
               <InternalContainer>
                 <Breadcrumb />
 
@@ -154,9 +159,9 @@ function SualBazasi() {
                   // Render Tabs and Conditional Components for Other Roles
                   <>
                     {/* Tab Navigation */}
-                    <div className="flex flex-row gap-4 mb-6 font-gilroy mt-5 lg:mt-0">
+                    <div className="flex flex-row gap-1 mb-6 font-gilroy mt-5 lg:mt-0">
                       <button
-                        className={`flex items-center gap-2 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
+                        className={`flex items-center gap-2 md:gap-4 text-base lg:text-lg px-4 py-3 rounded-lg font-normal leading-6 ${
                           activeTab === "folders"
                             ? "bg-blue100 text-blue400"
                             : "text-neutral700"

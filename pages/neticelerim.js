@@ -13,6 +13,7 @@ import TitleNavigation from "@/components/TitleNavigation";
 import Spinner from "@/components/Spinner";
 import ReactPaginate from "react-paginate";
 import { useTranslation } from "react-i18next";
+import Head from "next/head";
 
 function Neticelerim() {
   const [results, setResults] = useState([]);
@@ -69,6 +70,10 @@ function Neticelerim() {
 
   return (
     <>
+     <Head>
+        <title>{t("titles.neticelerim")}</title>
+ 
+      </Head>
       <HeaderInternal />
       <div className="flex">
         <div className="hidden md:block md:w-[20%]">

@@ -10,7 +10,8 @@ import axios from "axios";
 import CompanyContext from "@/shared/context/CompanyContext";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
-
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 function ImtahanYarat() {
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
@@ -22,7 +23,7 @@ function ImtahanYarat() {
   } = useContext(UserContext);
   const { selectedCompany } = useContext(CompanyContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
-
+  const { t } = useTranslation();
   const hasEnoughQuestions = selectedQuestionsForExam.length >= 10; // New condition
   const isFormValid =
     isGeneralInfoValid && isQuestionsValid && hasEnoughQuestions; // Updated validation
@@ -135,6 +136,9 @@ function ImtahanYarat() {
 
   return (
     <>
+     <Head>
+        <title>{t("labels.exams")}</title>
+      </Head>
       <HeaderInternal />
       <Container>
         <Breadcrumb />

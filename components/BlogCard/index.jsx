@@ -7,9 +7,11 @@ import ReactPaginate from "react-paginate";
 import Image from "next/image";
 import Spinner from "../Spinner";
 import { ViewCountContext } from "@/shared/context/ViewCountContext";
+import { useTranslation } from 'react-i18next';
 
 function BlogCard({ blog }) {
   const router = useRouter();
+  const { t } = useTranslation();
   const { viewCounts } = useContext(ViewCountContext);
 
   const handleClick = () => {
@@ -43,7 +45,7 @@ function BlogCard({ blog }) {
         </div>
         <div className="flex items-center space-x-2 mt-2 sm:mt-0">
           <MdOutlineRemoveRedEye className="text-grayButtonText" size={18} />
-          <p>{views} views</p>
+          <p> {blog.view_count} {t('views')}</p>
         </div>
       </div>
       <h3 className="mt-4  text-lg sm:text-xl font-medium text-textSecondaryDefault">
@@ -91,6 +93,8 @@ function BlogGrid() {
       }
 
       const data = await response.json();
+      console.log(data.data, "response data");
+
       setBlogs(data.data);
       setMeta(data.meta);
     } catch (err) {

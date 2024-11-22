@@ -21,10 +21,7 @@ const QuestionFiles = ({
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
         setDropdownVisible(null);
       }
     };
@@ -79,7 +76,7 @@ const QuestionFiles = ({
   return (
     <div className="py-6">
       {viewMode === "grid" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {sortedFiles.map((file, index) => (
             <div
               key={file.slug} // Ensure unique key
@@ -150,7 +147,7 @@ const QuestionFiles = ({
                         aria-hidden="true"
                       >
                         <path
-                          d="M23.333 7.00002H12.833L10.4997 4.66669H4.66634C3.38301 4.66669 2.33301 5.71669 2.33301 7.00002V11.6667H25.6663V9.33335C25.6663 8.05002 24.6163 7.00002 23.333 7.00002Z"
+                          d="M23.333 7.00002H12.833L10.4997 4.66669H4.66634C3.38301 4.66669 2.33301 5.71669 2.33301 7.00002V11.6667H25.6663V9.33335C25.6663 8.05002 24.6163 7 23.333 7Z"
                           fill="#FFA000"
                         />
                         <path
@@ -160,7 +157,7 @@ const QuestionFiles = ({
                       </svg>
                     </div>
                     <div className="relative group inline-block">
-                      <h3 className="text-xl font-gilroy leading-7.5 text-brandBlue700 font-medium cursor-pointer">
+                      <h3 className="text-sm lg:text-xl font-gilroy leading-7.5 text-brandBlue700 font-medium cursor-pointer">
                         {file?.name?.length > 6
                           ? `${file?.name.slice(0, 8)}...`
                           : file?.name}
@@ -236,8 +233,8 @@ const QuestionFiles = ({
                 </div>
                 {/* File Info */}
                 <div className="flex items-center w-full justify-between">
-                  <div className="relative group inline-block w-[400px]">
-                    <h3 className="text-xl font-gilroy leading-7.5 text-brandBlue700 font-medium cursor-pointer">
+                  <div className="relative group inline-block w-[100px] lg:w-[400px]">
+                    <h3 className="text-sm  lg:text-xl font-gilroy leading-7.5 text-brandBlue700 font-medium cursor-pointer">
                       {file.name.length > 35
                         ? `${file.name.slice(0, 35)}...`
                         : file.name}
@@ -249,7 +246,7 @@ const QuestionFiles = ({
                     )}
                   </div>
 
-                  <div className="relative group">
+                  <div className="relative group hidden md:block">
                     <div className="text-3.5 font-gilroy mt-1.5 text-arrowButtonGray font-medium justify-start truncate cursor-pointer max-w-[30ch] mx-auto">
                       {file.sub_folder && file.sub_folder.length > 0
                         ? file.sub_folder.join(" ~ ")

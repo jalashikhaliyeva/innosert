@@ -92,7 +92,7 @@ const ExamsListTeacher = ({
 
       setExamDetailsSingle(item);
       console.log(item, "item exam to edit");
-      
+
       router.push(`/imtahan-detallari`); // Assuming you want to pass the exam slug
     }
   };
@@ -395,12 +395,12 @@ const ExamsListTeacher = ({
                   )}
                 </div>
                 <div className="flex items-center w-full justify-between">
-                  <h3 className="text-sm w-[300px] md:text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
+                  <h3 className="text-sm w-[90px] md:w-[300px] md:text-lg font-gilroy leading-7.5 text-brandBlue700 font-medium">
                     {item.name}
                   </h3>
 
                   {item.type === "folder" ? (
-                    <div className="w-[300px]">
+                    <div className="hidden md:block md:w-[300px]">
                       {item.exams && item.exams.length > 0 ? (
                         item.exams.map((subExam, index) => (
                           <span
@@ -433,7 +433,7 @@ const ExamsListTeacher = ({
                       )}
                     </div>
                   ) : (
-                    <div className="w-[270px] text-gray90 !text-base font-gilroy">
+                    <div className="hidden md:block md:w-[270px] text-gray90 text-sm md:!text-base font-gilroy">
                       {item.count} sual
                     </div>
                   )}

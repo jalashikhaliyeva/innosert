@@ -3,6 +3,7 @@ import { FiLock } from "react-icons/fi";
 import axios from "axios";
 import { UserContext } from "@/shared/context/UserContext";
 import { useTranslation } from "react-i18next";
+import { toast, ToastContainer } from "react-toastify";
 
 function EnterExamCode() {
   const { t } = useTranslation();
@@ -22,9 +23,18 @@ function EnterExamCode() {
 
       setPrivateExam(exam);
       localStorage.setItem("privateExam", JSON.stringify(exam));
+      // toast.success("İmtahan uğurla tapıldı.");
+      const notFound = response.data.status;
+      if (notFound === false) {
+        toast.warning(t("examNotFound"));
+      } else {
+        toast.success(t("examFound"));
+      }
+
       setError(null);
     } catch (err) {
       setError("Kod səhvdir və ya imtahan tapılmadı.");
+      toast.error("Kod səhvdir, imtahan tapılmadı.");
       setPrivateExam(null);
       localStorage.removeItem("privateExam");
     }
@@ -38,7 +48,7 @@ function EnterExamCode() {
   }, [code, setPrivateExam]);
 
   return (
-    <div className="lg:w-[50%] h-full flex justify-end">
+    <div className="lg:w-[50%] h-full flex justify-end -mt-[45px] md:-mt-0">
       <div className="bg-[url('/img/CodeEnter.png')] bg-no-repeat bg-cover bg-center w-full lg:w-[400px] h-full px-8 py-14 rounded-xl flex flex-col items-center">
         <h5 className="font-gilroy text-2xl font-medium leading-8 text-inputBgDefault pb-3 text-center w-auto">
           {t("enter_exam_code")}
@@ -71,6 +81,18 @@ function EnterExamCode() {
         </div>
         {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
       </div>
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }

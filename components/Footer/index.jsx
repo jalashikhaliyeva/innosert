@@ -207,9 +207,7 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
             © 2024 İnnosert LLC - All rights reserved
           </p>
 
-          <p className="text-inputBorder font-gilroy font-normal text-sm leading-6">
-            Help Center
-          </p>
+         
           <p className="text-inputBorder font-gilroy font-normal text-sm leading-6">
             Privacy Policy
           </p>

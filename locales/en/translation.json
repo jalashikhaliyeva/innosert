@@ -279,5 +279,9 @@
     "helpCenter": "Help Center",
     "privacyPolicy": "Privacy Policy",
     "siteMap": "Site Map"
-  }
+  },
+  "views": "Views",
+  "examNotFound": "The code is incorrect, the exam was not found.",
+  "examFound": "The exam was successfully found.",
+  "other": "Other"
 }

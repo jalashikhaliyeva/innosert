@@ -122,7 +122,7 @@ export default function LoginModal({
           onClick={handleOutsideClick}
         >
           <div
-            className="bg-bodyColor rounded-lg shadow-lg w-full max-w-sm p-10 relative"
+            className="bg-bodyColor rounded-lg shadow-lg w-full md:max-w-sm max-w-[350px] p-6 md:p-10 relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button

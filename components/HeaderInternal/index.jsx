@@ -31,16 +31,17 @@ import { useTranslation } from "next-i18next";
 const HeaderInternal = () => {
   const { user, setSearchExam } = useContext(UserContext);
   const { t } = useTranslation();
+  const router = useRouter();
+  const lang = router.locale || "az";
   const [searchValue, setSearchValue] = useState("");
   const searchInputRef = useRef(null);
-  const router = useRouter();
+  // const router = useRouter();
   const { setSelectedCompany } = useContext(CompanyContext);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const [openCategory, setOpenCategory] = useState(null);
   const [isImtahanlarDropdownOpen, setIsImtahanlarDropdownOpen] =
     useState(false);
-  // console.log(user?.data?.active_company?.logo, "HeaderInternal");
   console.log(user, "active_company.logo");
   const [companyDropdownOpen, setCompanyDropdownOpen] = useState(false);
   const [showOnlyCategories, setShowOnlyCategories] = useState(false);
@@ -69,7 +70,6 @@ const HeaderInternal = () => {
       setIsSearchOpen(false);
     }
   }
-
   const handleNotificationMouseLeave = () => {
     // Set a delay before closing the dropdown
     hideTimeout.current = setTimeout(() => {
@@ -131,12 +131,10 @@ const HeaderInternal = () => {
     setOpenSubmenu(null); // Reset any open submenus
     setIsImtahanlarDropdownOpen(false); // Close the category dropdown
   };
-
   const activeCompanies =
     user?.data?.roles === "Owner" || user?.data?.roles === "Teacher"
       ? user.data.companies.filter((company) => company.status === 1)
       : [];
-
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const [openSubmenu, setOpenSubmenu] = useState(null);
   const [categories, setCategories] = useState([]);
@@ -144,11 +142,9 @@ const HeaderInternal = () => {
   const [subCategories, setSubCategories] = useState([]);
   const { push } = useRouter();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false); // Add this line
   const userMenuRef = useRef(null);
-
   // Function to handle search input visibility
 
   useEffect(() => {
@@ -248,7 +244,7 @@ const HeaderInternal = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const data = await getSettingInfo();
+        const data = await getSettingInfo(lang);
 
         const mainCategories = data?.category.filter(
           (cat) => cat.category_id === 0
@@ -436,7 +432,8 @@ const HeaderInternal = () => {
                   />
                 ) : (
                   <div className="flex gap-3 items-center">
-                    <LuSearch size={24} />
+                    {/* <LuSearch size={24} /> */}
+                    <NotificationsDropdown />
                     <div
                       onClick={toggleMenu}
                       className="bg-buttonPrimaryDefault p-2 rounded-md flex items-center gap-2"
@@ -815,8 +812,9 @@ const HeaderInternal = () => {
                   onMouseLeave={handleDropdownMouseLeave}
                 >
                   <button
-                    className="text-textSecondaryDefault text-lg inline-flex items-center font-medium focus:outline-none text-center py-3 hover:text-textHoverBlue"
+                    className="text-textSecondaryDefault cursor-pointer text-lg inline-flex items-center font-medium focus:outline-none text-center py-3 hover:text-textHoverBlue"
                     type="button"
+                    onClick={() => router.push("/kateqoriyalar")}
                   >
                     {t("categories")}
                   </button>
@@ -887,7 +885,8 @@ const HeaderInternal = () => {
                       {categories.length > 5 && (
                         <li
                           className="cursor-pointer block text-lg my-2 rounded-lg hover:bg-gray-100 font-base text-textSecondaryDefault hover:text-textHoverBlue flex justify-between items-center px-4 py-2"
-                          onClick={handleDigerClick} // Add click handler
+                          // onClick={handleDigerClick}  Add click handler
+                          onClick={() => router.push("/kateqoriyalar")}
                         >
                           Digər
                         </li>
@@ -929,13 +928,11 @@ const HeaderInternal = () => {
                 onMouseLeave={() => setIsUserMenuOpen(false)}
                 ref={userMenuRef}
               >
-                {/* User Icon Section */}
                 <div className="bg-brandBlue500 py-[10px] px-4 rounded-lg flex gap-3 ml-4 cursor-pointer">
                   <AiOutlineMenu className="size-6 fill-white" />
                   <FaRegCircleUser className="size-6 fill-white" />
                 </div>
 
-                {/* Dropdown Menu for User */}
                 <div
                   className={`absolute right-0 top-full w-48 text-lg bg-white rounded-lg shadow-lg transition-all duration-300 ease-in-out transform ${
                     isUserMenuOpen
@@ -960,62 +957,61 @@ const HeaderInternal = () => {
                       user?.data?.roles === "Teacher") &&
                       activeCompanies.length > 0 && (
                         <div className="relative z-50">
-                        <div
-                          className="flex items-center space-x-1 mb-2 mt-2 px-4 py-2 cursor-pointer rounded-lg hover:bg-gray-100"
-                          onClick={toggleCompanyDropdown}
-                        >
-                          <RiBuildingLine className="size-[20px] fill-grayText" />
-                          <p className="text-md font-gilroy font-normal leading-6 text-textSecondaryDefault">
-                            {t("my_companies")}
-                          </p>
-                          {companyDropdownOpen ? (
-                            <FiChevronUp className="ml-2 text-grayText" />
-                          ) : (
-                            <FiChevronDown className="ml-2 text-grayText" />
+                          <div
+                            className="flex items-center space-x-1 mb-2 mt-2 px-4 py-2 cursor-pointer rounded-lg hover:bg-gray-100"
+                            onClick={toggleCompanyDropdown}
+                          >
+                            <RiBuildingLine className="size-[20px] fill-grayText" />
+                            <p className="text-md font-gilroy font-normal leading-6 text-textSecondaryDefault">
+                              {t("my_companies")}
+                            </p>
+                            {companyDropdownOpen ? (
+                              <FiChevronUp className="ml-2 text-grayText" />
+                            ) : (
+                              <FiChevronDown className="ml-2 text-grayText" />
+                            )}
+                          </div>
+
+                          {/* Dropdown menu for active companies */}
+                          {companyDropdownOpen && (
+                            <div className="relative w-full z-10 mt-2">
+                              {activeCompanies.map((company) => (
+                                <div
+                                  key={company.slug}
+                                  className="flex items-center cursor-pointer pb-2 px-4 py-2 hover:bg-gray-100 rounded-lg relative group"
+                                  onClick={() => handleCompanyClick(company)}
+                                >
+                                  {company.logo ? (
+                                    <Image
+                                      width={24}
+                                      height={24}
+                                      src={company.logo}
+                                      alt={company.name}
+                                      className="w-6 h-6 rounded-full mr-4 object-cover"
+                                    />
+                                  ) : (
+                                    <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4">
+                                      {company.name[0]}
+                                    </div>
+                                  )}
+                                  <p
+                                    className="font-gilroy text-base font-normal leading-6 max-w-[100px] truncate"
+                                    title={company.name} // Tooltip with full company name
+                                  >
+                                    {company.name}
+                                  </p>
+
+                                  {/* Custom tooltip */}
+                                  {company.name.length > 9 && (
+                                    <div className="absolute right-full ml-2 top-1/2 -translate-y-1/2 p-2 min-w-max bg-white shadow-lg border z-20 text-textSecondaryDefault text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+                                      {company.name}
+                                    </div>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
                           )}
                         </div>
-                      
-                        {/* Dropdown menu for active companies */}
-                        {companyDropdownOpen && (
-                          <div className="relative w-full z-10 mt-2">
-                            {activeCompanies.map((company) => (
-                              <div
-                                key={company.slug}
-                                className="flex items-center cursor-pointer pb-2 px-4 py-2 hover:bg-gray-100 rounded-lg relative group"
-                                onClick={() => handleCompanyClick(company)}
-                              >
-                                {company.logo ? (
-                                  <Image
-                                    width={24}
-                                    height={24}
-                                    src={company.logo}
-                                    alt={company.name}
-                                    className="w-6 h-6 rounded-full mr-4 object-cover"
-                                  />
-                                ) : (
-                                  <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4">
-                                    {company.name[0]}
-                                  </div>
-                                )}
-                                <p
-                                  className="font-gilroy text-base font-normal leading-6 max-w-[100px] truncate"
-                                  title={company.name} // Tooltip with full company name
-                                >
-                                  {company.name}
-                                </p>
-                      
-                                {/* Custom tooltip */}
-                                {company.name.length > 9 && (
-                                  <div className="absolute right-full ml-2 top-1/2 -translate-y-1/2 p-2 min-w-max bg-white shadow-lg border z-20 text-textSecondaryDefault text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                                    {company.name}
-                                  </div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      
                       )}
 
                     <li className="mb-2">

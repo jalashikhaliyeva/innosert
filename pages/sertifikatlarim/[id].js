@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { FaLinkedin, FaFacebook } from "react-icons/fa6"; // Import LinkedIn and Facebook icons
 import { useTranslation } from "react-i18next";
+import Head from "next/head";
 
 function CertificateDetail({ certificate }) {
   const { t } = useTranslation();
@@ -74,6 +75,9 @@ function CertificateDetail({ certificate }) {
 
   return (
     <>
+     <Head>
+        <title>{t("titles.sertifikatlarim")}</title>
+      </Head>
       <div className="flex flex-col items-center justify-center min-h-screen">
         <Image
           src={certificate.src}

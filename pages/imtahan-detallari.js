@@ -12,11 +12,13 @@ import { UserContext } from "@/shared/context/UserContext";
 import { useRouter } from "next/router";
 import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
 import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDashboardHeader";
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 
 function ImtahanDetallari() {
   const { user, examDetailsSingle , setExamToEdit } = useContext(UserContext);
   console.log(examDetailsSingle, "examDetailsSingle");
-
+  const { t } = useTranslation();
   // console.log(user.data.roles, "user imtahan detallari");
   const router = useRouter();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -38,6 +40,9 @@ function ImtahanDetallari() {
 
   return (
     <>
+     <Head>
+        <title>{t("breadcrumbs.examDetails")}</title>
+      </Head>
       <div className="hidden lg:block ">
         <HeaderInternal />
       </div>

@@ -14,8 +14,11 @@ import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDa
 import CompanyContext from "@/shared/context/CompanyContext";
 import Spinner from "@/components/Spinner";
 import { UserContext } from "@/shared/context/UserContext";
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 
 function Uzvler() {
+  const { t } = useTranslation();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -124,6 +127,9 @@ function Uzvler() {
 
   return (
     <>
+      <Head>
+        <title>{t("navigation.members")}</title>
+      </Head>
       <div className="hidden lg:block">
         <HeaderInternal />
       </div>

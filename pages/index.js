@@ -16,10 +16,12 @@ import withModalManagement from "@/shared/hoc/withModalManagement";
 import { useRouter } from "next/router";
 import { getLandingInfo } from "../services/getLandingInfo";
 import { getSettingInfo } from "../services/getSettingInfo";
-
+import Head from "next/head";
+import { useTranslation } from "react-i18next";
 const OPTIONS = { loop: true };
 
 function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
+  const { t } = useTranslation();
   const faqRef = useRef(null);
   const footerRef = useRef(null);
   const certificateRef = useRef(null);
@@ -83,6 +85,9 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
     return <Spinner />;
   }
 
+  console.log(landingInfo, "landingInfo");
+  
+
   if (!mounted) {
     return <Spinner />; // Render nothing until the component has mounted on the client
   }
@@ -105,8 +110,18 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
     }
   };
 
+  // console.log(landingInfo, "landingInfo");
+
   return (
     <main>
+      <Head>
+        <title>{t("ana səhifə")}</title>
+        <meta name="description" content={landingInfo?.metatags?.meta_desc} />
+        <meta
+          name="keywords"
+          content={landingInfo?.metatags?.meta_keywords || "default, keywords"}
+        />
+      </Head>
       <Header
         openRegisterModal={openRegisterModal}
         scrollToFaq={scrollToFaq}
@@ -143,7 +158,7 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
   );
 }
 
-// Fetch landing and setting info on server side
+// Fetch on server side
 export async function getServerSideProps(context) {
   const lang = context.locale || "az"; // Get the language from the context locale
   try {

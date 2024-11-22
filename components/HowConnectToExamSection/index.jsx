@@ -2,7 +2,7 @@ import React from "react";
 import Container from "../Container";
 
 function HowConnectToExamSection(props) {
-  console.log(props.ata, " ata HowConnectToExamSection");
+  console.log(props.data, " ata HowConnectToExamSection");
 
   return (
     <div>
@@ -15,7 +15,7 @@ function HowConnectToExamSection(props) {
       </h2>
       <Container>
         <div className="bg-blue200 flex flex-col lg:flex-row items-center justify-center gap-5 lg:py-20 lg:px-36 px-10 py-10 rounded-xl">
-          {props?.ata?.map((item, index) => (
+          {props?.data?.map((item, index) => (
             <div
               key={item.id}
               className="w-full lg:w-[27%] p-5 bg-grayBox flex flex-col gap-7 rounded-md"

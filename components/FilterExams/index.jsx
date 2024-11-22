@@ -8,6 +8,7 @@ import { MdNavigateNext } from "react-icons/md";
 import { RiLoopRightLine } from "react-icons/ri";
 import { UserContext } from "@/shared/context/UserContext";
 import { useTranslation } from "next-i18next";
+
 function FilterCategories() {
   const {
     selectedCategory,
@@ -46,9 +47,6 @@ function FilterCategories() {
     { label: t("3 or more hours"), duration: [180, 5000] },
   ];
 
-  {
-    t("0-1 hour range");
-  }
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedDuration, setSelectedDuration] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -59,6 +57,8 @@ function FilterCategories() {
   const [minPrice, setMinPrice] = useState("");
   const [maxPrice, setMaxPrice] = useState("");
   const modalRef = useRef(null);
+  const categoryDropdownRef = useRef(null);
+  const timeDropdownRef = useRef(null);
   const [appliedFilters, setAppliedFilters] = useState({
     minPrice: "",
     maxPrice: "",
@@ -153,8 +153,17 @@ function FilterCategories() {
         newFilters.selectedCategories = newFilters.selectedCategories.filter(
           (category) => category !== value
         );
+        setSelectedCategories(newFilters.selectedCategories);
       } else {
         newFilters[filterType] = "";
+        if (filterType === 'selectedTime') {
+          setSelectedTime('');
+          setSelectedDuration(null);
+        } else if (filterType === 'minPrice') {
+          setMinPrice('');
+        } else if (filterType === 'maxPrice') {
+          setMaxPrice('');
+        }
       }
       return newFilters;
     });
@@ -224,19 +233,19 @@ function FilterCategories() {
   };
 
   const handleCategoryClick = (categoryName) => {
+    let updatedCategories;
     if (selectedCategories.includes(categoryName)) {
-      setSelectedCategories(
-        selectedCategories.filter((item) => item !== categoryName)
+      updatedCategories = selectedCategories.filter(
+        (item) => item !== categoryName
       );
     } else {
-      setSelectedCategories([...selectedCategories, categoryName]);
+      updatedCategories = [...selectedCategories, categoryName];
     }
-    setAppliedFilters((prevFilters) => {
-      const updatedCategories = selectedCategories.includes(categoryName)
-        ? prevFilters.selectedCategories.filter((cat) => cat !== categoryName)
-        : [...prevFilters.selectedCategories, categoryName];
-      return { ...prevFilters, selectedCategories: updatedCategories };
-    });
+    setSelectedCategories(updatedCategories);
+    setAppliedFilters((prevFilters) => ({
+      ...prevFilters,
+      selectedCategories: updatedCategories,
+    }));
   };
 
   useEffect(() => {
@@ -276,7 +285,7 @@ function FilterCategories() {
                   >
                     {category}
                     <button
-                      onClick={handleResetFilters}
+                      onClick={() => removeFilter("category", category)}
                       className="ml-2 text-xl text-white hover:text-gray-300 focus:outline-none flex items-center justify-center"
                     >
                       &times;
@@ -287,7 +296,7 @@ function FilterCategories() {
                 <div className="flex items-center gap-3 bg-buttonPrimaryDefault text-white rounded-full px-4 py-3 font-gilroy font-normal text-lg leading-6">
                   {appliedFilters.selectedTime}
                   <button
-                    onClick={handleResetFilters}
+                    onClick={() => removeFilter("selectedTime")}
                     className="ml-2 text-xl text-white hover:text-gray-300 focus:outline-none flex items-center justify-center"
                   >
                     &times;
@@ -305,7 +314,10 @@ function FilterCategories() {
                     {appliedFilters.maxPrice && `${appliedFilters.maxPrice} ₼`})
                   </span>
                   <button
-                    onClick={handleResetFilters}
+                    onClick={() => {
+                      removeFilter("minPrice");
+                      removeFilter("maxPrice");
+                    }}
                     className="ml-2 text-xl font-gilroy text-white hover:text-gray-300 focus:outline-none flex items-center justify-center"
                     aria-label="Remove Price Filter"
                   >
@@ -367,6 +379,22 @@ function FilterCategories() {
           <div
             ref={modalRef}
             className="relative bg-white w-full max-w-md mx-auto p-12 rounded-2xl"
+            onClick={(e) => {
+              if (
+                isCategoryDropdownOpen &&
+                categoryDropdownRef.current &&
+                !categoryDropdownRef.current.contains(e.target)
+              ) {
+                setIsCategoryDropdownOpen(false);
+              }
+              if (
+                isTimeDropdownOpen &&
+                timeDropdownRef.current &&
+                !timeDropdownRef.current.contains(e.target)
+              ) {
+                setIsTimeDropdownOpen(false);
+              }
+            }}
           >
             <button
               className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-3xl"
@@ -438,7 +466,10 @@ function FilterCategories() {
               <div className="relative">
                 <div
                   className="w-full border border-gray-300 rounded-md py-3 px-4 text-[#B2B2B2] cursor-pointer flex justify-between items-center time-dropdown-input hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus"
-                  onClick={() => setIsTimeDropdownOpen(!isTimeDropdownOpen)}
+                  onClick={() => {
+                    setIsTimeDropdownOpen(!isTimeDropdownOpen);
+                    setIsCategoryDropdownOpen(false);
+                  }}
                 >
                   <span
                     className={
@@ -463,7 +494,10 @@ function FilterCategories() {
                 </div>
 
                 {isTimeDropdownOpen && (
-                  <div className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-scroll time-dropdown-menu">
+                  <div
+                    ref={timeDropdownRef}
+                    className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-scroll time-dropdown-menu"
+                  >
                     {timeOptions.map((option, index) => (
                       <div
                         key={index}
@@ -490,9 +524,10 @@ function FilterCategories() {
                   className={`w-full border font-gilroy border-gray-300 rounded-md py-3 px-4 cursor-pointer flex flex-wrap items-center dropdown-input hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus ${
                     isCategoryDropdownOpen ? "bg-gray-100" : ""
                   }`}
-                  onClick={() =>
-                    setIsCategoryDropdownOpen(!isCategoryDropdownOpen)
-                  }
+                  onClick={() => {
+                    setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
+                    setIsTimeDropdownOpen(false);
+                  }}
                 >
                   {selectedCategories.length > 0 ? (
                     <>
@@ -508,12 +543,14 @@ function FilterCategories() {
                             className="ml-1 font-gilroy text-xl text-black hover:text-gray-700 focus:outline-none flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSelectedCategories(
-                                selectedCategories.filter(
-                                  (item) => item !== category
-                                )
+                              const updatedCategories = selectedCategories.filter(
+                                (item) => item !== category
                               );
-                              handleResetFilters();
+                              setSelectedCategories(updatedCategories);
+                              setAppliedFilters((prevFilters) => ({
+                                ...prevFilters,
+                                selectedCategories: updatedCategories,
+                              }));
                             }}
                           >
                             &times;
@@ -555,7 +592,10 @@ function FilterCategories() {
                 </div>
 
                 {isCategoryDropdownOpen && (
-                  <div className="absolute top-full left-0 z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-[170px] overflow-y-auto shadow-lg">
+                  <div
+                    ref={categoryDropdownRef}
+                    className="absolute top-full left-0 z-20 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-[170px] overflow-y-auto shadow-lg"
+                  >
                     {combinedList.map((category, index) => {
                       const isSelected = selectedCategories.includes(
                         category.name
@@ -567,18 +607,22 @@ function FilterCategories() {
                             isSelected ? "bg-gray-100" : ""
                           }`}
                           onClick={() => {
+                            let updatedCategories;
                             if (isSelected) {
-                              setSelectedCategories(
-                                selectedCategories.filter(
-                                  (item) => item !== category.name
-                                )
+                              updatedCategories = selectedCategories.filter(
+                                (item) => item !== category.name
                               );
                             } else {
-                              setSelectedCategories([
+                              updatedCategories = [
                                 ...selectedCategories,
                                 category.name,
-                              ]);
+                              ];
                             }
+                            setSelectedCategories(updatedCategories);
+                            setAppliedFilters((prevFilters) => ({
+                              ...prevFilters,
+                              selectedCategories: updatedCategories,
+                            }));
                           }}
                         >
                           <span className="text-black">{category.name}</span>

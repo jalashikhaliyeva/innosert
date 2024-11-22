@@ -14,6 +14,7 @@ import ExamRulesModal from "@/components/ExamRulesModal";
 import LoginModal from "@/components/Login";
 import withModalManagement from "@/shared/hoc/withModalManagement";
 import { UserContext } from "@/shared/context/UserContext";
+import Head from "next/head";
 
 function CategoryPage() {
   const router = useRouter();
@@ -81,6 +82,9 @@ function CategoryPage() {
 
   return (
     <main>
+      <Head>
+        <title>{t("categories")}</title>
+      </Head>
       <HeaderInternal />
 
       <section className="my-28">
