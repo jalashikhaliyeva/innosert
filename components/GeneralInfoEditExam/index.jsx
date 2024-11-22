@@ -10,6 +10,7 @@ function GeneralInfoEditExam() {
   const {
     selectedCategory,
     selectedSubcategory,
+
     timeForQuestion,
     setTimeForQuestion,
     isGeneralInfoValid,
@@ -18,11 +19,12 @@ function GeneralInfoEditExam() {
     examDetails,
   } = useContext(UserContext);
 
-
+  const dropdownRef = useRef(null);
   console.log(examDetails, "examDetailsss");
-  
+
   useEffect(() => {
-    const isValid = examDetails.name && examDetails.desc && examDetails.duration;
+    const isValid =
+      examDetails.name && examDetails.desc && examDetails.duration;
     setIsGeneralInfoValid(!!isValid);
   }, [examDetails, setIsGeneralInfoValid]);
 
@@ -185,7 +187,6 @@ function GeneralInfoEditExam() {
       }
 
       console.log(examDetails.category_id, "examDetails.category_id");
-      
 
       if (examDetails.category_id) {
         const categoryIds = examDetails.category_id.map(Number);
@@ -255,6 +256,22 @@ function GeneralInfoEditExam() {
     updateExamDetails,
     hasSubmitted,
   ]);
+  useEffect(() => {
+    if (!isCategoryDropdownOpen) return;
+
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsCategoryDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    // Cleanup the event listener on unmount or when dropdown closes
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isCategoryDropdownOpen]);
 
   return (
     <div className="bg-white rounded-xl py-10 px-6 sm:px-10 flex flex-col items-center w-full max-w-[90%] mx-auto">
@@ -301,7 +318,7 @@ function GeneralInfoEditExam() {
             <p className="font-gilroy text-xl text-gray200 mb-1">
               Kateqoriya və Subkateqoriya Seçimi
             </p>
-            <div className="relative w-full">
+            <div className="relative w-full" ref={dropdownRef}>
               <div
                 className={`w-full border font-gilroy border-gray-700 rounded-md py-3 px-4 cursor-pointer flex flex-wrap items-center bg-inputBgDefault dropdown-input hover:bg-gray-50 hover:border-inputBorderHover focus:border-inputRingFocus ${
                   isCategoryDropdownOpen ? "border-inputRingFocus" : ""

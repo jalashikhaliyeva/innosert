@@ -315,7 +315,7 @@ const HeaderInternal = () => {
   };
 
   const handleSearchChange = async (e) => {
-    const query = e.target.value.trim(); // Trim any whitespace
+    const query = e.target.value; // Trim any whitespace
     setSearchValue(query);
 
     if (query.length === 0) {
