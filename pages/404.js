@@ -26,12 +26,12 @@ export default function Custom404() {
 
       {/* Button */}
       <div className="mt-8">
-        <a
+        <Link
           href="/"
           className="px-6 py-3 text-lg font-medium text-neutralWhite transition bg-gradient-to-r from-brandBlue500 to-buttonBlueHover rounded-full shadow hover:scale-105 hover:shadow-lg focus:ring focus:ring-blue400 hover:from-buttonBlueHover hover:to-brandBlue500"
         >
           Ana Səhifəyə Qayıt
-        </a>
+        </Link>
       </div>
     </div>
   );
