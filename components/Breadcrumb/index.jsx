@@ -7,7 +7,6 @@ const Breadcrumb = () => {
   const router = useRouter();
   const { t } = useTranslation(); // Initialize the translation function
 
-  // Define a mapping from path segments to translation keys
   const pathToTranslationKey = {
     home: "breadcrumbs.home",
     profil: "breadcrumbs.profile",
@@ -28,61 +27,88 @@ const Breadcrumb = () => {
     "umumi-imtahanlar": "breadcrumbs.generalExams",
     "imtahan-detallari": "breadcrumbs.examDetails",
     "imtahan-redakte": "breadcrumbs.examEdit",
+    "privacy-policy":  "breadcrumbs.privacyPolicy"
     // Add more mappings as needed
   };
 
-  // Use asPath to get the actual path with dynamic segments
   const pathSegments = router.asPath
     .split("/")
     .filter((segment) => segment)
     .map((segment) => decodeURIComponent(segment.split('?')[0])); // Remove query parameters
 
-  // Function to format labels if not in mapping
   const formatLabel = (segment) => {
-    // Replace hyphens with spaces and capitalize first letter of each word
     return segment
       .split("-")
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
       .join(" ");
   };
 
-  // Construct dynamic breadcrumb items from the URL segments
   const breadcrumbItems = useMemo(() => {
-    return pathSegments.map((segment, index) => {
+    const items = [];
+
+    pathSegments.forEach((segment, index) => {
       // Skip 'home' and 'profil' as they are handled statically
-      if (segment === "home" || segment === "profil") return null;
+      if (segment === "home" || segment === "profil") return;
 
       const path = `/${pathSegments.slice(0, index + 1).join("/")}`;
       const translationKey = pathToTranslationKey[segment];
-      const label = translationKey ? t(translationKey) : formatLabel(segment);
       const isLast = index === pathSegments.length - 1;
 
-      return (
-        <div key={path} className="flex items-center">
-          <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
-            /
-          </span>
-          {isLast ? (
-            // Render the last segment as plain text with active styling
-            <span className="font-gilroy text-base font-normal leading-6 text-textSecondaryDefault">
-              {label}
+      if (Array.isArray(translationKey)) {
+        translationKey.forEach((key, subIndex) => {
+          const label = t(key);
+          const isLastSubItem = isLast && subIndex === translationKey.length - 1;
+
+          items.push(
+            <div key={`${path}-${subIndex}`} className="flex items-center">
+              {subIndex !== 0 && (
+                <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
+                  /
+                </span>
+              )}
+              {isLastSubItem ? (
+                <span className="font-gilroy text-base font-normal leading-6 text-textSecondaryDefault">
+                  {label}
+                </span>
+              ) : (
+                <Link href={path}>
+                  <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
+                    {label}
+                  </span>
+                </Link>
+              )}
+            </div>
+          );
+        });
+      } else {
+        const label = translationKey ? t(translationKey) : formatLabel(segment);
+
+        items.push(
+          <div key={path} className="flex items-center">
+            <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
+              /
             </span>
-          ) : (
-            // Render other segments as links with default styling
-            <Link href={path}>
-              <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
+            {isLast ? (
+              <span className="font-gilroy text-base font-normal leading-6 text-textSecondaryDefault">
                 {label}
               </span>
-            </Link>
-          )}
-        </div>
-      );
+            ) : (
+              <Link href={path}>
+                <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
+                  {label}
+                </span>
+              </Link>
+            )}
+          </div>
+        );
+      }
     });
+
+    return items;
   }, [pathSegments, t]);
 
-  // Check if the current path is /bloq or starts with /bloq/
-  const isBloqPath =
-    router.pathname === "/bloq" || router.pathname.startsWith("/bloq/");
+  // Determine if "Profil" should be shown based on the current path
+  const showProfile = router.pathname.startsWith("/hesablarim");
 
   return (
     <div className="flex flex-wrap md:flex-nowrap flex-row gap-3 mb-6 mt-24 md:mt-32">
@@ -93,8 +119,8 @@ const Breadcrumb = () => {
         </span>
       </Link>
 
-      {/* Render static separator and profile link if not on /bloq path */}
-      {!isBloqPath && (
+      {/* Render static separator and profile link only if showProfile is true */}
+      {showProfile && (
         <>
           <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
             /

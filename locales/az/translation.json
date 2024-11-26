@@ -202,7 +202,8 @@
     "questionDatabase": "Sual bazası",
     "generalExams": "İmtahanlar",
     "examDetails": "İmtahan detalları",
-    "examEdit": "İmtahan redaktə"
+    "examEdit": "İmtahan redaktə",
+    "privacyPolicy": "Məxfilik Siyasəti"
   },
   "register": {
     "welcome": "Innosertə xoş gəlmisən!",
@@ -283,5 +284,13 @@
   "views": "Baxış",
   "examNotFound": "Kod səhvdir, imtahan tapılmadı.",
   "examFound": "İmtahan uğurla tapıldı.",
-  "other": "Digər"
+  "other": "Digər",
+  "no_notifications": "Heç bir bildiriş yoxdur",
+  "info": {
+    "noFoldersYet": "Hələ heç bir qovluq yoxdur."
+  },
+  "noExamsAvailable": "Heç bir imtahan və ya qovluq tapılmadı.",
+  "xetabildirisleri": {
+    "noReports": "Xəta bildirişləri mövcud deyil."
+  }
 }

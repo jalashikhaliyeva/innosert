@@ -133,13 +133,14 @@ function SualYarat() {
       // Construct data.answers as an array of { key: questionText, value: [selectedOptionsTexts] }
       data.answers = kombinasiyaQuestions.map((question) => {
         const selectedOptionsTexts = question.selectedOptions.map(
-          (selectedLabel) => {
+          (selectedOptionId) => {
             const selectedOption = kombinasiyaOptions.find(
-              (opt) => opt.label === selectedLabel
+              (opt) => opt.id === selectedOptionId
             );
             return selectedOption ? stripHtml(selectedOption.text) : "";
           }
         );
+        
         return {
           key: stripHtml(question.questionText),
           value: selectedOptionsTexts,

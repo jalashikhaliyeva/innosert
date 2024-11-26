@@ -1,20 +1,21 @@
-"use client"; // Add this line if you're using Next.js 13+ with the App Router
+"use client"; 
 
 import React, { useState } from "react";
-import { FaRegTrashAlt, FaRegCheckCircle } from "react-icons/fa"; // Removed FaPen as it wasn't used
+import { FaRegTrashAlt, FaRegCheckCircle } from "react-icons/fa"; 
 import { FiChevronDown, FiChevronUp } from "react-icons/fi";
-import { useRouter } from 'next/router'; // Import useRouter from Next.js
+import { useRouter } from "next/router"; 
 
 function QuestionEditNavigationTitle({
   selectedOption,
   setSelectedOption,
   onSave,
+  onDelete, // Add this prop
 }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const router = useRouter(); // Initialize useRouter
 
   // Determine if the current page is "sual-redakte"
-  const isSualRedakte = router.pathname === '/sual-redakte';
+  const isSualRedakte = router.pathname === "/sual-redakte";
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -80,7 +81,10 @@ function QuestionEditNavigationTitle({
         )}
 
         {/* Delete Button */}
-        <button className="flex items-center gap-2 py-2 px-4 h-10 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap">
+        <button
+          onClick={onDelete} // Attach the handler
+          className="flex items-center gap-2 py-2 px-4 h-10 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap"
+        >
           <FaRegTrashAlt className="text-white w-4 h-4" />
           Sualı sil
         </button>
@@ -90,7 +94,8 @@ function QuestionEditNavigationTitle({
           onClick={onSave}
           className="flex items-center gap-2 py-2 px-4 h-10 text-white leading-6 rounded-md bg-green600 hover:bg-green600Hover active:bg-green600Pressed whitespace-nowrap"
         >
-          <FaRegCheckCircle className="text-white w-5 h-5" /> {/* Updated Icon */}
+          <FaRegCheckCircle className="text-white w-5 h-5" />{" "}
+          {/* Updated Icon */}
           Yadda saxla
         </button>
       </div>

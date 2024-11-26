@@ -22,7 +22,6 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import Spinner from "@/components/Spinner";
 import DeleteModal from "@/components/DeleteQuestionModal";
 import BulkDeleteFolderModal from "@/components/BulkDeleteFolderModal";
-
 const DynamicSubFolderPage = () => {
   const router = useRouter();
   const { slug } = router.query;

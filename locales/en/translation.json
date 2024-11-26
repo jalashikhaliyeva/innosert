@@ -201,7 +201,8 @@
     "questionDatabase": "Question Database",
     "generalExams": "Exams",
     "examDetails": "Exam Details",
-    "examEdit": "Edit Exam"
+    "examEdit": "Edit Exam",
+    "privacyPolicy": "Privacy Policy"
   },
   "register": {
     "welcome": "Welcome to Innosert!",
@@ -283,5 +284,13 @@
   "views": "Views",
   "examNotFound": "The code is incorrect, the exam was not found.",
   "examFound": "The exam was successfully found.",
-  "other": "Other"
+  "other": "Other",
+  "no_notifications": "No notifications available",
+  "info": {
+    "noFoldersYet": "There are no folders yet."
+  },
+  "noExamsAvailable": "No exams or folders available.",
+  "xetabildirisleri": {
+    "noReports": "There are no error reports available."
+  }
 }

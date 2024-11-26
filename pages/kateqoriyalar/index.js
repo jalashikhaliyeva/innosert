@@ -13,6 +13,7 @@ import RegisterModal from "@/components/Register";
 import { getSettingInfo } from "@/services/getSettingInfo";
 import Container from "@/components/Container";
 import HeaderInternal from "@/components/HeaderInternal";
+import Breadcrumb from "@/components/Breadcrumb";
 
 function Kateqoriyalar({ openRegisterModal, openLoginModal }) {
   const { selectedCategory, selectedSubcategory, user } =
@@ -93,39 +94,47 @@ function Kateqoriyalar({ openRegisterModal, openLoginModal }) {
         scrollToCertificate={() => {}}
       />
       <Container>
-        <section className="my-28 mb-56">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 font-gilroy">
-            {organizedCategories.map((category) => (
-              <div key={category.id}>
-                <h2 className="text-xl hover:text-textHoverBlue transition-colors duration-300 font-medium mb-2">
-                  <Link
-                    href={`/imtahanlar/${encodeURIComponent(category.slug)}`}
-                  >
-                    {category.name}
-                  </Link>
-                </h2>
-                {category.subcategories.length > 0 ? (
-                  <ul className="text-gray-600">
-                    {category.subcategories.map((sub) => (
-                      <li key={sub.id} className="mb-1">
-                        <Link
-                          href={`/imtahanlar/${encodeURIComponent(
-                            category.slug
-                          )}/${encodeURIComponent(sub.slug)}`}
-                          className=" hover:text-textHoverBlue transition-colors duration-300 "
-                        >
-                          {sub.name}
-                        </Link>
-                      </li>
-                    ))}
-                  </ul>
-                ) : (
-                  <p className="text-gray-600"></p>
-                )}
+        <container>
+          <Breadcrumb />
+
+          <section className="flex justify-center">
+            <div className="bg-white justify-center items-center flex shadow-lg p-10 rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 font-gilroy">
+                {organizedCategories.map((category) => (
+                  <div key={category.id}>
+                    <h2 className="text-xl hover:text-textHoverBlue transition-colors duration-300 font-medium mb-2">
+                      <Link
+                        href={`/imtahanlar/${encodeURIComponent(
+                          category.slug
+                        )}`}
+                      >
+                        {category.name}
+                      </Link>
+                    </h2>
+                    {category.subcategories.length > 0 ? (
+                      <ul className="text-gray-600">
+                        {category.subcategories.map((sub) => (
+                          <li key={sub.id} className="mb-1">
+                            <Link
+                              href={`/imtahanlar/${encodeURIComponent(
+                                category.slug
+                              )}/${encodeURIComponent(sub.slug)}`}
+                              className="hover:text-textHoverBlue transition-colors duration-300"
+                            >
+                              {sub.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-gray-600"></p>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
+            </div>
+          </section>
+        </container>
       </Container>
 
       {/* Modals */}

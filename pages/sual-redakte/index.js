@@ -1,5 +1,6 @@
 // SualRedakte.js
 
+"use client";
 import React, { useContext, useState, useEffect } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import Container from "@/components/Container";
@@ -14,6 +15,8 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
+import axios from "axios";
+import DeleteModal from "@/components/DeleteQuestionModal"; // Ensure correct path
 
 function SualRedakte() {
   const router = useRouter();
@@ -29,10 +32,10 @@ function SualRedakte() {
   const [answers, setAnswers] = useState([]);
   const [kombinasiyaOptions, setKombinasiyaOptions] = useState([]);
   const [kombinasiyaQuestions, setKombinasiyaQuestions] = useState([]);
-
-  // Initialize counters
   const [nextOptionId, setNextOptionId] = useState(1);
   const [nextQuestionId, setNextQuestionId] = useState(1);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
 
   console.log(selectedQuestion, "selectedQuestion");
 
@@ -48,13 +51,10 @@ function SualRedakte() {
     if (selectedQuestion) {
       const mappedOption = typeMapping[selectedQuestion.type];
       setSelectedOption(mappedOption);
-
-      // Set initial values for form fields
       setTitleText(selectedQuestion.title || "");
       setConditionText(selectedQuestion.question || "");
       setLevel(selectedQuestion.level || "");
       setScore(selectedQuestion.score || "");
-
       if (mappedOption === "Variantli sual") {
         initializeVariantliSual(selectedQuestion.answers);
       } else if (mappedOption === "Açıq sual") {
@@ -82,14 +82,13 @@ function SualRedakte() {
     let maxOptionId = 0;
     let maxQuestionId = 0;
 
-    // Step 1: Collect all unique answer options
     answersFromAPI.forEach((ans) => {
       ans.values.forEach((valObj) => {
         const val = valObj.value.trim();
         if (!optionsMap.has(val)) {
           optionsMap.set(val, {
-            id: valObj.id, // Use existing API ID
-            label: String.fromCharCode(65 + optionsMap.size), // Assign labels A, B, C, etc.
+            id: valObj.id,
+            label: String.fromCharCode(65 + optionsMap.size),
             text: val,
             isDefault: true,
           });
@@ -102,11 +101,8 @@ function SualRedakte() {
 
     const options = Array.from(optionsMap.values());
     setKombinasiyaOptions(options);
-
-    // Update nextOptionId
     setNextOptionId(maxOptionId + 1);
 
-    // Step 2: Map each question to its selected options using option IDs
     const questions = answersFromAPI.map((ans, index) => {
       const questionText = parseHtmlString(ans.key)[0] || `Sual ${index + 1}`;
       const selectedOptions = ans.values
@@ -116,14 +112,14 @@ function SualRedakte() {
           );
           return option ? option.id : null;
         })
-        .filter(Boolean); // Remove any nulls
+        .filter(Boolean);
 
       if (ans.id > maxQuestionId) {
         maxQuestionId = ans.id;
       }
 
       return {
-        id: ans.id, // Use existing question ID
+        id: ans.id,
         idInApi: ans.id || null,
         questionText: questionText,
         selectedOptions: selectedOptions,
@@ -132,8 +128,6 @@ function SualRedakte() {
     });
 
     setKombinasiyaQuestions(questions);
-
-    // Update nextQuestionId
     setNextQuestionId(maxQuestionId + 1);
   };
 
@@ -147,7 +141,6 @@ function SualRedakte() {
   const handleSave = () => {
     let level_id = ["Asan", "Orta", "Çətin"].indexOf(level) + 1;
     const token = localStorage.getItem("token");
-
     let data = {
       title: titleText,
       question: conditionText,
@@ -157,7 +150,7 @@ function SualRedakte() {
         "Kombinasiya sualı": 3,
       }[selectedOption],
       level_id: level_id,
-      score: score, // Assuming score is expected as a string
+      score: score,
     };
 
     if (data.type_id === 1) {
@@ -166,7 +159,7 @@ function SualRedakte() {
         return;
       }
       data.answers = answers.map((answer) => ({
-        id: answer.idInApi, // Existing answer ID
+        id: answer.idInApi,
         answer: answer.text,
         right: answer.correct,
       }));
@@ -177,35 +170,29 @@ function SualRedakte() {
       }
       data.answer = openAnswer;
     } else if (data.type_id === 3) {
-      // Initialize a Map to group answers by key (question text)
       const groupedAnswersMap = new Map();
 
       kombinasiyaQuestions.forEach((question) => {
         const key = question.questionText;
-        const keyId = question.idInApi || null; // Assuming each question has an idInApi
+        const keyId = question.idInApi || null;
 
-        // Initialize the group if it doesn't exist
         if (!groupedAnswersMap.has(key)) {
           groupedAnswersMap.set(key, {
-            id: keyId, // Include the key's id if available
+            id: keyId,
             key: key,
             values: [],
           });
         }
 
-        // Map selectedOptions to the desired format
         question.selectedOptions.forEach((optionId) => {
           const option = kombinasiyaOptions.find((opt) => opt.id === optionId);
           if (option) {
             if (option.idInApi) {
-              // Use `idInApi` if available
-              // Existing answer with idInApi
               groupedAnswersMap.get(key).values.push({
                 id: option.idInApi,
                 value: option.text,
               });
             } else {
-              // New answer without idInApi
               groupedAnswersMap.get(key).values.push({
                 value: option.text,
               });
@@ -214,11 +201,9 @@ function SualRedakte() {
         });
       });
 
-      // Convert the Map to an array of objects
       data.answers = Array.from(groupedAnswersMap.values());
     }
 
-    // Validation
     if (
       !data.title ||
       !data.question ||
@@ -231,7 +216,6 @@ function SualRedakte() {
     }
 
     console.log("Data sent to API:", JSON.stringify(data, null, 2));
-
     const isUpdating = selectedQuestion && selectedQuestion.id;
     const url = isUpdating
       ? `https://innocert-admin.markup.az/api/questions/${selectedQuestion.id}`
@@ -286,8 +270,41 @@ function SualRedakte() {
     setOpenAnswer("");
     setKombinasiyaOptions([]);
     setKombinasiyaQuestions([]);
-    setNextOptionId(1); // Reset counters
-    setNextQuestionId(1); // Reset counters
+    setNextOptionId(1);
+    setNextQuestionId(1);
+  };
+
+  const handleDelete = async () => {
+    if (!questionToDelete) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No authentication token found");
+      return;
+    }
+
+    try {
+      await axios.delete(
+        `https://innocert-admin.markup.az/api/questions/${questionToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "X-Company-ID": selectedCompany.id,
+          },
+        }
+      );
+
+      toast.success("Sual uğurla silindi");
+      setIsDeleteModalOpen(false);
+      router.push("/sual-bazasi");
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      toast.error("Sual silinərkən xəta baş verdi");
+    }
+  };
+
+  const openDeleteModal = (id) => {
+    setQuestionToDelete(id);
+    setIsDeleteModalOpen(true);
   };
 
   return (
@@ -299,6 +316,7 @@ function SualRedakte() {
           selectedOption={selectedOption}
           setSelectedOption={setSelectedOption}
           onSave={handleSave}
+          onDelete={() => openDeleteModal(selectedQuestion.id)} // Pass the delete function
         />
 
         <EditOrPreviewTitle
@@ -323,10 +341,10 @@ function SualRedakte() {
               setKombinasiyaOptions={setKombinasiyaOptions}
               kombinasiyaQuestions={kombinasiyaQuestions}
               setKombinasiyaQuestions={setKombinasiyaQuestions}
-              nextOptionId={nextOptionId} // New prop
-              setNextOptionId={setNextOptionId} // New prop
-              nextQuestionId={nextQuestionId} // New prop
-              setNextQuestionId={setNextQuestionId} // New prop
+              nextOptionId={nextOptionId}
+              setNextOptionId={setNextOptionId}
+              nextQuestionId={nextQuestionId}
+              setNextQuestionId={setNextQuestionId}
             />
             <EditQuestionDetails
               level={level}
@@ -340,6 +358,13 @@ function SualRedakte() {
         )}
       </Container>
       <ToastContainer />
+
+      {isDeleteModalOpen && (
+        <DeleteModal
+          onCancel={() => setIsDeleteModalOpen(false)}
+          onDelete={handleDelete}
+        />
+      )}
     </>
   );
 }

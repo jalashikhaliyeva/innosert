@@ -50,7 +50,7 @@ function XetaBildirisleri() {
 
   return (
     <>
-     <Head>
+      <Head>
         <title>{t("navigation.reportedErrors")}</title>
       </Head>
       <div className="hidden lg:block ">
@@ -71,11 +71,20 @@ function XetaBildirisleri() {
             <Breadcrumb />
             <ReportTitleNavigation setSearchTerm={setSearchTerm} />{" "}
             {/* Pass setSearchTerm */}
-            <ReportTable
-              data={filteredData}
-              selectedRows={selectedRows}
-              setSelectedRows={setSelectedRows}
-            />
+            {filteredData.length > 0 ? (
+              <ReportTable
+                data={filteredData}
+                selectedRows={selectedRows}
+                setSelectedRows={setSelectedRows}
+              />
+            ) : (
+              <div className="text-center text-gray-500 mt-4 font-gilroy text-lg">
+                {t(
+                  "xetabildirisleri.noReports",
+                  "There are no reports available."
+                )}
+              </div>
+            )}
           </InternalContainer>
         </div>
       </div>

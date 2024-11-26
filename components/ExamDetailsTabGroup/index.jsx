@@ -1,3 +1,5 @@
+// ExamDetailsTabGroup.jsx
+
 import React, { useState, useRef, useEffect } from "react";
 import Questions from "../Questions";
 import Registrations from "../Registrations";
@@ -6,12 +8,16 @@ import GeneralInfo from "../GeneralInfo";
 import { FaPen } from "react-icons/fa";
 import { TbArrowsSort } from "react-icons/tb";
 import { LuSearch } from "react-icons/lu";
+import { BsTrash3 } from "react-icons/bs"; // Import BsTrash3
+import { VscEdit } from "react-icons/vsc"; // Import VscEdit
 import { useRouter } from "next/router";
 import TableComponent from "../CreateExamTabGroup/TableComponent";
 import axios from "axios";
 import QuestionsExamDetails from "../CreateExamTabGroup/QuestionsExamDetail";
+import DeleteModal from "@/components/DeleteQuestionModal"; // Ensure correct path
+import { toast } from "react-toastify"; // For toast notifications
 
-function ExamDetailsTabGroup({ examDetailsSingle , setExamToEdit}) {
+function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
   const [activeTab, setActiveTab] = useState("general");
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -19,6 +25,10 @@ function ExamDetailsTabGroup({ examDetailsSingle , setExamToEdit}) {
   const [selectedRows, setSelectedRows] = useState([]);
   const sortMenuRef = useRef(null);
   const [searchTerm, setSearchTerm] = useState("");
+
+  // State for Delete Modal
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [questionToDelete, setQuestionToDelete] = useState(null);
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -44,28 +54,55 @@ function ExamDetailsTabGroup({ examDetailsSingle , setExamToEdit}) {
     if (examDetailsSingle?.name) {
       fetchQuestions();
     }
-  }, []);
+  }, [examDetailsSingle]);
 
-  const handleDelete = () => {
-    console.log("Rows to delete:", selectedRows);
+  const handleDeleteClick = (id) => {
+    setQuestionToDelete(id);
+    setIsDeleteModalOpen(true);
   };
 
-  const handleEdit = () => {
-    console.log("Rows to edit:", selectedRows);
+  const handleDelete = async () => {
+    if (!questionToDelete) return;
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No authentication token found");
+      toast.error("Sessiyanız sona çatıb. Yenidən daxil olun.");
+      return;
+    }
+
+    try {
+      await axios.delete(
+        `https://innocert-admin.markup.az/api/questions/${questionToDelete}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      toast.success("Sual uğurla silindi");
+      setIsDeleteModalOpen(false);
+      setQuestions((prevQuestions) =>
+        prevQuestions.filter((q) => q.id !== questionToDelete)
+      );
+      setSelectedRows((prevSelected) =>
+        prevSelected.filter((id) => id !== questionToDelete)
+      );
+    } catch (error) {
+      console.error("Error deleting question:", error);
+      toast.error("Sual silinərkən xəta baş verdi");
+    }
+  };
+
+  const handleEdit = (item) => {
+    console.log("Edit item:", item);
+    // Implement your edit logic here
   };
 
   const renderTabContent = () => {
     switch (activeTab) {
       case "questions":
         return (
-          // <TableComponent
-          //     questions={questions}
-          //     selectedRows={selectedRows}
-          //     setSelectedRows={setSelectedRows}
-          //     handleDelete={handleDelete}
-          //     handleEdit={handleEdit}
-          //     searchTerm={searchTerm}
-          //   />
           <QuestionsExamDetails
             questions={questions}
             selectedRows={selectedRows}
@@ -73,6 +110,7 @@ function ExamDetailsTabGroup({ examDetailsSingle , setExamToEdit}) {
             handleDelete={handleDelete}
             handleEdit={handleEdit}
             searchTerm={searchTerm}
+            handleDeleteClick={handleDeleteClick} // Pass the delete handler
           />
         );
       case "registrations":
@@ -94,6 +132,7 @@ function ExamDetailsTabGroup({ examDetailsSingle , setExamToEdit}) {
   const handleSortOptionClick = (option) => {
     console.log(`Selected sort option: ${option}`);
     setIsSortMenuOpen(false);
+    // Implement sorting logic based on the selected option
   };
 
   useEffect(() => {
@@ -128,42 +167,15 @@ function ExamDetailsTabGroup({ examDetailsSingle , setExamToEdit}) {
           </button>
         ) : (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 relative">
-            {/* <div className="relative" ref={sortMenuRef}>
-              <div
-                onClick={() => setIsSortMenuOpen(!isSortMenuOpen)}
-                className="flex items-center cursor-pointer gap-1 sm:gap-2"
-              >
-                <TbArrowsSort />
-                <p className="text-sm sm:text-base text-textSecondaryDefault leading-6 font-gilroy">
-                  Sırala
-                </p>
-              </div>
-              {isSortMenuOpen && (
-                <div className="py-3 px-4 absolute top-full mt-2 right-0 bg-white border border-gray-200 rounded-xl shadow-md z-20">
-                  <ul className="divide-y divide-gray-200">
-                    {["Son Yaradilan", "Ilk Yaradilan", "A-Z", "Z-A"].map(
-                      (option) => (
-                        <li
-                          key={option}
-                          className="py-2 px-4 hover:bg-gray-100 cursor-pointer whitespace-nowrap rounded-md"
-                          onClick={() => handleSortOptionClick(option)}
-                        >
-                          {option}
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-              )}
-            </div> */}
-            <div className="flex items-center w-[70%] md:w-full bg-bodyColor border border-inputBorder rounded-lg px-2 py-1 sm:px-3 sm:py-2 focus-within:border-inputRingFocus overflow-hidden z-10">
+            {/* Search Input */}
+            <div className="flex items-center w-[70%] md:w-full hover:bg-gray-100 bg-bodyColor border border-inputBorder rounded-lg px-2 py-1 sm:px-3 sm:py-2 focus-within:border-inputRingFocus overflow-hidden z-10">
               <LuSearch className="text-inputPlaceholderText size-4 sm:size-6 flex-shrink-0" />
               <input
                 type="text"
                 placeholder="Axtar"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="ml-2 w-full text-sm sm:text-base bg-bodyColor outline-none placeholder-inputPlaceholderText"
+                className="ml-2 w-full text-sm sm:text-base bg-transparent outline-none placeholder-inputPlaceholderText"
               />
             </div>
           </div>
@@ -190,6 +202,14 @@ function ExamDetailsTabGroup({ examDetailsSingle , setExamToEdit}) {
         ))}
       </div>
       <div className="mt-4">{renderTabContent()}</div>
+
+      {/* Delete Modal */}
+      {isDeleteModalOpen && (
+        <DeleteModal
+          onCancel={() => setIsDeleteModalOpen(false)}
+          onDelete={handleDelete}
+        />
+      )}
     </div>
   );
 }

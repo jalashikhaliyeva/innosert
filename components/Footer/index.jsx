@@ -136,14 +136,14 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
           <div className="flex flex-col md:flex-row gap-8 md:gap-24 items-start justify-start">
             <div className="flex flex-col">
               <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5 whitespace-nowrap">
-              {t("footer.siteMap")}
+                {t("footer.siteMap")}
               </h6>
               {/* Home Link */}
               <Link
                 href="/"
                 className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
               >
-            {t("siteMap.home")}
+                {t("siteMap.home")}
               </Link>
 
               {/* Haqqımızda Button */}
@@ -151,7 +151,7 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
                 onClick={handleAboutClick}
                 className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
               >
-               {t("siteMap.aboutUs")}
+                {t("siteMap.aboutUs")}
               </button>
 
               {/* Conditionally Render Bloq or FAQ as Links */}
@@ -160,7 +160,7 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
                   href="/bloq"
                   className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
                 >
-            {t("siteMap.blog")}
+                  {t("siteMap.blog")}
                 </Link>
               ) : (
                 <Link
@@ -168,14 +168,14 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
                   onClick={handleFaqClick}
                   className="cursor-pointer font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400"
                 >
-          {t("siteMap.faq")}
+                  {t("siteMap.faq")}
                 </Link>
               )}
             </div>
 
             <div className="flex flex-col">
               <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5 whitespace-nowrap">
-              {t("siteMap.contact")}
+                {t("siteMap.contact")}
               </h6>
               <p className="font-gilroy text-base font-normal leading-6 text-inputBorder hover:text-blue-400">
                 +994 50 837 58 54
@@ -193,7 +193,7 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
 
             <div className="flex flex-col">
               <h6 className="font-gilroy text-base font-medium leading-6 text-neutralWhite pb-5 whitespace-nowrap">
-              {t("siteMap.address")}
+                {t("siteMap.address")}
               </h6>
               <p className="font-gilroy text-base font-normal leading-6 text-inputBorder">
                 Nizami küç. 203b AF Business House
@@ -207,10 +207,11 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
             © 2024 İnnosert LLC - All rights reserved
           </p>
 
-         
-          <p className="text-inputBorder font-gilroy font-normal text-sm leading-6">
-            Privacy Policy
-          </p>
+          <Link href="/privacy-policy">
+            <p className="text-inputBorder font-gilroy font-normal text-sm leading-6">
+              Privacy Policy
+            </p>
+          </Link>
         </div>
       </Container>
     </div>

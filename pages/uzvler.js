@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useCallback } from "react";
 import axios from "axios";
 import Breadcrumb from "@/components/Breadcrumb";
 import CompanySidebar from "@/components/CompanySidebar";
@@ -30,32 +30,35 @@ function Uzvler() {
   const [activityLoading, setActivityLoading] = useState(false); // State to manage activity loading
   const { selectedCompany } = useContext(CompanyContext);
 
-  useEffect(() => {
-    // Fetch data from the company-teachers API
-    const fetchData = async () => {
-      const token = localStorage.getItem("token");
-      try {
-        if (selectedCompany && selectedCompany.id) {
-          const response = await axios.get(
-            "https://innocert-admin.markup.az/api/me/company-teachers",
-            {
-              headers: {
-                "X-Company-ID": selectedCompany.id,
-                Authorization: `Bearer ${token}`,
-              },
-            }
-          );
-          setData(response.data.data);
-          setLoading(false);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
+  const fetchData = useCallback(async () => {
+    const token = localStorage.getItem("token");
+    try {
+      if (selectedCompany && selectedCompany.id) {
+        const response = await axios.get(
+          "https://innocert-admin.markup.az/api/me/company-teachers",
+          {
+            headers: {
+              "X-Company-ID": selectedCompany.id,
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setData(response.data.data);
         setLoading(false);
       }
-    };
-
-    fetchData();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setLoading(false);
+    }
   }, [selectedCompany]);
+
+  useEffect(() => {
+    fetchData();
+  }, [selectedCompany, fetchData]);
+
+  const handleMemberAdded = () => {
+    fetchData();
+  };
 
   useEffect(() => {
     // Fetch data from the company-teachers-activity API when activeView is "activity"
@@ -180,14 +183,16 @@ function Uzvler() {
         </div>
       </div>
 
-      {isModalOpen && <AddMemberModal closeModal={closeModal} />}
-      {/* {isDeleteModalOpen && (
-  <DeleteMemberModal
-    member={memberToDelete}
-    onCancel={closeDeleteModal}
-    onDelete={confirmDelete} 
-  />
-)} */}
+      {isModalOpen && (
+        <AddMemberModal closeModal={closeModal} onMemberAdded={handleMemberAdded} />
+      )}
+      {isDeleteModalOpen && (
+        <DeleteMemberModal
+          member={memberToDelete}
+          onCancel={closeDeleteModal}
+          onDelete={confirmDelete}
+        />
+      )}
     </>
   );
 }

@@ -79,7 +79,8 @@ function App({ Component, pageProps }) {
       if (
         pathname.startsWith("/exams/") ||
         pathname.startsWith("/imtahanlar/") ||
-        pathname.startsWith("/etrafli/") 
+        pathname.startsWith("/imtahanlar") ||
+        pathname.startsWith("/etrafli/")
       ) {
         return true;
       }

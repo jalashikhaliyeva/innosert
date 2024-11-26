@@ -190,16 +190,25 @@ function UmumiImtahanlar() {
               openAddExamModal={openAddExamModal}
               openDeleteModal={openDeleteMultipleModal}
             />
-            <ExamListCompany
-              exams={folders}
-              viewMode={viewMode}
-              sortOption={sortOption}
-              selectedExams={selectedExams}
-              setSelectedExams={setSelectedExams}
-              openEditExamModal={openEditExamModal}
-              openDeleteExamModal={openDeleteExamModal}
-              openEditFolderModal={openEditFolderModal}
-            />
+            {folders.length === 0 ||
+            (!folders.folders?.length && !folders.exams?.length) ? (
+              <div className="text-center text-gray-500 mt-10 font-gilroy text-lg">
+                {t("noExamsAvailable", {
+                  defaultValue: "No exams or folders available.",
+                })}
+              </div>
+            ) : (
+              <ExamListCompany
+                exams={folders}
+                viewMode={viewMode}
+                sortOption={sortOption}
+                selectedExams={selectedExams}
+                setSelectedExams={setSelectedExams}
+                openEditExamModal={openEditExamModal}
+                openDeleteExamModal={openDeleteExamModal}
+                openEditFolderModal={openEditFolderModal}
+              />
+            )}
           </InternalContainer>
         </div>
       </div>

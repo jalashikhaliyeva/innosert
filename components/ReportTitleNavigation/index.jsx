@@ -15,13 +15,13 @@ function ReportNavigationTitle({ setSearchTerm }) {
         {t("titles.reportedErrors")}
       </h1>
 
-      <div className="lg:w-[20%] w-full flex items-center bg-bodyColor border border-inputBorder rounded-lg px-3 py-2 focus-within:border-inputRingFocus overflow-hidden">
+      <div className="lg:w-[20%] w-full flex items-center bg-bodyColor hover:bg-gray-100 border border-inputBorder rounded-lg px-3 py-2 focus-within:border-inputRingFocus overflow-hidden">
         <LuSearch className="text-inputPlaceholderText size-6 flex-shrink-0" />
         <input
           type="text"
           placeholder={t("placeholders.search")}
           onChange={handleSearchChange} // Call handleSearchChange on input change
-          className="ml-2 w-full text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2"
+          className="ml-2 w-full text-sm sm:text-base bg-transparent outline-none placeholder-inputPlaceholderText pl-2"
         />
       </div>
     </div>

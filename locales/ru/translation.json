@@ -201,7 +201,8 @@
     "questionDatabase": "База вопросов",
     "generalExams": "Экзамены",
     "examDetails": "Детали экзамена",
-    "examEdit": "Редактировать экзамен"
+    "examEdit": "Редактировать экзамен",
+    "privacyPolicy": "Политика конфиденциальности"
   },
   "register": {
     "welcome": "Добро пожаловать в Innosert!",
@@ -282,5 +283,13 @@
   "views": "Просмотры",
   "examNotFound": "Код неверный, экзамен не найден.",
   "examFound": "Экзамен успешно найден.",
-  "other": "Другие"
+  "other": "Другие",
+  "no_notifications": "Уведомлений нет",
+  "info": {
+    "noFoldersYet": "Папок пока нет."
+  },
+  "noExamsAvailable": "Экзамены или папки отсутствуют.",
+  "xetabildirisleri": {
+    "noReports": "Сообщения об ошибках отсутствуют."
+  }
 }

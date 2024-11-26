@@ -1,27 +1,33 @@
-import BreadcrumbHome from "@/components/BreadcumbHome";
-
-import CategoryTagsAbout from "@/components/CategoryTagsAout";
-
-import CertificateExampleAbout from "@/components/CertificateExampleAbout";
-
-import CompanyLogoName from "@/components/CompanyLogoName";
-
-import Container from "@/components/Container";
-
-import ExamDetails from "@/components/ExamDetails";
-
-import ExamTitleDescription from "@/components/ExamTitleDescription";
-
-import Footer from "@/components/Footer";
-
+import React, { useContext, useState } from "react";
+import { UserContext } from "@/shared/context/UserContext";
+import Header from "@/components/Header";
 import HeaderInternal from "@/components/HeaderInternal";
-
+import BreadcrumbHome from "@/components/BreadcumbHome";
+import CertificateExampleAbout from "@/components/CertificateExampleAbout";
+import CompanyLogoName from "@/components/CompanyLogoName";
+import Container from "@/components/Container";
+import ExamDetails from "@/components/ExamDetails";
+import ExamTitleDescription from "@/components/ExamTitleDescription";
+import Footer from "@/components/Footer";
 import JoinButtonandPriceExam from "@/components/JoinButtonandPriceExam";
 import Spinner from "@/components/Spinner";
-
-import React from "react";
+import CategoryTagsAbout from "@/components/CategoryTagsAout";
+import RegisterModal from "@/components/Register";
 
 function ExamName({ examData, error }) {
+  const { user } = useContext(UserContext);
+
+  // State for Register Modal
+  const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
+
+  const handleOpenRegisterModal = () => {
+    setRegisterModalOpen(true);
+  };
+
+  const closeRegisterModal = () => {
+    setRegisterModalOpen(false);
+  };
+
   if (error) {
     return <div>Error loading exam details. Please try again later.</div>;
   }
@@ -38,7 +44,11 @@ function ExamName({ examData, error }) {
 
   return (
     <>
-      <HeaderInternal />
+      {user ? (
+        <HeaderInternal />
+      ) : (
+        <Header openRegisterModal={handleOpenRegisterModal} />
+      )}
 
       <Container>
         <BreadcrumbHome />
@@ -61,6 +71,14 @@ function ExamName({ examData, error }) {
 
         <ExamDetails examData={examData} />
       </Container>
+
+      {/* Render Register Modal */}
+      {isRegisterModalOpen && (
+        <RegisterModal
+          isOpen={isRegisterModalOpen}
+          onClose={closeRegisterModal}
+        />
+      )}
 
       <Footer />
     </>
@@ -94,7 +112,6 @@ export async function getServerSideProps(context) {
     return {
       props: {
         examData: null,
-
         error: true,
       },
     };

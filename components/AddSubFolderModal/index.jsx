@@ -1,8 +1,9 @@
 // AddFolderModal.jsx
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
+import CompanyContext from "@/shared/context/CompanyContext";
 
 function AddSubFolderModal({ closeModal, addNewSubFolder }) {
   const [folderName, setFolderName] = useState("");
@@ -10,6 +11,7 @@ function AddSubFolderModal({ closeModal, addNewSubFolder }) {
   const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { selectedCompany } = useContext(CompanyContext);
   // const { subfolder } = router.query; //? thats is slug
   const { slug } = router.query; //? thats is slug
   console.log(router.query, "sub folder Query");
@@ -38,6 +40,7 @@ const handleSubmit = async (e) => {
       {
         headers: {
           Authorization: `Bearer ${token}`,
+          "X-Company-ID": selectedCompany.id,
         },
       }
     );

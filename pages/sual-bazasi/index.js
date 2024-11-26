@@ -21,6 +21,7 @@ import Spinner from "@/components/Spinner";
 import { useTranslation } from "react-i18next";
 import BulkDeleteFolderModal from "@/components/BulkDeleteFolderModal";
 import Head from "next/head";
+import CompanyContext from "@/shared/context/CompanyContext";
 
 function SualBazasi() {
   const { t } = useTranslation();
@@ -35,6 +36,7 @@ function SualBazasi() {
   const [isDeleteFolderModalOpen, setIsDeleteFolderModalOpen] = useState(false);
   const [isBulkDeleteModalOpen, setIsBulkDeleteModalOpen] = useState(false); // New state for bulk delete
   const [selectedFolder, setSelectedFolder] = useState(null);
+  const { selectedCompany } = useContext(CompanyContext);
   const [files, setFiles] = useState([]);
 
   // Fetch folders from the API
@@ -47,10 +49,13 @@ function SualBazasi() {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "X-Company-ID": selectedCompany.id,
           },
         }
       );
 
+      console.log(response.data ,"folders");
+      
       setFiles(response.data.data.folders);
     } catch (error) {
       console.error("Error fetching folders:", error);
@@ -185,20 +190,25 @@ function SualBazasi() {
                     </div>
 
                     {/* Conditional Rendering based on active tab */}
-                    {activeTab === "folders" && (
-                      <QuestionFiles
-                        files={files}
-                        viewMode={viewMode}
-                        sortOption={sortOption}
-                        selectedFiles={selectedFiles}
-                        setSelectedFiles={setSelectedFiles}
-                        openEditFolderModal={(folder) => {
-                          setSelectedFolder(folder);
-                          setIsEditFolderModalOpen(true);
-                        }}
-                        openDeleteFolderModal={openDeleteFolderModal}
-                      />
-                    )}
+                    {activeTab === "folders" &&
+                      (files.length === 0 ? (
+                        <div className="flex items-center font-gilroy justify-center h-full text-gray-500 text-lg">
+                          {t("info.noFoldersYet")}
+                        </div>
+                      ) : (
+                        <QuestionFiles
+                          files={files}
+                          viewMode={viewMode}
+                          sortOption={sortOption}
+                          selectedFiles={selectedFiles}
+                          setSelectedFiles={setSelectedFiles}
+                          openEditFolderModal={(folder) => {
+                            setSelectedFolder(folder);
+                            setIsEditFolderModalOpen(true);
+                          }}
+                          openDeleteFolderModal={openDeleteFolderModal}
+                        />
+                      ))}
 
                     {activeTab === "questions" && <QuestionsTableCompany />}
                   </>

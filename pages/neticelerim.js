@@ -89,7 +89,7 @@ function Neticelerim() {
                   <CardResult key={result.id} data={result} />
                 ))
               ) : (
-                <p>{t("noResults")}</p>
+                <p className="text-neutral700 text-lg font-gilroy mt-4 flex justify-center items-center">{t("noResults")}</p>
               )}
             </div>
             {pageCount > 1 && (

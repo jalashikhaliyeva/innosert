@@ -5,7 +5,7 @@ import CompanyContext from "@/shared/context/CompanyContext";
 
 import { toast, ToastContainer } from "react-toastify";
 
-function AddMemberModal({ closeModal }) {
+function AddMemberModal({ closeModal ,onMemberAdded }) {
   const [email, setEmail] = useState("");
   const [inputError, setInputError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
@@ -37,7 +37,7 @@ function AddMemberModal({ closeModal }) {
       console.log("User added successfully:", response);
 
       toast.success("İstifadəçi uğurla əlavə olundu!"); // Show success toast
-
+      onMemberAdded();
       // Add a delay before closing the modal
       setTimeout(() => {
         setLoading(false);

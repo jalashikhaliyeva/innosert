@@ -1,4 +1,5 @@
-import React from "react";
+import CompanyContext from "@/shared/context/CompanyContext";
+import React, { useContext } from "react";
 import { IoWarningOutline } from "react-icons/io5";
 
 function DeleteMemberModal({ member, onCancel, onDelete }) {
@@ -7,13 +8,17 @@ function DeleteMemberModal({ member, onCancel, onDelete }) {
       onCancel();
     }
   };
+  const { selectedCompany } = useContext(CompanyContext);
+  console.log(selectedCompany , "selectedCompany");
+  console.log(member , "member");
+  
   const confirmDelete = async () => {
     console.log(memberToDelete, "memberToDelete");
     
     if (memberToDelete && memberToDelete.id) {
       try {
         const response = await fetch(
-          `https://innocert-admin.markup.az/api/me/deleteUser/${memberToDelete.id}`,
+          `https://innocert-admin.markup.az/api/me/deleteUser/${member.id}`,
           {
             method: "DELETE",
             headers: {

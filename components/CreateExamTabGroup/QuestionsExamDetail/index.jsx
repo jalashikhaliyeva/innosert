@@ -14,6 +14,7 @@ function QuestionsExamDetails({
   openDeleteModal,
   questions,
   searchTerm,
+  handleDeleteClick,
 }) {
   console.log(questions, "QuestionsTableCompany from API add quest");
   // const data = questions;
@@ -51,11 +52,6 @@ function QuestionsExamDetails({
     router.push({
       pathname: "/sual-redakte",
     });
-  };
-
-  // Handle delete action
-  const handleDeleteClick = (id) => {
-    openDeleteModal(id);
   };
 
   // Handle row click to view question details

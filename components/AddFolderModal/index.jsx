@@ -1,13 +1,16 @@
 // AddFolderModal.jsx
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
+import CompanyContext from "@/shared/context/CompanyContext";
 
 function AddFolderModal({ closeModal, addNewFolder, fetchFiles }) {
   const [folderName, setFolderName] = useState("");
   const [inputError, setInputError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
+  const { selectedCompany } = useContext(CompanyContext);
   const [loading, setLoading] = useState(false);
+console.log(selectedCompany, "selectedCompany folder");
 
   // AddFolderModal.jsx
   const handleSubmit = async (e) => {
@@ -27,6 +30,7 @@ function AddFolderModal({ closeModal, addNewFolder, fetchFiles }) {
         {
           headers: {
             Authorization: `Bearer ${token}`,
+            "X-Company-ID": selectedCompany.id,
           },
         }
       );

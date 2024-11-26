@@ -1,12 +1,14 @@
-import React, { useState, useRef, useEffect, useMemo } from "react";
+import React, { useState, useRef, useEffect, useMemo, useContext } from "react";
 import axios from "axios";
 import QuestionCard from "../QuestionCard";
 import TableComponent from "../TableComponent";
 import { GrFormPrevious } from "react-icons/gr";
 import Questions from "@/components/Questions";
 import DeleteModal from "@/components/DeleteModal";
+import CompanyContext from "@/shared/context/CompanyContext";
 
-function AddQuestionModal({ onClose, selectedCompany }) {
+function AddQuestionModal({ onClose }) {
+  const { selectedCompany } = useContext(CompanyContext);
   const [selectedIcon, setSelectedIcon] = useState("grid");
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);

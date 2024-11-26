@@ -113,7 +113,6 @@ const NotificationsDropdown = () => {
         router.push("/home");
       } else if (type === "Blog") {
         router.push("/bloq");
-      } else if (link) {
       } else if (type === "Şirkətlərim") {
         router.push("/hesablarim");
       } else if (link) {
@@ -163,50 +162,56 @@ const NotificationsDropdown = () => {
           </h2>
 
           {/* Notification List */}
-          <ul className="flex-grow overflow-y-auto divide-y divide-gray-200">
-            {notifications.map((notification) => (
-              <li
-                key={notification.id}
-                className="py-2 flex justify-between items-center cursor-pointer"
-                onClick={() =>
-                  handleNotificationItemClick(
-                    notification.id,
-                    notification.link,
-                    notification.type
-                  )
-                }
-              >
-                <div className="flex items-center">
-                  <span
-                    className={`h-2 w-2 ${
-                      notification.is_read ? "bg-gray-200" : "bg-blue-500"
-                    } rounded-full mt-2 mr-2`}
-                  ></span>
-                  <p
-                    className={`text-sm ${
-                      notification.is_read ? "text-gray-400" : "text-green900"
-                    }`}
-                  >
-                    <span className="font-medium">{notification.title}</span>
-                    {notification.link && (
-                      <span
-                        className={`${
-                          notification.is_read
-                            ? "text-gray-400"
-                            : "text-blue-600"
-                        } underline mx-1`}
-                      >
-                        {notification.type}
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <span className="text-gray-400 ml-2 font-gilroy  md:text-sm whitespace-nowrap">
-                  {calculateDaysAgo(notification.created_at)}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {notifications.length > 0 ? (
+            <ul className="flex-grow overflow-y-auto divide-y divide-gray-200">
+              {notifications.map((notification) => (
+                <li
+                  key={notification.id}
+                  className="py-2 flex justify-between items-center cursor-pointer"
+                  onClick={() =>
+                    handleNotificationItemClick(
+                      notification.id,
+                      notification.link,
+                      notification.type
+                    )
+                  }
+                >
+                  <div className="flex items-center">
+                    <span
+                      className={`h-2 w-2 ${
+                        notification.is_read ? "bg-gray-200" : "bg-blue-500"
+                      } rounded-full mt-2 mr-2`}
+                    ></span>
+                    <p
+                      className={`text-sm ${
+                        notification.is_read ? "text-gray-400" : "text-green900"
+                      }`}
+                    >
+                      <span className="font-medium">{notification.title}</span>
+                      {notification.link && (
+                        <span
+                          className={`${
+                            notification.is_read
+                              ? "text-gray-400"
+                              : "text-blue-600"
+                          } underline mx-1`}
+                        >
+                          {notification.type}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <span className="text-gray-400 ml-2 font-gilroy md:text-sm whitespace-nowrap">
+                    {calculateDaysAgo(notification.created_at)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex-grow flex items-center justify-center text-gray-500">
+              {t("no_notifications")}
+            </div>
+          )}
         </div>
       )}
 
@@ -222,50 +227,56 @@ const NotificationsDropdown = () => {
             />
           </div>
 
-          <ul className="flex-grow overflow-y-auto p-4">
-            {notifications.map((notification) => (
-              <li
-                key={notification.id}
-                className="py-2 flex justify-between items-center cursor-pointer"
-                onClick={() =>
-                  handleNotificationItemClick(
-                    notification.id,
-                    notification.link,
-                    notification.type
-                  )
-                }
-              >
-                <div className="flex items-center">
-                  <span
-                    className={`h-2 w-2 ${
-                      notification.is_read ? "bg-gray-200" : "bg-blue-500"
-                    } rounded-full mt-2 mr-2`}
-                  ></span>
-                  <p
-                    className={`text-sm ${
-                      notification.is_read ? "text-gray-400" : "text-green900"
-                    }`}
-                  >
-                    <span className="font-medium">{notification.title}</span>
-                    {notification.link && (
-                      <span
-                        className={`${
-                          notification.is_read
-                            ? "text-gray-400"
-                            : "text-blue-600"
-                        } underline mx-1`}
-                      >
-                        {notification.type}
-                      </span>
-                    )}
-                  </p>
-                </div>
-                <span className="text-gray-400 ml-2 font-gilroy text-sm whitespace-nowrap">
-                  {calculateDaysAgo(notification.created_at)}
-                </span>
-              </li>
-            ))}
-          </ul>
+          {notifications.length > 0 ? (
+            <ul className="flex-grow overflow-y-auto p-4">
+              {notifications.map((notification) => (
+                <li
+                  key={notification.id}
+                  className="py-2 flex justify-between items-center cursor-pointer"
+                  onClick={() =>
+                    handleNotificationItemClick(
+                      notification.id,
+                      notification.link,
+                      notification.type
+                    )
+                  }
+                >
+                  <div className="flex items-center">
+                    <span
+                      className={`h-2 w-2 ${
+                        notification.is_read ? "bg-gray-200" : "bg-blue-500"
+                      } rounded-full mt-2 mr-2`}
+                    ></span>
+                    <p
+                      className={`text-sm ${
+                        notification.is_read ? "text-gray-400" : "text-green900"
+                      }`}
+                    >
+                      <span className="font-medium">{notification.title}</span>
+                      {notification.link && (
+                        <span
+                          className={`${
+                            notification.is_read
+                              ? "text-gray-400"
+                              : "text-blue-600"
+                          } underline mx-1`}
+                        >
+                          {notification.type}
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <span className="text-gray-400 ml-2 font-gilroy text-sm whitespace-nowrap">
+                    {calculateDaysAgo(notification.created_at)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <div className="flex-grow flex items-center justify-center text-gray-500">
+              {t("no_notifications")}
+            </div>
+          )}
         </div>
       )}
     </div>
