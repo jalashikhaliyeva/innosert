@@ -4,27 +4,18 @@ import { HiOutlineSave } from "react-icons/hi";
 import { FiLink } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { FaLinkedin, FaFacebook } from "react-icons/fa6"; 
+import { FaLinkedin, FaFacebook } from "react-icons/fa6";
 import { useTranslation } from "react-i18next";
 import Head from "next/head";
 import Spinner from "@/components/Spinner";
 
-function CertificateDetail({ certificate }) {
+function CertificateDetail() {
   const { t } = useTranslation();
-  const router = useRouter();
-  const { id } = router.query;
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [certificateURL, setCertificateURL] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
 
-  if (!certificate) {
-    return (
-      <>
-        <Spinner />
-      </>
-    );
-  }
+  const certificateSrc = "/img/Sertifikat1.png"; // Static image source
 
   // Function to open the modal and set the certificate URL
   const openModal = () => {
@@ -69,7 +60,7 @@ function CertificateDetail({ certificate }) {
 
   // Function to handle the download
   const downloadCertificate = () => {
-    const imageUrl = `${window.location.origin}${certificate.src}`;
+    const imageUrl = `${window.location.origin}${certificateSrc}`;
     const link = document.createElement("a");
     link.href = imageUrl;
     link.download = "certificate.png";
@@ -85,9 +76,9 @@ function CertificateDetail({ certificate }) {
       </Head>
       <div className="flex flex-col items-center justify-center min-h-screen">
         <Image
-          src={certificate.src}
+          src={certificateSrc}
           width={700}
-          height={500}
+          height={700}
           alt="Certificate"
           className="object-contain"
         />

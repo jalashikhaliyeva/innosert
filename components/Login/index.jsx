@@ -30,13 +30,24 @@ export default function LoginModal({
   const [focusedInput, setFocusedInput] = useState(null); // State to track focused input
   const [loading, setLoading] = useState(false); // New state for loading
   const router = useRouter();
-  const { data: session , status} = useSession();
+  const { data: session, status } = useSession();
 
- useEffect(() => {
-  if (status === "authenticated") {
-    console.log("User data:", session.user);
-  }
-}, [status, session]);
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      console.log("User data:", session.user);
+      // Get the accessToken from session
+      const token = session.accessToken;
+      // Store the token in localStorage
+      if (token) {
+        localStorage.setItem("token", token);
+        login(token); // Use context's login function if needed
+      }
+      // Close the modal or redirect as needed
+      onClose();
+      router.push("/home");
+    }
+  }, [status, session]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
