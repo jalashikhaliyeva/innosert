@@ -186,3 +186,10 @@ body {
 .custom-bullet-active {
   background-color: darkgray; /* Dark gray color for active bullet */
 }
+
+
+@media (min-width: 1024px) and (max-width: 1379px) {
+  .hide-register-1024-1380 {
+    display: none;
+  }
+}

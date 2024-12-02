@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 function EditFolderModal({ folder, closeModal, onFolderUpdate }) {
   const [folderName, setFolderName] = useState(folder?.name || "");
   const [inputError, setInputError] = useState(false);
   const [loading, setLoading] = useState(false);
-
+  const { t } = useTranslation(); 
   useEffect(() => {
     if (folder?.name) {
       setFolderName(folder.name);
@@ -49,7 +50,7 @@ function EditFolderModal({ folder, closeModal, onFolderUpdate }) {
       );
 
       if (response.status === 200) {
-        toast.success("Folder name updated successfully!");
+        toast.success(t('toastMessages.folderUpdated'));
         // Notify parent about the change
         if (onFolderUpdate) {
           onFolderUpdate({ ...folder, name: folderName });

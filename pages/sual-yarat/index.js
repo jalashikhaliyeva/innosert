@@ -140,7 +140,7 @@ function SualYarat() {
             return selectedOption ? stripHtml(selectedOption.text) : "";
           }
         );
-        
+
         return {
           key: stripHtml(question.questionText),
           value: selectedOptionsTexts,

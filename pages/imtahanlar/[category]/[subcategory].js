@@ -1,7 +1,9 @@
+// pages/kateqoriyalar/[category]/[subcategory].jsx
+
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import { useRouter } from "next/router";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState, useMemo } from "react";
 import withModalManagement from "@/shared/hoc/withModalManagement";
 import Spinner from "@/components/Spinner";
 import { getLandingInfo } from "@/services/getLandingInfo";
@@ -15,13 +17,14 @@ import LoginModal from "@/components/Login";
 import { UserContext } from "@/shared/context/UserContext";
 import Head from "next/head";
 import { useTranslation } from "react-i18next";
+
 const SubcategoryPage = ({
   openRegisterModal,
   openLoginModal,
   landingInfo: initialLandingInfo,
   settingInfo: initialSettingInfo,
 }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const router = useRouter();
   const { user } = useContext(UserContext);
   const { category, subcategory } = router.query;
@@ -37,30 +40,47 @@ const SubcategoryPage = ({
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null); // Added error state
+  const [sortOption, setSortOption] = useState(null); // New sort state
 
   const examsPerPage = 8;
+  const lang = i18n.language || "az";
+
   // Fetch exams based on category and subcategory slugs
   useEffect(() => {
     const fetchExams = async () => {
       try {
-        const token = localStorage.getItem("token");
+        const token =
+          typeof window !== "undefined" ? localStorage.getItem("token") : null;
         const response = await fetch(
           `https://innocert-admin.markup.az/api/exams/${category}/${subcategory}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: token ? `Bearer ${token}` : "",
+              "Accept-Language": lang, // Include language header if needed
             },
           }
         );
 
+        if (!response.ok) {
+          throw new Error(`Error: ${response.status} ${response.statusText}`);
+        }
+
         const data = await response.json();
         console.log(data.data, "data SubcategoryPage");
 
-        setExams(data.data); // Set exams from the API response
+        // Ensure data.data is an array
+        if (Array.isArray(data.data)) {
+          setExams(data.data);
+        } else {
+          setExams([]);
+        }
       } catch (error) {
         console.error("Failed to fetch exams:", error);
+        setError(t("errors.fetch_exams_failed") || "İmtahanlar yüklənərkən bir xəta baş verdi.");
+        setExams([]); // Ensure exams is an empty array on error
       } finally {
         setLoading(false); // Set loading to false once data is fetched
       }
@@ -69,21 +89,9 @@ const SubcategoryPage = ({
     if (category && subcategory) {
       fetchExams();
     }
-  }, [category, subcategory]);
+  }, [category, subcategory, lang, t]);
 
-  // Pagination logic
-  const pageCount = Math.ceil(exams?.length / examsPerPage);
-
-  const handlePageClick = (data) => {
-    setCurrentPage(data.selected);
-    window.scrollTo(0, 0); // Optional: Scroll to the top after pagination
-  };
-
-  const paginateExams = exams?.slice(
-    currentPage * examsPerPage,
-    (currentPage + 1) * examsPerPage
-  );
-
+  // Fetch landing and setting info
   useEffect(() => {
     const fetchData = async (locale) => {
       try {
@@ -110,6 +118,53 @@ const SubcategoryPage = ({
     }
   }, [router.locale]);
 
+  // Handle sorting
+  const handleSortOptionClick = (option) => {
+    setSortOption(option);
+    setCurrentPage(0); // Reset to first page when sorting changes
+  };
+
+  // Apply sorting based on sortOption
+  const sortedExams = useMemo(() => {
+    if (!sortOption) return exams;
+
+    const sorted = [...exams];
+    switch (sortOption) {
+      case "price_low_high":
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case "price_high_low":
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case "new_to_old":
+        sorted.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+        break;
+      case "old_to_new":
+        sorted.sort(
+          (a, b) => new Date(a.created_at) - new Date(b.created_at)
+        );
+        break;
+      default:
+        break;
+    }
+    return sorted;
+  }, [exams, sortOption]);
+
+  // Pagination logic based on sorted exams
+  const pageCount = Math.ceil((sortedExams.length || 0) / examsPerPage);
+
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+    window.scrollTo(0, 0); // Optional: Scroll to the top after pagination
+  };
+
+  const paginateExams = sortedExams.slice(
+    currentPage * examsPerPage,
+    (currentPage + 1) * examsPerPage
+  );
+
   if (!landingInfo || !settingInfo) {
     return <Spinner />;
   }
@@ -132,6 +187,7 @@ const SubcategoryPage = ({
     <div>
       <Head>
         <title>{t("labels.exams")}</title>
+        {/* Optional: Add meta tags if needed */}
         {/* <meta name="description" content={landingInfo?.metatags?.meta_desc} />
         <meta
           name="keywords"
@@ -153,54 +209,66 @@ const SubcategoryPage = ({
 
       <section className="my-28">
         <Container>
-          <SortTitleExams category={subcategory} />
+          <SortTitleExams
+            category={subcategory}
+            onSortOptionClick={handleSortOptionClick} // Pass the handler here
+          />
 
           {loading ? (
-            <Spinner />
-          ) : paginateExams?.length > 0 ? (
-            <ExamCard
-              openLoginModal={handleLoginOrRulesClick}
-              openRegisterModal={handleLoginOrRulesClick}
-              widthClass="w-[23.8%]"
-              exams={paginateExams} // Display paginated exams
-            />
+            <div className="flex justify-center items-center py-20">
+              <Spinner />
+            </div>
+          ) : error ? (
+            <p className="text-center font-gilroy text-lg text-red-500 py-20">
+              {error}
+            </p>
+          ) : sortedExams.length > 0 ? (
+            <>
+              <ExamCard
+                openLoginModal={handleLoginOrRulesClick}
+                openRegisterModal={handleLoginOrRulesClick}
+                widthClass="w-[23.8%]"
+                exams={paginateExams} // Display paginated and sorted exams
+              />
+              {/* Pagination */}
+              {pageCount > 1 && (
+                <ReactPaginate
+                  previousLabel={"<"}
+                  nextLabel={">"}
+                  breakLabel={"..."}
+                  pageCount={pageCount}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName="flex justify-center items-center gap-2 w-full mt-6"
+                  pageClassName="inline-block"
+                  pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
+                  activeClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
+                  previousClassName={currentPage === 0 ? "text-gray-300" : ""}
+                  previousLinkClassName={
+                    currentPage === 0 ? "cursor-not-allowed" : ""
+                  }
+                  previousLinkStyle={
+                    currentPage === 0 ? { cursor: "not-allowed" } : {}
+                  }
+                  nextClassName={
+                    currentPage === pageCount - 1 ? "text-gray-300" : ""
+                  }
+                  nextLinkClassName={
+                    currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
+                  }
+                  nextLinkStyle={
+                    currentPage === pageCount - 1
+                      ? { cursor: "not-allowed" }
+                      : {}
+                  }
+                />
+              )}
+            </>
           ) : (
-            <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
+            <p className="text-center font-gilroy text-lg text-gray-500 py-20">
               &quot;{subcategory}&quot; kateqoriyası üçün mövcud imtahan yoxdur.
             </p>
-          )}
-
-          {pageCount > 1 && (
-            <ReactPaginate
-              previousLabel={"<"}
-              nextLabel={">"}
-              breakLabel={"..."}
-              pageCount={pageCount}
-              marginPagesDisplayed={2}
-              pageRangeDisplayed={5}
-              onPageChange={handlePageClick}
-              containerClassName="flex justify-center items-center gap-2 w-full"
-              pageClassName="inline-block" // Minimal styling on li elements
-              pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy" // Apply styles to a elements
-              activeClassName="" // Remove active styles from li elements
-              activeLinkClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy" // Active styles on a elements
-              previousClassName={currentPage === 0 ? "text-gray-300" : ""}
-              previousLinkClassName={
-                currentPage === 0 ? "cursor-not-allowed" : ""
-              }
-              previousLinkStyle={
-                currentPage === 0 ? { cursor: "not-allowed" } : {}
-              }
-              nextClassName={
-                currentPage === pageCount - 1 ? "text-gray-300" : ""
-              }
-              nextLinkClassName={
-                currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
-              }
-              nextLinkStyle={
-                currentPage === pageCount - 1 ? { cursor: "not-allowed" } : {}
-              }
-            />
           )}
         </Container>
       </section>

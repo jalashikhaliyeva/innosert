@@ -20,7 +20,7 @@ function HowConnectToExamSection(props) {
               key={item.id}
               className="w-full lg:w-[27%] p-5 bg-grayBox flex flex-col gap-7 rounded-md"
             >
-              <div className="bg-grayTextColor text-brandBlue500 w-9 h-9 flex items-center justify-center rounded-lg text-xl font-gilroy">
+              <div className="bg-inputBgHover text-red500 w-10 h-10 flex items-center justify-center rounded-lg text-xl font-gilroy">
                 {`0${index + 1}`}
               </div>
               <div>

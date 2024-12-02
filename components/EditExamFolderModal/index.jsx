@@ -2,8 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import CompanyContext from "@/shared/context/CompanyContext";
+import { useTranslation } from "react-i18next";
 
 function EditExamFolderModal({ folder, item, closeModal, onFolderUpdate }) {
+  const { t } = useTranslation(); 
   const { selectedCompany } = useContext(CompanyContext);
   const [folderName, setFolderName] = useState(folder?.name || "");
   const [inputError, setInputError] = useState(false);
@@ -56,7 +58,7 @@ function EditExamFolderModal({ folder, item, closeModal, onFolderUpdate }) {
       );
 
       if (response.status === 200) {
-        toast.success("Folder name updated successfully!");
+        toast.success(t('toastMessages.folderUpdated'));
         if (onFolderUpdate) {
           onFolderUpdate({ ...folder, name: folderName });
         }

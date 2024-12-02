@@ -1,4 +1,3 @@
-// GeneralInfoEditExam.js
 import React, { useState, useRef, useEffect, useContext, useMemo } from "react";
 import { FaPen, FaKey } from "react-icons/fa";
 import { IoIosInformationCircleOutline } from "react-icons/io";
@@ -10,7 +9,6 @@ function GeneralInfoEditExam() {
   const {
     selectedCategory,
     selectedSubcategory,
-
     timeForQuestion,
     setTimeForQuestion,
     isGeneralInfoValid,
@@ -24,7 +22,7 @@ function GeneralInfoEditExam() {
 
   useEffect(() => {
     const isValid =
-      examDetails.name && examDetails.desc && examDetails.duration;
+      examDetails && examDetails.name && examDetails.desc && examDetails.duration;
     setIsGeneralInfoValid(!!isValid);
   }, [examDetails, setIsGeneralInfoValid]);
 
@@ -34,6 +32,7 @@ function GeneralInfoEditExam() {
   const [isInfoHoveredFifth, setIsInfoHoveredFifth] = useState(false);
   const [isInfoHoveredSixth, setIsInfoHoveredSixth] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const combinedList = useMemo(
     () => [
@@ -167,7 +166,14 @@ function GeneralInfoEditExam() {
   }
 
   useEffect(() => {
-    if (examDetails && combinedList.length > 0) {
+    if (examDetails === null) {
+      setValues(["", "", "", "", "00:00:00"]);
+      setCode("");
+      setIsKodlu(true);
+      setSelectedItems([]);
+      setHasSubmitted(false);
+      setIsInitialLoad(true);
+    } else if (examDetails && combinedList.length > 0 && isInitialLoad) {
       setValues([
         examDetails.name || "",
         examDetails.desc || "",
@@ -186,8 +192,6 @@ function GeneralInfoEditExam() {
         setIsKodlu(false);
       }
 
-      console.log(examDetails.category_id, "examDetails.category_id");
-
       if (examDetails.category_id) {
         const categoryIds = examDetails.category_id.map(Number);
         const items = combinedList.filter((item) =>
@@ -197,8 +201,9 @@ function GeneralInfoEditExam() {
       }
 
       setHasSubmitted(true);
+      setIsInitialLoad(false);
     }
-  }, [examDetails, combinedList]);
+  }, [examDetails, combinedList, isInitialLoad]);
 
   useEffect(() => {
     const examName = values[0].trim();
@@ -256,6 +261,7 @@ function GeneralInfoEditExam() {
     updateExamDetails,
     hasSubmitted,
   ]);
+
   useEffect(() => {
     if (!isCategoryDropdownOpen) return;
 
@@ -267,7 +273,6 @@ function GeneralInfoEditExam() {
 
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Cleanup the event listener on unmount or when dropdown closes
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };

@@ -1,24 +1,26 @@
-// components/Imtahanlar.jsx
+// components/Kateqoriyalar.jsx
 import React, { useContext, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import Footer from "@/components/Footer";
-import Header from "@/components/Header";
+import HeaderInternal from "@/components/HeaderInternal";
+import Breadcrumb from "@/components/Breadcrumb";
 import ExamRulesModal from "@/components/ExamRulesModal";
 import LoginModal from "@/components/Login";
+import RegisterModal from "@/components/Register";
+
 import { UserContext } from "@/shared/context/UserContext";
 import Head from "next/head";
 import { useTranslation } from "react-i18next";
-import RegisterModal from "@/components/Register";
 import { getSettingInfo } from "@/services/getSettingInfo";
 import Container from "@/components/Container";
-import HeaderInternal from "@/components/HeaderInternal";
-import Breadcrumb from "@/components/Breadcrumb";
+import Spinner from "@/components/Spinner";
 
 function Kateqoriyalar({ openRegisterModal, openLoginModal }) {
   const { selectedCategory, selectedSubcategory, user } =
     useContext(UserContext);
   const [settingInfo, setSettingInfo] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Loading state
   console.log(selectedCategory, "category");
   console.log(selectedSubcategory, "subcategory");
   const router = useRouter();
@@ -49,6 +51,7 @@ function Kateqoriyalar({ openRegisterModal, openLoginModal }) {
 
   useEffect(() => {
     const fetchSettingInfo = async () => {
+      setIsLoading(true); // Start loading
       try {
         const data = await getSettingInfo(lang);
         const categories = data?.category || [];
@@ -56,11 +59,13 @@ function Kateqoriyalar({ openRegisterModal, openLoginModal }) {
         console.log(categories, "categories");
       } catch (error) {
         console.error("Failed to fetch setting info:", error);
+      } finally {
+        setIsLoading(false); // End loading
       }
     };
 
     fetchSettingInfo();
-  }, []);
+  }, [lang]); // Add 'lang' as a dependency if it can change
 
   // Function to organize categories and subcategories
   const getOrganizedCategories = () => {
@@ -98,41 +103,49 @@ function Kateqoriyalar({ openRegisterModal, openLoginModal }) {
           <Breadcrumb />
 
           <section className="flex justify-center">
-            <div className="bg-white justify-center items-center flex shadow-lg p-10 rounded-lg">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 font-gilroy">
-                {organizedCategories.map((category) => (
-                  <div key={category.id}>
-                    <h2 className="text-xl hover:text-textHoverBlue transition-colors duration-300 font-medium mb-2">
-                      <Link
-                        href={`/imtahanlar/${encodeURIComponent(
-                          category.slug
-                        )}`}
-                      >
-                        {category.name}
-                      </Link>
-                    </h2>
-                    {category.subcategories.length > 0 ? (
-                      <ul className="text-gray-600">
-                        {category.subcategories.map((sub) => (
-                          <li key={sub.id} className="mb-1">
-                            <Link
-                              href={`/imtahanlar/${encodeURIComponent(
-                                category.slug
-                              )}/${encodeURIComponent(sub.slug)}`}
-                              className="hover:text-textHoverBlue transition-colors duration-300"
-                            >
-                              {sub.name}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p className="text-gray-600"></p>
-                    )}
-                  </div>
-                ))}
+            {isLoading ? (
+              // Loading Indicator Outside of the bg-white Container
+              <div className="text-center w-full  justify-center items-center flex p-10 rounded-lg">
+                <Spinner />
               </div>
-            </div>
+            ) : (
+              // Categories Content Inside the bg-white Container
+              <div className="bg-white justify-center items-center flex shadow-lg p-10 rounded-lg">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 font-gilroy">
+                  {organizedCategories.map((category) => (
+                    <div key={category.id}>
+                      <h2 className="text-xl hover:text-textHoverBlue transition-colors duration-300 font-medium mb-2">
+                        <Link
+                          href={`/imtahanlar/${encodeURIComponent(
+                            category.slug
+                          )}`}
+                        >
+                          {category.name}
+                        </Link>
+                      </h2>
+                      {category.subcategories.length > 0 ? (
+                        <ul className="text-gray-600">
+                          {category.subcategories.map((sub) => (
+                            <li key={sub.id} className="mb-1">
+                              <Link
+                                href={`/imtahanlar/${encodeURIComponent(
+                                  category.slug
+                                )}/${encodeURIComponent(sub.slug)}`}
+                                className="hover:text-textHoverBlue transition-colors duration-300"
+                              >
+                                {sub.name}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-600"></p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
           </section>
         </container>
       </Container>

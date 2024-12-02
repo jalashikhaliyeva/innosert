@@ -28,6 +28,7 @@ function CategoryPage() {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [sortOption, setSortOption] = useState(null); // New sort state
 
   const handleLoginOrRulesClick = () => {
     if (user) {
@@ -80,6 +81,35 @@ function CategoryPage() {
     fetchExams();
   }, [category, lang, t]);
 
+  // Handle sorting
+  const handleSortOptionClick = (option) => {
+    setSortOption(option);
+  };
+
+  // Apply sorting based on sortOption
+  const sortedExams = React.useMemo(() => {
+    if (!sortOption) return exams;
+
+    const sorted = [...exams];
+    switch (sortOption) {
+      case "price_low_high":
+        sorted.sort((a, b) => a.price - b.price);
+        break;
+      case "price_high_low":
+        sorted.sort((a, b) => b.price - a.price);
+        break;
+      case "new_to_old":
+        sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        break;
+      case "old_to_new":
+        sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+        break;
+      default:
+        break;
+    }
+    return sorted;
+  }, [exams, sortOption]);
+
   return (
     <main>
       <Head>
@@ -89,7 +119,10 @@ function CategoryPage() {
 
       <section className="my-28">
         <Container>
-          <SortTitleExams category={category} />
+          <SortTitleExams
+            category={category}
+            onSortOptionClick={handleSortOptionClick} // Pass the handler here
+          />
           {loading ? (
             <div className="flex justify-center items-center h-64">
               <Spinner />
@@ -98,9 +131,9 @@ function CategoryPage() {
             <div className="flex justify-center items-center h-64">
               <p className="text-red-500">{error}</p>
             </div>
-          ) : exams?.length > 0 ? (
+          ) : sortedExams?.length > 0 ? (
             <ExamCard
-              exams={exams}
+              exams={sortedExams}
               openLoginModal={handleLoginOrRulesClick}
               openRegisterModal={handleLoginOrRulesClick}
               widthClass="w-[23.8%]"

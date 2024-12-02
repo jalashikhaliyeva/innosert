@@ -77,9 +77,9 @@ const HeaderInternal = () => {
     }, 100); // Adjust delay as needed
   };
   const showSearch =
-    router.pathname === "/home" ||
-    // router.pathname === "/kateqoriyalar" ||
-    router.pathname.startsWith("/kateqoriyalar/");
+    router.pathname === "/home" &&
+    !router.pathname.startsWith("/kateqoriyalar");
+
   const toggleCompanyDropdown = () => {
     setCompanyDropdownOpen(!companyDropdownOpen);
   };

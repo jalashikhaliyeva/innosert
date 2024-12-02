@@ -32,48 +32,38 @@ function TableComponent({
     setIsQuestionsValid(isValid);
   }, [selectedQuestionsForExam, setIsQuestionsValid]);
 
-  // **Handler for the Add Button**
   const handleAdd = () => {
-    // Filter the selected questions based on selectedRows
     const selectedQuestions = data.filter((question) =>
       selectedRows.includes(question.id)
     );
 
-    // Map selected questions to include minute and second if timeForQuestion is true
     const selectedQuestionsWithTime = selectedQuestions.map((q) => ({
       ...q,
       minute: timeForQuestion ? questionTimes[q.id]?.minute ?? 0 : undefined,
       second: timeForQuestion ? questionTimes[q.id]?.second ?? 0 : undefined,
     }));
 
-    // Update the context by appending new questions with time data
     setSelectedQuestionsForExam((prevSelectedQuestions) => {
-      // Create a Set of existing question IDs to prevent duplicates
       const existingQuestionIds = new Set(
         prevSelectedQuestions.map((q) => q.id)
       );
 
-      // Filter out any questions that are already selected
       const newUniqueQuestions = selectedQuestionsWithTime.filter(
         (q) => !existingQuestionIds.has(q.id)
       );
 
-      // Append the unique new questions with time data
       return [...prevSelectedQuestions, ...newUniqueQuestions];
     });
 
-    // Optional: Provide feedback to the user
     toast.success(`${selectedQuestions.length} question(s) added to the exam.`);
     console.log(
       selectedQuestionsWithTime,
       "question(s) added to the exam with time"
     );
 
-    // Optional: Clear the selection after adding
     setSelectedRows([]);
   };
 
-  // **Initialize questionTimes from selectedQuestionsForExam**
   useEffect(() => {
     const initialTimes = {};
     selectedQuestionsForExam.forEach((q) => {
@@ -84,7 +74,6 @@ function TableComponent({
     setQuestionTimes(initialTimes);
   }, [selectedQuestionsForExam]);
 
-  // **Initialize minutes and seconds when timeForQuestion changes**
   useEffect(() => {
     if (timeForQuestion) {
       setSelectedQuestionsForExam((prevSelectedQuestions) =>
@@ -95,7 +84,6 @@ function TableComponent({
         }))
       );
     } else {
-      // Optionally, remove minute and second if timeForQuestion is disabled
       setSelectedQuestionsForExam((prevSelectedQuestions) =>
         prevSelectedQuestions.map((q) => {
           const { minute, second, ...rest } = q;
@@ -106,7 +94,6 @@ function TableComponent({
     }
   }, [timeForQuestion, setSelectedQuestionsForExam]);
 
-  // **Update Validation Logic**
   useEffect(() => {
     if (!timeForQuestion) {
       setIsQuestionsValid(selectedQuestionsForExam.length >= 10);
@@ -118,7 +105,6 @@ function TableComponent({
         selectedQuestionsForExam.length >= 10 && allTimesValid
       );
 
-      // Optional: Notify user if validation fails
       if (selectedQuestionsForExam.length >= 10 && !allTimesValid) {
         toast.warning(
           "Hər bir sual üçün ən azı bir sıfırdan fərqli vaxt dəyəri olmalıdır."
@@ -128,28 +114,23 @@ function TableComponent({
   }, [selectedQuestionsForExam, timeForQuestion, setIsQuestionsValid]);
 
   const handleRemoveQuestion = (id) => {
-    // Remove the question from selectedQuestionsForExam
     setSelectedQuestionsForExam((prevQuestions) =>
       prevQuestions.filter((question) => question.id !== id)
     );
 
-    // If the removed question is in selectedRows, remove it
     setSelectedRows((prevSelectedRows) =>
       prevSelectedRows.filter((rowId) => rowId !== id)
     );
 
-    // Remove the time entry for the removed question
     setQuestionTimes((prevTimes) => {
       const updatedTimes = { ...prevTimes };
       delete updatedTimes[id];
       return updatedTimes;
     });
 
-    // Provide feedback to the user
     toast.success("Question removed from the exam.");
   };
 
-  // Adjusted levelColors to match your data
   const levelColors = {
     Çətin: "bg-redLow",
     Orta: "bg-violetLow",
@@ -157,7 +138,6 @@ function TableComponent({
   };
 
   const handleCheckboxChange = (id) => {
-    // Ensure selectedRows is an array before accessing it
     const rows = Array.isArray(selectedRows) ? selectedRows : [];
 
     if (rows.includes(id)) {
@@ -167,7 +147,6 @@ function TableComponent({
     }
   };
 
-  // **State for time per question**
   const [questionTimes, setQuestionTimes] = useState({});
 
   const handleMinutesChange = (id, value) => {
@@ -180,7 +159,6 @@ function TableComponent({
       },
     }));
 
-    // Update selectedQuestionsForExam
     setSelectedQuestionsForExam((prevSelectedQuestions) =>
       prevSelectedQuestions.map((q) => (q.id === id ? { ...q, minute } : q))
     );
@@ -196,7 +174,6 @@ function TableComponent({
       },
     }));
 
-    // Update selectedQuestionsForExam
     setSelectedQuestionsForExam((prevSelectedQuestions) =>
       prevSelectedQuestions.map((q) => (q.id === id ? { ...q, second } : q))
     );
@@ -206,7 +183,6 @@ function TableComponent({
   const handleEdit = (question) => {
     console.log(question, "handle edit");
     setSelectedQuestion(question);
-    // Navigate to the sual-redakte page with question data in query params
     router.push({
       pathname: "/sual-redakte",
     });
@@ -218,7 +194,6 @@ function TableComponent({
     router.push("/sual-haqqinda");
   };
 
-  // State declarations
   const [currentPage, setCurrentPage] = useState(0);
   const [itemsPerPage, setItemsPerPage] = useState(15);
   const [openFilter, setOpenFilter] = useState(null);
@@ -230,13 +205,11 @@ function TableComponent({
     to: { year: "", month: "", day: "" },
   });
 
-  // Arrays for date selection
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 6 }, (_, i) => currentYear - 2 + i);
   const months = Array.from({ length: 12 }, (_, i) => i + 1);
   const days = Array.from({ length: 31 }, (_, i) => i + 1);
 
-  // Refs for each dropdown to handle clicks outside
   const dropdownRefs = {
     suallar: useRef(null),
     seviyye: useRef(null),
@@ -244,7 +217,6 @@ function TableComponent({
     tarix: useRef(null),
   };
 
-  // Handle "select all" checkbox change
   const handleSelectAllChange = (e) => {
     if (e.target.checked) {
       setSelectedRows(data.map((item) => item.id));
@@ -253,18 +225,15 @@ function TableComponent({
     }
   };
 
-  // Handle page click for pagination
   const handlePageClick = (selectedPage) => {
     setCurrentPage(selectedPage.selected);
   };
 
-  // Handle items per page change
   const handleItemsPerPageChange = (e) => {
     setItemsPerPage(parseInt(e.target.value));
     setCurrentPage(0);
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (
@@ -286,17 +255,15 @@ function TableComponent({
 
   const filteredData = data
     ?.filter((item) => {
-      // Include items without 'created_at'
       if (!item.created_at) return true;
 
       const { from, to } = dateFilter;
       const itemDate = new Date(item.created_at);
 
-      // Exclude items with invalid 'created_at'
       if (isNaN(itemDate)) return false;
 
-      let fromDate = new Date(-8640000000000000); // Minimum date
-      let toDate = new Date(8640000000000000); // Maximum date
+      let fromDate = new Date(-8640000000000000);
+      let toDate = new Date(8640000000000000);
 
       if (from.year && from.month && from.day) {
         fromDate = new Date(from.year, from.month - 1, from.day);
@@ -323,7 +290,6 @@ function TableComponent({
       return levelFilter.includes(item.level);
     });
 
-  // Sorting logic
   const sortedData = questionOrder
     ? [...filteredData]?.sort((a, b) => {
         const aTitle = stripHtml(a.title);
@@ -343,7 +309,6 @@ function TableComponent({
     (currentPage + 1) * itemsPerPage
   );
 
-  // Function to reset all filters
   const resetFilters = () => {
     setLevelFilter([]);
     setQuestionOrder(null);
@@ -356,9 +321,15 @@ function TableComponent({
     setCurrentPage(0);
   };
 
+  useEffect(() => {
+    if (selectedQuestionsForExam.length === 0) {
+      setSelectedRows([]);
+      setQuestionTimes({});
+    }
+  }, [selectedQuestionsForExam]);
+
   return (
     <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
-      {/* Table */}
       <div className="w-full overflow-auto max-h-[340px] relative">
         <table className="min-w-full table-auto border-collapse border-borderTableCel">
           <thead className="border-b border-borderTableCel">
@@ -376,7 +347,6 @@ function TableComponent({
                 #
               </th>
 
-              {/* Suallar Header */}
               <th
                 className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
                 onClick={() =>
@@ -419,7 +389,6 @@ function TableComponent({
                 )}
               </th>
 
-              {/* Səviyyə Header */}
               <th
                 className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
                 onClick={() =>
@@ -495,7 +464,6 @@ function TableComponent({
                 )}
               </th>
 
-              {/* Xal Header */}
               <th
                 className="relative px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
                 onClick={() =>
@@ -556,7 +524,7 @@ function TableComponent({
               )}
               <th
                 className="relative flex items-center gap-4 px-4 py-2 text-left text-base font-medium leading-6 bg-headerTableCel text-textSecondaryDefault font-gilroy cursor-pointer"
-                onClick={resetFilters} // Added onClick handler
+                onClick={resetFilters}
               >
                 Sıfırla
                 <FiRefreshCw />
@@ -574,7 +542,6 @@ function TableComponent({
                     ? plainTitle.substring(0, 49) + "..."
                     : plainTitle;
 
-                // Get current time for the question, default to 0 if not set
                 const currentTime = questionTimes[item.id] ?? {
                   minute: item.minute ?? 0,
                   second: item.second ?? 0,
@@ -603,7 +570,6 @@ function TableComponent({
                     >
                       {displayedTitle}
 
-                      {/* Tooltip */}
                       <div className="absolute !text-xs bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black  px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                         <div dangerouslySetInnerHTML={{ __html: item.title }} />
                       </div>
@@ -624,7 +590,6 @@ function TableComponent({
                     {timeForQuestion && (
                       <td className="px-4 py-2">
                         <div className="flex items-start space-x-4">
-                          {/* Minutes Section */}
                           <div className="flex flex-col items-center">
                             <label
                               htmlFor={`minute-${item.id}`}
@@ -645,10 +610,8 @@ function TableComponent({
                             />
                           </div>
 
-                          {/* Separator */}
                           <span className="self-end text-lg">:</span>
 
-                          {/* Seconds Section */}
                           <div className="flex flex-col items-center">
                             <label
                               htmlFor={`second-${item.id}`}
@@ -706,9 +669,7 @@ function TableComponent({
           </tbody>
         </table>
 
-        {/* Bottom Controls */}
         <div className="flex justify-between items-center mt-5 pb-5">
-          {/* Items Per Page Selector */}
           <div className="flex items-center space-x-2">
             <label htmlFor="itemsPerPage" className="mr-2">
               Səhifə başına sual:
@@ -727,7 +688,6 @@ function TableComponent({
             </select>
           </div>
 
-          {/* Pagination */}
           {pageCount > 1 && (
             <div>
               <ReactPaginate
@@ -758,7 +718,6 @@ function TableComponent({
           )}
         </div>
       </div>
-      {/* Conditionally Render Action Buttons */}
       {showActionButtons && (
         <div className="flex gap-2 justify-end mt-3">
           <button className="bg-buttonSecondaryDefault hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed py-2 px-4 text-base font-normal leading-6 font-gilroy text-grayButtonText rounded-lg">
@@ -772,7 +731,7 @@ function TableComponent({
           : "bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
       }`}
             disabled={selectedRows.length === 0}
-            onClick={handleAdd} // **Attach the handler here**
+            onClick={handleAdd}
           >
             Əlavə et
           </button>

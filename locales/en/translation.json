@@ -138,7 +138,8 @@
   "filters": {
     "startDate": "Start Date",
     "endDate": "End Date",
-    "apply": "Apply"
+    "apply": "Apply",
+    "resetFilters": "Reset Filters"
   },
   "placeholders": {
     "search": "Search"
@@ -231,7 +232,9 @@
     "registrationError": "An error occurred during registration.",
     "loginSuccess": "Successfully logged in!",
     "loginFailed": "Login failed. Please try again.",
-    "generalError": "An error occurred. Please try again."
+    "generalError": "An error occurred. Please try again.",
+    "folderUpdated": "Folder name updated successfully!",
+    "examUpdated": "Exam updated successfully!"
   },
   "uiElements": {
     "rememberMe": "Remember me",
@@ -292,5 +295,12 @@
   "noExamsAvailable": "No exams or folders available.",
   "xetabildirisleri": {
     "noReports": "There are no error reports available."
-  }
+  },
+  "sort": {
+    "cheap_to_expensive": "Cheap to Expensive",
+    "expensive_to_cheap": "Expensive to Cheap",
+    "new_to_old": "New to Old",
+    "old_to_new": "Old to New"
+  },
+  "collaboration": "Collaboration"
 }

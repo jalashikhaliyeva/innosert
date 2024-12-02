@@ -83,7 +83,7 @@ function Neticelerim() {
           <InternalContainer>
             <Breadcrumb />
             <TitleNavigation />
-            <div className="flex flex-wrap gap-4 items-center justify-center">
+            <div className="flex flex-wrap gap-4 items-center justify-center mb-9">
               {paginatedResults.length > 0 ? (
                 paginatedResults.map((result) => (
                   <CardResult key={result.id} data={result} />

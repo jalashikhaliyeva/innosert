@@ -60,6 +60,8 @@ module.exports = {
         brandBlue700: "#1D2935",
         brandBlue900: "#121A21",
         blue200: "#486884",
+        blue200Hover: "#364E63",
+        blue200Pressed: "#2B3E4F",
         blue50: "#F3F6FF",
         blueB400: "#36F",
         blueB500: "#2952CC",

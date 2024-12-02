@@ -13,7 +13,7 @@ function ExamSidebar({
   };
 
   return (
-    <div className="w-full sm:w-[290px]  py-20  p-6 font-gilroy overflow-y-auto">
+    <div className="w-full  sm:w-[290px]  py-20  p-6 font-gilroy overflow-y-auto">
       <h2 className="text-xl font-semibold mb-2">Suallar</h2>
       <p className="text-gray-500 mb-4">
         Cavablanmış suallar: {totalAnswered}/{questions.length}

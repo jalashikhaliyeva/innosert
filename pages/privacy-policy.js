@@ -7,6 +7,7 @@ import Footer from "@/components/Footer";
 import withModalManagement from "@/shared/hoc/withModalManagement";
 import { getSettingInfo } from "@/services/getSettingInfo";
 import { useRouter } from "next/router";
+import Spinner from "@/components/Spinner";
 
 function PrivacyPolicy({ openRegisterModal, openLoginModal }) {
   // State to hold all pages
@@ -51,7 +52,7 @@ function PrivacyPolicy({ openRegisterModal, openLoginModal }) {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-screen">
-        <p className="text-xl">Loading...</p>
+        <p className="text-xl"><Spinner /></p>
       </div>
     );
   }

@@ -295,6 +295,12 @@ const Header = ({
               >
                 FAQ
               </li>
+              <li
+                onClick={() => router.push("/emekdasliq")}
+                className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
+              >
+                Əməkdaşlıq
+              </li>
             </ul>
 
             <div className="flex flex-col gap-4 px-4 py-5">
@@ -318,11 +324,11 @@ const Header = ({
               <div onClick={openRegisterModal}>
                 <Button
                   className="flex items-center"
-                  color="var(--buttonDefaultPrimary)"
-                  hoverColor="var(--buttonHoverPrimary)"
-                  pressedColor="var(--buttonPressedPrimary)"
+                  color="var(--buttonSecondaryDefault)"
+                  hoverColor="var(--buttonSecondaryHover)"
+                  pressedColor="var(--buttonSecondaryPressed)"
                   disabledColor="var(--buttonDisabledPrimary)"
-                  textColor="var(--buttonTextWhite)"
+                  textColor="var(--buttonTextSecondaryDefault)"
                   hoverTextColor="var(--buttonTextWhite)"
                   disabledTextColor="var(--buttonTextDisabled)"
                   width="100%"
@@ -339,7 +345,7 @@ const Header = ({
           {/* Menu responsive end */}
 
           {/* Right section - navigation menu (hidden on small screens) */}
-          <nav className="hidden lg:flex items-center xl:-ml-[300px]">
+          <nav className="hidden lg:flex items-center ">
             <p
               onClick={() => push(ROUTER.ABOUT)}
               className="cursor-pointer font-gilroy font-medium text-lg text-textSecondaryDefault py-3 px-4 hover:text-textHoverBlue"
@@ -445,6 +451,12 @@ const Header = ({
               {t("contact")}
             </p>
             <p
+              onClick={() => router.push("/emekdasliq")}
+              className="cursor-pointer font-gilroy font-medium text-lg text-textSecondaryDefault py-3 px-4 hover:text-textHoverBlue"
+            >
+              Əməkdaşlıq
+            </p>
+            <p
               onClick={() => handleScrollToSection("faq")}
               className="cursor-pointer font-gilroy font-medium text-lg text-textSecondaryDefault py-3 px-4 hover:text-textHoverBlue"
             >
@@ -472,7 +484,10 @@ const Header = ({
                 {t("login")}
               </Button>
             </div>
-            <div onClick={openRegisterModal}>
+            <div
+              onClick={openRegisterModal}
+              className="hide-register-1024-1380"
+            >
               <Button
                 className="flex items-center"
                 color="var(--buttonDefaultPrimary)"

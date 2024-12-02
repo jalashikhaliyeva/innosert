@@ -1,5 +1,6 @@
 // src/components/LoginModal.js
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin, FaFacebook } from "react-icons/fa";
@@ -22,7 +23,6 @@ export default function LoginModal({
 }) {
   const [email, setEmail] = useState("");
   const { login } = useContext(UserContext);
-
   const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,6 +30,13 @@ export default function LoginModal({
   const [focusedInput, setFocusedInput] = useState(null); // State to track focused input
   const [loading, setLoading] = useState(false); // New state for loading
   const router = useRouter();
+  const { data: session , status} = useSession();
+
+ useEffect(() => {
+  if (status === "authenticated") {
+    console.log("User data:", session.user);
+  }
+}, [status, session]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -279,9 +286,13 @@ export default function LoginModal({
               </div>
 
               <div className="flex justify-center gap-4 mt-6">
-                <button className="rounded-full bg-gray-100 p-4">
+                <button
+                  onClick={() => signIn("google")}
+                  className="rounded-full bg-gray-100 p-4"
+                >
                   <FcGoogle className="h-8 w-8" />
                 </button>
+                {/* <button onClick={() => signOut()}>Sign Out</button> */}
                 <button className="rounded-full bg-gray-100 p-4">
                   <FaLinkedin className="h-8 w-8 fill-[#0A66C2]" />
                 </button>

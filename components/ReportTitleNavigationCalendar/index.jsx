@@ -1,10 +1,12 @@
+// ReportTitleNavigationCalendar.jsx
 import React, { useState, useRef, useEffect } from "react";
 import { IoCalendarClearOutline } from "react-icons/io5";
-import { MdKeyboardArrowDown } from "react-icons/md";
+import { MdKeyboardArrowDown, MdKeyboardArrowUp } from "react-icons/md";
 import { useTranslation } from "react-i18next";
 
 function ReportTitleNavigationCalendar({ onFilterChange }) {
   const { t } = useTranslation();
+
   // State management
   const [openFilter, setOpenFilter] = useState(false);
   const [dateFilter, setDateFilter] = useState({
@@ -12,7 +14,10 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
     to: { year: "", month: "", day: "" },
   });
   const [inputValue, setInputValue] = useState("");
+
+  // Refs for handling clicks outside
   const dropdownRef = useRef(null);
+  const triggerRef = useRef(null);
 
   // Generate year, month, and day options
   const currentYear = new Date().getFullYear();
@@ -37,41 +42,114 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
     };
   }, []);
 
-  // Reference to the trigger element (input and icons)
-  const triggerRef = useRef(null);
-
   // Apply the date filter
   const applyFilter = () => {
     setOpenFilter(false);
     const { from, to } = dateFilter;
-    const fromDate =
-      from.year && from.month && from.day
-        ? new Date(from.year, from.month - 1, from.day)
-        : null;
-    const toDate =
-      to.year && to.month && to.day
-        ? new Date(to.year, to.month - 1, to.day)
-        : null;
-    const displayFrom =
-      from.year || from.month || from.day
-        ? `${from.year}-${String(from.month).padStart(2, "0")}-${String(
-            from.day
-          ).padStart(2, "0")}`
-        : "";
-    const displayTo =
-      to.year || to.month || to.day
-        ? `${to.year}-${String(to.month).padStart(2, "0")}-${String(
-            to.day
-          ).padStart(2, "0")}`
-        : "";
-    setInputValue(`${displayFrom} - ${displayTo}`);
+
+    // Helper function to construct date strings
+    const constructDate = (date) => {
+      const { year, month, day } = date;
+      let dateString = "";
+      if (year) {
+        dateString += year;
+        if (month) {
+          dateString += `-${String(month).padStart(2, "0")}`;
+          if (day) {
+            dateString += `-${String(day).padStart(2, "0")}`;
+          }
+        }
+      }
+      return dateString;
+    };
+
+    const fromDate = constructDate(from);
+    const toDate = constructDate(to);
+
+    setInputValue(`${fromDate || ""} - ${toDate || ""}`);
 
     onFilterChange({ from: fromDate, to: toDate });
+  };
+
+  // Reset the date filter
+  const resetFilter = () => {
+    setDateFilter({
+      from: { year: "", month: "", day: "" },
+      to: { year: "", month: "", day: "" },
+    });
+    setInputValue("");
+    onFilterChange({ from: "", to: "" });
   };
 
   // Toggle dropdown visibility
   const toggleDropdown = () => {
     setOpenFilter((prev) => !prev);
+  };
+
+  // Determine if any filter is applied
+  const isFilterApplied =
+    dateFilter.from.year ||
+    dateFilter.from.month ||
+    dateFilter.from.day ||
+    dateFilter.to.year ||
+    dateFilter.to.month ||
+    dateFilter.to.day;
+
+  // Custom Dropdown Component within the same file
+  const CustomDropdown = ({ options, value, onChange, placeholder }) => {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownInnerRef = useRef(null);
+
+    // Close dropdown when clicking outside
+    useEffect(() => {
+      function handleClickOutside(event) {
+        if (
+          dropdownInnerRef.current &&
+          !dropdownInnerRef.current.contains(event.target)
+        ) {
+          setIsOpen(false);
+        }
+      }
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => {
+        document.removeEventListener("mousedown", handleClickOutside);
+      };
+    }, []);
+
+    const handleSelect = (option) => {
+      onChange(option);
+      setIsOpen(false);
+    };
+
+    return (
+      <div className="relative w-full" ref={dropdownInnerRef}>
+        <button
+          type="button"
+          className="w-full bg-white border border-gray-300 rounded px-3 py-1 flex justify-between items-center cursor-pointer"
+          onClick={() => setIsOpen((prev) => !prev)}
+        >
+          <span className={value ? "text-gray-900" : "text-gray-500"}>
+            {value || placeholder}
+          </span>
+          {isOpen ? <MdKeyboardArrowUp /> : <MdKeyboardArrowDown />}
+        </button>
+        {isOpen && (
+          <ul className="absolute z-10 mt-1 w-full bg-white border border-gray-300 rounded shadow-lg max-h-60 overflow-auto">
+            {options.map((option) => (
+              <li
+                key={option}
+                className={`px-3 py-2 hover:bg-gray-100 cursor-pointer ${
+                  option === value ? "bg-gray-200" : ""
+                }`}
+                onClick={() => handleSelect(option)}
+              >
+                {option}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    );
   };
 
   return (
@@ -97,7 +175,7 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
             className="ml-2 w-full text-inputRingFocus bg-bodyColor outline-none placeholder-inputPlaceholderText pl-2 hover:bg-inputBgHover cursor-pointer"
           />
           <MdKeyboardArrowDown
-            className={`transition-transform duration-300 size-6 text-gray-400 ${
+            className={`transition-transform duration-300 duration-300 size-6 text-gray-400 ${
               openFilter ? "transform rotate-180" : ""
             }`}
           />
@@ -114,66 +192,54 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
                   {t("filters.startDate")}
                 </label>
                 <div className="flex space-x-2 mt-1">
-                  <select
-                    value={dateFilter.from.year}
-                    onChange={(e) =>
-                      setDateFilter((prev) => ({
-                        ...prev,
-                        from: {
-                          ...prev.from,
-                          year: e.target.value,
-                        },
-                      }))
-                    }
-                    className="border rounded px-2 py-1 w-1/3"
-                  >
-                    <option value="">İl</option>
-                    {years.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={dateFilter.from.month}
-                    onChange={(e) =>
-                      setDateFilter((prev) => ({
-                        ...prev,
-                        from: {
-                          ...prev.from,
-                          month: e.target.value,
-                        },
-                      }))
-                    }
-                    className="border rounded px-2 py-1 w-1/3"
-                  >
-                    <option value="">Ay</option>
-                    {months.map((month) => (
-                      <option key={month} value={month}>
-                        {month}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={dateFilter.from.day}
-                    onChange={(e) =>
-                      setDateFilter((prev) => ({
-                        ...prev,
-                        from: {
-                          ...prev.from,
-                          day: e.target.value,
-                        },
-                      }))
-                    }
-                    className="border rounded px-2 py-1 w-1/3"
-                  >
-                    <option value="">Gün</option>
-                    {days.map((day) => (
-                      <option key={day} value={day}>
-                        {day}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="w-1/3">
+                    <CustomDropdown
+                      options={years}
+                      value={dateFilter.from.year}
+                      onChange={(year) =>
+                        setDateFilter((prev) => ({
+                          ...prev,
+                          from: {
+                            ...prev.from,
+                            year,
+                          },
+                        }))
+                      }
+                      placeholder="İl"
+                    />
+                  </div>
+                  <div className="w-1/3">
+                    <CustomDropdown
+                      options={months}
+                      value={dateFilter.from.month}
+                      onChange={(month) =>
+                        setDateFilter((prev) => ({
+                          ...prev,
+                          from: {
+                            ...prev.from,
+                            month,
+                          },
+                        }))
+                      }
+                      placeholder="Ay"
+                    />
+                  </div>
+                  <div className="w-1/3">
+                    <CustomDropdown
+                      options={days}
+                      value={dateFilter.from.day}
+                      onChange={(day) =>
+                        setDateFilter((prev) => ({
+                          ...prev,
+                          from: {
+                            ...prev.from,
+                            day,
+                          },
+                        }))
+                      }
+                      placeholder="Gün"
+                    />
+                  </div>
                 </div>
               </div>
               {/* To Date */}
@@ -182,74 +248,75 @@ function ReportTitleNavigationCalendar({ onFilterChange }) {
                   {t("filters.endDate")}
                 </label>
                 <div className="flex space-x-2 mt-1">
-                  <select
-                    value={dateFilter.to.year}
-                    onChange={(e) =>
-                      setDateFilter((prev) => ({
-                        ...prev,
-                        to: {
-                          ...prev.to,
-                          year: e.target.value,
-                        },
-                      }))
-                    }
-                    className="border rounded px-2 py-1 w-1/3"
-                  >
-                    <option value="">İl</option>
-                    {years.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={dateFilter.to.month}
-                    onChange={(e) =>
-                      setDateFilter((prev) => ({
-                        ...prev,
-                        to: {
-                          ...prev.to,
-                          month: e.target.value,
-                        },
-                      }))
-                    }
-                    className="border rounded px-2 py-1 w-1/3"
-                  >
-                    <option value="">Ay</option>
-                    {months.map((month) => (
-                      <option key={month} value={month}>
-                        {month}
-                      </option>
-                    ))}
-                  </select>
-                  <select
-                    value={dateFilter.to.day}
-                    onChange={(e) =>
-                      setDateFilter((prev) => ({
-                        ...prev,
-                        to: {
-                          ...prev.to,
-                          day: e.target.value,
-                        },
-                      }))
-                    }
-                    className="border rounded px-2 py-1 w-1/3"
-                  >
-                    <option value="">Gün</option>
-                    {days.map((day) => (
-                      <option key={day} value={day}>
-                        {day}
-                      </option>
-                    ))}
-                  </select>
+                  <div className="w-1/3">
+                    <CustomDropdown
+                      options={years}
+                      value={dateFilter.to.year}
+                      onChange={(year) =>
+                        setDateFilter((prev) => ({
+                          ...prev,
+                          to: {
+                            ...prev.to,
+                            year,
+                          },
+                        }))
+                      }
+                      placeholder="İl"
+                    />
+                  </div>
+                  <div className="w-1/3">
+                    <CustomDropdown
+                      options={months}
+                      value={dateFilter.to.month}
+                      onChange={(month) =>
+                        setDateFilter((prev) => ({
+                          ...prev,
+                          to: {
+                            ...prev.to,
+                            month,
+                          },
+                        }))
+                      }
+                      placeholder="Ay"
+                    />
+                  </div>
+                  <div className="w-1/3">
+                    <CustomDropdown
+                      options={days}
+                      value={dateFilter.to.day}
+                      onChange={(day) =>
+                        setDateFilter((prev) => ({
+                          ...prev,
+                          to: {
+                            ...prev.to,
+                            day,
+                          },
+                        }))
+                      }
+                      placeholder="Gün"
+                    />
+                  </div>
                 </div>
               </div>
-              <button
-                className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded w-full"
-                onClick={applyFilter}
-              >
-                {t("filters.apply")}
-              </button>
+              {/* Action Buttons */}
+              <div className="w-full flex gap-2">
+                {/* Reset Button - Render only if a filter is applied */}
+                {isFilterApplied && (
+                  <button
+                    className="mt-2 font-gilroy bg-buttonSecondaryDefault hover:bg-buttonSecondaryHover active:bg-buttonPressedSecondary text-buttonPrimaryDefault px-4 py-2 rounded w-full"
+                    onClick={resetFilter}
+                  >
+                    {t("filters.resetFilters")}
+                  </button>
+                )}
+                {/* Apply Button */}
+                <button
+                  className="mt-2 font-gilroy bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded w-full"
+                  onClick={applyFilter}
+                >
+                  {t("filters.apply")}
+                </button>
+              </div>
             </div>
           </div>
         )}

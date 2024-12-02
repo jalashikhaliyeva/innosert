@@ -4,9 +4,10 @@ import { HiOutlineSave } from "react-icons/hi";
 import { FiLink } from "react-icons/fi";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { FaLinkedin, FaFacebook } from "react-icons/fa6"; // Import LinkedIn and Facebook icons
+import { FaLinkedin, FaFacebook } from "react-icons/fa6"; 
 import { useTranslation } from "react-i18next";
 import Head from "next/head";
+import Spinner from "@/components/Spinner";
 
 function CertificateDetail({ certificate }) {
   const { t } = useTranslation();
@@ -18,7 +19,11 @@ function CertificateDetail({ certificate }) {
   const [copySuccess, setCopySuccess] = useState(false);
 
   if (!certificate) {
-    return <div>Loading...</div>;
+    return (
+      <>
+        <Spinner />
+      </>
+    );
   }
 
   // Function to open the modal and set the certificate URL
@@ -75,7 +80,7 @@ function CertificateDetail({ certificate }) {
 
   return (
     <>
-     <Head>
+      <Head>
         <title>{t("titles.sertifikatlarim")}</title>
       </Head>
       <div className="flex flex-col items-center justify-center min-h-screen">

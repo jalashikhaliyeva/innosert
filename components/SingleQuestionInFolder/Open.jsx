@@ -11,8 +11,8 @@ function Open({ selectedQuestion }) {
         {questionText}
       </h2>
       <textarea
-        className="w-full h-24 sm:h-32 p-3 sm:p-4 bg-inputBgDefault hover:bg-inputBgHover border-arrowButtonGray border rounded-lg focus:outline-none focus:border-inputBorderHover resize-none"
-        placeholder="Cavabınızı buraya yazın..."
+        className="w-full h-24 sm:h-32 p-3 sm:p-4 font-gilroy bg-inputBgDefault hover:bg-inputBgHover border-arrowButtonGray border rounded-lg focus:outline-none focus:border-inputBorderHover resize-none"
+        placeholder="Cavabınızı bura yazın..."
         defaultValue={answerText} // Display the answer if it’s pre-filled
       ></textarea>
     </div>

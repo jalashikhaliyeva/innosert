@@ -18,6 +18,7 @@ import "froala-editor/css/plugins/video.min.css";
 import "froala-editor/css/plugins/file.min.css";
 import { SnackbarProvider } from "notistack";
 import { ViewCountProvider } from "@/shared/context/ViewCountContext";
+import { SessionProvider } from "next-auth/react";
 function App({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
@@ -107,7 +108,8 @@ function App({ Component, pageProps }) {
   }
 
   return (
-    // Wrap the application with SavedExamsProvider and UserProvider
+    // Wrap the application with SavedExamsProvider and UserProvider'
+    <SessionProvider session={pageProps.session}>
     <UserProvider>
       <SnackbarProvider
         anchorOrigin={{
@@ -128,6 +130,7 @@ function App({ Component, pageProps }) {
         </SavedExamsProvider>
       </SnackbarProvider>
     </UserProvider>
+    </SessionProvider>
   );
 }
 

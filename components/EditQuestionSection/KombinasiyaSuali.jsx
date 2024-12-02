@@ -120,6 +120,12 @@ function KombinasiyaSuali({
       )
     );
   };
+  const stripHtmlTags = (html) => {
+    const tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
+    return tempDiv.textContent || tempDiv.innerText || "";
+  };
+  
 
   // Handle option click to select/deselect options by ID
   const handleOptionClick = (optionId, questionId) => {
@@ -312,7 +318,7 @@ function KombinasiyaSuali({
                         }`}
                       >
                         <span>
-                          {option.label}: {option.text}
+                        {option.label}: {stripHtmlTags(option.text)}
                         </span>
                       </li>
                     ))}

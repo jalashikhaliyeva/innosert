@@ -11,7 +11,7 @@ import axios from "axios";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
 import ExamEditTitleNavigation from "@/components/ExamEditTitleNavigation";
-
+import { useTranslation } from "react-i18next";
 function ImtahanRedakte() {
   const {
     examToEdit,
@@ -22,7 +22,7 @@ function ImtahanRedakte() {
     isQuestionsValid,
     examDetails,
   } = useContext(UserContext);
-
+  const { t } = useTranslation();
   console.log(examToEdit, "examToEdit");
   console.log(examDetails, "examDetailsas");
 
@@ -149,9 +149,7 @@ function ImtahanRedakte() {
     selectedSubcategory,
     enqueueSnackbar,
   ]);
-
   const handleSubmit = async () => {
-    // Validation Checks
     if (!isFormValid) {
       enqueueSnackbar("Form is not valid. Please check your inputs.", {
         variant: "error",
@@ -177,7 +175,10 @@ function ImtahanRedakte() {
         "Content-Type": "application/json",
       };
 
-      const formattedQuestions = selectedQuestionsForExam.map((question) => {
+      // Force sync update of questions before building request body
+      const latestQuestions = [...selectedQuestionsForExam];
+
+      const formattedQuestions = latestQuestions.map((question) => {
         const formattedQuestion = { id: question.id };
         if (question.minute !== undefined && question.second !== undefined) {
           formattedQuestion.minute = String(question.minute);
@@ -186,10 +187,8 @@ function ImtahanRedakte() {
         return formattedQuestion;
       });
 
-      // Destructure code from examDetails
       const { code, ...otherDetails } = examDetails;
 
-      // Conditionally include code if it's not empty
       const requestBody = {
         ...otherDetails,
         ...(code ? { code } : {}),
@@ -198,7 +197,6 @@ function ImtahanRedakte() {
 
       console.log(requestBody, "requestBody");
 
-      // Always use the update API endpoint
       const encodedSlug = examToEdit.id;
       const apiEndpoint = `https://innocert-admin.markup.az/api/exam/update/${encodedSlug}`;
 
@@ -206,7 +204,7 @@ function ImtahanRedakte() {
 
       console.log(response, "Response edit");
 
-      enqueueSnackbar("Exam updated successfully!", { variant: "success" });
+      enqueueSnackbar("İmtahan uğurla yeniləndi!", { variant: "success" });
 
       router.push("/umumi-imtahanlar");
     } catch (err) {

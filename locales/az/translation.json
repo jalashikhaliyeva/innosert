@@ -139,7 +139,8 @@
   "filters": {
     "startDate": "Başlanğıc Tarix",
     "endDate": "Son Tarix",
-    "apply": "Tətbiq et"
+    "apply": "Tətbiq et",
+    "resetFilters": "Filtrləri sıfırla"
   },
   "placeholders": {
     "search": "Axtar"
@@ -232,7 +233,9 @@
     "registrationError": "Qeydiyyat zamanı xəta baş verdi.",
     "loginSuccess": "Uğurla daxil oldunuz!",
     "loginFailed": "Daxil olma uğursuz oldu. Zəhmət olmasa yenidən cəhd edin.",
-    "generalError": "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin."
+    "generalError": "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
+    "folderUpdated": "Qovluq adı uğurla yeniləndi!",
+    "examUpdated": "İmtahan uğurla yeniləndi!"
   },
   "uiElements": {
     "rememberMe": "Hesabımı yadda saxla",
@@ -292,5 +295,12 @@
   "noExamsAvailable": "Heç bir imtahan və ya qovluq tapılmadı.",
   "xetabildirisleri": {
     "noReports": "Xəta bildirişləri mövcud deyil."
-  }
+  },
+  "sort": {
+    "cheap_to_expensive": "Ucuzdan bahaya",
+    "expensive_to_cheap": "Bahadan ucuza",
+    "new_to_old": "Yenidən köhnəyə",
+    "old_to_new": "Köhnədən yeniyə"
+  },
+  "collaboration": "Əməkdaşlıq"
 }
