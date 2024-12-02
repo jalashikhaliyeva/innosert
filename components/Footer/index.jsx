@@ -191,9 +191,9 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
           </p>
 
           {settingInfo && contactInfo && (
-            <Link href="/mexfilik-siyaseti">
+            <Link href="/privacy-policy">
               <p className="text-inputBorder font-gilroy font-normal text-sm leading-6 hover:text-blue-400 transition-colors">
-                {t("siteMap.privacyPolicy")}
+                {t("footer.privacyPolicy")}
               </p>
             </Link>
           )}
