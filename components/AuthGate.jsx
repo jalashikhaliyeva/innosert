@@ -19,6 +19,7 @@ function AuthGate({ children }) {
     const isPublicRoute = publicRoutes.includes(router.pathname) ||
       router.pathname.startsWith("/exams/") ||
       router.pathname.startsWith("/imtahanlar/") ||
+      // router.pathname.startsWith("/home/") ||
       router.pathname.startsWith("/imtahanlar") ||
       router.pathname.startsWith("/emekdasliq") ||
       router.pathname.startsWith("/etrafli/");

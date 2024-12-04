@@ -18,8 +18,7 @@ function AuthHandler({ children }) {
 
     const googleSignInInitiated = localStorage.getItem("googleSignIn");
 
-    if (status === "authenticated" && googleSignInInitiated === "true"  ||
-    status === "authenticated" ) {
+    if (status === "authenticated" && googleSignInInitiated === "true")  {
       const sendUserData = async () => {
         try {
           const response = await fetch(
