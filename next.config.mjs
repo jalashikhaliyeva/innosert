@@ -5,7 +5,17 @@
 
 // export default nextConfig;
 /** @type {import('next').NextConfig} */
+
+const nextAuthUrl =
+  process.env.NODE_ENV === 'production'
+    ? 'https://innosert.vercel.app'
+    : 'http://localhost:3000';
+
 const nextConfig = {
+  env: {
+    NEXTAUTH_URL: nextAuthUrl,
+    // other environment variables
+  },
   reactStrictMode: true,
   images: {
     domains: ["innocert-admin.markup.az"], // Add your external domain here
