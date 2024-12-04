@@ -1,3 +1,5 @@
+// components/LoginModal.jsx
+
 import { useContext, useEffect, useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -21,7 +23,7 @@ export default function LoginModal({
   onForgotPasswordClick,
 }) {
   const [email, setEmail] = useState("");
-  const { login } = useContext(UserContext);
+  const { login } = useContext(UserContext); // This can be removed if you fully integrate with NextAuth
   const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -67,42 +69,22 @@ export default function LoginModal({
     setInputError(false);
     setLoading(true);
     try {
-      const response = await fetch(
-        "https://innocert-admin.markup.az/api/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
 
-      console.log(response, "response auth");
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(
-          errorData.message || `HTTP error! status: ${response.status}`
-        );
+      if (result.error) {
+        throw new Error(result.error);
       }
 
-      const data = await response.json();
-      if (data?.data?.token) {
-        await login(data.data.token);
-        if (data.message === "successful login") {
-          toast.success(t("toastMessages.loginSuccess"));
-          onClose();
-          router.push("/home");
-        }
-      } else {
-        toast.error(t("toastMessages.loginFailed"));
-        setEmail("");
-        setPassword("");
-      }
+      toast.success(t("toastMessages.loginSuccess"));
+      onClose();
+      router.push("/home");
     } catch (error) {
       console.error("Error logging in:", error);
-      toast.warning(t("toastMessages.generalError"));
+      toast.error(error.message || t("toastMessages.loginFailed"));
       setEmail("");
       setPassword("");
     } finally {
@@ -117,9 +99,10 @@ export default function LoginModal({
 
   const handleGoogleSignIn = () => {
     localStorage.setItem("googleSignIn", "true");
-    signIn("google", { callbackUrl: "/home",
+    signIn("google", {
+      callbackUrl: "/home",
       prompt: "select_account",
-     });
+    });
   };
 
   if (!isOpen) return null;
@@ -287,21 +270,21 @@ export default function LoginModal({
               </div>
               <div className="flex justify-center gap-4 mt-6">
                 <button
-                  type="button" // Add this line
+                  type="button"
                   onClick={handleGoogleSignIn}
                   className="rounded-full bg-gray-100 p-4"
                 >
                   <FcGoogle className="h-8 w-8" />
                 </button>
                 <button
-                  type="button" // Add this line
+                  type="button"
                   onClick={() => signIn("linkedin")}
                   className="rounded-full bg-gray-100 p-4"
                 >
                   <FaLinkedin className="h-8 w-8 fill-[#0A66C2]" />
                 </button>
                 <button
-                  type="button" // Add this line
+                  type="button"
                   onClick={() => signIn("facebook")}
                   className="rounded-full bg-gray-100 p-4"
                 >
