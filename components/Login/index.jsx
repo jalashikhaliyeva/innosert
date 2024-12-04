@@ -1,4 +1,3 @@
-// src/components/LoginModal.js
 import { useContext, useEffect, useState } from "react";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -27,27 +26,10 @@ export default function LoginModal({
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [inputError, setInputError] = useState(false);
-  const [focusedInput, setFocusedInput] = useState(null); // State to track focused input
-  const [loading, setLoading] = useState(false); // New state for loading
+  const [focusedInput, setFocusedInput] = useState(null);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
-
-
-  useEffect(() => {
-    if (status === "authenticated") {
-      console.log("User data:", session.user);
-      // Get the accessToken from session
-      const token = session.accessToken;
-      // Store the token in localStorage
-      if (token) {
-        localStorage.setItem("token", token);
-        login(token); // Use context's login function if needed
-      }
-      // Close the modal or redirect as needed
-      onClose();
-      router.push("/home");
-    }
-  }, [status, session]);
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -58,6 +40,7 @@ export default function LoginModal({
       handleSubmit(e);
     }
   };
+
   const handleOutsideClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
@@ -95,6 +78,8 @@ export default function LoginModal({
         }
       );
 
+      console.log(response, "response auth");
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(
@@ -104,7 +89,7 @@ export default function LoginModal({
 
       const data = await response.json();
       if (data?.data?.token) {
-        await login(data.data.token); // Use context's login function
+        await login(data.data.token);
         if (data.message === "successful login") {
           toast.success(t("toastMessages.loginSuccess"));
           onClose();
@@ -112,22 +97,29 @@ export default function LoginModal({
         }
       } else {
         toast.error(t("toastMessages.loginFailed"));
-        setEmail(""); // Clear the email field
-        setPassword(""); // Clear the password field
+        setEmail("");
+        setPassword("");
       }
     } catch (error) {
       console.error("Error logging in:", error);
       toast.warning(t("toastMessages.generalError"));
-      setEmail(""); // Clear the email field
-      setPassword(""); // Clear the password field
+      setEmail("");
+      setPassword("");
     } finally {
-      setLoading(false); // Set loading to false after login attempt
+      setLoading(false);
     }
   };
 
   const handleFocus = (input) => {
     setFocusedInput(input);
-    setInputError(false); // Reset error when user focuses on the input
+    setInputError(false);
+  };
+
+  const handleGoogleSignIn = () => {
+    localStorage.setItem("googleSignIn", "true");
+    signIn("google", { callbackUrl: "/home",
+      prompt: "select_account",
+     });
   };
 
   if (!isOpen) return null;
@@ -172,7 +164,6 @@ export default function LoginModal({
                     } bg-inputBgDefault rounded-md shadow-sm focus:outline-none focus:ring-brandBlue sm:text-sm hover:bg-inputBgHover`}
                     placeholder="Email"
                   />
-                  {/* Conditional rendering of the helper text */}
                   {inputError && !email && (
                     <p className="text-inputRingError text-sm mt-1">
                       {t("register.emailRequired")}
@@ -205,7 +196,6 @@ export default function LoginModal({
                   >
                     {showPassword ? <HiOutlineEyeOff /> : <HiOutlineEye />}
                   </button>
-                  {/* Conditional rendering of the helper text */}
                   {inputError && !password && (
                     <p className="text-inputRingError text-sm mt-1">
                       {t("register.passwordRequired")}
@@ -244,10 +234,10 @@ export default function LoginModal({
                     type="submit"
                     className={`w-full flex font-gilroy justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white ${
                       loading
-                        ? "bg-[#DFDFDF] cursor-not-allowed" // Disabled state with grey background
+                        ? "bg-[#DFDFDF] cursor-not-allowed"
                         : "bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
                     }`}
-                    disabled={loading} // Disable the button when loading is true
+                    disabled={loading}
                   >
                     {loading ? (
                       <div className="flex items-center justify-center">
@@ -295,19 +285,26 @@ export default function LoginModal({
                 </span>
                 <div className="flex-1 border-t border-gray-300"></div>
               </div>
-
               <div className="flex justify-center gap-4 mt-6">
                 <button
-                  onClick={() => signIn("google")}
+                  type="button" // Add this line
+                  onClick={handleGoogleSignIn}
                   className="rounded-full bg-gray-100 p-4"
                 >
                   <FcGoogle className="h-8 w-8" />
                 </button>
-                {/* <button onClick={() => signOut()}>Sign Out</button> */}
-                <button className="rounded-full bg-gray-100 p-4">
+                <button
+                  type="button" // Add this line
+                  onClick={() => signIn("linkedin")}
+                  className="rounded-full bg-gray-100 p-4"
+                >
                   <FaLinkedin className="h-8 w-8 fill-[#0A66C2]" />
                 </button>
-                <button className="rounded-full bg-gray-100 p-4">
+                <button
+                  type="button" // Add this line
+                  onClick={() => signIn("facebook")}
+                  className="rounded-full bg-gray-100 p-4"
+                >
                   <FaFacebook className="h-8 w-8 fill-[#0866FF]" />
                 </button>
               </div>

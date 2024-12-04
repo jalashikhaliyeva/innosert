@@ -355,6 +355,9 @@ function ImtahanSehifesi() {
         }
       );
 
+
+      console.log(data , "data sent to finish exam");
+      
       if (response.data.status) {
         const percentageData = response.data.data;
         setPercentage(percentageData);

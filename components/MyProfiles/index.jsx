@@ -214,6 +214,8 @@ function MyProfiles() {
     const fetchUserData = async () => {
       const userToken = localStorage.getItem("token");
 
+      console.log(userToken, "user token profiles");
+
       if (!userToken) {
         toast.error("İstifadəçi autentifikasiyadan keçməyib.");
         return;

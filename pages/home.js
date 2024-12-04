@@ -74,8 +74,12 @@ function Home() {
     const fetchExams = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log(token , "token from home page");
+        
         if (!token) {
-          throw new Error("Authentication token not found.");
+          console.log("Authentication token not found.");
+          
+          // throw new Error("Authentication token not found.");
         }
 
         const response = await axios.get(

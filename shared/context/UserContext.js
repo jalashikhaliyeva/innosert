@@ -1,4 +1,5 @@
 // src/shared/context/UserContext.js
+
 import React, { createContext, useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
 
@@ -6,91 +7,132 @@ const UserContext = createContext();
 
 function UserProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [lastQuery, setLastQuery] = useState(() => {
-    return localStorage.getItem("lastQuery") || null;
+  const [token, setToken] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("token");
+    }
+    return null;
   });
   const [loading, setLoading] = useState(true);
+  const [lastQuery, setLastQuery] = useState(null);
   const [examDetailsSingle, setExamDetailsSingle] = useState(null);
   const [percentage, setPercentage] = useState(null);
-  const [clickedExam, setClickedExam] = useState(() => {
-    const storedExam = localStorage.getItem("clickedExam");
-    return storedExam ? JSON.parse(storedExam) : null;
-  });
+  const [clickedExam, setClickedExam] = useState(null);
   const [isCategoriesFilterValid, setIsCategoriesFilterValid] = useState(null);
-
   const [examToEdit, setExamToEdit] = useState(null);
   const [memberActivitySingle, setMemberActivitySingle] = useState(null);
-  // Initialize filteredExams from localStorage or set to null
-  const [filteredExams, setFilteredExams] = useState(() => {
-    const storedExams = localStorage.getItem("filteredExams");
-    return storedExams ? JSON.parse(storedExams) : null;
-  });
-  useEffect(() => {
-    if (filteredExams !== null) {
-      localStorage.setItem("filteredExams", JSON.stringify(filteredExams));
-    } else {
-      localStorage.removeItem("filteredExams");
-    }
-  }, [filteredExams]);
-
-  // Initialize examDetails from localStorage or set to null
-  const [examDetails, setExamDetails] = useState(() => {
-    const storedDetails = localStorage.getItem("examDetails");
-    return storedDetails ? JSON.parse(storedDetails) : null;
-  });
-
-  // Memoize updateExamDetails to prevent recreation on each render
-  const updateExamDetails = useCallback((details) => {
-    setExamDetails(details);
-    localStorage.setItem("examDetails", JSON.stringify(details));
-  }, []);
-
-  // Existing state for selectedQuestion
-  const [selectedQuestion, setSelectedQuestion] = useState(() => {
-    return JSON.parse(localStorage.getItem("selectedQuestion")) || null;
-  });
-
-  // New state for selectedQuestionsForExam
-  const [selectedQuestionsForExam, setSelectedQuestionsForExam] = useState(
-    () => {
-      return JSON.parse(localStorage.getItem("selectedQuestionsForExam")) || [];
-    }
-  );
-
-  // Existing states
+  const [filteredExams, setFilteredExams] = useState(null);
+  const [examDetails, setExamDetails] = useState(null);
+  const [selectedQuestion, setSelectedQuestion] = useState(null);
+  const [selectedQuestionsForExam, setSelectedQuestionsForExam] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [selectedSubcategory, setSelectedSubcategory] = useState(null);
-
-  // New state for timeForQuestion
-  const [timeForQuestion, setTimeForQuestion] = useState(() => {
-    const storedValue = localStorage.getItem("timeForQuestion");
-    return storedValue ? JSON.parse(storedValue) : false;
-  });
-
-  // New validation states for form readiness
+  const [timeForQuestion, setTimeForQuestion] = useState(false);
   const [isGeneralInfoValid, setIsGeneralInfoValid] = useState(false);
   const [searchExam, setSearchExam] = useState(false);
   const [privateExam, setPrivateExam] = useState(false);
   const [isQuestionsValid, setIsQuestionsValid] = useState(false);
 
-  const fetchUserData = useCallback(async () => {
-    const userToken = localStorage.getItem("token");
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const storedToken = localStorage.getItem("token");
+      setToken(storedToken);
 
-    if (!userToken) {
-      console.log("User is not authenticated");
+      const storedLastQuery = localStorage.getItem("lastQuery") || null;
+      setLastQuery(storedLastQuery);
+
+      const storedClickedExam = localStorage.getItem("clickedExam");
+      setClickedExam(storedClickedExam ? JSON.parse(storedClickedExam) : null);
+
+      const storedFilteredExams = localStorage.getItem("filteredExams");
+      setFilteredExams(storedFilteredExams ? JSON.parse(storedFilteredExams) : null);
+
+      const storedExamDetails = localStorage.getItem("examDetails");
+      setExamDetails(storedExamDetails ? JSON.parse(storedExamDetails) : null);
+
+      const storedSelectedQuestion = localStorage.getItem("selectedQuestion");
+      setSelectedQuestion(storedSelectedQuestion ? JSON.parse(storedSelectedQuestion) : null);
+
+      const storedSelectedQuestionsForExam = localStorage.getItem("selectedQuestionsForExam");
+      setSelectedQuestionsForExam(
+        storedSelectedQuestionsForExam ? JSON.parse(storedSelectedQuestionsForExam) : []
+      );
+
+      const storedTimeForQuestion = localStorage.getItem("timeForQuestion");
+      setTimeForQuestion(storedTimeForQuestion ? JSON.parse(storedTimeForQuestion) : false);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (lastQuery !== null && typeof window !== "undefined") {
+      localStorage.setItem("lastQuery", lastQuery);
+    }
+  }, [lastQuery]);
+
+  useEffect(() => {
+    if (clickedExam !== null && typeof window !== "undefined") {
+      localStorage.setItem("clickedExam", JSON.stringify(clickedExam));
+    }
+  }, [clickedExam]);
+
+  useEffect(() => {
+    if (filteredExams !== null && typeof window !== "undefined") {
+      localStorage.setItem("filteredExams", JSON.stringify(filteredExams));
+    } else if (typeof window !== "undefined") {
+      localStorage.removeItem("filteredExams");
+    }
+  }, [filteredExams]);
+
+  useEffect(() => {
+    if (selectedQuestion !== null && typeof window !== "undefined") {
+      localStorage.setItem("selectedQuestion", JSON.stringify(selectedQuestion));
+    } else if (typeof window !== "undefined") {
+      localStorage.removeItem("selectedQuestion");
+    }
+  }, [selectedQuestion]);
+
+  useEffect(() => {
+    if (selectedQuestionsForExam.length > 0 && typeof window !== "undefined") {
+      localStorage.setItem(
+        "selectedQuestionsForExam",
+        JSON.stringify(selectedQuestionsForExam)
+      );
+    } else if (typeof window !== "undefined") {
+      localStorage.removeItem("selectedQuestionsForExam");
+    }
+  }, [selectedQuestionsForExam]);
+
+  useEffect(() => {
+    if (timeForQuestion !== null && typeof window !== "undefined") {
+      localStorage.setItem("timeForQuestion", JSON.stringify(timeForQuestion));
+    }
+  }, [timeForQuestion]);
+
+  useEffect(() => {
+    if (examDetails && typeof window !== "undefined") {
+      localStorage.setItem("examDetails", JSON.stringify(examDetails));
+    } else if (typeof window !== "undefined") {
+      localStorage.removeItem("examDetails");
+    }
+  }, [examDetails]);
+
+  const fetchUserData = useCallback(async () => {
+    if (!token) {
+      console.log(token, "no token");
+      setLoading(false);
       return;
     }
 
+
+    console.log(token, "setToken context");
+    
     try {
-      const response = await fetch(
-        "https://innocert-admin.markup.az/api/user",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${userToken}`,
-          },
-        }
-      );
+      const response = await fetch("https://innocert-admin.markup.az/api/user", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
       if (response.ok) {
         const userData = await response.json();
@@ -106,70 +148,33 @@ function UserProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [token]);
 
-  const login = useCallback(async (token) => {
-    localStorage.setItem("token", token);
-    await fetchUserData(); // Fetch and set user data immediately
-  }, [fetchUserData]);
+  useEffect(() => {
+    if (token) {
+      fetchUserData();
+    } else {
+      setLoading(false);
+    }
+  }, [token, fetchUserData]);
+
+  const login = useCallback(
+    async (newToken) => {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", newToken);
+      }
+      setToken(newToken);
+    },
+    []
+  );
 
   const logout = useCallback(() => {
-    localStorage.removeItem("token");
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token");
+    }
+    setToken(null);
     setUser(null);
-    // Optionally, you can clear other related states here
   }, []);
-
-  useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
-
-  useEffect(() => {
-    if (lastQuery !== null) {
-      localStorage.setItem("lastQuery", lastQuery);
-    }
-  }, [lastQuery]);
-
-  useEffect(() => {
-    fetchUserData();
-  }, [fetchUserData]);
-
-  // Sync selectedQuestion to localStorage on change
-  useEffect(() => {
-    if (selectedQuestion !== null) {
-      localStorage.setItem(
-        "selectedQuestion",
-        JSON.stringify(selectedQuestion)
-      );
-    } else {
-      localStorage.removeItem("selectedQuestion"); // Remove it if null
-    }
-  }, [selectedQuestion]);
-
-  // Sync selectedQuestionsForExam to localStorage on change
-  useEffect(() => {
-    if (selectedQuestionsForExam.length > 0) {
-      localStorage.setItem(
-        "selectedQuestionsForExam",
-        JSON.stringify(selectedQuestionsForExam)
-      );
-    } else {
-      localStorage.removeItem("selectedQuestionsForExam"); // Remove it if empty
-    }
-  }, [selectedQuestionsForExam]);
-
-  // Sync timeForQuestion to localStorage on change
-  useEffect(() => {
-    localStorage.setItem("timeForQuestion", JSON.stringify(timeForQuestion));
-  }, [timeForQuestion]);
-
-  // Sync examDetails to localStorage on change (if updated outside updateExamDetails)
-  useEffect(() => {
-    if (examDetails) {
-      localStorage.setItem("examDetails", JSON.stringify(examDetails));
-    } else {
-      localStorage.removeItem("examDetails");
-    }
-  }, [examDetails]);
 
   return (
     <UserContext.Provider
@@ -180,21 +185,21 @@ function UserProvider({ children }) {
         setLastQuery,
         selectedQuestion,
         setSelectedQuestion,
-        selectedQuestionsForExam, // Provide the new state
-        setSelectedQuestionsForExam, // Provide the setter for the new state
+        selectedQuestionsForExam,
+        setSelectedQuestionsForExam,
         fetchUserData,
         selectedCategory,
         setSelectedCategory,
         selectedSubcategory,
         setSelectedSubcategory,
-        timeForQuestion, // Provide the new state
-        setTimeForQuestion, // Provide the setter for the new state
-        isGeneralInfoValid, // Provide validation state for GeneralInfoEditExam
-        setIsGeneralInfoValid, // Setter for GeneralInfo validation
-        isQuestionsValid, // Provide validation state for TableComponent
-        setIsQuestionsValid, // Setter for Questions validation
-        examDetails, // Provide exam details
-        updateExamDetails, // Provide update function for exam details
+        timeForQuestion,
+        setTimeForQuestion,
+        isGeneralInfoValid,
+        setIsGeneralInfoValid,
+        isQuestionsValid,
+        setIsQuestionsValid,
+        examDetails,
+        setExamDetails,
         examDetailsSingle,
         setExamDetailsSingle,
         examToEdit,

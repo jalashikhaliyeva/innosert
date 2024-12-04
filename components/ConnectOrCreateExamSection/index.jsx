@@ -17,8 +17,11 @@ function ConnectOrCreateExamSection({ title }) {
     );
 
   return (
-    <div  data-aos="fade-up"
-    data-aos-anchor-placement="center-bottom" className="bg-grayBox pt-10 md:py-14 2xl:mt-20">
+    <div
+      data-aos="fade-up"
+      data-aos-anchor-placement="center-bottom"
+      className="bg-grayBox pt-10 md:py-14 2xl:mt-20"
+    >
       <Container>
         <div className="md:mt-14 flex flex-col lg:flex-row justify-between gap-5">
           <div className="flex flex-col justify-center w-full sm:w-[527px]">
@@ -34,16 +37,13 @@ function ConnectOrCreateExamSection({ title }) {
               {title.desc}
             </p>
           </div>
-          <div
-          
-            className="  xl:w-[37%]  bg-lightPurpleBg rounded-lg"
-          >
+          <div className="  xl:w-[37%]  bg-lightPurpleBg rounded-lg">
             <div style={{ position: "relative", display: "inline-block" }}>
               <Image
                 width={272}
                 height={100}
                 className="w-[272px] rounded-b-md ml-14"
-                src="/img/half-imtahancard.png"
+                src="/img/card-half.png"
                 alt="exam-card"
               />
               {/* <svg
@@ -79,12 +79,10 @@ function ConnectOrCreateExamSection({ title }) {
               </svg>
             </div>
 
-            <div className="shadow-[0px_4px_8px_0px_rgba(93,97,114,0.08)] xl:w-[234px] h-[142px] px-2 bg-white flex justify-center items-center rounded-lg mt-[50px] ml-[240px] mb-[33px] relative">
+            <div className="cursor-default shadow-[0px_4px_8px_0px_rgba(93,97,114,0.08)] xl:w-[234px] h-[142px] px-2 bg-white flex justify-center items-center rounded-lg mt-[50px] ml-[240px] mb-[33px] relative">
               <Button
-                className="flex items-center justify-center relative"
-                color="var(--buttonDefaultPrimary)"
-                hoverColor="var(--buttonHoverPrimary)"
-                pressedColor="var(--buttonPressedPrimary)"
+                className="flex items-center justify-center relative cursor-default"
+                color="#4F7291"
                 disabledColor="var(--buttonDisabledPrimary)"
                 textColor="var(--buttonTextWhite)"
                 hoverTextColor="var(--buttonTextWhite)"
@@ -99,9 +97,9 @@ function ConnectOrCreateExamSection({ title }) {
               </Button>
 
               <svg
-                className={`${style.animatebounce}  absolute top-[-70px] right-[60px]`}
+                className={`${style.animatebounce}  absolute top-[-67px] `}
                 width="111"
-                height="122"
+                height="132"
                 viewBox="0 0 111 122"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"

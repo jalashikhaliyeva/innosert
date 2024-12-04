@@ -89,7 +89,7 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
   
 
   if (!mounted) {
-    return <Spinner />; // Render nothing until the component has mounted on the client
+    return <Spinner />; 
   }
 
   const scrollToFaq = () => {
@@ -110,7 +110,6 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
     }
   };
 
-  // console.log(landingInfo, "landingInfo");
 
   return (
     <main>

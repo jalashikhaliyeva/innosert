@@ -177,7 +177,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                       <div className="w-full flex flex-row gap-4 pt-3">
                         <button
                           onClick={() => handleLoginOrRulesClick(exam)}
-                          className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-blue200 hover:bg-blue200Hover active:bg-blue200Pressed"
+                          className=" px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-blue200 hover:bg-blue200Hover active:bg-blue200Pressed"
                         >
                           {t("login")}
                         </button>
@@ -286,7 +286,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                     <div className="w-full flex flex-row gap-4 pt-3">
                       <button
                         onClick={() => handleLoginOrRulesClick(exam)}
-                        className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-blue200 hover:bg-blue200Hover active:bg-blue200Pressed"
+                        className=" px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-blue200 hover:bg-blue200Hover active:bg-blue200Pressed"
                       >
                         {t("login")}
                       </button>
@@ -396,7 +396,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                 <div className="w-full flex flex-row gap-4 pt-3">
                   <button
                     onClick={() => handleLoginOrRulesClick(exam)}
-                    className="py-3 px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-blue200 hover:bg-blue200Hover active:bg-blue200Pressed"
+                    className=" px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-blue200 hover:bg-blue200Hover active:bg-blue200Pressed"
                   >
                     {t("login")}
                   </button>

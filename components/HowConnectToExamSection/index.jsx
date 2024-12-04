@@ -11,7 +11,7 @@ function HowConnectToExamSection(props) {
         data-aos-anchor-placement="center-bottom"
         className="font-gilroy text-textSecondaryDefault text-2xl md:text-4xl font-medium text-center mt-20 mb-10"
       >
-        Imtahanda necə iştirak edim?
+        İmtahanda necə iştirak edim?
       </h2>
       <Container>
         <div className="bg-blue200 flex flex-col lg:flex-row items-center justify-center gap-5 lg:py-20 lg:px-36 px-10 py-10 rounded-xl">

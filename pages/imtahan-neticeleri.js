@@ -1,6 +1,4 @@
 // ImtahanNeticeleri.jsx
-// import ExamEndFail from "@/components/FinishExam/ExamEndFail";
-// import ExamEndSuccess from "@/components/FinishExam/ExamEndSuccess";
 import ExamEndFail from "@/components/FinishExam/ExamEndFail";
 import ExamEndSuccess from "@/components/FinishExam/ExamEndSucces";
 import ExamResultHeader from "@/components/FinishExam/ExamResultHeader";
@@ -12,8 +10,9 @@ function ImtahanNeticeleri() {
   const { percentage } = useContext(UserContext);
   console.log(percentage, "percentage");
 
+  // If percentage is null, render ExamEndFail directly
   if (percentage === null) {
-    return <Spinner />;
+    return <ExamEndFail percentage={percentage} />;
   }
 
   return (

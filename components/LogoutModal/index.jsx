@@ -1,8 +1,13 @@
+// components/LogoutModal.jsx
+
 import React from "react";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
+import { signOut } from "next-auth/react"; // Import signOut
+
 export default function LogoutModal({ show, onClose }) {
   const { t } = useTranslation();
+
   const handleBackgroundClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose(); // Close the modal if clicked outside
@@ -11,11 +16,10 @@ export default function LogoutModal({ show, onClose }) {
 
   if (!show) return null;
 
-  // Function to handle logout and token removal
+  // Function to handle logout using NextAuth's signOut
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
-    onClose(); // Optional since redirection happens
+    signOut({ callbackUrl: "/" }); // Redirect to homepage after sign out
+    onClose(); // Optional: Close the modal
   };
 
   return (

@@ -299,7 +299,7 @@ const Header = ({
                 onClick={() => router.push("/emekdasliq")}
                 className="py-4 cursor-pointer text-lg font-gilroy font-normal hover:text-textHoverBlue"
               >
-                Əməkdaşlıq
+            {t("collaboration")}    
               </li>
             </ul>
 
@@ -454,7 +454,7 @@ const Header = ({
               onClick={() => router.push("/emekdasliq")}
               className="cursor-pointer font-gilroy font-medium text-lg text-textSecondaryDefault py-3 px-4 hover:text-textHoverBlue"
             >
-              Əməkdaşlıq
+            {t("collaboration")}        
             </p>
             <p
               onClick={() => handleScrollToSection("faq")}

@@ -17,7 +17,7 @@ function HowtoCreateAnExamSection({ data }) {
           data-aos-anchor-placement="center-bottom"
           className="font-gilroy text-textSecondaryDefault text-center font-medium text-2xl md:text-4xl pt-7 pb-10"
         >
-          Imtahanı necə yaradım?
+          İmtahanı necə yaradım?
         </h3>
 
         <div className=" flex flex-col lg:flex-row items-center justify-center flex-wrap gap-5 pb-14">
