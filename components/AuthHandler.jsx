@@ -16,9 +16,17 @@ function AuthHandler({ children }) {
   useEffect(() => {
     if (status === "loading") return;
 
-    const googleSignInInitiated = localStorage.getItem("googleSignIn");
+    // Define supported social providers
+    const socialProviders = ["google", "linkedin", "facebook"];
+    let initiatedProvider = null;
 
-    if (status === "authenticated" && googleSignInInitiated === "true")  {
+    socialProviders.forEach((provider) => {
+      if (localStorage.getItem(`${provider}SignIn`) === "true") {
+        initiatedProvider = provider;
+      }
+    });
+
+    if (status === "authenticated" && initiatedProvider) {
       const sendUserData = async () => {
         try {
           const response = await fetch(
@@ -48,7 +56,7 @@ function AuthHandler({ children }) {
           console.error("Error in sendUserData:", error);
           toast.warning(t("toastMessages.generalError"));
         } finally {
-          localStorage.removeItem("googleSignIn"); // Clean up
+          localStorage.removeItem(`${initiatedProvider}SignIn`); // Clean up
         }
       };
       sendUserData();

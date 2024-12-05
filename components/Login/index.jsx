@@ -68,6 +68,10 @@ export default function LoginModal({
     }
     setInputError(false);
     setLoading(true);
+    // Clear googleSignIn when using email/password login
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("googleSignIn");
+    }
     try {
       const result = await signIn("credentials", {
         redirect: false,
@@ -91,7 +95,6 @@ export default function LoginModal({
       setLoading(false);
     }
   };
-
   const handleFocus = (input) => {
     setFocusedInput(input);
     setInputError(false);
@@ -106,8 +109,7 @@ export default function LoginModal({
   };
 
   if (!isOpen) return null;
-  console.log(require('crypto').randomBytes(64).toString('hex'), "jwt");
-
+  // console.log(require('crypto').randomBytes(64).toString('hex'), "jwt");
 
   return (
     <>
