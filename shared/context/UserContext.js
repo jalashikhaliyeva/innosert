@@ -123,7 +123,6 @@ function UserProvider({ children }) {
       return;
     }
 
-
     console.log(token, "setToken context");
     
     try {
@@ -168,9 +167,22 @@ function UserProvider({ children }) {
     []
   );
 
-  const logout = useCallback(() => {
+  const logout = useCallback(async () => {
     if (typeof window !== "undefined") {
-      localStorage.removeItem("token");
+      const storedToken = localStorage.getItem("token");
+      if (storedToken) {
+        try {
+          await fetch('https://innocert-admin.markup.az/api/logout', {
+            method: 'GET',
+            headers: {
+              Authorization: `Bearer ${storedToken}`,
+            },
+          });
+        } catch (error) {
+          console.error('Error during logout API call:', error);
+        }
+        localStorage.removeItem('token');
+      }
     }
     setToken(null);
     setUser(null);

@@ -1,7 +1,7 @@
 // components/LoginModal.jsx
 
 import { useContext, useEffect, useState } from "react";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { signIn, signOut, useSession, getSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { FcGoogle } from "react-icons/fc";
 import { FaLinkedin, FaFacebook } from "react-icons/fa";
@@ -15,7 +15,6 @@ import {
   HiOutlineEyeOff,
 } from "react-icons/hi";
 import { UserContext } from "@/shared/context/UserContext";
-
 export default function LoginModal({
   isOpen,
   onClose,
@@ -68,7 +67,6 @@ export default function LoginModal({
     }
     setInputError(false);
     setLoading(true);
-    // Clear googleSignIn when using email/password login
     if (typeof window !== "undefined") {
       localStorage.removeItem("googleSignIn");
     }
@@ -81,6 +79,11 @@ export default function LoginModal({
 
       if (result.error) {
         throw new Error(result.error);
+      }
+
+      const session = await getSession();
+      if (session && session.accessToken) {
+        await login(session.accessToken);
       }
 
       toast.success(t("toastMessages.loginSuccess"));
@@ -109,7 +112,6 @@ export default function LoginModal({
   };
 
   if (!isOpen) return null;
-  // console.log(require('crypto').randomBytes(64).toString('hex'), "jwt");
 
   return (
     <>

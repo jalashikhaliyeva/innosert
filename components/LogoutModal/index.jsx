@@ -1,12 +1,15 @@
+
 // components/LogoutModal.jsx
 
-import React from "react";
+import React, { useContext } from "react";
 import { IoLogOutOutline } from "react-icons/io5";
 import { useTranslation } from "react-i18next";
 import { signOut } from "next-auth/react"; // Import signOut
+import { UserContext } from "@/shared/context/UserContext";
 
 export default function LogoutModal({ show, onClose }) {
   const { t } = useTranslation();
+  const { logout } = useContext(UserContext);
 
   const handleBackgroundClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -16,10 +19,10 @@ export default function LogoutModal({ show, onClose }) {
 
   if (!show) return null;
 
-  // Function to handle logout using NextAuth's signOut
-  const handleLogout = () => {
-    signOut({ callbackUrl: "/" }); // Redirect to homepage after sign out
-    onClose(); // Optional: Close the modal
+  const handleLogout = async () => {
+    await logout();
+    signOut({ callbackUrl: "/" });
+    onClose();
   };
 
   return (
@@ -28,7 +31,6 @@ export default function LogoutModal({ show, onClose }) {
       className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[9999]"
     >
       <div className="bg-white rounded-xl shadow-lg p-6 w-96">
-        {/* Icon */}
         <div className="flex justify-center mb-4">
           <div className="flex items-center justify-center w-16 h-16 rounded-full bg-red-100">
             <IoLogOutOutline
@@ -37,7 +39,6 @@ export default function LogoutModal({ show, onClose }) {
           </div>
         </div>
 
-        {/* Title */}
         <h3
           className="text-lg font-semibold text-gray-900 text-center"
           style={{ fontFamily: "Gilroy" }}
@@ -45,7 +46,6 @@ export default function LogoutModal({ show, onClose }) {
           {t("confirmation.logout")}
         </h3>
 
-        {/* Description */}
         <p
           className="text-sm text-gray-600 text-center mt-2"
           style={{ fontFamily: "Gilroy" }}
@@ -53,7 +53,6 @@ export default function LogoutModal({ show, onClose }) {
           {t("confirmation.logoutConfirmation")}
         </p>
 
-        {/* Buttons */}
         <div className="mt-6 flex justify-between">
           <button
             onClick={onClose}

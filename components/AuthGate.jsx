@@ -1,6 +1,6 @@
 // components/AuthGate.js
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
 import Spinner from "@/components/Spinner";
@@ -8,36 +8,30 @@ import Spinner from "@/components/Spinner";
 function AuthGate({ children }) {
   const router = useRouter();
   const { data: session, status } = useSession();
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
-    if (status === "loading") return;
+    if (status === "loading") return; // Wait for session to load
 
     const publicRoutes = [
       "/",
       "/haqqimizda",
       // Add other public routes here
-      "/exams/",
-      "/imtahanlar/",
+      "/exams",
+      "/imtahanlar",
       "/emekdasliq",
-      "/etrafli/",
+      "/etrafli",
     ];
-    const isPublicRoute =
-      publicRoutes.includes(router.pathname) ||
-      publicRoutes.some((route) => router.pathname.startsWith(route));
 
-    if (!isPublicRoute) {
-      if (session) {
-        setIsAuthChecked(true);
-      } else {
-        router.replace("/");
-      }
-    } else {
-      setIsAuthChecked(true);
+    const isPublicRoute = publicRoutes.some((route) =>
+      router.pathname.startsWith(route)
+    );
+
+    if (!isPublicRoute && status === "unauthenticated") {
+      router.replace("/");
     }
-  }, [router.pathname, status, session]);
+  }, [router, status]);
 
-  if (status === "loading" || !isAuthChecked) {
+  if (status === "loading") {
     return <Spinner />;
   }
 

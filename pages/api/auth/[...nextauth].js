@@ -28,6 +28,7 @@ export default NextAuth({
         },
       },
     }),
+
     CredentialsProvider({
       name: "Credentials",
       credentials: {
@@ -44,16 +45,20 @@ export default NextAuth({
               password: credentials.password,
             }),
           });
-
+    
           const user = await res.json();
-
+    
           if (!res.ok || !user?.data?.token) {
             throw new Error(user.message || "Login failed");
           }
-
-          // Optionally fetch additional user data here if needed
-
-          return { ...user.data, token: user.data.token };
+    
+          // Return the user object with necessary fields
+          return {
+            id: user.data.user.id,
+            name: user.data.user.name,
+            email: user.data.user.email,
+            token: user.data.token,
+          };
         } catch (error) {
           throw new Error(error.message || "An error occurred during login");
         }
