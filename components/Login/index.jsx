@@ -106,6 +106,8 @@ export default function LoginModal({
   };
 
   if (!isOpen) return null;
+  console.log(require('crypto').randomBytes(64).toString('hex'), "jwt");
+
 
   return (
     <>
