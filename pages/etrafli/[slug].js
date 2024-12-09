@@ -13,9 +13,11 @@ import JoinButtonandPriceExam from "@/components/JoinButtonandPriceExam";
 import Spinner from "@/components/Spinner";
 import CategoryTagsAbout from "@/components/CategoryTagsAout";
 import RegisterModal from "@/components/Register";
+import { getSession } from "next-auth/react";
 
 function ExamName({ examData, error }) {
   const { user } = useContext(UserContext);
+console.log(user, "user");
 
   // State for Register Modal
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
@@ -29,7 +31,7 @@ function ExamName({ examData, error }) {
   };
 
   if (error) {
-    return <div>Error loading exam details. Please try again later.</div>;
+    return <div><Spinner /></div>;
   }
 
   if (!examData) {

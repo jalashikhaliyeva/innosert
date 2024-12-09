@@ -1,46 +1,64 @@
-import { useState, useRef, useEffect } from "react";
-import { HiOutlineArrowLeft } from "react-icons/hi";
-import { toast, ToastContainer } from "react-toastify";
+import React, { useState, useEffect, useRef } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { HiOutlineArrowLeft } from "react-icons/hi";
+import { useRouter } from "next/router";
 
-function OTP({
+function OTPRegister({
   isOpen,
   onClose,
   onBack,
   email,
   onOpenResetPasswordModal,
+  token,
 }) {
-  const [code, setCode] = useState("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to manage button disabled state
-  const [timer, setTimer] = useState(0); // State to manage the timer
-
+  const [code, setCode] = useState(Array(6).fill(""));
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
+  const [timer, setTimer] = useState(20); // Initialize with 20 seconds
+  const router = useRouter();
   const inputRefs = useRef([]);
 
+  // Handle input changes and auto-focus next input
   const handleInputChange = (e, index) => {
     const value = e.target.value;
-    setCode(
-      (prevCode) =>
-        prevCode.substr(0, index) + value + prevCode.substr(index + 1)
-    );
+    if (!/^\d*$/.test(value)) return;
+
+    setCode((prevCode) => {
+      const newCode = [...prevCode];
+      newCode[index] = value;
+      return newCode;
+    });
 
     if (value.length === 1 && index < inputRefs.current.length - 1) {
       inputRefs.current[index + 1].focus();
     }
   };
 
+  // Verify the OTP code
   const handleVerifyCode = async (e) => {
     e.preventDefault();
 
-    const formData = new FormData();
-    formData.append("code", code);
-    formData.append("email", email);
+    const joinedCode = code.join("");
+    if (joinedCode.length !== 6) {
+      toast.error("Zəhmət olmasa, bütün xanaları doldurun.");
+      return;
+    }
+
+    const headers = {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    };
+
+    const body = JSON.stringify({ code: joinedCode });
+    console.log(body, "body");
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/password/verify-code",
+        "https://innocert-admin.markup.az/api/verify-mobile",
         {
           method: "POST",
-          body: formData,
+          headers,
+          body,
         }
       );
 
@@ -49,9 +67,9 @@ function OTP({
 
       if (response.ok && data?.status === "success") {
         toast.success("Kod uğurla təsdiqləndi!");
-        console.log("Code verified successfully.");
-        onClose(); // Close the OTPmodal
-        onOpenResetPasswordModal(); // Open the ResetPasswordModal
+        onClose();
+        onOpenResetPasswordModal();
+        router.push("/home");
       } else {
         toast.error("Kodun təsdiqi uğursuz oldu. Yenidən cəhd edin.");
         console.log("Failed to verify the code. Please try again.");
@@ -63,46 +81,40 @@ function OTP({
       );
     }
 
-    // Start the 30-second timer
+    // Disable the resend button and start the timer again
     setIsButtonDisabled(true);
-    setTimer(30);
+    setTimer(20);
   };
 
-  // Timer effect
-  useEffect(() => {
-    if (timer > 0) {
-      const interval = setInterval(() => {
-        setTimer((prevTimer) => prevTimer - 1);
-      }, 1000);
-      return () => clearInterval(interval);
-    } else {
-      setIsButtonDisabled(false);
-    }
-  }, [timer]);
-
+  // Handle the resend code action
   const handleResendCode = async () => {
+    const headers = {
+      Authorization: `Bearer ${token}`,
+    };
+
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/password/email",
+        "https://innocert-admin.markup.az/api/resend-verify",
         {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            value: email,
-          }),
+          method: "GET",
+          headers,
         }
       );
 
       const data = await response.json();
       console.log("Resend code response:", data);
 
-      if (response.ok && data?.status === true) {
+      if (response.ok && data?.status === "success") {
         toast.success("Kod yenidən uğurla göndərildi!");
-        console.log("Code resent successfully.");
+        setCode(Array(6).fill(""));
+
+        if (inputRefs.current[0]) {
+          inputRefs.current[0].focus();
+        }
+
+        // Reset timer and disable button for 20 seconds
         setIsButtonDisabled(true);
-        setTimer(30); // Restart the 30-second timer
+        setTimer(20);
       } else {
         toast.error(
           "Kodun yenidən göndərilməsi uğursuz oldu. Yenidən cəhd edin."
@@ -116,6 +128,35 @@ function OTP({
       );
     }
   };
+
+  // Timer effect to handle countdown
+  useEffect(() => {
+    let interval = null;
+
+    if (isOpen && timer > 0) {
+      interval = setInterval(() => {
+        setTimer((prevTimer) => prevTimer - 1);
+      }, 1000);
+    } else if (isOpen && timer === 0) {
+      setIsButtonDisabled(false);
+    }
+
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [timer, isOpen]);
+
+  // Initialize the timer when the modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setIsButtonDisabled(true);
+      setTimer(20);
+      setCode(Array(6).fill(""));
+      if (inputRefs.current[0]) {
+        inputRefs.current[0].focus();
+      }
+    }
+  }, [isOpen]);
 
   const handleOutsideClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -151,6 +192,7 @@ function OTP({
           <button
             onClick={onClose}
             className="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-3xl"
+            aria-label="Close"
           >
             &times;
           </button>
@@ -159,10 +201,8 @@ function OTP({
             <HiOutlineArrowLeft
               className="text-2xl text-buttonPrimaryDefault cursor-pointer"
               onClick={onBack}
+              aria-label="Back"
             />
-            {/* <span className="ml-2 font-gilroy text-lg text-buttonPrimaryDefault">
-              Geri
-            </span> */}
           </div>
 
           <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-buttonPrimaryDefault">
@@ -173,19 +213,20 @@ function OTP({
           </p>
           <form onSubmit={handleVerifyCode}>
             <div className="flex justify-between gap-2 mb-6">
-              {Array(6)
-                .fill(0)
-                .map((_, index) => (
-                  <input
-                    key={index}
-                    ref={(el) => (inputRefs.current[index] = el)}
-                    type="text"
-                    maxLength="1"
-                    className="size-10 text-center border bg-grayTextColor border-inputBorder rounded-md text-lg font-medium focus:outline-none focus:border-inputRingFocus"
-                    onChange={(e) => handleInputChange(e, index)}
-                    value={code[index] || ""}
-                  />
-                ))}
+              {code.map((digit, index) => (
+                <input
+                  key={index}
+                  ref={(el) => (inputRefs.current[index] = el)}
+                  type="text"
+                  inputMode="numeric"
+                  pattern="\d{1}"
+                  maxLength="1"
+                  className="size-10 text-center border bg-grayTextColor border-inputBorder rounded-md text-lg font-medium focus:outline-none focus:border-inputRingFocus"
+                  onChange={(e) => handleInputChange(e, index)}
+                  value={digit}
+                  autoFocus={index === 0}
+                />
+              ))}
             </div>
 
             <div className="flex flex-col gap-3">
@@ -200,14 +241,21 @@ function OTP({
               <div>
                 <button
                   type="button"
-                  className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-grayButtonText bg-grayLineFooter hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
+                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium ${
+                    isButtonDisabled
+                      ? "text-grayButtonText bg-grayLineFooter cursor-not-allowed"
+                      : "text-grayButtonText bg-buttonSecondaryDefault hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed"
+                  }`}
                   disabled={isButtonDisabled}
                   onClick={handleResendCode}
                 >
-                  {isButtonDisabled
-                    ? `Yenidən göndər (${timer}s)`
-                    : "Yenidən göndər"}
+                  Yenidən göndər
                 </button>
+                <p className="text-sm text-grayButtonText text-center mt-2">
+                  {isButtonDisabled
+                    ? `Göndər düyməsi ${timer}s ərzində aktiv olacaq.`
+                    : ""}
+                </p>
               </div>
             </div>
           </form>
@@ -217,5 +265,4 @@ function OTP({
   );
 }
 
-
-export default OTP;
+export default OTPRegister;

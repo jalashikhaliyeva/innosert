@@ -13,10 +13,11 @@ import { SavedExamsProvider } from "@/shared/context/SavedExamsContext";
 import { SnackbarProvider } from "notistack";
 import { ViewCountProvider } from "@/shared/context/ViewCountContext";
 import { SessionProvider } from "next-auth/react";
-
+import "react-toastify/dist/ReactToastify.css";
 import CompanyContext from "../shared/context/CompanyContext";
 import AuthHandler from "@/components/AuthHandler";
 import AuthGate from "@/components/AuthGate"; // Import AuthGate
+import { ToastContainer } from "react-toastify";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -63,6 +64,15 @@ function MyApp({ Component, pageProps }) {
       i18n.changeLanguage(locale);
     }
   }, [router.locale]);
+  // Retrieve and log the token on the client-side
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token");
+      console.log("Retrieved token:", token);
+      const googleSignIn = localStorage.getItem("googleSignIn");
+      console.log("googleSignIn token:", googleSignIn);
+    }
+  }, []);
 
   return (
     <SessionProvider session={pageProps.session}>
@@ -80,6 +90,18 @@ function MyApp({ Component, pageProps }) {
                 >
                   <AuthGate>
                     {loading ? <Spinner /> : <Component {...pageProps} />}
+                    <ToastContainer
+                      position="top-right"
+                      autoClose={5000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      theme="light"
+                    />
                   </AuthGate>
                 </CompanyContext.Provider>
               </ViewCountProvider>

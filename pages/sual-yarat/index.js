@@ -11,7 +11,27 @@ import { UserContext } from "@/shared/context/UserContext";
 import CompanyContext from "@/shared/context/CompanyContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { getSession } from "next-auth/react";
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
 
+  // If there is no NextAuth session, redirect to the index page
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // If session exists, proceed with the page rendering
+  return {
+    props: {
+      // You can pass any additional props here
+    },
+  };
+}
 function SualYarat() {
   const [activeView, setActiveView] = useState("edit");
   const [selectedOption, setSelectedOption] = useState("Variantli sual");
@@ -251,6 +271,12 @@ function SualYarat() {
 
         {activeView === "edit" ? (
           <>
+            <EditQuestionDetails
+              level={level}
+              setLevel={setLevel}
+              score={score}
+              setScore={setScore}
+            />
             <EditQuestionSection
               selectedOption={selectedOption}
               lastQuery={lastQuery}
@@ -266,25 +292,26 @@ function SualYarat() {
               setKombinasiyaOptions={setKombinasiyaOptions}
               kombinasiyaQuestions={kombinasiyaQuestions}
               setKombinasiyaQuestions={setKombinasiyaQuestions}
-              nextOptionId={nextOptionId} // Added prop
-              setNextOptionId={setNextOptionId} // Added prop
-              nextQuestionId={nextQuestionId} // Added prop
-              setNextQuestionId={setNextQuestionId} // Added prop
-            />
-
-            <EditQuestionDetails
-              level={level}
-              setLevel={setLevel}
-              score={score}
-              setScore={setScore}
+              nextOptionId={nextOptionId}
+              setNextOptionId={setNextOptionId}
+              nextQuestionId={nextQuestionId}
+              setNextQuestionId={setNextQuestionId}
             />
           </>
         ) : (
-          <PreviewQuestionSection selectedOption={selectedOption} />
+          <PreviewQuestionSection
+            selectedOption={selectedOption}
+            titleText={titleText}
+            conditionText={conditionText}
+            answers={answers}
+            openAnswer={openAnswer}
+            kombinasiyaOptions={kombinasiyaOptions}
+            kombinasiyaQuestions={kombinasiyaQuestions}
+          />
         )}
       </Container>
       {/* Include the ToastContainer */}
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 }

@@ -12,6 +12,27 @@ import { UserContext } from "@/shared/context/UserContext";
 import axios from "axios";
 import FinishExamModal from "@/components/FinishExam/FinishExamModal";
 import Spinner from "@/components/Spinner";
+import { getSession } from "next-auth/react";
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  // If there is no NextAuth session, redirect to the index page
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // If session exists, proceed with the page rendering
+  return {
+    props: {
+      // You can pass any additional props here
+    },
+  };
+}
 
 const parseDuration = (durationStr) => {
   if (typeof durationStr !== "string") return 0;
@@ -355,9 +376,8 @@ function ImtahanSehifesi() {
         }
       );
 
+      console.log(data, "data sent to finish exam");
 
-      console.log(data , "data sent to finish exam");
-      
       if (response.data.status) {
         const percentageData = response.data.data;
         setPercentage(percentageData);

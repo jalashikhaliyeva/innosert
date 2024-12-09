@@ -234,7 +234,8 @@
     "loginFailed": "Login failed. Please try again.",
     "generalError": "An error occurred. Please try again.",
     "folderUpdated": "Folder name updated successfully!",
-    "examUpdated": "Exam updated successfully!"
+    "examUpdated": "Exam updated successfully!",
+    "invalidEmail": "Please enter a valid email."
   },
   "uiElements": {
     "rememberMe": "Remember me",

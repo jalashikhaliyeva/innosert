@@ -1,4 +1,3 @@
-// Home.jsx
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import HeaderInternal from "@/components/HeaderInternal";
 import Container from "@/components/Container";
@@ -15,8 +14,25 @@ import axios from "axios";
 import Spinner from "@/components/Spinner";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
-import ReactPaginate from "react-paginate";
 import Head from "next/head";
+import { getSession } from "next-auth/react";
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  return {
+    props: {},
+  };
+}
 
 function Home() {
   const {
@@ -29,8 +45,9 @@ function Home() {
     searchExam,
     setSearchExam,
   } = useContext(UserContext);
+
   const router = useRouter();
-  const lang = router.locale || "az"; // Default to "az" if locale is not set
+  const lang = router.locale || "az";
   const { t } = useTranslation();
   const [allExams, setAllExams] = useState({});
   const [mostViewedExams, setMostViewedExams] = useState({});
@@ -38,22 +55,21 @@ function Home() {
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  // Load More state
-  const [visibleCategories, setVisibleCategories] = useState(4); // Show 4 categories initially
-  const itemsPerLoad = 4; // Number of categories to load each time
+  const [visibleCategories, setVisibleCategories] = useState(4);
+  const itemsPerLoad = 4;
 
   const combinedList = [
     ...(selectedCategory || []).map((cat) => ({
       name: cat.name,
       type: "category",
       id: cat.id,
-      slug: cat.slug || "", // Ensure slug is set here
+      slug: cat.slug || "",
     })),
     ...(selectedSubcategory || []).map((sub) => ({
       name: sub.name,
       type: "subcategory",
       id: sub.id,
-      slug: sub.slug || "", // Ensure slug is set here
+      slug: sub.slug || "",
     })),
   ];
 
@@ -74,12 +90,8 @@ function Home() {
     const fetchExams = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log(token , "token from home page");
-        
         if (!token) {
           console.log("Authentication token not found.");
-          
-          // throw new Error("Authentication token not found.");
         }
 
         const response = await axios.get(
@@ -110,7 +122,6 @@ function Home() {
   }, [lang]);
 
   useEffect(() => {
-    // Reset visible categories when exams change
     setVisibleCategories(4);
   }, [filteredExams]);
 
@@ -131,7 +142,7 @@ function Home() {
       return allExams;
     }
     if (filteredExams.length === 0) {
-      return {}; // No exams match the filters
+      return {};
     }
     return groupExamsByCategory(filteredExams);
   }, [filteredExams, allExams]);
@@ -167,6 +178,15 @@ function Home() {
     );
   }
 
+  // Handle searchExam "No information" scenario
+  // If `searchExam` is set and it's an array but empty, show "there is no exam like this"
+  // If `searchExam` returns a message "No information" (not an array), also handle that scenario
+  const noExamFound =
+    (Array.isArray(searchExam) && searchExam.length === 0) ||
+    (searchExam &&
+      typeof searchExam === "string" &&
+      searchExam.toLowerCase().includes("no information"));
+
   return (
     <>
       <Head>
@@ -184,14 +204,20 @@ function Home() {
           <EnterExamCode />
         </div>
 
-        {searchExam && searchExam.length > 0 ? (
+        {searchExam && Array.isArray(searchExam) && searchExam.length > 0 ? (
           <div className="mt-8">
             <ExamCard
               exams={searchExam}
               openLoginModal={handleLoginOrRulesClick}
               openRegisterModal={handleLoginOrRulesClick}
-              widthClass="w-[23.8%]" // Adjust width as needed
+              widthClass="w-[23.8%]"
             />
+          </div>
+        ) : noExamFound ? (
+          <div className="flex justify-center items-center h-screen">
+            <p className="text-neutral-900 font-gilroy text-xl -mt-[300px]">
+              Belə bir imtahan yoxdur.
+            </p>
           </div>
         ) : privateExam ? (
           <div className="mt-8">

@@ -25,9 +25,11 @@ function AddQuestionModal({ onClose }) {
   const [questions, setQuestions] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [questionToDelete, setQuestionToDelete] = useState(null);
   const dropdownRef = useRef(null);
 
+  const closeModal = () => setIsModalOpen(false);
   const fetchQuestions = async (folderPath = "") => {
     setLoading(true);
     setError(null);
@@ -371,7 +373,7 @@ function AddQuestionModal({ onClose }) {
                       setDropdownVisible={setDropdownVisible}
                       formatDate={formatDate}
                       dropdownRef={dropdownRef}
-                      showActions={true}
+                      showActions={false}
                     />
                   ))}
                 </div>
@@ -385,6 +387,7 @@ function AddQuestionModal({ onClose }) {
                   questions={questions}
                   openDeleteModal={openDeleteModal}
                   showActionButtons={true}
+                  onClose={closeModal}
                 />
               )}
             </div>
@@ -397,6 +400,7 @@ function AddQuestionModal({ onClose }) {
                 questions={questions}
                 openDeleteModal={openDeleteModal}
                 showActionButtons={true}
+                onClose={closeModal}
               />
             </div>
           )}

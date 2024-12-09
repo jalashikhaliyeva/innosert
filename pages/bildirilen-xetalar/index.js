@@ -19,6 +19,28 @@ const reportData = [
   { id: 5, sualBasligi: "Sual 5", status: "Baxılıb", tarix: "2023-10-03" },
 ];
 
+import { getSession } from "next-auth/react";
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+
+  // If there is no NextAuth session, redirect to the index page
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // If session exists, proceed with the page rendering
+  return {
+    props: {
+      // You can pass any additional props here
+    },
+  };
+}
+
 function BildirilenXetalar() {
   // Initialize state for selected rows
   const [selectedRows, setSelectedRows] = useState([]);

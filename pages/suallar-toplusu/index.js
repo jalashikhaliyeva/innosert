@@ -14,7 +14,27 @@ import DeleteFolderModal from "@/components/DeleteFolderModal";
 import TeacherSidebar from "@/components/TeacherSidebar";
 import QuestionFilesTeacher from "@/components/QuestionFilesTeacher";
 import TeacherDashboardHeader from "@/components/ResponsiveHeaderDashboard/TeacherDashboardHeader";
+import { getSession } from "next-auth/react";
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
 
+  // If there is no NextAuth session, redirect to the index page
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // If session exists, proceed with the page rendering
+  return {
+    props: {
+      // You can pass any additional props here
+    },
+  };
+}
 function SuallarToplusu() {
   const [viewMode, setViewMode] = useState("grid");
   const [sortOption, setSortOption] = useState("Son Yaradilan");

@@ -166,7 +166,7 @@ export default function MemberShip() {
 
   return (
     <div className="min-h-screen my-14 flex items-center justify-center">
-      <ToastContainer /> {/* Toast Container */}
+      {/* <ToastContainer /> Toast Container */}
       <div className="bg-white font-gilroy justify-center p-8 lg:p-14 rounded-2xl shadow-sm flex gap-12 flex-col lg:flex-row max-w-6xl w-full mx-auto space-y-8 lg:space-y-0 lg:space-x-8">
         {/* Left Form Section */}
         <div className="w-full lg:w-[400px] font-gilroy">

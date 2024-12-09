@@ -452,7 +452,7 @@ function GeneralInfoEditExam() {
                   }}
                 />
                 <span className="text-base font-gilroy">
-                  Sual üçün vaxt təyin etmə
+                  Sual üçün vaxt təyin et
                 </span>
               </label>
               <label className="flex items-center space-x-2">
@@ -555,7 +555,7 @@ function GeneralInfoEditExam() {
           </div>
         </div>
       </div>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -566,7 +566,7 @@ function GeneralInfoEditExam() {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </div>
   );
 }

@@ -1,18 +1,40 @@
+// JoinButtonandPriceExam.jsx
 import React, { useContext, useState } from "react";
 import ExamRulesModal from "../ExamRulesModal";
 import { UserContext } from "@/shared/context/UserContext";
-// import ExamRulesModal from "./ExamRulesModal";
+import LoginModal from "../Login";
+
 
 function JoinButtonandPriceExam({ examData }) {
-  const [isModalOpen, setIsModalOpen] = useState(false); // State to control modal visibility
+  const [modalType, setModalType] = useState(null); // 'examRules' or 'login'
   const { user, setClickedExam } = useContext(UserContext);
+  console.log(user, "user join modal");
+
   const handleButtonClick = (exam) => {
-    setIsModalOpen(true); // Open the modal when the button is clicked
     setClickedExam(exam);
+    if (user) {
+      setModalType("examRules");
+    } else {
+      setModalType("login");
+    }
   };
 
   const handleCloseModal = () => {
-    setIsModalOpen(false); // Close the modal
+    setModalType(null);
+  };
+
+  // Handlers for additional props
+  const handleOpenRegisterModal = () => {
+    // Implement registration modal logic here
+    console.log("Open Register Modal");
+    // For example, you might set another state to open a RegisterModal
+    // setModalType("register");
+  };
+
+  const handleForgotPassword = () => {
+    // Implement forgot password logic here
+    console.log("Forgot Password Clicked");
+    // For example, navigate to a forgot password page or open a ForgotPasswordModal
   };
 
   return (
@@ -27,10 +49,18 @@ function JoinButtonandPriceExam({ examData }) {
         {examData.exam.price} ₼
       </h2>
 
-      {isModalOpen && (
-        <ExamRulesModal
+      {/* Conditionally Render ExamRulesModal */}
+      {modalType === "examRules" && (
+        <ExamRulesModal onClose={handleCloseModal} onCancel={handleCloseModal} />
+      )}
+
+      {/* Conditionally Render LoginModal with All Required Props */}
+      {modalType === "login" && (
+        <LoginModal
+          isOpen={true}
           onClose={handleCloseModal}
-          onCancel={handleCloseModal}
+          onOpenRegisterModal={handleOpenRegisterModal}
+          onForgotPasswordClick={handleForgotPassword}
         />
       )}
     </div>

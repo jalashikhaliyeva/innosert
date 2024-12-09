@@ -235,7 +235,8 @@
     "loginFailed": "Daxil olma uğursuz oldu. Zəhmət olmasa yenidən cəhd edin.",
     "generalError": "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
     "folderUpdated": "Qovluq adı uğurla yeniləndi!",
-    "examUpdated": "İmtahan uğurla yeniləndi!"
+    "examUpdated": "İmtahan uğurla yeniləndi!",
+    "invalidEmail": "Zəhmət olmasa düzgün email daxil edin."
   },
   "uiElements": {
     "rememberMe": "Hesabımı yadda saxla",

@@ -1462,7 +1462,7 @@ function MyProfiles() {
         // Company creation end
       )}
 
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -1473,7 +1473,7 @@ function MyProfiles() {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </div>
   );
 }

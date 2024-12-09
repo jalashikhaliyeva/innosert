@@ -5,7 +5,27 @@ import ExamResultHeader from "@/components/FinishExam/ExamResultHeader";
 import Spinner from "@/components/Spinner";
 import { UserContext } from "@/shared/context/UserContext";
 import React, { useContext } from "react";
+import { getSession } from "next-auth/react";
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
 
+  // If there is no NextAuth session, redirect to the index page
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // If session exists, proceed with the page rendering
+  return {
+    props: {
+      // You can pass any additional props here
+    },
+  };
+}
 function ImtahanNeticeleri() {
   const { percentage } = useContext(UserContext);
   console.log(percentage, "percentage");

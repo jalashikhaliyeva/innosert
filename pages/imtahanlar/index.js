@@ -13,7 +13,27 @@ import RegisterModal from "@/components/Register";
 import { getSettingInfo } from "@/services/getSettingInfo";
 import Container from "@/components/Container";
 import Breadcrumb from "@/components/Breadcrumb";
+import { getSession } from "next-auth/react";
+// export async function getServerSideProps(context) {
+//   const session = await getSession(context);
 
+//   // If there is no NextAuth session, redirect to the index page
+//   if (!session) {
+//     return {
+//       redirect: {
+//         destination: "/",
+//         permanent: false,
+//       },
+//     };
+//   }
+
+//   // If session exists, proceed with the page rendering
+//   return {
+//     props: {
+//       // You can pass any additional props here
+//     },
+//   };
+// }
 function Imtahanlar({ openRegisterModal, openLoginModal }) {
   const { selectedCategory, selectedSubcategory, user } =
     useContext(UserContext);

@@ -16,6 +16,7 @@ import ExamRulesModal from "@/components/ExamRulesModal";
 import LoginModal from "@/components/Login";
 import { UserContext } from "@/shared/context/UserContext";
 import Head from "next/head";
+import { getSession } from "next-auth/react";
 import { useTranslation } from "react-i18next";
 
 const SubcategoryPage = ({
@@ -79,7 +80,10 @@ const SubcategoryPage = ({
         }
       } catch (error) {
         console.error("Failed to fetch exams:", error);
-        setError(t("errors.fetch_exams_failed") || "İmtahanlar yüklənərkən bir xəta baş verdi.");
+        setError(
+          t("errors.fetch_exams_failed") ||
+            "İmtahanlar yüklənərkən bir xəta baş verdi."
+        );
         setExams([]); // Ensure exams is an empty array on error
       } finally {
         setLoading(false); // Set loading to false once data is fetched
@@ -137,14 +141,10 @@ const SubcategoryPage = ({
         sorted.sort((a, b) => b.price - a.price);
         break;
       case "new_to_old":
-        sorted.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
+        sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         break;
       case "old_to_new":
-        sorted.sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
-        );
+        sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
         break;
       default:
         break;
@@ -285,6 +285,17 @@ const SubcategoryPage = ({
 
 // Fetch landing and setting info on server side
 export async function getServerSideProps(context) {
+  // const session = await getSession(context);
+
+  //   // If there is no NextAuth session, redirect to the index page
+  //   if (!session) {
+  //     return {
+  //       redirect: {
+  //         destination: "/",
+  //         permanent: false,
+  //       },
+  //     };
+  //   }
   const lang = context.locale || "az";
   try {
     const landingInfo = await getLandingInfo(lang);

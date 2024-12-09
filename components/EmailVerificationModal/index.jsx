@@ -163,7 +163,7 @@ export default function EmailVerificationModal({
         </form>
       </div>
 
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -174,7 +174,7 @@ export default function EmailVerificationModal({
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </div>
   );
 }

@@ -67,9 +67,25 @@ function FilterCategories() {
   });
 
   function handleTimeSelection(option) {
-    setSelectedTime(option.label);
-    setSelectedDuration(option.duration);
+    if (selectedTime === option.label) {
+      // Deselect if already selected
+      setSelectedTime("");
+      setSelectedDuration(null);
+      setAppliedFilters((prevFilters) => ({
+        ...prevFilters,
+        selectedTime: "",
+      }));
+    } else {
+      // Select the new option
+      setSelectedTime(option.label);
+      setSelectedDuration(option.duration);
+      setAppliedFilters((prevFilters) => ({
+        ...prevFilters,
+        selectedTime: option.label,
+      }));
+    }
   }
+
 
   function getActiveFilterCount() {
     let count = 0;
@@ -498,18 +514,32 @@ function FilterCategories() {
                     ref={timeDropdownRef}
                     className="absolute font-gilroy z-10 w-full bg-white border border-gray-300 rounded-md mt-1 max-h-60 overflow-y-scroll time-dropdown-menu"
                   >
-                    {timeOptions.map((option, index) => (
-                      <div
-                        key={index}
-                        className="py-2 px-4 hover:bg-gray-100 cursor-pointer text-black"
-                        onClick={() => {
-                          handleTimeSelection(option);
-                          setIsTimeDropdownOpen(false);
-                        }}
-                      >
-                        {option.label}
-                      </div>
-                    ))}
+                    {timeOptions.map((option, index) => {
+                      const isSelected = selectedTime === option.label;
+                      return (
+                        <div
+                          key={index}
+                          className="py-2 px-4 hover:bg-gray-100 cursor-pointer text-black flex justify-between items-center"
+                          onClick={() => {
+                            handleTimeSelection(option);
+                            setIsTimeDropdownOpen(false);
+                          }}
+                        >
+                          <span>{option.label}</span>
+                          {isSelected && (
+                            <svg
+                              className="w-4 h-4 text-blue-500"
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path d="M5 13l4 4L19 7" />
+                            </svg>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>

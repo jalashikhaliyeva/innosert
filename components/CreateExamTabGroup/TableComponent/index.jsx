@@ -14,6 +14,7 @@ function TableComponent({
   selectedRows,
   setSelectedRows,
   questions,
+  onClose,
   showActionButtons = false,
   showDeleteButton = false,
 }) {
@@ -720,9 +721,9 @@ function TableComponent({
       </div>
       {showActionButtons && (
         <div className="flex gap-2 justify-end mt-3">
-          <button className="bg-buttonSecondaryDefault hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed py-2 px-4 text-base font-normal leading-6 font-gilroy text-grayButtonText rounded-lg">
+          {/* <button     onClick={onClose} className="bg-buttonSecondaryDefault hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed py-2 px-4 text-base font-normal leading-6 font-gilroy text-grayButtonText rounded-lg">
             Ləğv et
-          </button>
+          </button> */}
           <button
             className={`py-2 px-4 text-base font-normal leading-6 font-gilroy text-white rounded-lg 
       ${
@@ -737,7 +738,7 @@ function TableComponent({
           </button>
         </div>
       )}
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -748,7 +749,7 @@ function TableComponent({
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </div>
   );
 }

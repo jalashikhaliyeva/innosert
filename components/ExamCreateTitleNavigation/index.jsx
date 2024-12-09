@@ -1,3 +1,4 @@
+import { useRouter } from "next/router";
 import React, { useState, useEffect, useRef } from "react";
 import {
   FaRegCheckCircle,
@@ -12,6 +13,7 @@ function ExamCreateTitleNavigation({
   isSubmitting,
   hasEnoughQuestions, // New prop
 }) {
+  const router = useRouter();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Variantli sual"); // Default option
   const dropdownRef = useRef(null); // Ref to the dropdown
@@ -23,6 +25,9 @@ function ExamCreateTitleNavigation({
   const handleOptionClick = (option) => {
     setSelectedOption(option); // Update selected option
     setIsDropdownOpen(false); // Close the dropdown after selection
+  };
+  const handleClick = () => {
+    router.push("/umumi-imtahanlar");
   };
 
   // Close dropdown when clicking outside
@@ -48,7 +53,10 @@ function ExamCreateTitleNavigation({
         </h2>
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-          <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap">
+          <button
+            onClick={handleClick}
+            className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap"
+          >
             <FaRegTrashAlt className="text-white w-4 h-4" />
             İmtina
           </button>

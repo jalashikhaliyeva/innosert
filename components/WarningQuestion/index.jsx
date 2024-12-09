@@ -137,7 +137,7 @@ function WarningQuestion({ questionId, onSubmitReport }) {
           </div>
         </div>
       )}
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -148,7 +148,7 @@ function WarningQuestion({ questionId, onSubmitReport }) {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </div>
   );
 }

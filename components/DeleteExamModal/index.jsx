@@ -161,7 +161,7 @@ function DeleteExamModal({ selectedItems, onDelete, onCancel }) {
           </button>
         </div>
       </div>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -172,7 +172,7 @@ function DeleteExamModal({ selectedItems, onDelete, onCancel }) {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </div>
   );
 }

@@ -10,17 +10,29 @@ import "react-quill/dist/quill.snow.css"; // Import React Quill styles
 function VariantliSual({ answers, setAnswers }) {
   const answerRefs = useRef({});
   const [currentEditor, setCurrentEditor] = useState(null);
+  const MAX_VARIANTS = 6; // Maximum number of variants allowed
 
   const handleAddVariant = () => {
+    if (answers.length >= MAX_VARIANTS) return; // Prevent adding more than max
+
     setAnswers((prevAnswers) => {
       const existingIds = prevAnswers.map((a) => a.id);
       const nextId = existingIds.length > 0 ? Math.max(...existingIds) + 1 : 1;
 
       const existingLabels = prevAnswers.map((a) => a.label.charAt(0));
       let nextLabelCharCode = 65; // ASCII code for 'A'
-      while (existingLabels.includes(String.fromCharCode(nextLabelCharCode))) {
+      while (
+        existingLabels.includes(String.fromCharCode(nextLabelCharCode)) &&
+        nextLabelCharCode <= 70 // ASCII code for 'F'
+      ) {
         nextLabelCharCode++;
       }
+
+      if (nextLabelCharCode > 70) {
+        // Reached beyond 'F', do not add more
+        return prevAnswers;
+      }
+
       const nextLabelChar = String.fromCharCode(nextLabelCharCode);
       const nextLabel = `${nextLabelChar} variantı`;
 
@@ -125,7 +137,9 @@ function VariantliSual({ answers, setAnswers }) {
               onChange={() => handleCheckboxChange(answer.id)}
               className="ml-2 mr-2"
             />
-            {answer.correct && <span className="text-green600">Düz cavab</span>}
+            {answer.correct && (
+              <span className="text-green600">Düz cavab</span>
+            )}
             {!answer.isDefault && (
               <button
                 className="ml-4 text-red-600 hover:text-red-800 text-2xl"
@@ -172,7 +186,9 @@ function VariantliSual({ answers, setAnswers }) {
                   onChange={(content) => {
                     setAnswers((prevAnswers) =>
                       prevAnswers.map((ans) =>
-                        ans.id === answer.id ? { ...ans, text: content } : ans
+                        ans.id === answer.id
+                          ? { ...ans, text: content }
+                          : ans
                       )
                     );
                   }}
@@ -184,13 +200,21 @@ function VariantliSual({ answers, setAnswers }) {
         </div>
       ))}
 
-      <button
-        className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-full lg:w-[176px]"
-        onClick={handleAddVariant}
-      >
-        <FaPlus />
-        Variant əlavə et
-      </button>
+      {answers.length < MAX_VARIANTS && (
+        <button
+          className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-full lg:w-[176px]"
+          onClick={handleAddVariant}
+        >
+          <FaPlus />
+          Variant əlavə et
+        </button>
+      )}
+{/* 
+      {answers.length >= MAX_VARIANTS && (
+        <p className="text-red-600 text-center mt-2">
+          Maksimum variant sayı (F) çatılıb.
+        </p>
+      )} */}
     </div>
   );
 }

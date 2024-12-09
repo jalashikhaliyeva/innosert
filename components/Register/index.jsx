@@ -16,30 +16,29 @@ import InputMask from "react-input-mask";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
+import { HiOutlineArrowLeft } from "react-icons/hi";
+import OTPRegister from "../OTP-register";
 export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
   const { t } = useTranslation();
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  // Added confirmPassword state
   const [confirmPassword, setConfirmPassword] = useState("");
   const [mobile, setMobile] = useState("+994");
   const [showPassword, setShowPassword] = useState(false);
-  // Added showConfirmPassword state
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [inputError, setInputError] = useState(false);
-  // Added passwordMismatchError state
   const [passwordMismatchError, setPasswordMismatchError] = useState(false);
   const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showOTPModal, setShowOTPModal] = useState(false); // NEW: State to handle OTP modal
   const router = useRouter();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
 
-  // Function to toggle visibility of confirm password
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
@@ -63,28 +62,23 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
 
   const handlePhoneChange = (e) => {
     const phoneValue = e.target.value;
-
-    // Remove all spaces from the mobile number
-    const formattedMobile = phoneValue.replace(/\s+/g, "");
-    setMobile(formattedMobile); // Set mobile without spaces
+    setMobile(phoneValue);
   };
 
   const handleFocus = (input) => {
     setFocusedInput(input);
-    setInputError(false); // Reset error when user focuses on the input
+    setInputError(false);
     if (input === "password" || input === "confirmPassword") {
-      setPasswordMismatchError(false); // Reset password mismatch error
+      setPasswordMismatchError(false);
     }
+  };
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(firstName, "firstName");
-    console.log(lastName, "lastName");
-    console.log(email, "email");
-    console.log(password, "password");
-    console.log(confirmPassword, "confirmPassword");
-    console.log(mobile, "mobile");
     if (
       !firstName ||
       !lastName ||
@@ -97,6 +91,14 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
       toast.error(t("toastMessages.fillAllFields"));
       return;
     }
+
+    if (!validateEmail(email)) {
+      setInputError(true);
+      toast.error(t("toastMessages.invalidEmail"));
+      console.log("invalidEmail");
+
+      return;
+    }
     if (password !== confirmPassword) {
       setPasswordMismatchError(true);
       toast.error(t("toastMessages.passwordsDoNotMatch"));
@@ -105,13 +107,20 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
     setLoading(true);
 
     try {
-      // Pass the mobile number to the API
+      const processedMobile = mobile
+        .replace("+994", "")
+        .replace(/\s+/g, "")
+        .trim();
+      if (processedMobile.length !== 9) {
+        throw new Error("Invalid mobile number length");
+      }
+
       const data = await postRegisterData(
         firstName,
         lastName,
         email,
         password,
-        mobile
+        processedMobile
       );
 
       console.log("Server response:", data);
@@ -121,11 +130,8 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
         localStorage.setItem("token", token);
 
         toast.success(t("toastMessages.registrationSuccess"));
-
-        setTimeout(() => {
-          onClose(); // Close the modal
-          router.push("/home");
-        }, 2000);
+        // onClose();
+        setShowOTPModal(true);
       } else {
         console.error("Validation error details:", data.message);
         toast.error(t("toastMessages.registrationFailed"));
@@ -140,7 +146,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
 
   return (
     <>
-      {isOpen && (
+      {isOpen && !showOTPModal && (
         <div
           className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
           onClick={handleOutsideClick}
@@ -160,6 +166,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
             </h2>
             <form onSubmit={handleSubmit}>
               <div className="flex flex-col gap-3.5">
+                {/* First Name Field */}
                 <div className="relative">
                   <FaRegUserCircle className="text-2xl absolute top-3 left-3 text-gray-400" />
                   <input
@@ -184,6 +191,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   )}
                 </div>
 
+                {/* Last Name Field */}
                 <div className="relative">
                   <FaRegUserCircle className="text-2xl absolute top-3 left-3 text-gray-400" />
                   <input
@@ -208,6 +216,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   )}
                 </div>
 
+                {/* Email Field */}
                 <div className="relative">
                   <GoMail className="text-2xl absolute top-3 left-3 text-gray-400" />
                   <input
@@ -232,6 +241,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   )}
                 </div>
 
+                {/* Password Field */}
                 <div className="relative">
                   <HiOutlineLockClosed className="absolute text-2xl top-3 left-3 text-gray-400" />
                   <input
@@ -304,6 +314,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   )}
                 </div>
 
+                {/* Mobile Number Field */}
                 <div className="relative">
                   <FiPhone className="text-2xl absolute top-3 left-3 text-gray-400" />
                   <InputMask
@@ -395,32 +406,26 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
                   </button>
                 </div>
               </div>
-              {/* <div className="flex items-center justify-center mt-6">
-                <div className="flex-1 border-t border-gray-300"></div>
-                <span className="mx-8 text-lg text-gray-500 font-gilroy whitespace-nowrap">
-                  Və ya
-                </span>
-                <div className="flex-1 border-t border-gray-300"></div>
-              </div>
-
-              <div className="flex justify-center gap-4 mt-6">
-                <button className="rounded-full bg-gray-100 p-4">
-                  <FcGoogle className="h-8 w-8" />
-                </button>
-                <button className="rounded-full bg-gray-100 p-4">
-                  <FaLinkedin className="h-8 w-8 fill-[#0A66C2]" />
-                </button>
-                <button className="rounded-full bg-gray-100 p-4">
-                  <FaFacebook className="h-8 w-8 fill-[#0866FF]" />
-                </button>
-              </div> */}
             </form>
           </div>
         </div>
       )}
-      <ToastContainer
-        position="top-center"
-        autoClose={6000}
+
+      <OTPRegister
+        isOpen={showOTPModal}
+        onClose={() => setShowOTPModal(false)}
+        onBack={() => {
+          setShowOTPModal(false);
+        }}
+        email={email}
+        token={localStorage.getItem("token")} // pass token to OTPRegister
+        onOpenResetPasswordModal={() => {
+          // handle this if needed
+        }}
+      />
+      {/* <ToastContainer
+        position="top-right"
+        autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
@@ -429,7 +434,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </>
   );
 }

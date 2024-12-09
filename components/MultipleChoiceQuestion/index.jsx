@@ -7,12 +7,23 @@ function MultipleChoiceQuestion({
   setUserAnswer,
   onSubmitReport,
 }) {
-  const handleOptionChange = (selectedOptionId) => {
-    setUserAnswer(selectedOptionId);
+  // Ensure userAnswer is always an array
+  const selectedAnswers = Array.isArray(userAnswer) ? userAnswer : [];
+
+  const handleOptionToggle = (optionId) => {
+    if (selectedAnswers.includes(optionId)) {
+      // If option is already selected, remove it
+      const updatedAnswers = selectedAnswers.filter((id) => id !== optionId);
+      setUserAnswer(updatedAnswers);
+    } else {
+      // If option is not selected, add it
+      const updatedAnswers = [...selectedAnswers, optionId];
+      setUserAnswer(updatedAnswers);
+    }
   };
 
   return (
-    <div className="py-6 px-4 mb-9  min-h-[500px] sm:py-10 sm:px-8 lg:px-40 w-full sm:w-[90%] lg:w-[75%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col  mx-auto rounded-lg">
+    <div className="py-6 px-4 mb-9 min-h-[500px] sm:py-10 sm:px-8 lg:px-40 w-full sm:w-[90%] lg:w-[75%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col  mx-auto rounded-lg">
       <WarningQuestion
         questionId={questionData.id}
         onSubmitReport={onSubmitReport}
@@ -26,7 +37,7 @@ function MultipleChoiceQuestion({
       {/* Options */}
       <div className="flex flex-col gap-4">
         {questionData.answers.map((option) => {
-          const isSelected = userAnswer === option.id;
+          const isSelected = selectedAnswers.includes(option.id);
           return (
             <div
               key={option.id}
@@ -36,15 +47,10 @@ function MultipleChoiceQuestion({
                   : "border-buttonGhostPressed text-buttonPressedPrimary"
               } font-gilroy`}
             >
-              <label className="flex items-center w-full cursor-pointer">
-                <input
-                  type="radio"
-                  name={`question-${questionData.id}`}
-                  value={option.id}
-                  checked={isSelected}
-                  onChange={() => handleOptionChange(option.id)}
-                  className="hidden"
-                />
+              <label
+                className="flex items-center w-full cursor-pointer"
+                onClick={() => handleOptionToggle(option.id)}
+              >
                 <span className="flex items-center">
                   <span className="w-4 h-4 border-2 border-inputBorder rounded-full flex-shrink-0 flex items-center justify-center">
                     {isSelected && (

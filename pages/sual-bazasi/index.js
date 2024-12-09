@@ -22,7 +22,27 @@ import { useTranslation } from "react-i18next";
 import BulkDeleteFolderModal from "@/components/BulkDeleteFolderModal";
 import Head from "next/head";
 import CompanyContext from "@/shared/context/CompanyContext";
+import { getSession } from "next-auth/react";
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
 
+  // If there is no NextAuth session, redirect to the index page
+  if (!session) {
+    return {
+      redirect: {
+        destination: "/",
+        permanent: false,
+      },
+    };
+  }
+
+  // If session exists, proceed with the page rendering
+  return {
+    props: {
+      // You can pass any additional props here
+    },
+  };
+}
 function SualBazasi() {
   const { t } = useTranslation();
   const { user } = useContext(UserContext);
@@ -141,6 +161,8 @@ function SualBazasi() {
                   setSortOption={setSortOption}
                   selectedFiles={selectedFiles}
                   openDeleteFolderModal={openDeleteFolderModal}
+                  activeTab={activeTab}
+
                   openModal={() => setIsModalOpen(true)}
                   openBulkDeleteModal={openBulkDeleteModal} // Pass the bulk delete function
                 />

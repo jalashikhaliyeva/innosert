@@ -23,6 +23,10 @@ function KombinasiyaSuali({
   const questionRefs = useRef({});
   const kombinasiyaRefs = useRef({});
 
+  // Define maximum limits
+  const MAX_KOMBINATION_OPTIONS = 6; // Labels A-H
+  const MAX_QUESTIONS = 6; // Maximum number of questions
+
   // Handle text change for kombinasiya options
   const handleKombinasiyaTextChange = (id, text) => {
     setKombinasiyaOptions((prevOptions) =>
@@ -73,22 +77,46 @@ function KombinasiyaSuali({
 
   // Add a new kombinasiya option
   const handleAddKombinasiya = () => {
+    if (kombinasiyaOptions.length >= MAX_KOMBINATION_OPTIONS) return; // Prevent adding beyond max
+
     const newOptionId = nextOptionId;
+
+    // Determine the next label (A-H)
+    const existingLabels = kombinasiyaOptions.map((opt) => opt.label.charAt(0));
+    let nextLabelCharCode = 65; // ASCII code for 'A'
+    while (
+      existingLabels.includes(String.fromCharCode(nextLabelCharCode)) &&
+      nextLabelCharCode <= 72 // ASCII code for 'H'
+    ) {
+      nextLabelCharCode++;
+    }
+
+    if (nextLabelCharCode > 72) {
+      // Reached beyond 'H', do not add more
+      return;
+    }
+
+    const nextLabelChar = String.fromCharCode(nextLabelCharCode);
+    const nextLabel = `${nextLabelChar} variantı`;
+
     setKombinasiyaOptions([
       ...kombinasiyaOptions,
       {
         id: newOptionId, // Use incremental ID
-        label: String.fromCharCode(65 + kombinasiyaOptions.length), // Assign labels A, B, C, etc.
+        label: nextLabelChar, // Assign labels A, B, C, etc.
         correct: false,
         text: "",
         idInApi: null,
       },
     ]);
+
     setNextOptionId(newOptionId + 1); // Increment the counter
   };
 
   // Add a new question
   const handleAddQuestion = () => {
+    if (kombinasiyaQuestions.length >= MAX_QUESTIONS) return; // Prevent adding beyond max
+
     const newQuestionId = nextQuestionId;
     setKombinasiyaQuestions((prevQuestions) => [
       ...prevQuestions,
@@ -120,12 +148,12 @@ function KombinasiyaSuali({
       )
     );
   };
+
   const stripHtmlTags = (html) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;
     return tempDiv.textContent || tempDiv.innerText || "";
   };
-  
 
   // Handle option click to select/deselect options by ID
   const handleOptionClick = (optionId, questionId) => {
@@ -171,6 +199,40 @@ function KombinasiyaSuali({
     };
   }, []);
 
+  // Handle click outside to close editors
+  useEffect(() => {
+    function handleClickOutside(event) {
+      const isEditorInput = event.target.closest("[data-editor-input]");
+      if (isEditorInput) return;
+
+      if (currentEditor && currentEditor.startsWith("kombinasiya-")) {
+        const id = parseInt(currentEditor.split("-")[1]);
+        if (
+          kombinasiyaRefs.current[id] &&
+          !kombinasiyaRefs.current[id].contains(event.target)
+        ) {
+          setCurrentEditor(null);
+        }
+      }
+
+      if (currentEditor && currentEditor.startsWith("question-")) {
+        const id = parseInt(currentEditor.split("-")[1]);
+        if (
+          questionRefs.current[id] &&
+          !questionRefs.current[id].contains(event.target)
+        ) {
+          setCurrentEditor(null);
+        }
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [currentEditor]);
+
   // Define Quill modules and formats
   const quillModules = {
     toolbar: [
@@ -208,7 +270,7 @@ function KombinasiyaSuali({
                   htmlFor={`question-${question.id}`}
                   className="mb-3 block font-gilroy text-xl leading-6 font-normal text-brandBlue300"
                 >
-                  {index + 1}. Sual
+                  {index + 1}. Kombinasiya sualı
                 </label>
                 {/* Show delete button only for questions added after the third one */}
                 {index >= 3 && (
@@ -318,7 +380,7 @@ function KombinasiyaSuali({
                         }`}
                       >
                         <span>
-                        {option.label}: {stripHtmlTags(option.text)}
+                          {option.label}: {stripHtmlTags(option.text)}
                         </span>
                       </li>
                     ))}
@@ -328,14 +390,24 @@ function KombinasiyaSuali({
             </div>
           ))}
 
-          <button
-            type="button"
-            className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-full lg:w-[236px]"
-            onClick={handleAddQuestion}
-          >
-            <FaPlus />
-            Sual əlavə et
-          </button>
+          {/* Add Question Button */}
+          {kombinasiyaQuestions.length < MAX_QUESTIONS && (
+            <button
+              type="button"
+              className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-full lg:w-[236px]"
+              onClick={handleAddQuestion}
+            >
+              <FaPlus />
+              Sual əlavə et
+            </button>
+          )}
+
+          {/* Maximum Questions Reached Message */}
+          {/* {kombinasiyaQuestions.length >= MAX_QUESTIONS && (
+            <p className="text-red-600 text-center mt-2">
+              Maksimum sual sayı (8) çatılıb.
+            </p>
+          )} */}
         </div>
 
         {/* Kombinasiya Options Section */}
@@ -394,14 +466,24 @@ function KombinasiyaSuali({
             </div>
           ))}
 
-          <button
-            type="button"
-            className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-full lg:w-[236px]"
-            onClick={handleAddKombinasiya}
-          >
-            <FaPlus />
-            Kombinasiya əlavə et
-          </button>
+          {/* Add Kombinasiya Option Button */}
+          {kombinasiyaOptions.length < MAX_KOMBINATION_OPTIONS && (
+            <button
+              type="button"
+              className="bg-buttonGhostPressed hover:bg-buttonGhostHover active:bg-buttonGhostPressedd px-2 py-3 gap-2 text-green600 font-gilroy rounded-lg flex items-center justify-center w-full lg:w-[236px]"
+              onClick={handleAddKombinasiya}
+            >
+              <FaPlus />
+              Kombinasiya əlavə et
+            </button>
+          )}
+
+          {/* Maximum Kombinasiya Options Reached Message */}
+          {/* {kombinasiyaOptions.length >= MAX_KOMBINATION_OPTIONS && (
+            <p className="text-red-600 text-center mt-2">
+              Maksimum kombinasiya variantı sayı (H) çatılıb.
+            </p>
+          )} */}
         </div>
       </div>
     </div>

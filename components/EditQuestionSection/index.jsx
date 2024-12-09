@@ -103,13 +103,13 @@ function EditQuestionSection({
   return (
     <>
       <div
-        className={`flex flex-col ${
+        className={`flex flex-col  ${
           selectedOption !== "Kombinasiya sualı" ? "lg:flex-row" : ""
         } ${
           selectedOption === "Kombinasiya sualı"
             ? "items-center justify-center"
             : ""
-        } py-10 px-20 bg-white rounded-lg w-full mx-auto`}
+        } py-10 px-20 bg-white rounded-lg w-[88%] mx-auto pb-[100px] `}
       >
         <form
           className={`w-full px-4 flex flex-col ${

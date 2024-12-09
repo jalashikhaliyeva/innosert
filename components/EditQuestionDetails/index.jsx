@@ -10,7 +10,7 @@ function EditQuestionDetails({ level, setLevel, score, setScore }) {
   const levelOptions = ["Asan", "Orta", "Çətin"];
 
   return (
-    <div className="flex flex-col bg-white justify-center p-4 md:p-10 rounded-lg mt-5 w-full md:w-[75%] mx-auto">
+    <div className="flex flex-col bg-white justify-center p-4 md:p-10 rounded-lg mt-5 w-full md:w-[88%] mx-auto mb-4 ">
       <h1 className="font-gilroy text-textSecondaryDefault text-xl md:text-2xl font-medium leading-8 mb-4">
         Detallar
       </h1>

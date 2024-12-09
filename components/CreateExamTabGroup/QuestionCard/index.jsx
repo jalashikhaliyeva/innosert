@@ -137,13 +137,15 @@ const QuestionCard = ({
       >
         <a className="flex items-center w-full">
           {/* Checkbox */}
-          <input
-            type="checkbox"
-            className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
-            checked={selectedFiles.includes(file.url)}
-            onClick={(e) => e.stopPropagation()}
-            onChange={(e) => handleCheckboxChange(file.url, e.target.checked)}
-          />
+          {showActions && (
+            <input
+              type="checkbox"
+              className="w-4 h-4 mr-3 cursor-pointer appearance-none border-2 border-inputBorder rounded checked:bg-inputBorder checked:border-inputBorder checked:before:content-['✔'] checked:before:text-white checked:before:block checked:before:text-center checked:before:leading-none checked:before:text-xs focus:outline-none"
+              checked={selectedFiles.includes(file.url)}
+              onClick={(e) => e.stopPropagation()}
+              onChange={(e) => handleCheckboxChange(file.url, e.target.checked)}
+            />
+          )}
           {/* Folder Icon */}
           <div className="text-yellow-500 mr-4">
             <svg
@@ -195,48 +197,53 @@ const QuestionCard = ({
             <div className="ml-auto text-sm leading-normal font-gilroy font-medium text-arrowButtonGray">
               {formatDate(file?.created_at)}
             </div>
-            <div
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <IoMdMore
-                className="text-gray-400 cursor-pointer"
+
+            {showActions && (
+              <div
                 onClick={(e) => {
                   e.stopPropagation();
-                  setDropdownVisible(dropdownVisible === index ? null : index);
                 }}
-              />
-              {dropdownVisible === index && (
-                <div
-                  ref={dropdownRef}
-                  className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10"
-                >
-                  <ul>
-                    <li
-                      className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        openEditFolderModal(file);
-                        setDropdownVisible(null); // Close the dropdown
-                      }}
-                    >
-                      <CiEdit />
-                      Redaktə et
-                    </li>
-                    <li
-                      className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
-                      onClick={() => {
-                        openDeleteFolderModal(file);
-                        setDropdownVisible(null); // Close the dropdown
-                      }}
-                    >
-                      <BsTrash className="text-red-500" />
-                      Qovluğu sil
-                    </li>
-                  </ul>
-                </div>
-              )}
-            </div>
+              >
+                <IoMdMore
+                  className="text-gray-400 cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setDropdownVisible(
+                      dropdownVisible === index ? null : index
+                    );
+                  }}
+                />
+                {dropdownVisible === index && (
+                  <div
+                    ref={dropdownRef}
+                    className="absolute right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl z-10"
+                  >
+                    <ul>
+                      <li
+                        className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          openEditFolderModal(file);
+                          setDropdownVisible(null); // Close the dropdown
+                        }}
+                      >
+                        <CiEdit />
+                        Redaktə et
+                      </li>
+                      <li
+                        className="flex items-center gap-2 px-4 py-2 text-md text-textSecondaryDefault font-gilroy hover:bg-gray-100 cursor-pointer"
+                        onClick={() => {
+                          openDeleteFolderModal(file);
+                          setDropdownVisible(null); // Close the dropdown
+                        }}
+                      >
+                        <BsTrash className="text-red-500" />
+                        Qovluğu sil
+                      </li>
+                    </ul>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </a>
       </div>

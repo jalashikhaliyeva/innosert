@@ -81,7 +81,7 @@ function EnterExamCode() {
         </div>
         {error && <p className="text-red-500 mt-4 text-center">{error}</p>}
       </div>
-      <ToastContainer
+      {/* <ToastContainer
         position="top-right"
         autoClose={5000}
         hideProgressBar={false}
@@ -92,7 +92,7 @@ function EnterExamCode() {
         draggable
         pauseOnHover
         theme="light"
-      />
+      /> */}
     </div>
   );
 }
