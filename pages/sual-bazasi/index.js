@@ -144,7 +144,7 @@ function SualBazasi() {
           </div>
 
           <div className="flex">
-            <div className="hidden lg:block md:w-[20%]">
+            <div className="hidden lg:block lg:w-[20%]">
               {user?.data.roles === "Teacher" && <TeacherSidebar />}
               {user?.data.roles === "Owner" && <CompanySidebar />}
             </div>

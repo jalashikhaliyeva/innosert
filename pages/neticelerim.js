@@ -96,10 +96,10 @@ function Neticelerim() {
       </Head>
       <HeaderInternal />
       <div className="flex">
-        <div className="hidden md:block md:w-[20%]">
+        <div className="hidden lg:block lg:w-[20%]">
           <Sidebar />
         </div>
-        <div className="w-full md:w-[80%]">
+        <div className="w-full lg:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
             <TitleNavigation />

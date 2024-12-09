@@ -205,11 +205,11 @@ const DynamicSubFolderPage = () => {
           </div>
 
           <div className="flex">
-            <div className="hidden lg:block md:w-[20%]">
+            <div className="hidden lg:block lg:w-[20%]">
               {isTeacher ? <TeacherSidebar /> : <CompanySidebar />}
             </div>
 
-            <div className="w-[80%]">
+            <div className="w-full lg:w-[80%]">
               <InternalContainer>
                 <Breadcrumb />
                 <CompanyQuestionsNav

@@ -17,7 +17,7 @@ import { getSession } from "next-auth/react";
 
 function ExamName({ examData, error }) {
   const { user } = useContext(UserContext);
-console.log(user, "user");
+  console.log(user, "user");
 
   // State for Register Modal
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
@@ -31,7 +31,11 @@ console.log(user, "user");
   };
 
   if (error) {
-    return <div><Spinner /></div>;
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
   }
 
   if (!examData) {

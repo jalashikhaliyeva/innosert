@@ -101,7 +101,7 @@ function ExamDetails({ examData, openLoginModal }) {
   };
 
   return (
-    <div className="w-full border border-inputBorder py-5 px-5 md:px-20 flex justify-between mt-10 rounded-lg mb-44 flex-wrap md:flex-nowrap gap-5 md:gap-0">
+    <div className="w-full border border-inputBorder py-5 px-5 md:px-20 flex justify-between mt-10 rounded-lg mb-44 flex-wrap md:flex-nowrap gap-1 md:gap-3 lg:gap-5 md:gap-0">
       {formatDuration(examData.exam.duration) && (
         <div className="flex flex-row items-center gap-2">
           <FiClock className="size-7 text-3xl flex items-center justify-center" />

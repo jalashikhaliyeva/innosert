@@ -15,8 +15,6 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
   const router = useRouter();
   const { user, setClickedExam } = useContext(UserContext); // Get user from UserContext
   const { savedExams, addExamToSaved, removeExamFromSaved } = useSavedExams();
-  console.log(savedExams, "savedExams");
-  console.log(exams, "exams");
 
   const formatDuration = (duration) => {
     if (duration === "00:00:00") return ""; // Don't display if duration is "00:00:00"
@@ -33,19 +31,17 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
 
     return formattedDuration;
   };
-  // Function to handle navigation to the detailed exam page
+
   const handleDetailClick = (slug) => {
     router.push(`/etrafli/${slug}`);
   };
 
-  // Function to handle saving/removing an exam
   const handleBookmarkClick = (exam) => {
     if (!user) {
       openLoginModal(); // Open login modal if the user is not logged in
       return;
     }
 
-    // Proceed with saving/removing the bookmark
     const isSaved = savedExams.find((savedExam) => savedExam.id === exam.id);
     if (isSaved) {
       removeExamFromSaved(exam.id);
@@ -54,11 +50,8 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
     }
   };
 
-  // Updated function to handle "Daxil ol" button click
   const handleLoginOrRulesClick = (exam) => {
     // Set the clickedExam in context
-    console.log(exam, "clicked exam card");
-
     setClickedExam(exam);
 
     if (user) {
@@ -67,7 +60,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
       openLoginModal();
     }
   };
-  // Check if the current route is '/imtahanlarim'
+
   const isMyExamsPage =
     router.pathname === "/imtahanlarim" ||
     router.pathname.startsWith("/kateqoriyalar/") ||
@@ -75,17 +68,17 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
 
   return (
     <>
+      {/* Mobile View: Swiper for < md */}
       <div className="block md:hidden">
-        {/* Show Swiper only if not on '/imtahanlarim' page */}
         {!isMyExamsPage ? (
           <Swiper
             spaceBetween={16}
-            slidesPerView="auto" // Dynamically adjusts to the number of slides
+            slidesPerView="auto"
             pagination={{ clickable: true }}
             centeredSlides={false}
             loop={false}
             loopFillGroupWithBlank={false}
-            slideToClickedSlide={true} // Allows precise navigation to clicked slides
+            slideToClickedSlide={true}
           >
             {exams.map((exam) => {
               const isSaved = savedExams.find(
@@ -93,9 +86,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
               );
               return (
                 <SwiperSlide key={exam.id}>
-                  <div
-                    className={`flex flex-col bg-white p-5 rounded-md border border-grayLineFooter`}
-                  >
+                  <div className="flex flex-col bg-white p-5 rounded-md border border-grayLineFooter">
                     {/* Card Content */}
                     <div
                       style={{
@@ -205,7 +196,6 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                   key={exam.id}
                   className="flex flex-col bg-white p-5 rounded-md border border-grayLineFooter"
                 >
-                  {/* Same card content as above */}
                   <div
                     style={{
                       backgroundSize: "contain",
@@ -304,8 +294,9 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
           </div>
         )}
       </div>
-      {/* For medium to large screens, show grid */}
-      <div className="hidden md:flex flex-wrap gap-5 mb-8">
+
+      {/* For medium to large screens, use a responsive grid layout */}
+      <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
         {exams.map((exam) => {
           const isSaved = savedExams.find(
             (savedExam) => savedExam.id === exam.id
@@ -313,7 +304,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
           return (
             <div
               key={exam.id}
-              className={`flex flex-col ${widthClass} bg-white p-5 rounded-md border border-grayLineFooter`}
+              className="flex flex-col bg-white p-5 rounded-md border border-grayLineFooter"
             >
               {/* Card Content */}
               <div
@@ -339,7 +330,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                       alt="Handex Logo"
                       width={40}
                       height={40}
-                      className="object-contain rounded-full "
+                      className="object-contain rounded-full"
                     />
                     <h3 className="font-gilroy items-center justify-center flex text-base text-grayText70">
                       {exam.company}
@@ -396,7 +387,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                 <div className="w-full flex flex-row gap-4 pt-3">
                   <button
                     onClick={() => handleLoginOrRulesClick(exam)}
-                    className=" px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-blue200 hover:bg-blue200Hover active:bg-blue200Pressed"
+                    className="px-4 h-11 w-full text-white font-gilroy leading-6 rounded-md bg-blue200 hover:bg-blue200Hover active:bg-blue200Pressed"
                   >
                     {t("login")}
                   </button>

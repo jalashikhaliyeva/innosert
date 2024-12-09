@@ -6,7 +6,7 @@ function ExamTitleDescription({examData}) {
       <h2 className="font-gilroy text-3xl text-textSecondaryDefault font-medium leading-normal">
       {examData.exam.name}
       </h2>
-      <p className="font-gilroy text-xl font-normal leading-7 text-grayText">
+      <p className="font-gilroy text-sm  md:text-md lg:text-xl font-normal leading-7 text-grayText">
       {examData.exam.desc}
       </p>
     </div>

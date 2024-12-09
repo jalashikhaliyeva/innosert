@@ -160,11 +160,11 @@ function Uzvler() {
         <OwnerDashboardHeader />
       </div>
       <div className="flex">
-        <div className="hidden lg:block md:w-[20%]">
+        <div className="hidden lg:block lg:w-[20%]">
           <CompanySidebar />
         </div>
 
-        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
+        <div className="w-full lg:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
 

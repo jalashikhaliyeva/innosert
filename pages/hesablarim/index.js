@@ -41,11 +41,11 @@ function Hesablarim() {
       </Head>
       <HeaderInternal />
       <div className="flex">
-        <div className="hidden md:block md:w-[20%]">
+        <div className="hidden lg:block md:w-[20%]">
           <Sidebar />
         </div>
 
-        <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
+        <div className="w-full lg:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
             <MyProfiles />
