@@ -69,8 +69,8 @@ function MyApp({ Component, pageProps }) {
     if (typeof window !== "undefined") {
       const token = localStorage.getItem("token");
       console.log("Retrieved token:", token);
-      const googleSignIn = localStorage.getItem("googleSignIn");
-      console.log("googleSignIn token:", googleSignIn);
+      // const googleSignIn = localStorage.getItem("googleSignIn");
+      // console.log("googleSignIn token:", googleSignIn);
     }
   }, []);
 

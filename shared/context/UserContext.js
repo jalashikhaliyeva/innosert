@@ -33,6 +33,7 @@ function UserProvider({ children }) {
   const [privateExam, setPrivateExam] = useState(false);
   const [isQuestionsValid, setIsQuestionsValid] = useState(false);
 
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");
@@ -62,6 +63,9 @@ function UserProvider({ children }) {
       setTimeForQuestion(storedTimeForQuestion ? JSON.parse(storedTimeForQuestion) : false);
     }
   }, []);
+  const updateExamDetails = (details) => {
+    setExamDetails(details);
+  };
 
   useEffect(() => {
     if (lastQuery !== null && typeof window !== "undefined") {
@@ -232,6 +236,7 @@ function UserProvider({ children }) {
         setPercentage,
         login,
         logout,
+        updateExamDetails, 
         loading,
       }}
     >

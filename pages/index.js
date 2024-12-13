@@ -61,6 +61,8 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
         try {
           const landingData = await getLandingInfo(locale);
           const settingData = await getSettingInfo(locale);
+          console.log(settingData, "settingData");
+          
 
           const mappedSlides = settingData.category?.map((item) => ({
             imageSrc: item.image,
@@ -163,6 +165,8 @@ export async function getServerSideProps(context) {
   try {
     const landingInfo = await getLandingInfo(lang);
     const settingInfo = await getSettingInfo(lang);
+   
+    
 
     const mappedSlides = settingInfo.category?.map((item) => ({
       imageSrc: item.image,
