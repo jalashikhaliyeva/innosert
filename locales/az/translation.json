@@ -303,5 +303,7 @@
     "new_to_old": "Yenidən köhnəyə",
     "old_to_new": "Köhnədən yeniyə"
   },
-  "collaboration": "Əməkdaşlıq"
+  "collaboration": "Əməkdaşlıq",
+  "all_durations": "İmtahan müddəti",
+ "no_exam_found": "Belə bir imtahan yoxdur."
 }

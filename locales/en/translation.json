@@ -303,5 +303,7 @@
     "new_to_old": "New to Old",
     "old_to_new": "Old to New"
   },
-  "collaboration": "Collaboration"
+  "collaboration": "Collaboration",
+  "all_durations": "Exam Duration",
+   "no_exam_found": "No exam found."
 }

@@ -42,7 +42,7 @@ function Home() {
     filteredExams,
     setPrivateExam,
     privateExam,
-    searchExam,
+    // searchExam, <-- Remove this from usage
     setSearchExam,
   } = useContext(UserContext);
 
@@ -178,24 +178,10 @@ function Home() {
     );
   }
 
-  // Handle searchExam "No information" scenario
-  // If `searchExam` is set and it's an array but empty, show "there is no exam like this"
-  // If `searchExam` returns a message "No information" (not an array), also handle that scenario
-  const noExamFound =
-    (Array.isArray(searchExam) && searchExam.length === 0) ||
-    (searchExam &&
-      typeof searchExam === "string" &&
-      searchExam.toLowerCase().includes("no information"));
-
   return (
     <>
       <Head>
         <title>{t("ana səhifə")}</title>
-        {/* <meta name="description" content={landingInfo?.metatags?.meta_desc} />
-        <meta
-          name="keywords"
-          content={landingInfo?.metatags?.meta_keywords || "default, keywords"}
-        /> */}
       </Head>
       <HeaderInternal />
       <Container>
@@ -204,22 +190,7 @@ function Home() {
           <EnterExamCode />
         </div>
 
-        {searchExam && Array.isArray(searchExam) && searchExam.length > 0 ? (
-          <div className="mt-8">
-            <ExamCard
-              exams={searchExam}
-              openLoginModal={handleLoginOrRulesClick}
-              openRegisterModal={handleLoginOrRulesClick}
-              widthClass="w-[23.8%]"
-            />
-          </div>
-        ) : noExamFound ? (
-          <div className="flex justify-center items-center h-screen">
-            <p className="text-neutral-900 font-gilroy text-xl -mt-[300px]">
-              Belə bir imtahan yoxdur.
-            </p>
-          </div>
-        ) : privateExam ? (
+        {privateExam ? (
           <div className="mt-8">
             <ExamCard
               exams={[privateExam]}

@@ -98,6 +98,7 @@ export default function LoginModal({
       setLoading(false);
     }
   };
+  
   const handleFocus = (input) => {
     setFocusedInput(input);
     setInputError(false);

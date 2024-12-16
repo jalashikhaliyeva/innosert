@@ -374,7 +374,15 @@ function SualRedakte() {
             />
           </>
         ) : (
-          <PreviewQuestionSection selectedOption={selectedOption} />
+          <PreviewQuestionSection
+            selectedOption={selectedOption}
+            titleText={titleText}
+            conditionText={conditionText}
+            answers={answers}
+            openAnswer={openAnswer}
+            kombinasiyaOptions={kombinasiyaOptions}
+            kombinasiyaQuestions={kombinasiyaQuestions}
+          />
         )}
       </Container>
       {/* <ToastContainer /> */}

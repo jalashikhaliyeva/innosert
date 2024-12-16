@@ -28,7 +28,7 @@ function PreviewQuestionSection({
 
       {selectedOption === "Variantli sual" && (
         <div className="flex flex-col gap-4">
-          {answers.map((ans, idx) => {
+          {answers?.map((ans, idx) => {
             return (
               <div
                 key={ans.id}

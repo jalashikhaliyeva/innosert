@@ -41,6 +41,7 @@ function FilterCategories() {
   const [canScrollNext, setCanScrollNext] = useState(false);
 
   const timeOptions = [
+    { label: t("all_durations"), duration: [] },
     { label: t("0-1 hour range"), duration: [0, 60] },
     { label: t("1-2 hour range"), duration: [60, 120] },
     { label: t("2-3 hour range"), duration: [120, 180] },
@@ -75,6 +76,13 @@ function FilterCategories() {
         ...prevFilters,
         selectedTime: "",
       }));
+    } else if (option.label === t("all_durations")) {
+      setSelectedTime("");
+      setSelectedDuration(null);
+      setAppliedFilters((prevFilters) => ({
+        ...prevFilters,
+        selectedTime: "",
+      }));
     } else {
       // Select the new option
       setSelectedTime(option.label);
@@ -85,7 +93,6 @@ function FilterCategories() {
       }));
     }
   }
-
 
   function getActiveFilterCount() {
     let count = 0;
@@ -172,13 +179,13 @@ function FilterCategories() {
         setSelectedCategories(newFilters.selectedCategories);
       } else {
         newFilters[filterType] = "";
-        if (filterType === 'selectedTime') {
-          setSelectedTime('');
+        if (filterType === "selectedTime") {
+          setSelectedTime("");
           setSelectedDuration(null);
-        } else if (filterType === 'minPrice') {
-          setMinPrice('');
-        } else if (filterType === 'maxPrice') {
-          setMaxPrice('');
+        } else if (filterType === "minPrice") {
+          setMinPrice("");
+        } else if (filterType === "maxPrice") {
+          setMaxPrice("");
         }
       }
       return newFilters;
@@ -573,9 +580,10 @@ function FilterCategories() {
                             className="ml-1 font-gilroy text-xl text-black hover:text-gray-700 focus:outline-none flex items-center justify-center"
                             onClick={(e) => {
                               e.stopPropagation();
-                              const updatedCategories = selectedCategories.filter(
-                                (item) => item !== category
-                              );
+                              const updatedCategories =
+                                selectedCategories.filter(
+                                  (item) => item !== category
+                                );
                               setSelectedCategories(updatedCategories);
                               setAppliedFilters((prevFilters) => ({
                                 ...prevFilters,

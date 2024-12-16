@@ -1,3 +1,5 @@
+// SualYarat.js
+
 import React, { useContext, useState } from "react";
 import Breadcrumb from "@/components/Breadcrumb";
 import Container from "@/components/Container";
@@ -12,6 +14,7 @@ import CompanyContext from "@/shared/context/CompanyContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { getSession } from "next-auth/react";
+
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
@@ -27,28 +30,30 @@ export async function getServerSideProps(context) {
 
   // If session exists, proceed with the page rendering
   return {
-    props: {
-      // You can pass any additional props here
-    },
+    props: {},
   };
 }
+
 function SualYarat() {
   const [activeView, setActiveView] = useState("edit");
   const [selectedOption, setSelectedOption] = useState("Variantli sual");
   const [openAnswer, setOpenAnswer] = useState("");
   const { lastQuery } = useContext(UserContext);
   const { selectedCompany } = useContext(CompanyContext);
+
   // State variables for question data
   const [titleText, setTitleText] = useState("");
   const [conditionText, setConditionText] = useState("");
   const [level, setLevel] = useState("");
   const [score, setScore] = useState("");
+
   // Initialize answers with default variants
   const [answers, setAnswers] = useState([
     { id: 1, label: "A variantı", text: "", correct: false, isDefault: true },
     { id: 2, label: "B variantı", text: "", correct: false, isDefault: true },
     { id: 3, label: "C variantı", text: "", correct: false, isDefault: true },
   ]);
+
   // Default kombinasiya options and questions
   const defaultKombinasiyaOptions = [
     { id: 1, label: "A", text: "", isDefault: true },
@@ -60,15 +65,24 @@ function SualYarat() {
     { id: 2, questionText: "", selectedOptions: [], showDropdown: false },
     { id: 3, questionText: "", selectedOptions: [], showDropdown: false },
   ];
+
   const [kombinasiyaOptions, setKombinasiyaOptions] = useState([
     ...defaultKombinasiyaOptions,
   ]);
   const [kombinasiyaQuestions, setKombinasiyaQuestions] = useState([
     ...defaultKombinasiyaQuestions,
   ]);
+
   // Initialize counters for dynamic IDs
-  const [nextOptionId, setNextOptionId] = useState(4); // Starting from 4 since default options have IDs 1-3
-  const [nextQuestionId, setNextQuestionId] = useState(4); // Starting from 4 since default questions have IDs 1-3
+  const [nextOptionId, setNextOptionId] = useState(4); 
+  const [nextQuestionId, setNextQuestionId] = useState(4);
+
+  const stripHtml = (html) => {
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
+
   // Map selectedOption to type_id
   const type_id =
     selectedOption === "Variantli sual"
@@ -76,6 +90,7 @@ function SualYarat() {
       : selectedOption === "Açıq sual"
       ? 2
       : 3;
+
   const handleSave = () => {
     // Map level to level_id
     let level_id;
@@ -94,32 +109,47 @@ function SualYarat() {
       score: parseInt(score),
     };
 
-    // Validation and data adjustment based on question type
     if (type_id === 1) {
-      // Variantli sual (Multiple-choice question)
+      // Variantli sual
       if (answers.length === 0) {
-        console.error("Please provide at least one answer.");
         toast.error("Zəhmət olmasa cavabları daxil edin.");
         return;
       }
+
+      const hasCorrectAnswer = answers.some((answer) => answer.correct);
+      if (!hasCorrectAnswer) {
+        toast.error("Zəhmət olmasa ən azı bir doğru cavabı seçin.");
+        return;
+      }
+
+      // Duplicate check for variantli sual
+      const strippedTexts = answers.map((ans) =>
+        stripHtml(ans.text).trim().toLowerCase()
+      );
+      const duplicates = strippedTexts.filter(
+        (text, index) => strippedTexts.indexOf(text) !== index && text !== ""
+      );
+
+      if (duplicates.length > 0) {
+        toast.error("Cavab variantları təkrarlanmamalıdır.");
+        return;
+      }
+
       data.answers = answers.map((answer) => ({
         answer: answer.text,
         right: answer.correct,
       }));
     } else if (type_id === 2) {
-      // Açıq sual (Open-ended question)
+      // Açıq sual
       if (!openAnswer) {
-        console.error("Please provide the answer.");
         toast.error("Zəhmət olmasa cavabı daxil edin.");
         return;
       }
       data.answer = openAnswer;
     } else if (type_id === 3) {
-      // Kombinasiya sualı (Combination question)
-      // Validate that all questions have text and selectedOptions
+      // Kombinasiya sualı
       for (let question of kombinasiyaQuestions) {
         if (!question.questionText) {
-          console.error("Please provide all question texts.");
           toast.error("Zəhmət olmasa bütün sual mətnlərini daxil edin.");
           return;
         }
@@ -127,30 +157,46 @@ function SualYarat() {
           !question.selectedOptions ||
           question.selectedOptions.length === 0
         ) {
-          console.error("Please select options for all questions.");
           toast.error("Zəhmət olmasa bütün suallar üçün seçimlər edin.");
           return;
         }
       }
+
       // Validate that all kombinasiyaOptions have text
       for (let option of kombinasiyaOptions) {
         if (!option.text) {
-          console.error("Please provide all kombinasiya option texts.");
-          toast.error(
-            "Zəhmət olmasa bütün kombinasiya seçimlərini daxil edin."
-          );
+          toast.error("Zəhmət olmasa bütün kombinasiya seçimlərini daxil edin.");
           return;
         }
       }
 
-      // Function to strip HTML tags
-      const stripHtml = (html) => {
-        let div = document.createElement("div");
-        div.innerHTML = html;
-        return div.textContent || div.innerText || "";
-      };
+      // **New Duplicate Checks for Combination Questions**
 
-      // Construct data.answers as an array of { key: questionText, value: [selectedOptionsTexts] }
+      // Check duplicate kombinasiya question texts
+      const questionTexts = kombinasiyaQuestions.map((q) =>
+        stripHtml(q.questionText).trim().toLowerCase()
+      );
+      const questionDuplicates = questionTexts.filter(
+        (text, index) => questionTexts.indexOf(text) !== index && text !== ""
+      );
+      if (questionDuplicates.length > 0) {
+        toast.error("Kombinasiya sualları təkrarlanmamalıdır.");
+        return;
+      }
+
+      // Check duplicate kombinasiya options texts
+      const optionTexts = kombinasiyaOptions.map((opt) =>
+        stripHtml(opt.text).trim().toLowerCase()
+      );
+      const optionDuplicates = optionTexts.filter(
+        (text, index) => optionTexts.indexOf(text) !== index && text !== ""
+      );
+      if (optionDuplicates.length > 0) {
+        toast.error("Kombinasiya variantları təkrarlanmamalıdır.");
+        return;
+      }
+
+      // Construct data.answers
       data.answers = kombinasiyaQuestions.map((question) => {
         const selectedOptionsTexts = question.selectedOptions.map(
           (selectedOptionId) => {
@@ -179,29 +225,21 @@ function SualYarat() {
       (type_id === 2 && !data.answer) ||
       (type_id === 3 && data.answers.length === 0)
     ) {
-      console.error("Please fill in all required fields.");
       toast.error("Zəhmət olmasa bütün sahələri doldurun.");
       return;
     }
 
-    // Debugging: Log the data being sent
-    console.log("Data to be posted:", data);
-
-    fetch(
-      `https://innocert-admin.markup.az/api/questions/create/${lastQuery}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Company-ID": selectedCompany?.id,
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify(data),
-      }
-    )
+    fetch(`https://innocert-admin.markup.az/api/questions/create/${lastQuery}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Company-ID": selectedCompany?.id,
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(data),
+    })
       .then((response) => response.json())
       .then((body) => {
-        console.log("Response Body:", body);
         if (body.status === true) {
           // Reset form fields after successful save
           setTitleText("");
@@ -234,16 +272,10 @@ function SualYarat() {
           setOpenAnswer("");
           setKombinasiyaOptions([...defaultKombinasiyaOptions]);
           setKombinasiyaQuestions([...defaultKombinasiyaQuestions]);
-
-          // Reset counters
           setNextOptionId(4);
           setNextQuestionId(4);
-
-          // Show success message
           toast.success("Sualınız əlavə edildi");
-          console.log("Question saved successfully", body);
         } else {
-          console.error("Failed to save the question", body);
           toast.error("Sual əlavə edilmədi");
         }
       })
@@ -264,10 +296,7 @@ function SualYarat() {
           onSave={handleSave}
         />
 
-        <EditOrPreviewTitle
-          activeView={activeView}
-          setActiveView={setActiveView}
-        />
+        <EditOrPreviewTitle activeView={activeView} setActiveView={setActiveView} />
 
         {activeView === "edit" ? (
           <>
@@ -310,8 +339,7 @@ function SualYarat() {
           />
         )}
       </Container>
-      {/* Include the ToastContainer */}
-      {/* <ToastContainer /> */}
+      <ToastContainer />
     </>
   );
 }

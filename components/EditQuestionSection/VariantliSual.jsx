@@ -1,16 +1,43 @@
+// VariantliSual.js
+
 import { useState, useRef, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 import dynamic from "next/dynamic";
 import { IoCloseOutline } from "react-icons/io5";
+import { toast } from "react-toastify"; // Ensure toast is imported
 
-// Dynamically import ReactQuill with SSR disabled
 const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
 import "react-quill/dist/quill.snow.css"; // Import React Quill styles
 
 function VariantliSual({ answers, setAnswers }) {
   const answerRefs = useRef({});
   const [currentEditor, setCurrentEditor] = useState(null);
+  const [duplicateIds, setDuplicateIds] = useState([]); // New state for duplicates
   const MAX_VARIANTS = 6; // Maximum number of variants allowed
+
+  // Helper function to strip HTML tags
+  const stripHtml = (html) => {
+    let div = document.createElement("div");
+    div.innerHTML = html;
+    return div.textContent || div.innerText || "";
+  };
+
+  useEffect(() => {
+    // Determine duplicate answer IDs whenever answers change
+    const textCount = {};
+    answers.forEach((ans) => {
+      const text = stripHtml(ans.text).trim().toLowerCase();
+      if (text) {
+        textCount[text] = (textCount[text] || 0) + 1;
+      }
+    });
+
+    const duplicates = answers
+      .filter((ans) => textCount[stripHtml(ans.text).trim().toLowerCase()] > 1)
+      .map((ans) => ans.id);
+
+    setDuplicateIds(duplicates);
+  }, [answers]);
 
   const handleAddVariant = () => {
     if (answers.length >= MAX_VARIANTS) return; // Prevent adding more than max
@@ -125,80 +152,92 @@ function VariantliSual({ answers, setAnswers }) {
       <h2 className="text-textSecondaryDefault leading-8 text-2xl font-gilroy font-medium mb-5">
         Cavablar
       </h2>
-      {answers.map((answer) => (
-        <div key={answer.id} className="flex flex-col mb-4">
-          <div className="flex items-center mb-2">
-            <h2 className="font-gilroy text-xl leading-6 font-normal text-brandBlue300">
-              {answer.label}
-            </h2>
-            <input
-              type="checkbox"
-              checked={answer.correct || false}
-              onChange={() => handleCheckboxChange(answer.id)}
-              className="ml-2 mr-2"
-            />
-            {answer.correct && (
-              <span className="text-green600">Düz cavab</span>
-            )}
-            {!answer.isDefault && (
-              <button
-                className="ml-4 text-red-600 hover:text-red-800 text-2xl"
-                onClick={() => handleDeleteVariant(answer.id)}
-              >
-                <IoCloseOutline />
-              </button>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            {currentEditor !== `answer-${answer.id}` ? (
-              <div
-                className={`py-3 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full ${
-                  answer.correct
-                    ? "border-green500 bg-green100"
-                    : "border-arrowButtonGray bg-boxGrayBodyColor"
-                }`}
-                onClick={() => handleAnswerEditClick(answer.id)}
-                data-editor-input={`answer-${answer.id}`}
-              >
-                {answer.text ? (
-                  <span dangerouslySetInnerHTML={{ __html: answer.text }} />
-                ) : (
-                  <span className="text-placeholderGray">
-                    Variant mətnini əlavə edin
-                  </span>
-                )}
-              </div>
-            ) : (
-              <div
-                style={{ width: "100%" }}
-                ref={(el) => {
-                  if (el) {
-                    answerRefs.current[answer.id] = el;
-                  }
-                }}
-              >
-                <ReactQuill
-                  theme="snow"
-                  placeholder="Variant mətnini əlavə edin"
-                  modules={quillModules}
-                  formats={quillFormats}
-                  value={answer.text}
-                  onChange={(content) => {
-                    setAnswers((prevAnswers) =>
-                      prevAnswers.map((ans) =>
-                        ans.id === answer.id
-                          ? { ...ans, text: content }
-                          : ans
-                      )
-                    );
+      {answers.map((answer) => {
+        const isDuplicate = duplicateIds.includes(answer.id);
+        return (
+          <div key={answer.id} className="flex flex-col mb-4">
+            <div className="flex items-center mb-2">
+              <h2 className="font-gilroy text-xl leading-6 font-normal text-brandBlue300">
+                {answer.label}
+              </h2>
+              <input
+                type="checkbox"
+                checked={answer.correct || false}
+                onChange={() => handleCheckboxChange(answer.id)}
+                className="ml-2 mr-2"
+              />
+              {answer.correct && (
+                <span className="text-green600">Düz cavab</span>
+              )}
+              {!answer.isDefault && (
+                <button
+                  className="ml-4 text-red-600 hover:text-red-800 text-2xl"
+                  onClick={() => handleDeleteVariant(answer.id)}
+                >
+                  <IoCloseOutline />
+                </button>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              {currentEditor !== `answer-${answer.id}` ? (
+                <div
+                  className={`py-3 px-4 border rounded-lg hover:bg-inputBgHover hover:border-inputBorderHover font-gilroy cursor-pointer text-grayButtonText text-lg w-full ${
+                    answer.correct
+                      ? "border-green500 bg-green100"
+                      : "border-arrowButtonGray bg-boxGrayBodyColor"
+                  } ${
+                    isDuplicate ? "border-red-500" : ""
+                  }`} // Add conditional red border
+                  onClick={() => handleAnswerEditClick(answer.id)}
+                  data-editor-input={`answer-${answer.id}`}
+                >
+                  {answer.text ? (
+                    <span dangerouslySetInnerHTML={{ __html: answer.text }} />
+                  ) : (
+                    <span className="text-placeholderGray">
+                      Variant mətnini əlavə edin
+                    </span>
+                  )}
+                </div>
+              ) : (
+                <div
+                  style={{ width: "100%" }}
+                  ref={(el) => {
+                    if (el) {
+                      answerRefs.current[answer.id] = el;
+                    }
                   }}
-                  className="quill-editor"
-                />
-              </div>
-            )}
+                >
+                  <ReactQuill
+                    theme="snow"
+                    placeholder="Variant mətnini əlavə edin"
+                    modules={quillModules}
+                    formats={quillFormats}
+                    value={answer.text}
+                    onChange={(content) => {
+                      setAnswers((prevAnswers) =>
+                        prevAnswers.map((ans) =>
+                          ans.id === answer.id
+                            ? { ...ans, text: content }
+                            : ans
+                        )
+                      );
+                    }}
+                    className={`quill-editor ${
+                      isDuplicate ? "border-red-500" : ""
+                    }`} // Optional: Add red border to editor
+                  />
+                  {isDuplicate && (
+                    <p className="text-red-500 text-sm mt-1">
+                      Bu cavab variantı təkrarlanır.
+                    </p>
+                  )}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
 
       {answers.length < MAX_VARIANTS && (
         <button
@@ -209,7 +248,7 @@ function VariantliSual({ answers, setAnswers }) {
           Variant əlavə et
         </button>
       )}
-{/* 
+      {/* 
       {answers.length >= MAX_VARIANTS && (
         <p className="text-red-600 text-center mt-2">
           Maksimum variant sayı (F) çatılıb.

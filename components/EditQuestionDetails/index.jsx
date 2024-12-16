@@ -9,6 +9,22 @@ function EditQuestionDetails({ level, setLevel, score, setScore }) {
   const categories = ["Category 1", "Category 2", "Category 3"];
   const levelOptions = ["Asan", "Orta", "Çətin"];
 
+  // Handler to prevent certain keys
+  const handleKeyDown = (e) => {
+    // List of keys to prevent
+    const forbiddenKeys = ["e", "E", "+", "-", "."];
+    if (forbiddenKeys.includes(e.key)) {
+      e.preventDefault();
+    }
+  };
+
+  // Optionally, you can also validate the input value on change
+  const handleChange = (e) => {
+    const value = e.target.value;
+    // Optional: You can add more validation logic here
+    setScore(value);
+  };
+
   return (
     <div className="flex flex-col bg-white justify-center p-4 md:p-10 rounded-lg mt-5 w-full md:w-[88%] mx-auto mb-4 ">
       <h1 className="font-gilroy text-textSecondaryDefault text-xl md:text-2xl font-medium leading-8 mb-4">
@@ -73,7 +89,8 @@ function EditQuestionDetails({ level, setLevel, score, setScore }) {
           <input
             type="number"
             value={score}
-            onChange={(e) => setScore(e.target.value)}
+            onChange={handleChange}
+            onKeyDown={handleKeyDown} // Add the onKeyDown handler here
             min="0" // Prevents negative input
             className="w-full border border-gray-300 rounded-md py-2.5 px-4 text-black font-gilroy focus:border-inputRingFocus focus:outline-none"
             placeholder="Xalı daxil edin"
