@@ -46,7 +46,7 @@ function AuthHandler({ children }) {
             const token = data.data.token;
 
             await login(token);
-            toast.success(t("toastMessages.loginSuccess"));
+            // toast.success(t("toastMessages.loginSuccess"));
             router.push("/home");
           } else {
             console.error("Failed to get token from backend API:", data);
