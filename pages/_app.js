@@ -16,8 +16,9 @@ import { SessionProvider } from "next-auth/react";
 import "react-toastify/dist/ReactToastify.css";
 import CompanyContext from "../shared/context/CompanyContext";
 import AuthHandler from "@/components/AuthHandler";
-import AuthGate from "@/components/AuthGate"; // Import AuthGate
+import AuthGate from "@/components/AuthGate";
 import { ToastContainer } from "react-toastify";
+import ErrorBoundary from "@/components/ErrorBoundary"; // Import ErrorBoundary
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -64,6 +65,7 @@ function MyApp({ Component, pageProps }) {
       i18n.changeLanguage(locale);
     }
   }, [router.locale]);
+
   // Retrieve and log the token on the client-side
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -89,7 +91,9 @@ function MyApp({ Component, pageProps }) {
                   value={{ selectedCompany, setSelectedCompany }}
                 >
                   <AuthGate>
-                    {loading ? <Spinner /> : <Component {...pageProps} />}
+                    <ErrorBoundary>
+                      {loading ? <Spinner /> : <Component {...pageProps} />}
+                    </ErrorBoundary>
                     <ToastContainer
                       position="top-right"
                       autoClose={5000}

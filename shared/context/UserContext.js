@@ -269,15 +269,6 @@ function OTPModalManager() {
     setIsOtpModalOpen(false);
   };
 
-  const handleOtpBack = () => {
-    // Define what should happen when 'Back' is clicked, if needed.
-  };
-
-  const handleOpenResetPasswordModal = () => {
-    // Define what should happen after successful OTP verification.
-    // For example, you might navigate to a different page or trigger another modal.
-    // router.push("/home"); // Example action
-  };
 
   return (
     <>
@@ -285,10 +276,10 @@ function OTPModalManager() {
         <OTPRegister
           isOpen={isOtpModalOpen}
           onClose={handleOtpClose}
-          onBack={handleOtpBack}
+          // onBack={handleOtpBack}
           email={user?.email}
           token={token}
-          onOpenResetPasswordModal={handleOpenResetPasswordModal}
+          // onOpenResetPasswordModal={handleOpenResetPasswordModal}
         />
       )}
     </>
