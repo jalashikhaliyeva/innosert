@@ -20,9 +20,26 @@ function ExamRulesModal({ onClose, onCancel }) {
 
   const handleStartExam = () => {
     if (isChecked) {
-      router.push("/imtahan-geri-sayim"); // Redirect to /imtahan-geri-sayim
+      // Request fullscreen before navigating
+      const el = document.documentElement;
+      if (el.requestFullscreen) {
+        el.requestFullscreen()
+          .then(() => {
+            // After entering fullscreen, navigate to the pre-exam page
+            router.push("/imtahan-geri-sayim");
+          })
+          .catch((err) => {
+            console.error("Failed to enter fullscreen:", err);
+
+            router.push("/imtahan-geri-sayim");
+          });
+      } else {
+        // If the browser doesn't support fullscreen, just navigate
+        router.push("/imtahan-geri-sayim");
+      }
     }
   };
+
   return (
     <div
       onClick={handleBackgroundClick}

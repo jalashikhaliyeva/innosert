@@ -1,9 +1,7 @@
 // src/shared/context/UserContext.js
 
-import OTPRegister from "@/components/OTP-register";
-import React, { createContext, useState, useEffect, useCallback, useContext } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import { toast } from "react-toastify";
-
 
 const UserContext = createContext();
 
@@ -35,6 +33,7 @@ function UserProvider({ children }) {
   const [privateExam, setPrivateExam] = useState(false);
   const [isQuestionsValid, setIsQuestionsValid] = useState(false);
 
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");
@@ -64,7 +63,6 @@ function UserProvider({ children }) {
       setTimeForQuestion(storedTimeForQuestion ? JSON.parse(storedTimeForQuestion) : false);
     }
   }, []);
-
   const updateExamDetails = (details) => {
     setExamDetails(details);
   };
@@ -141,7 +139,7 @@ function UserProvider({ children }) {
 
       if (response.ok) {
         const userData = await response.json();
-        console.log(userData, "userData");
+              console.log(userData, "userData");
         setUser(userData);
         console.log(userData, "userData context");
       } else {
@@ -200,8 +198,6 @@ function UserProvider({ children }) {
       value={{
         user,
         setUser,
-        token,
-        setToken,
         lastQuery,
         setLastQuery,
         selectedQuestion,
@@ -241,57 +237,12 @@ function UserProvider({ children }) {
         setPercentage,
         login,
         logout,
-        updateExamDetails,
+        updateExamDetails, 
         loading,
       }}
     >
       {children}
-      <OTPModalManager /> {/* Insert the OTP Modal Manager here */}
     </UserContext.Provider>
-  );
-}
-
-function OTPModalManager() {
-  const { user, token, loading } = useContext(UserContext);
-  const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
-
-  useEffect(() => {
-    // If user data is loaded and sv=0, open OTP modal
-    if (!loading && user && user.data.sv == 0) {
-      // alert("confirm number")
-      setIsOtpModalOpen(true);
-    } else {
-      setIsOtpModalOpen(false);
-    }
-  }, [user, loading]);
-
-  const handleOtpClose = () => {
-    setIsOtpModalOpen(false);
-  };
-
-  const handleOtpBack = () => {
-    // Define what should happen when 'Back' is clicked, if needed.
-  };
-
-  const handleOpenResetPasswordModal = () => {
-    // Define what should happen after successful OTP verification.
-    // For example, you might navigate to a different page or trigger another modal.
-    // router.push("/home"); // Example action
-  };
-
-  return (
-    <>
-      {isOtpModalOpen && (
-        <OTPRegister
-          isOpen={isOtpModalOpen}
-          onClose={handleOtpClose}
-          onBack={handleOtpBack}
-          email={user?.email}
-          token={token}
-          onOpenResetPasswordModal={handleOpenResetPasswordModal}
-        />
-      )}
-    </>
   );
 }
 

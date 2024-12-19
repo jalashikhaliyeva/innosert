@@ -34,6 +34,8 @@ function OTP({
     const formData = new FormData();
     formData.append("code", code);
     formData.append("email", email);
+    console.log(formData , "formData");
+    
 
     try {
       const response = await fetch(

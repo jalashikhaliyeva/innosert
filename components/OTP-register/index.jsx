@@ -197,13 +197,13 @@ function OTPRegister({
             &times;
           </button>
 
-          <div className="flex items-center mb-6">
+          {/* <div className="flex items-center mb-6">
             <HiOutlineArrowLeft
               className="text-2xl text-buttonPrimaryDefault cursor-pointer"
               onClick={onBack}
               aria-label="Back"
             />
-          </div>
+          </div> */}
 
           <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-buttonPrimaryDefault">
             OTP

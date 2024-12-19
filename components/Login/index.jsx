@@ -285,7 +285,7 @@ export default function LoginModal({
                 </button>
                 <button
                   type="button"
-                  onClick={() => signIn("linkedin")}
+                  onClick={() => signIn("linkedin", { callbackUrl: "/home" })}
                   className="rounded-full bg-gray-100 p-4"
                 >
                   <FaLinkedin className="h-8 w-8 fill-[#0A66C2]" />

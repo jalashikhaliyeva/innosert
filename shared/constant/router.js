@@ -7,7 +7,7 @@ export const ROUTER = {
 
 export const publicRoutes = [
   "/",
-  "/haqqimizda",
+  // "/haqqimizda",
   "/exams",
   "/imtahanlar",
   "/emekdasliq",

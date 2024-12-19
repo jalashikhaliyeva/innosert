@@ -1,11 +1,11 @@
 // pages/api/auth/[...nextauth].js
-
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import LinkedInProvider from "next-auth/providers/linkedin";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export default NextAuth({
+  debug: true,
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({

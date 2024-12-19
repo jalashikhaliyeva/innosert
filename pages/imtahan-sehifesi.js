@@ -318,7 +318,7 @@ function ImtahanSehifesi() {
           case "Variantlı Sual":
             return {
               questionId: questionId,
-              submittedAnswer: userAnswer ? [userAnswer] : [],
+              submittedAnswer: userAnswer || [],
             };
           case "Açıq sual":
             return {
@@ -366,6 +366,8 @@ function ImtahanSehifesi() {
         answers: buildAnswersArray(),
       };
 
+      console.log(data, "data exam send");
+
       const response = await axios.post(
         `https://innocert-admin.markup.az/api/start-exam/${slug}`,
         data,
@@ -392,7 +394,7 @@ function ImtahanSehifesi() {
     }
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = async () => {
     if (outsideLeaveCount === 0) {
       setOutsideLeaveCount(1);
       setModalContent(
@@ -404,9 +406,41 @@ function ImtahanSehifesi() {
         "Limitdən kənara çıxma sayınız dolub! İmtahan bitirildi."
       );
       setShowWarningModal(true);
-      setTimeout(() => {
-        router.push("/imtahan-neticeleri");
-      }, 2400);
+
+      try {
+        const token = localStorage.getItem("token");
+        const slug = clickedExam.slug;
+
+        const emptyData = {
+          totalTime: "0",
+          start_exam: formatDateTime(examStartTime || new Date()),
+          finish_exam: formatDateTime(new Date()),
+          report_question: [],
+          answers: [],
+        };
+
+        const response = await axios.post(
+          `https://innocert-admin.markup.az/api/start-exam/${slug}`,
+          emptyData,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Log the response to see its content
+        console.log("Response from API:", response);
+
+        // Redirect to the results page
+        setTimeout(() => {
+          const percentageData = response.data.data;
+          setPercentage(percentageData);
+          router.push("/imtahan-neticeleri");
+        }, 2400);
+      } catch (error) {
+        console.error("Error submitting empty exam data:", error);
+      }
     }
   };
 

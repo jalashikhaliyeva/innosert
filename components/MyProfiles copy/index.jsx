@@ -17,8 +17,6 @@ function MyProfiles() {
   // const [user, setUser] = useState(null);
   const { user, setUser, fetchUserData } = useContext(UserContext);
   console.log(user, " MyProfiles user teacher");
-  const [initialMobileApi, setInitialMobileApi] = useState("");
-
   const { t } = useTranslation();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,22 +64,6 @@ function MyProfiles() {
     }
   };
 
-  const formatMobileForDisplay = (mobile) => {
-    if (!mobile || mobile.length !== 9) return "";
-    return `+994 ${mobile.slice(0, 2)} ${mobile.slice(2, 5)} ${mobile.slice(
-      5,
-      7
-    )} ${mobile.slice(7, 9)}`;
-  };
-
-  // Helper function to format mobile number for API submission
-  const formatMobileForApi = (mobile) => {
-    const digits = mobile.replace(/\D/g, ""); // Remove all non-digit characters
-    if (digits.startsWith("994")) {
-      return digits.slice(3); // Remove the '994' country code
-    }
-    return digits;
-  };
   const handleDeleteCompanyImage = () => {
     setCompanyImage(null);
     setCompanyImagePreview(null);
@@ -100,37 +82,30 @@ function MyProfiles() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-  
+
     const userToken = localStorage.getItem("token");
-  
+
     if (!userToken) {
       toast.error("İstifadəçi doğrulanmayıb. Yenidən daxil olun.");
       return;
     }
-  
+
     setLoading(true); // Start loading state
-  
+
     try {
       const formData = new FormData();
       formData.append("username", username);
       formData.append("email", email);
       formData.append("first_name", firstName);
       formData.append("last_name", lastName);
-      
-      // Format the mobile number for API submission
-      const formattedMobile = formatMobileForApi(mobile);
-      
-      // Append the mobile number only if it has been changed
-      if (formattedMobile !== initialMobileApi) {
-        formData.append("mobile", formattedMobile);
-      }
-  
+      formData.append("mobile", formatMobile(mobile));
+
       if (image) {
         formData.append("image", image);
       } else if (!imagePreview && user?.data?.profilePicture) {
         formData.append("delete_image", "true");
       }
-  
+
       const profileResponse = await fetch(
         "https://innocert-admin.markup.az/api/me/update",
         {
@@ -141,12 +116,23 @@ function MyProfiles() {
           body: formData,
         }
       );
-  
+
       const profileData = await profileResponse.json();
-  
+
       if (profileResponse.ok) {
         toast.success("Profil uğurla yeniləndi!");
-  
+
+        // setUser((prevUser) => ({
+        //   ...prevUser,
+        //   username,
+        //   email,
+        //   first_name: firstName,
+        //   last_name: lastName,
+        //   mobile,
+        //   profilePicture: image ? profileData?.data?.image : imagePreview,
+        // }));
+
+        // MyProfiles.js (updated code)
         setUser((prevUser) => ({
           ...prevUser,
           data: {
@@ -155,20 +141,13 @@ function MyProfiles() {
             email,
             first_name: firstName,
             last_name: lastName,
-            // Update the mobile number only if it was changed
-            mobile: formattedMobile !== initialMobileApi ? formattedMobile : prevUser.data.mobile,
+            mobile,
             image: image ? profileData?.data?.image : imagePreview,
           },
         }));
-  
-        // Update the initial mobile number if it was changed
-        if (formattedMobile !== initialMobileApi) {
-          setInitialMobileApi(formattedMobile);
-        }
-  
         // Fetch updated user data from the server
         fetchUserData();
-  
+
         if (!imagePreview) {
           setImage(null);
           setImagePreview("");
@@ -182,7 +161,6 @@ function MyProfiles() {
       setLoading(false); // Stop loading state after the request is complete
     }
   };
-  
 
   const toggleDropdown = (companyId) => {
     const dropdown = formRefs.current[companyId];
@@ -235,14 +213,14 @@ function MyProfiles() {
   useEffect(() => {
     const fetchUserData = async () => {
       const userToken = localStorage.getItem("token");
-  
+
       console.log(userToken, "user token profiles");
-  
+
       if (!userToken) {
         toast.error("İstifadəçi autentifikasiyadan keçməyib.");
         return;
       }
-  
+
       try {
         const response = await fetch(
           "https://innocert-admin.markup.az/api/user",
@@ -253,24 +231,18 @@ function MyProfiles() {
             },
           }
         );
-  
+
         if (response.ok) {
           const userData = await response.json();
           console.log(userData, "userData");
-  
+
           setUser(userData);
           setUsername(userData.data.username || "");
           setEmail(userData.data.email || "");
           setFirstName(userData.data.first_name || "");
           setLastName(userData.data.last_name || "");
-          
-          // Store the initial mobile number in API format
-          const mobileApi = userData.data.mobile || "";
-          setInitialMobileApi(mobileApi);
-          
-          // Format the mobile number for display
-          setMobile(formatMobileForDisplay(mobileApi));
-  
+          setMobile(userData.data.mobile || "");
+          // setImagePreview(userData.data.image || "");
           const userImage = userData.data.image;
           if (
             !userImage ||
@@ -289,10 +261,10 @@ function MyProfiles() {
         toast.error(`An error occurred: ${error.message}`);
       }
     };
-  
+
     fetchUserData();
+    // fetchCompanies();
   }, []);
-  
 
   const getImageSrc = () => {
     if (
