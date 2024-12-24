@@ -1,5 +1,5 @@
+// components/ErrorBoundary.js
 import React from "react";
-
 
 class ErrorBoundary extends React.Component {
   constructor(props) {
@@ -36,7 +36,7 @@ class ErrorBoundary extends React.Component {
           <details style={{ whiteSpace: "pre-wrap" }}>
             {this.state.errorInfo && this.state.errorInfo.componentStack}
           </details>
-          <button  onClick={this.handleReload}>
+          <button onClick={this.handleReload}>
             Reload Page
           </button>
         </div>

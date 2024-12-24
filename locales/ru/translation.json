@@ -93,6 +93,7 @@
     "copied": "Скопировано",
     "copy": "Копировать",
     "increaseBalance": "+ Пополнить баланс",
+    "increaseBalanc": "Пополнить баланс",
     "delete": "Удалить",
     "sort": "Сортировать",
     "newest": "Последнее созданное",
@@ -142,7 +143,8 @@
     "resetFilters": "Сбросить фильтры"
   },
   "placeholders": {
-    "search": "Поиск"
+    "search": "Поиск",
+    "enterAmount": "Введите сумму"
   },
   "dashboard": {
     "totalRevenue": "Общий доход",
@@ -304,5 +306,13 @@
   },
   "collaboration": "Сотрудничество",
   "all_durations": "Продолжительность экзамена",
-   "no_exam_found": "Такого экзамена не существует."
+  "no_exam_found": "Такого экзамена не существует.",
+   "confirm": "Подтвердить",
+   "errors": {
+      "amountRequired": "Требуется сумма.",
+      "invalidAmount": "Введите корректную сумму.",
+      "minimumAmount": "Сумма должна быть не менее 0.1.",
+      "maximumAmount": "Сумма не может превышать 500.",
+      "invalidFormat": "Введите правильный формат."
+    }
 }

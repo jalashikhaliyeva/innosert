@@ -93,6 +93,7 @@
     "copied": "Copied",
     "copy": "Copy",
     "increaseBalance": "+ Increase Balance",
+    "increaseBalanc": "Increase Balance",
     "delete": "Delete",
     "sort": "Sort",
     "newest": "Newest Created",
@@ -142,7 +143,8 @@
     "resetFilters": "Reset Filters"
   },
   "placeholders": {
-    "search": "Search"
+    "search": "Search",
+    "enterAmount": "Enter Amount"
   },
   "dashboard": {
     "totalRevenue": "Total Revenue",
@@ -305,5 +307,13 @@
   },
   "collaboration": "Collaboration",
   "all_durations": "Exam Duration",
-   "no_exam_found": "No exam found."
+  "no_exam_found": "No exam found.",
+  "confirm": "Confirm",
+  "errors": {
+      "amountRequired": "Amount is required.",
+      "invalidAmount": "Please enter a valid amount.",
+      "minimumAmount": "Amount must be at least 0.1.",
+      "maximumAmount": "Amount cannot exceed 500.",
+      "invalidFormat": "Please enter a valid format."
+    }
 }

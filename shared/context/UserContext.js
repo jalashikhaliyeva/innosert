@@ -1,13 +1,18 @@
-// src/shared/context/UserContext.js
-
-import OTPRegister from "@/components/OTP-register";
-import React, { createContext, useState, useEffect, useCallback, useContext } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import { toast } from "react-toastify";
-
+import { useRouter } from "next/router";
+import OTPRegister from "@/components/OTP-register";
 
 const UserContext = createContext();
 
 function UserProvider({ children }) {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(() => {
     if (typeof window !== "undefined") {
@@ -16,6 +21,7 @@ function UserProvider({ children }) {
     return null;
   });
   const [loading, setLoading] = useState(true);
+
   const [lastQuery, setLastQuery] = useState(null);
   const [examDetailsSingle, setExamDetailsSingle] = useState(null);
   const [percentage, setPercentage] = useState(null);
@@ -47,21 +53,31 @@ function UserProvider({ children }) {
       setClickedExam(storedClickedExam ? JSON.parse(storedClickedExam) : null);
 
       const storedFilteredExams = localStorage.getItem("filteredExams");
-      setFilteredExams(storedFilteredExams ? JSON.parse(storedFilteredExams) : null);
+      setFilteredExams(
+        storedFilteredExams ? JSON.parse(storedFilteredExams) : null
+      );
 
       const storedExamDetails = localStorage.getItem("examDetails");
       setExamDetails(storedExamDetails ? JSON.parse(storedExamDetails) : null);
 
       const storedSelectedQuestion = localStorage.getItem("selectedQuestion");
-      setSelectedQuestion(storedSelectedQuestion ? JSON.parse(storedSelectedQuestion) : null);
+      setSelectedQuestion(
+        storedSelectedQuestion ? JSON.parse(storedSelectedQuestion) : null
+      );
 
-      const storedSelectedQuestionsForExam = localStorage.getItem("selectedQuestionsForExam");
+      const storedSelectedQuestionsForExam = localStorage.getItem(
+        "selectedQuestionsForExam"
+      );
       setSelectedQuestionsForExam(
-        storedSelectedQuestionsForExam ? JSON.parse(storedSelectedQuestionsForExam) : []
+        storedSelectedQuestionsForExam
+          ? JSON.parse(storedSelectedQuestionsForExam)
+          : []
       );
 
       const storedTimeForQuestion = localStorage.getItem("timeForQuestion");
-      setTimeForQuestion(storedTimeForQuestion ? JSON.parse(storedTimeForQuestion) : false);
+      setTimeForQuestion(
+        storedTimeForQuestion ? JSON.parse(storedTimeForQuestion) : false
+      );
     }
   }, []);
 
@@ -91,7 +107,10 @@ function UserProvider({ children }) {
 
   useEffect(() => {
     if (selectedQuestion !== null && typeof window !== "undefined") {
-      localStorage.setItem("selectedQuestion", JSON.stringify(selectedQuestion));
+      localStorage.setItem(
+        "selectedQuestion",
+        JSON.stringify(selectedQuestion)
+      );
     } else if (typeof window !== "undefined") {
       localStorage.removeItem("selectedQuestion");
     }
@@ -129,21 +148,21 @@ function UserProvider({ children }) {
       return;
     }
 
-    console.log(token, "setToken context");
-    
     try {
-      const response = await fetch("https://innocert-admin.markup.az/api/user", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await fetch(
+        "https://innocert-admin.markup.az/api/user",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       if (response.ok) {
         const userData = await response.json();
         console.log(userData, "userData");
         setUser(userData);
-        console.log(userData, "userData context");
       } else {
         toast.error("Failed to fetch user data");
         setUser(null);
@@ -157,38 +176,42 @@ function UserProvider({ children }) {
   }, [token]);
 
   useEffect(() => {
-    if (token) {
+    // Public routes: index ('/'), haqqimizda ('/haqqimizda'), imtahanlar ('/imtahanlar'), imtahanlar/[slug] ('/imtahanlar/:slug')
+    const publicRoutes = ["/", "/haqqimizda", "/imtahanlar"];
+    // Check if current route is public
+    const isPublicRoute =
+      publicRoutes.includes(router.pathname) ||
+      router.pathname.startsWith("/imtahanlar/");
+
+    if (token && !isPublicRoute) {
       fetchUserData();
     } else {
       setLoading(false);
     }
-  }, [token, fetchUserData]);
+  }, [token, fetchUserData, router.pathname]);
 
-  const login = useCallback(
-    async (newToken) => {
-      if (typeof window !== "undefined") {
-        localStorage.setItem("token", newToken);
-      }
-      setToken(newToken);
-    },
-    []
-  );
+  const login = useCallback(async (newToken) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("token", newToken);
+    }
+    setToken(newToken);
+  }, []);
 
   const logout = useCallback(async () => {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");
       if (storedToken) {
         try {
-          await fetch('https://innocert-admin.markup.az/api/logout', {
-            method: 'GET',
+          await fetch("https://innocert-admin.markup.az/api/logout", {
+            method: "GET",
             headers: {
               Authorization: `Bearer ${storedToken}`,
             },
           });
         } catch (error) {
-          console.error('Error during logout API call:', error);
+          console.error("Error during logout API call:", error);
         }
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
       }
     }
     setToken(null);
@@ -246,19 +269,18 @@ function UserProvider({ children }) {
       }}
     >
       {children}
-      <OTPModalManager /> {/* Insert the OTP Modal Manager here */}
+      <OTPModalManager />
     </UserContext.Provider>
   );
 }
 
 function OTPModalManager() {
-  const { user, token, loading } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext);
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
   useEffect(() => {
     // If user data is loaded and sv=0, open OTP modal
-    if (!loading && user && user.data.sv == 0) {
-      // alert("confirm number")
+    if (!loading && user && user?.data?.sv == 0) {
       setIsOtpModalOpen(true);
     } else {
       setIsOtpModalOpen(false);
@@ -269,17 +291,14 @@ function OTPModalManager() {
     setIsOtpModalOpen(false);
   };
 
-
   return (
     <>
       {isOtpModalOpen && (
         <OTPRegister
           isOpen={isOtpModalOpen}
           onClose={handleOtpClose}
-          // onBack={handleOtpBack}
           email={user?.email}
-          token={token}
-          // onOpenResetPasswordModal={handleOpenResetPasswordModal}
+          token={user?.token}
         />
       )}
     </>

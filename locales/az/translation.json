@@ -93,6 +93,7 @@
     "copied": "Kopyalandı",
     "copy": "Kopyala",
     "increaseBalance": "+ Balansı artır",
+    "increaseBalanc": "Balansı artır",
     "delete": "Sil",
     "sort": "Sırala",
     "newest": "Son Yaradılan",
@@ -143,7 +144,8 @@
     "resetFilters": "Filtrləri sıfırla"
   },
   "placeholders": {
-    "search": "Axtar"
+    "search": "Axtar",
+    "enterAmount": "Məbləği daxil edin"
   },
   "dashboard": {
     "totalRevenue": "Toplam gəlir",
@@ -303,7 +305,20 @@
     "new_to_old": "Yenidən köhnəyə",
     "old_to_new": "Köhnədən yeniyə"
   },
+  "errors": {
+    
+    "cheap_to_expensive": "Ucuzdan bahaya",
+    "expensive_to_cheap": "Bahadan ucuza",
+    "new_to_old": "Yenidən köhnəyə",
+    "old_to_new": "Köhnədən yeniyə",
+    "amountRequired": "Məbləğ tələb olunur.",
+    "invalidAmount": "Düzgün məbləğ daxil edin.",
+    "minimumAmount": "Məbləğ ən azı 0.1 olmalıdır.",
+    "maximumAmount": "Məbləğ 500-dən çox ola bilməz.",
+    "invalidFormat": "Düzgün format daxil edin."
+  },
   "collaboration": "Əməkdaşlıq",
   "all_durations": "İmtahan müddəti",
- "no_exam_found": "Belə bir imtahan yoxdur."
+  "no_exam_found": "Belə bir imtahan yoxdur.",
+   "confirm": "Təsdiq et"
 }
