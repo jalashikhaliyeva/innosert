@@ -44,7 +44,7 @@ function MembersTableorActivityNavigation({
               stroke-linecap="round"
               stroke-linejoin="round"
             />
-            <g clip-path="url(#clip0_3504_8333)">
+            <g clipPath="url(#clip0_3504_8333)">
               <rect
                 width="15"
                 height="9"

@@ -8,18 +8,18 @@ class ErrorBoundary extends React.Component {
   }
 
   static getDerivedStateFromError(error) {
-    // Update state so the next render shows the fallback UI.
+    // Update state to display the fallback UI.
     return { hasError: true, error };
   }
 
   componentDidCatch(error, errorInfo) {
-    // You can also log the error to an error reporting service here
+    // Log error details for debugging.
     console.error("ErrorBoundary caught an error", error, errorInfo);
     this.setState({ errorInfo });
   }
 
   handleReload = () => {
-    // Reset the error state and optionally reload the page
+    // Reset the error state and reload the page.
     this.setState({ hasError: false, error: null, errorInfo: null });
     if (typeof window !== "undefined") {
       window.location.reload();
@@ -28,7 +28,7 @@ class ErrorBoundary extends React.Component {
 
   render() {
     if (this.state.hasError) {
-      // You can render any custom fallback UI
+      // Render a fallback UI.
       return (
         <div style={styles.container}>
           <h1>Something went wrong.</h1>
@@ -36,14 +36,12 @@ class ErrorBoundary extends React.Component {
           <details style={{ whiteSpace: "pre-wrap" }}>
             {this.state.errorInfo && this.state.errorInfo.componentStack}
           </details>
-          <button onClick={this.handleReload}>
-            Reload Page
-          </button>
+          <button onClick={this.handleReload}>Reload Page</button>
         </div>
       );
     }
 
-    return this.props.children; 
+    return this.props.children;
   }
 }
 

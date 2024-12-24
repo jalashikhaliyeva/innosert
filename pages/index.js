@@ -69,11 +69,11 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
             text: item.name,
           }));
 
-          setLandingInfo(landingData);
-          setSettingInfo({
-            slides: mappedSlides,
-            map: settingData?.contact?.map,
-          });
+          // setLandingInfo(landingData);
+          // setSettingInfo({
+          //   slides: mappedSlides,
+          //   map: settingData?.contact?.map,
+          // });
         } catch (error) {
           console.error("Failed to fetch landing or setting info:", error);
         }
