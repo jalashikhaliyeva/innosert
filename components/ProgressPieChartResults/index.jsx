@@ -28,6 +28,13 @@ const ProgressPieChartResults = ({ correct, wrong, empty }) => {
           speed: 350,
         },
       },
+      // Disable zooming and panning if not needed
+      zoom: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false, // Hide the toolbar
+      },
     },
     plotOptions: {
       pie: {
@@ -49,7 +56,8 @@ const ProgressPieChartResults = ({ correct, wrong, empty }) => {
               label: "",
               formatter: () => {
                 const total = correct + wrong + empty;
-                const percentage = total === 0 ? 0 : Math.round((correct / total) * 100);
+                const percentage =
+                  total === 0 ? 0 : Math.round((correct / total) * 100);
                 return `${percentage}%`;
               }, // Display Correct Answers percentage
               style: {
@@ -72,10 +80,11 @@ const ProgressPieChartResults = ({ correct, wrong, empty }) => {
       enabled: false, // Hide data labels initially
     },
     tooltip: {
-      enabled: true, // Show values on hover
-      y: {
-        formatter: (val) => `${val}`, // Format tooltip to show count
-      },
+      enabled: false, // Disable tooltips
+      // Remove tooltip configurations since tooltips are disabled
+      // y: {
+      //   formatter: (val) => `${val}`, // Format tooltip to show count
+      // },
     },
     responsive: [
       {
@@ -94,6 +103,31 @@ const ProgressPieChartResults = ({ correct, wrong, empty }) => {
     legend: {
       show: false,
     },
+    states: {
+      normal: {
+        filter: {
+          type: "none", // Remove any filter effects on hover
+          value: 0,
+        },
+      },
+      hover: {
+        filter: {
+          type: "none", // Disable hover filter
+          value: 0,
+        },
+      },
+      active: {
+        allowMultipleDataPointsSelection: false,
+        filter: {
+          type: "none", // Disable active state filter
+          value: 0,
+        },
+      },
+    },
+    // Remove any selection states
+    selection: {
+      enabled: false,
+    },
   };
 
   // Effect to update the series based on the counts props
@@ -103,12 +137,13 @@ const ProgressPieChartResults = ({ correct, wrong, empty }) => {
     const w = Math.max(Number(wrong) || 0, 0);
     const e = Math.max(Number(empty) || 0, 0);
 
-    // Only update if there's at least one count
+    // Update series
     if (c + w + e > 0) {
       console.log("Updating series:", [c, w, e]);
       setSeries([c, w, e]);
     } else {
-      setSeries([]);
+      // When all counts are zero, set 'wrong' to 1 to display a full red pie chart
+      setSeries([0, 1, 0]);
     }
   }, [correct, wrong, empty]);
 

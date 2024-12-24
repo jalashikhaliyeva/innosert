@@ -85,7 +85,9 @@
     "noResults": "Результаты не найдены.",
     "questionTitle": "Заголовок вопроса",
     "reportedErrorCount": "Количество сообщений об ошибках",
-    "itemsPerPage": "Элементов на странице:"
+    "itemsPerPage": "Элементов на странице:",
+    "noData": "Нет данных",
+    "totalLoaded": "Всего загружено"
   },
   "actions": {
     "shareCertificate": "Поделитесь сертификатом",
@@ -307,12 +309,12 @@
   "collaboration": "Сотрудничество",
   "all_durations": "Продолжительность экзамена",
   "no_exam_found": "Такого экзамена не существует.",
-   "confirm": "Подтвердить",
-   "errors": {
-      "amountRequired": "Требуется сумма.",
-      "invalidAmount": "Введите корректную сумму.",
-      "minimumAmount": "Сумма должна быть не менее 0.1.",
-      "maximumAmount": "Сумма не может превышать 500.",
-      "invalidFormat": "Введите правильный формат."
-    }
+  "confirm": "Подтвердить",
+  "errors": {
+    "amountRequired": "Требуется сумма.",
+    "invalidAmount": "Введите корректную сумму.",
+    "minimumAmount": "Сумма должна быть не менее 0.1.",
+    "maximumAmount": "Сумма не может превышать 500.",
+    "invalidFormat": "Введите правильный формат."
+  }
 }

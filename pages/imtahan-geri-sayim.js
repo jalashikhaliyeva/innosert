@@ -5,7 +5,6 @@ import { getSession } from "next-auth/react";
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
-  // If there is no NextAuth session, redirect to the index page
   if (!session) {
     return {
       redirect: {

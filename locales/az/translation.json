@@ -85,7 +85,9 @@
     "noResults": "Heç bir nəticə tapılmadı.",
     "questionTitle": "Sual başlığı",
     "reportedErrorCount": "Bildirilən xəta sayı",
-    "itemsPerPage": "Səhifə başına element:"
+    "itemsPerPage": "Səhifə başına element:",
+    "noData": "Məlumat yoxdur",
+    "totalLoaded": "Ümumi Yüklənən"
   },
   "actions": {
     "shareCertificate": "Sertifikatını paylaş",
@@ -306,7 +308,6 @@
     "old_to_new": "Köhnədən yeniyə"
   },
   "errors": {
-    
     "cheap_to_expensive": "Ucuzdan bahaya",
     "expensive_to_cheap": "Bahadan ucuza",
     "new_to_old": "Yenidən köhnəyə",
@@ -320,5 +321,5 @@
   "collaboration": "Əməkdaşlıq",
   "all_durations": "İmtahan müddəti",
   "no_exam_found": "Belə bir imtahan yoxdur.",
-   "confirm": "Təsdiq et"
+  "confirm": "Təsdiq et"
 }

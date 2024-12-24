@@ -18,12 +18,15 @@ const ParentComponent = () => {
     const fetchData = async () => {
       const token = localStorage.getItem("token"); // Get token from localStorage
       try {
-        const response = await fetch("https://innocert-admin.markup.az/api/me/balances", {
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-        });
+        const response = await fetch(
+          "https://innocert-admin.markup.az/api/me/balances",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
         const result = await response.json();
         if (result.status) {
           setAllData(result.data);
@@ -40,8 +43,10 @@ const ParentComponent = () => {
   }, []);
 
   // Filter data for history and downloads
-  const historyData = allData.filter(item => item.exam_id !== null);
-  const downloadsData = allData.filter(item => item.exam_id === null && item.type === "Balans artımı");
+  const historyData = allData.filter((item) => item.exam_id !== null);
+  const downloadsData = allData.filter(
+    (item) => item.exam_id === null && item.type === "Balans artımı"
+  );
 
   // Pagination for history table
   const pageCount = Math.ceil(historyData.length / itemsPerPage);
@@ -60,7 +65,11 @@ const ParentComponent = () => {
   }
 
   if (error) {
-    return <div>{t("labels.error")}: {error}</div>; // Display error state
+    return (
+      <div>
+        {t("labels.error")}: {error}
+      </div>
+    ); // Display error state
   }
 
   return (
@@ -111,36 +120,39 @@ const ParentComponent = () => {
                 </tr>
               </thead>
               <tbody>
-                {paginatedData.length > 0 ? paginatedData.map(item => (
-                  <tr
-                    key={item.id}
-                    className="even:bg-boxGrayBodyColor hover:bg-gray-100"
-                  >
-                    <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
-                      {item.id}
-                    </td>
-                    <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
-                      {item.type}{item.exam_id ? ` - ${item.exam_id}` : ''}
-                    </td>
-                    <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
-                      {item.tarix}
-                    </td>
-                    <td
-                      className={`px-4 py-2.5 h-11 font-gilroy ${
-                        item.status === "Ödəniş uğurludur"
-                          ? "text-chartGreen"
-                          : "text-red-500"
-                      }`}
+                {paginatedData.length > 0 ? (
+                  paginatedData.map((item) => (
+                    <tr
+                      key={item.id}
+                      className="even:bg-boxGrayBodyColor hover:bg-gray-100"
                     >
-                      {item.status}
-                    </td>
-                    <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
-                      {item.amount}
-                    </td>
-                  </tr>
-                )) : (
+                      <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                        {item.id}
+                      </td>
+                      <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                        {item.type}
+                        {item.exam_id ? ` - ${item.exam_id}` : ""}
+                      </td>
+                      <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                        {item.tarix}
+                      </td>
+                      <td
+                        className={`px-4 py-2.5 h-11 font-gilroy ${
+                          item.status === "Ödəniş uğurludur"
+                            ? "text-chartGreen"
+                            : "text-red-500"
+                        }`}
+                      >
+                        {item.status}
+                      </td>
+                      <td className="px-4 py-2.5 h-11 text-grayText font-gilroy">
+                        {item.amount}
+                      </td>
+                    </tr>
+                  ))
+                ) : (
                   <tr>
-                    <td colSpan="5" className="text-center py-4">
+                    <td colSpan="5" className="text-center text-grayText py-4">
                       {t("labels.noData")}
                     </td>
                   </tr>

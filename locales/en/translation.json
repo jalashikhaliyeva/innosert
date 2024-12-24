@@ -85,7 +85,9 @@
     "noResults": "No results found.",
     "questionTitle": "Question Title",
     "reportedErrorCount": "Reported Error Count",
-    "itemsPerPage": "Items per page:"
+    "itemsPerPage": "Items per page:",
+    "noData": "No Data",
+    "totalLoaded": "Total Loaded"
   },
   "actions": {
     "shareCertificate": "Share your certificate",
@@ -310,10 +312,10 @@
   "no_exam_found": "No exam found.",
   "confirm": "Confirm",
   "errors": {
-      "amountRequired": "Amount is required.",
-      "invalidAmount": "Please enter a valid amount.",
-      "minimumAmount": "Amount must be at least 0.1.",
-      "maximumAmount": "Amount cannot exceed 500.",
-      "invalidFormat": "Please enter a valid format."
-    }
+    "amountRequired": "Amount is required.",
+    "invalidAmount": "Please enter a valid amount.",
+    "minimumAmount": "Amount must be at least 0.1.",
+    "maximumAmount": "Amount cannot exceed 500.",
+    "invalidFormat": "Please enter a valid format."
+  }
 }

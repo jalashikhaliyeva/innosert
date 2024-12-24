@@ -16,7 +16,7 @@ function Sidebar() {
   const { user } = useContext(UserContext);
   const { t } = useTranslation();
 
-  console.log(user?.data, "user data sidebaeee");
+  console.log(user?.data, "user data sidebar");
 
   const { setSelectedCompany } = useContext(CompanyContext);
   const router = useRouter();

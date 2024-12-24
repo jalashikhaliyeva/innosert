@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 import dynamic from "next/dynamic";
 import { motion } from "framer-motion";
 
+// Dynamically import react-apexcharts to prevent SSR issues
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 const ProgressPieChart = ({ correct, wrong, blank }) => {
@@ -11,6 +12,7 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
 
   console.log({ correct, wrong, blank }, "Counts");
 
+  // Chart configuration options
   const options = {
     chart: {
       type: "donut",
@@ -26,6 +28,13 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
           enabled: true,
           speed: 350,
         },
+      },
+      // Disable zooming and panning if not needed
+      zoom: {
+        enabled: false,
+      },
+      toolbar: {
+        show: false, // Hide the toolbar
       },
     },
     plotOptions: {
@@ -48,7 +57,8 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
               label: "",
               formatter: () => {
                 const total = correct + wrong + blank;
-                const percentage = total === 0 ? 0 : Math.round((correct / total) * 100);
+                const percentage =
+                  total === 0 ? 0 : Math.round((correct / total) * 100);
                 return `${percentage}%`;
               },
               style: {
@@ -68,13 +78,10 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
       lineCap: "round",
     },
     dataLabels: {
-      enabled: false,
+      enabled: false, // Hide data labels initially
     },
     tooltip: {
-      enabled: true,
-      y: {
-        formatter: (val) => `${val}`,
-      },
+      enabled: false, // Disable tooltips
     },
     responsive: [
       {
@@ -93,27 +100,56 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
     legend: {
       show: false,
     },
+    states: {
+      normal: {
+        filter: {
+          type: "none", // Remove any filter effects on hover
+          value: 0,
+        },
+      },
+      hover: {
+        filter: {
+          type: "none", // Disable hover filter
+          value: 0,
+        },
+      },
+      active: {
+        allowMultipleDataPointsSelection: false,
+        filter: {
+          type: "none", // Disable active state filter
+          value: 0,
+        },
+      },
+    },
+    // Remove any selection states
+    selection: {
+      enabled: false,
+    },
   };
 
+  // Effect to update the series based on the counts props
   useEffect(() => {
+    // Ensure all counts are numbers and non-negative
     const c = Math.max(Number(correct) || 0, 0);
     const w = Math.max(Number(wrong) || 0, 0);
     const b = Math.max(Number(blank) || 0, 0);
 
+    // Update series
     if (c + w + b > 0) {
       console.log("Updating series:", [c, w, b]);
       setSeries([c, w, b]);
     } else {
-      setSeries([]);
+      // When all counts are zero, set 'wrong' to 1 to display a full red pie chart
+      setSeries([0, 1, 0]);
     }
   }, [correct, wrong, blank]);
 
   return (
     <motion.div
-      ref={chartRef}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.9 }}
+      ref={chartRef} // Attach ref to the div
+      initial={{ opacity: 0, y: 20 }} // Start hidden and slightly offset
+      animate={{ opacity: 1, y: 0 }} // Animate to visible when component mounts
+      transition={{ duration: 0.9 }} // Animation duration
     >
       {series.length > 0 && (
         <Chart options={options} series={series} type="donut" width="180" />

@@ -7,11 +7,12 @@ import Sidebar from "@/components/Sidebar";
 import BalanceInfo from "@/components/BalanceInfo";
 import BalanceTable from "@/components/BalanceTable";
 import BalanceHistory from "@/components/BalanceHistory";
-import React from "react";
+import React, { useContext } from "react";
 import TitleNavigation from "@/components/TitleNavigation";
 import { useTranslation } from "react-i18next";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
+import { UserContext } from "@/shared/context/UserContext";
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
@@ -33,6 +34,11 @@ export async function getServerSideProps(context) {
   };
 }
 function Balansim() {
+  const { user } = useContext(UserContext);
+
+  console.log(user?.data.balance, "user balance");
+  const userBalance = user?.data?.balance;
+
   const { t } = useTranslation();
   return (
     <>
@@ -49,7 +55,7 @@ function Balansim() {
           <InternalContainer>
             <Breadcrumb />
             <TitleNavigation />
-            <BalanceInfo />
+            <BalanceInfo userBalance={userBalance} />
             {/* <BalanceHistory /> */}
             <BalanceTable />
           </InternalContainer>
