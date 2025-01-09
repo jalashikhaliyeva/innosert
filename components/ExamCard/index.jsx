@@ -72,13 +72,12 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
       <div className="block md:hidden">
         {!isMyExamsPage ? (
           <Swiper
-            spaceBetween={16}
-            slidesPerView="auto"
-            pagination={{ clickable: true }}
-            centeredSlides={false}
-            loop={false}
-            loopFillGroupWithBlank={false}
-            slideToClickedSlide={true}
+          spaceBetween={16}
+          slidesPerView="auto"
+          pagination={{ clickable: true }}
+          centeredSlides={false}
+          loop={false}
+          slideToClickedSlide={true}
           >
             {exams.map((exam) => {
               const isSaved = savedExams.find(

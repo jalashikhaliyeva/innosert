@@ -1,4 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+// OTP.js
+import { UserContext } from "@/shared/context/UserContext";
+import { useState, useRef, useEffect, useContext } from "react";
 import { HiOutlineArrowLeft } from "react-icons/hi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -7,9 +9,9 @@ function OTP({
   isOpen,
   onClose,
   onBack,
-  email,
   onOpenResetPasswordModal,
 }) {
+  const { phone , setOtpCode } = useContext(UserContext); // Retrieve phone from context
   const [code, setCode] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to manage button disabled state
   const [timer, setTimer] = useState(0); // State to manage the timer
@@ -18,9 +20,8 @@ function OTP({
 
   const handleInputChange = (e, index) => {
     const value = e.target.value;
-    setCode(
-      (prevCode) =>
-        prevCode.substr(0, index) + value + prevCode.substr(index + 1)
+    setCode((prevCode) =>
+      prevCode.substr(0, index) + value + prevCode.substr(index + 1)
     );
 
     if (value.length === 1 && index < inputRefs.current.length - 1) {
@@ -33,9 +34,8 @@ function OTP({
 
     const formData = new FormData();
     formData.append("code", code);
-    formData.append("email", email);
-    console.log(formData , "formData");
-    
+    formData.append("phone", phone); // Send phone instead of email
+    console.log(formData, "formData");
 
     try {
       const response = await fetch(
@@ -51,8 +51,9 @@ function OTP({
 
       if (response.ok && data?.status === "success") {
         toast.success("Kod uğurla təsdiqləndi!");
+        setOtpCode(code);
         console.log("Code verified successfully.");
-        onClose(); // Close the OTPmodal
+        onClose(); // Close the OTP modal
         onOpenResetPasswordModal(); // Open the ResetPasswordModal
       } else {
         toast.error("Kodun təsdiqi uğursuz oldu. Yenidən cəhd edin.");
@@ -92,7 +93,7 @@ function OTP({
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            value: email,
+            phone, // Send phone instead of email
           }),
         }
       );
@@ -129,18 +130,7 @@ function OTP({
 
   return (
     <>
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      /> */}
+
 
       <div
         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
@@ -162,9 +152,6 @@ function OTP({
               className="text-2xl text-buttonPrimaryDefault cursor-pointer"
               onClick={onBack}
             />
-            {/* <span className="ml-2 font-gilroy text-lg text-buttonPrimaryDefault">
-              Geri
-            </span> */}
           </div>
 
           <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-buttonPrimaryDefault">
@@ -218,6 +205,5 @@ function OTP({
     </>
   );
 }
-
 
 export default OTP;

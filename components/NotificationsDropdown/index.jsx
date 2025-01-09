@@ -19,8 +19,11 @@ const NotificationsDropdown = () => {
 
   // Fetch notifications on component mount
   useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      return;
+    }
     const fetchNotifications = async () => {
-      const token = localStorage.getItem("token");
       try {
         const response = await axios.get(
           "https://innocert-admin.markup.az/api/user",
@@ -31,9 +34,9 @@ const NotificationsDropdown = () => {
           }
         );
         if (response.data.status) {
-          setNotifications(response.data.data.notifications);
+          setNotifications(response?.data?.data?.notifications);
           console.log(
-            response.data.data.notifications,
+            response?.data?.data?.notifications,
             "response.data.data.notifications"
           );
         }
@@ -162,7 +165,7 @@ const NotificationsDropdown = () => {
           </h2>
 
           {/* Notification List */}
-          {notifications.length > 0 ? (
+          {notifications?.length > 0 ? (
             <ul className="flex-grow overflow-y-auto divide-y divide-gray-200">
               {notifications.map((notification) => (
                 <li

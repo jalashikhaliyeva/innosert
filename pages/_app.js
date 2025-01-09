@@ -1,5 +1,3 @@
-// pages/_app.js
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import "@/styles/globals.css";
@@ -18,7 +16,7 @@ import CompanyContext from "../shared/context/CompanyContext";
 import AuthHandler from "@/components/AuthHandler";
 import AuthGate from "@/components/AuthGate";
 import { ToastContainer } from "react-toastify";
-import ErrorBoundary from "@/components/ErrorBoundary"; // Import ErrorBoundary
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
@@ -43,7 +41,6 @@ function MyApp({ Component, pageProps }) {
     };
   }, [router]);
 
-  // Initialize selectedCompany from localStorage if available
   useEffect(() => {
     const storedCompany = localStorage.getItem("selectedCompany");
     if (storedCompany) {
@@ -66,15 +63,7 @@ function MyApp({ Component, pageProps }) {
     }
   }, [router.locale]);
 
-  // Retrieve and log the token on the client-side
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
-      console.log("Retrieved token:", token);
-      // const googleSignIn = localStorage.getItem("googleSignIn");
-      // console.log("googleSignIn token:", googleSignIn);
-    }
-  }, []);
+  // Remove or comment out the old console log "Retrieved token: null"
 
   return (
     <SessionProvider session={pageProps.session}>

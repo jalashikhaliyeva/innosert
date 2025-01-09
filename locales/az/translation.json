@@ -321,5 +321,15 @@
   "collaboration": "Əməkdaşlıq",
   "all_durations": "İmtahan müddəti",
   "no_exam_found": "Belə bir imtahan yoxdur.",
-  "confirm": "Təsdiq et"
+  "confirm": "Təsdiq et",
+  "phoneVerify": {
+    "verification": "Telefon Doğrulaması",
+    "enterPhone": "Zəhmət olmasa telefon nömrənizi daxil edin.",
+    "invalidPhone": "Zəhmət olmasa düzgün telefon nömrəsi daxil edin.",
+    "verificationSuccess": "Doğrulama kodu uğurla göndərildi.",
+    "verificationFailed": "Doğrulama kodunu göndərmək alınmadı. Zəhmət olmasa yenidən cəhd edin.",
+    "unexpectedError": "Gözlənilməz xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
+    "confirm": "Təsdiqlə",
+    "placeholder": "Telefon nömrəsini daxil edin"
+  }
 }

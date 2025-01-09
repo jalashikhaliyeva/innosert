@@ -1,5 +1,3 @@
-// components/AuthHandler.jsx
-
 import { useEffect, useContext } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -16,7 +14,6 @@ function AuthHandler({ children }) {
   useEffect(() => {
     if (status === "loading") return;
 
-    // Define supported social providers
     const socialProviders = ["google", "linkedin", "facebook"];
     let initiatedProvider = null;
 
@@ -35,18 +32,25 @@ function AuthHandler({ children }) {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
+                Authorization: session?.user.id
+                  ? `Bearer ${session.user.id}`
+                  : undefined,
               },
               body: JSON.stringify(session.user),
             }
           );
 
           const data = await response.json();
+          console.log(data, "auth handler");
 
-          if (response.ok && data?.data?.token) {
-            const token = data.data.token;
-
-            await login(token);
-            // toast.success(t("toastMessages.loginSuccess"));
+          if (response.ok && data.data.token) {
+            const backendToken = data.data.token;
+            console.log(backendToken, "backendToken");
+            
+          
+            // Wait for the token to be set before redirect
+            await login(backendToken);
+          
             router.push("/home");
           } else {
             console.error("Failed to get token from backend API:", data);
@@ -56,7 +60,8 @@ function AuthHandler({ children }) {
           console.error("Error in sendUserData:", error);
           toast.warning(t("toastMessages.generalError"));
         } finally {
-          localStorage.removeItem(`${initiatedProvider}SignIn`); // Clean up
+          // Clean up
+          localStorage.removeItem(`${initiatedProvider}SignIn`);
         }
       };
       sendUserData();

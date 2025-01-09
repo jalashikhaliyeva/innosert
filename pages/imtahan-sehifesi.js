@@ -94,13 +94,17 @@ function ImtahanSehifesi() {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/start-exam/${clickedExam.slug}`,
+          `https://innocert-admin.markup.az/api/get-exam/${clickedExam.slug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
+        console.log(clickedExam.slug , "cliked exam imtahan sehifesi");
+        
+        console.log(response.data, "imtahan sehifesi");
+        
 
         if (response.data.status) {
           let fetchedQuestions = response.data.data.question;
@@ -289,14 +293,14 @@ function ImtahanSehifesi() {
 
   const renderQuestionComponent = () => {
     const commonProps = {
-      key: currentQuestionData.id,
+      key: currentQuestionData?.id,
       questionData: currentQuestionData,
       userAnswer: currentUserAnswer,
       setUserAnswer: setUserAnswer,
       onSubmitReport: handleReportSubmit,
     };
 
-    switch (currentQuestionData.type) {
+    switch (currentQuestionData?.type) {
       case "Uyğunlaşdırma Sual":
         return <CombinationQuestion {...commonProps} />;
       case "Açıq sual":
@@ -312,7 +316,7 @@ function ImtahanSehifesi() {
     return questionsData
       .map((question, index) => {
         const userAnswer = userAnswers[index];
-        const questionId = question.id;
+        const questionId = question?.id;
 
         switch (question.type) {
           case "Variantlı Sual":
@@ -326,11 +330,11 @@ function ImtahanSehifesi() {
               submittedAnswer: userAnswer || "",
             };
           case "Uyğunlaşdırma Sual":
-            if (userAnswer && userAnswer.length > 0) {
+            if (userAnswer && userAnswer?.length > 0) {
               const submittedAnswer = {};
               userAnswer.forEach((pair) => {
-                const keyId = pair.questionId;
-                const valueIds = pair.selectedOptionIds;
+                const keyId = pair?.questionId;
+                const valueIds = pair?.selectedOptionIds;
                 submittedAnswer[keyId] = valueIds;
               });
               return {
@@ -356,7 +360,7 @@ function ImtahanSehifesi() {
       setExamFinishTime(new Date());
 
       const token = localStorage.getItem("token");
-      const slug = clickedExam.slug;
+      const slug = clickedExam?.slug;
 
       const data = {
         totalTime: calculateTotalTime(examStartTime, new Date()),
@@ -455,13 +459,13 @@ function ImtahanSehifesi() {
         clickedExam={clickedExam}
         duration={timeRemaining}
         currentQuestion={currentQuestion}
-        totalQuestions={questionsData.length}
-        currentScore={currentQuestionData.score}
-        isPerQuestionTiming={isDurationZero(examDetails.duration)}
+        totalQuestions={questionsData?.length}
+        currentScore={currentQuestionData?.score}
+        isPerQuestionTiming={isDurationZero(examDetails?.duration)}
       />
 
       <div className="flex-1 overflow-auto flex">
-        {!isDurationZero(examDetails.duration) && (
+        {!isDurationZero(examDetails?.duration) && (
           <div className="hidden lg:block fixed z-10 left-0 top-20 bottom-30 w-[20%] h-[100vh] overflow-y-auto shadow-md ">
             <ExamSidebar
               questions={questionsData}
@@ -474,7 +478,7 @@ function ImtahanSehifesi() {
 
         <div
           className={`flex-1 overflow-auto ${
-            isDurationZero(examDetails.duration) ? "ml-0" : "ml-0  lg:ml-[20%]"
+            isDurationZero(examDetails?.duration) ? "ml-0" : "ml-0  lg:ml-[20%]"
           }`}
         >
           <InternalContainer>
@@ -487,8 +491,8 @@ function ImtahanSehifesi() {
         className="flex-shrink-0"
         onNext={handleNextQuestion}
         onPrevious={handlePreviousQuestion}
-        isLastQuestion={currentQuestion === questionsData.length - 1}
-        showPreviousButton={!isDurationZero(examDetails.duration)}
+        isLastQuestion={currentQuestion === questionsData?.length - 1}
+        showPreviousButton={!isDurationZero(examDetails?.duration)}
       />
 
       {isFinishModalOpen && (

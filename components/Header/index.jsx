@@ -18,6 +18,7 @@ import { IoMdArrowBack } from "react-icons/io";
 import LanguageSwitcher from "@/shared/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import OTP from "../OTP";
+import PhoneVerificationModal from "../EmailVerificationModal";
 // import { useRouter } from "next/router";
 const Header = ({
   openRegisterModal,
@@ -545,7 +546,7 @@ const Header = ({
         </div>
       )}
       {isEmailVerificationModalOpen && (
-        <EmailVerificationModal
+        <PhoneVerificationModal
           isOpen={isEmailVerificationModalOpen}
           onClose={() => setIsEmailVerificationModalOpen(false)}
           onBack={handleBackToLogin}

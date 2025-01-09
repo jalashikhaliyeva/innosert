@@ -1,24 +1,27 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import { HiOutlineArrowLeft } from "react-icons/hi";
-import { GoMail } from "react-icons/go";
 import { useRouter } from "next/router";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useTranslation } from "next-i18next";
-export default function EmailVerificationModal({
+import { UserContext } from "@/shared/context/UserContext";
+
+export default function PhoneVerificationModal({
   isOpen,
   onClose,
   onBack,
   onOpenOTPModal,
-  setEmailForOTP, // New prop to pass the email to OTPmodal
+  // setPhoneForOTP,
 }) {
   const router = useRouter();
   const inputRefs = useRef([]);
-  const [email, setEmail] = useState("");
+
   const [hydrated, setHydrated] = useState(false);
-  const [emailError, setEmailError] = useState(false); // Track if email has an error
+  const [phoneError, setPhoneError] = useState(false); // Track if phone has an error
   const [isFocused, setIsFocused] = useState(false); // Track if input is focused
   const { t } = useTranslation();
+  const { phone, setPhone } = useContext(UserContext);
+
   useEffect(() => {
     setHydrated(true);
   }, []);
@@ -26,63 +29,84 @@ export default function EmailVerificationModal({
   // Exit early if not hydrated or not open
   if (!isOpen || !hydrated) return null;
 
-  // Function to validate email format
-  const validateEmail = (email) => {
-    const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
-    return emailPattern.test(email);
+  // Function to validate phone number format (e.g., 9 digits)
+  const validatePhone = (phone) => {
+    const phonePattern = /^\d{9}$/; // Adjust the pattern based on your requirements
+    return phonePattern.test(phone);
   };
 
-  const handleVerifyEmail = async (e) => {
+  const handleVerifyPhone = async (e) => {
     e.preventDefault();
 
-    // Check if the email format is invalid
-    if (!validateEmail(email)) {
-      setEmailError(true); // Set error state
-      toast.error(t("emailVerify.invalidEmail"));
+    // Check if the phone format is invalid
+    if (!validatePhone(phone)) {
+      setPhoneError(true); // Set error state
+      toast.error(t("phoneVerify.invalidPhone"));
       return; // Stop form submission
     }
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/password/email",
+        "https://innocert-admin.markup.az/api/password/mobile",
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            value: email,
+            value: phone, // Send phone without +994
           }),
         }
       );
 
       const data = await response.json();
-      if (response.ok && data?.status === true) {
-        localStorage.setItem("resetToken", data.data.code); // Store the token in local storage
-        console.log(data.data.code, "data email verify");
+      console.log(data, "phone verify");
+
+      // Updated condition to check for "success" string
+      if (response.ok && data?.status === "success") {
+        // localStorage.setItem("resetToken", data.data.code);
+        // console.log(data.data.code, "data phone verify");
 
         console.log("Verification successful.");
-        toast.success(t("emailVerify.verificationSuccess"));
+        toast.success(t("phoneVerify.verificationSuccess"));
+        setPhone("");
 
-        setEmailForOTP(email); // Set the email for OTPmodal
-        onClose(); // Close the EmailVerificationModal
-        onOpenOTPModal(); // Open the OTPmodal
+        // setPhoneForOTP(phone);
+        onClose();
+        onOpenOTPModal();
       } else {
         console.log(
           `Error: ${data.message || "Verification failed. Please try again."}`
         );
-        toast.error(t("emailVerify.verificationFailed"));
+        toast.error(t("phoneVerify.verificationFailed"));
       }
     } catch (error) {
-      console.error("Error verifying email:", error);
+      console.error("Error verifying phone:", error);
       console.log("An unexpected error occurred. Please try again.");
-      toast.warning(t("emailVerify.unexpectedError"));
+      toast.warning(t("phoneVerify.unexpectedError"));
     }
   };
 
   const handleOutsideClick = (e) => {
     if (e.target === e.currentTarget) {
       onClose();
+    }
+  };
+
+  // Optional: Prevent non-digit key presses
+  const handleKeyDown = (e) => {
+    const allowedKeys = [
+      "Backspace",
+      "ArrowLeft",
+      "ArrowRight",
+      "Delete",
+      "Tab",
+    ];
+    if (
+      !allowedKeys.includes(e.key) &&
+      !/^\d$/.test(e.key) // Allow only digits
+    ) {
+      e.preventDefault();
     }
   };
 
@@ -110,42 +134,53 @@ export default function EmailVerificationModal({
         </div>
 
         <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-brandBlue500">
-          {t("emailVerify.verification")}
+          {t("phoneVerify.verification")}
         </h2>
         <p className="text-center font-gilroy text-grayButtonText text-base mb-4">
-          {t("emailVerify.enterEmail")}
+          {t("phoneVerify.enterPhone")}
         </p>
-        <form onSubmit={handleVerifyEmail}>
-          <div className="mb-6 relative">
-            <GoMail className="text-2xl absolute left-3 top-5 transform -translate-y-1/2 text-grayTextinBox" />
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setEmailError(false); // Reset error when user types
-              }}
-              onFocus={() => {
-                setIsFocused(true); // Handle focus
-                setEmailError(false); // Remove error when focusing
-              }}
-              onBlur={() => setIsFocused(false)} // Remove focus state when input is blurred
-              className={`w-full pl-12 pr-3 py-2 border ${
-                emailError
-                  ? "border-red-500" // Error border color
-                  : isFocused
-                  ? "border-inputRingFocus" // Focus border color
-                  : "border-inputBorder"
-              } bg-grayTextColor rounded-md text-base text-textSecondaryDefault font-medium focus:outline-none ${
-                emailError
-                  ? "focus:border-red-500" // Focus state with error
-                  : "focus:border-inputRingFocus" // Normal focus border
-              }`}
-              placeholder={t("emailVerify.placeholder")}
-            />
-            {emailError && !isFocused && (
+        <form onSubmit={handleVerifyPhone}>
+          <div className="mb-4">
+            {/* Relative container for prefix and input */}
+            <div className="relative">
+              <span className="text-lg font-gilroy absolute left-4 top-1/2 transform -translate-y-1/2 text-grayTextinBox">
+                +994
+              </span>
+              <input
+                type="tel"
+                inputMode="numeric" // Brings up numeric keypad on mobile
+                pattern="\d*" // Allows only digits
+                value={phone}
+                onChange={(e) => {
+                  const sanitizedValue = e.target.value.replace(/\D/g, ""); // Remove non-digits
+                  setPhone(sanitizedValue);
+                  setPhoneError(false);
+                }}
+                onKeyDown={handleKeyDown} // Optional: Prevent non-digit key presses
+                onFocus={() => {
+                  setIsFocused(true);
+                  setPhoneError(false);
+                }}
+                onBlur={() => setIsFocused(false)}
+                className={`w-full pl-16 pr-3 py-2 border ${
+                  phoneError
+                    ? "border-red-500"
+                    : isFocused
+                    ? "border-inputRingFocus"
+                    : "border-inputBorder"
+                } bg-grayTextColor rounded-md text-sm font-gilroy  text-textSecondaryDefault font-medium focus:outline-none ${
+                  phoneError
+                    ? "focus:border-red-500"
+                    : "focus:border-inputRingFocus"
+                }`}
+                placeholder={t("phoneVerify.placeholder")}
+                maxLength={9} // Assuming 9 digits for the phone number
+              />
+            </div>
+            {/* Error message outside the relative container */}
+            {phoneError && !isFocused && (
               <p className="text-red-500 text-sm mt-1">
-                {t("emailVerify.invalidEmail")}
+                {t("phoneVerify.invalidPhone")}
               </p>
             )}
           </div>
@@ -156,7 +191,7 @@ export default function EmailVerificationModal({
                 type="submit"
                 className="w-full font-gilroy flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary"
               >
-                {t("emailVerify.confirm")}
+                {t("phoneVerify.confirm")}
               </button>
             </div>
           </div>

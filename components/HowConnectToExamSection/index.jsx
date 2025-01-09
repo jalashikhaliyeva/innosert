@@ -18,7 +18,7 @@ function HowConnectToExamSection(props) {
           {props?.data?.map((item, index) => (
             <div
               key={item.id}
-              className="w-full lg:w-[27%] p-5 bg-grayBox flex flex-col gap-7 rounded-md"
+              className="w-full p-5 bg-grayBox  flex flex-col gap-7 rounded-md"
             >
               <div className="bg-inputBgHover text-red500 w-10 h-10 flex items-center justify-center rounded-lg text-xl font-gilroy">
                 {`0${index + 1}`}
@@ -32,7 +32,7 @@ function HowConnectToExamSection(props) {
                   dangerouslySetInnerHTML={{ __html: item.desc }}
                 />
                 <div
-                  className="relative w-48 h-48 bg-center bg-cover bg-no-repeat"
+                  className="relative w-48 h-52 bg-center bg-cover bg-no-repeat"
                   style={{ backgroundImage: `url(${item.image})` }}
                 >
                   <div className="absolute bg-brandBlue500 inset-0 mix-blend-hue" />

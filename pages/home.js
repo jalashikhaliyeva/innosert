@@ -15,11 +15,10 @@ import Spinner from "@/components/Spinner";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 import Head from "next/head";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
-
   if (!session) {
     return {
       redirect: {
@@ -28,10 +27,7 @@ export async function getServerSideProps(context) {
       },
     };
   }
-
-  return {
-    props: {},
-  };
+  return { props: {} };
 }
 
 function Home() {
@@ -42,10 +38,14 @@ function Home() {
     filteredExams,
     setPrivateExam,
     privateExam,
-    // searchExam, <-- Remove this from usage
     setSearchExam,
+    token,
   } = useContext(UserContext);
+  console.log(token, "token");
 
+  const { data: session, status } = useSession();
+  console.log(status, "status");
+  console.log(session, "session");
   const router = useRouter();
   const lang = router.locale || "az";
   const { t } = useTranslation();
@@ -85,20 +85,24 @@ function Home() {
       setLoginModalOpen(true);
     }
   };
-
   useEffect(() => {
+    if (status === "loading" || !token) {
+      return;
+    }
+
     const fetchExams = async () => {
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.log("Authentication token not found.");
+        // 3) Use your Innocert token from context; fallback to session?.user.id if needed
+        const finalToken = token || session?.user.id;
+        if (!finalToken) {
+          console.log("No token found. This request will be unauthenticated.");
         }
 
         const response = await axios.get(
           "https://innocert-admin.markup.az/api/get-all-exams",
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${finalToken}`,
               "Accept-Language": lang,
             },
           }
@@ -119,8 +123,7 @@ function Home() {
     };
 
     fetchExams();
-  }, [lang]);
-
+  }, [lang, session, status, token]);
   useEffect(() => {
     setVisibleCategories(4);
   }, [filteredExams]);

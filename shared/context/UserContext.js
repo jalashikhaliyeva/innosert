@@ -148,6 +148,10 @@ function UserProvider({ children }) {
       return;
     }
 
+
+    console.log(token , "context token");
+    
+
     try {
       const response = await fetch(
         "https://innocert-admin.markup.az/api/user",
@@ -173,7 +177,7 @@ function UserProvider({ children }) {
     } finally {
       setLoading(false);
     }
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     // Public routes: index ('/'), haqqimizda ('/haqqimizda'), imtahanlar ('/imtahanlar'), imtahanlar/[slug] ('/imtahanlar/:slug')
@@ -190,12 +194,19 @@ function UserProvider({ children }) {
     }
   }, [token, fetchUserData, router.pathname]);
 
-  const login = useCallback(async (newToken) => {
+// UserContext.js
+const login = useCallback(async (newToken) => {
+  try {
     if (typeof window !== "undefined") {
       localStorage.setItem("token", newToken);
     }
     setToken(newToken);
-  }, []);
+  } catch (error) {
+    console.error("Error storing token:", error);
+    throw error;
+  }
+}, []);
+
 
   const logout = useCallback(async () => {
     if (typeof window !== "undefined") {

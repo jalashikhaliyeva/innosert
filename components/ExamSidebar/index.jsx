@@ -16,12 +16,12 @@ function ExamSidebar({
     <div className="w-full  sm:w-[290px]  py-20  p-6 font-gilroy overflow-y-auto">
       <h2 className="text-xl font-semibold mb-2">Suallar</h2>
       <p className="text-gray-500 mb-4">
-        Cavablanmış suallar: {totalAnswered}/{questions.length}
+        Cavablanmış suallar: {totalAnswered}/{questions?.length}
       </p>
       <div className="space-y-2 overflow-y-auto">
-        {questions.map((question, index) => (
+        {questions?.map((question, index) => (
           <div
-            key={question.id}
+            key={question?.id}
             className={`flex items-start p-2 rounded-lg cursor-pointer transition-colors duration-200 ${
               index === currentQuestion
                 ? "bg-blue-100"

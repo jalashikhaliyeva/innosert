@@ -317,5 +317,15 @@
     "minimumAmount": "Amount must be at least 0.1.",
     "maximumAmount": "Amount cannot exceed 500.",
     "invalidFormat": "Please enter a valid format."
+  },
+  "phoneVerify": {
+    "verification": "Phone Verification",
+    "enterPhone": "Please enter your phone number.",
+    "invalidPhone": "Please enter a valid phone number.",
+    "verificationSuccess": "Verification code sent successfully.",
+    "verificationFailed": "Failed to send verification code. Please try again.",
+    "unexpectedError": "An unexpected error occurred. Please try again.",
+    "confirm": "Confirm",
+    "placeholder": "Enter phone number"
   }
 }
