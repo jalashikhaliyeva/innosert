@@ -2,7 +2,7 @@ import React from "react";
 import Container from "../Container";
 
 function HowConnectToExamSection(props) {
-  console.log(props.data, " ata HowConnectToExamSection");
+  // console.log(props.data, " ata HowConnectToExamSection");
 
   return (
     <div>

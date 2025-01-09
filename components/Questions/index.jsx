@@ -14,7 +14,7 @@ function Questions({
   openDeleteModal,
   questions,
 }) {
-  console.log(questions, "QuestionsTableCompany from API add quest");
+  // console.log(questions, "QuestionsTableCompany from API add quest");
   const data = questions;
   const { setSelectedQuestion } = useContext(UserContext);
 
@@ -37,7 +37,7 @@ function Questions({
 
   const router = useRouter();
   const handleEdit = (question) => {
-    console.log(question, "handle edit");
+    // console.log(question, "handle edit");
     setSelectedQuestion(question);
     // Navigate to the sual-redakte page with question data in query params
     router.push({
@@ -45,14 +45,14 @@ function Questions({
     });
   };
 
-  console.log();
+  // console.log();
 
   const handleDeleteClick = (id) => {
     // Open the delete modal and pass the selected question ID
     openDeleteModal(id);
   };
   const handleClick = (question) => {
-    console.log(question, "handle click");
+    // console.log(question, "handle click");
     setSelectedQuestion(question);
     router.push("/sual-haqqinda");
   };

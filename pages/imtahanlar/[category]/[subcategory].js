@@ -70,7 +70,7 @@ const SubcategoryPage = ({
         }
 
         const data = await response.json();
-        console.log(data.data, "data SubcategoryPage");
+        // console.log(data.data, "data SubcategoryPage");
 
         // Ensure data.data is an array
         if (Array.isArray(data.data)) {

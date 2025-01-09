@@ -8,7 +8,7 @@ import axios from "axios";
 
 function QuestionsTableCompany() {
   const { selectedCompany } = useContext(CompanyContext);
-  console.log(selectedCompany, "QuestionsTableCompany selectedCompany");
+  // console.log(selectedCompany, "QuestionsTableCompany selectedCompany");
 
   const levelColors = {
     Çətin: "bg-redLow",
@@ -34,7 +34,7 @@ function QuestionsTableCompany() {
           }
         );
 
-        console.log(response.data, "response QUESTION TABLE COMPANY");
+        // console.log(response.data, "response QUESTION TABLE COMPANY");
 
         setQuestions(response.data.data); // Update questions state with API data
       } catch (error) {

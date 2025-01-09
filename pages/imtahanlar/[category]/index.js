@@ -76,7 +76,7 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
         }
 
         const data = await response.json();
-        console.log(data.data, "data CategoryPage");
+        // console.log(data.data, "data CategoryPage");
 
         // Ensure data.data is an array
         if (Array.isArray(data.data)) {

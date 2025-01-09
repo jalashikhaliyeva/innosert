@@ -85,7 +85,7 @@ function Registrations({ examSlug, searchTerm }) {
             },
           }
         );
-        console.log("Registrations API Response:", response.data);
+        // console.log("Registrations API Response:", response.data);
         setData(response.data.data || []); // Ensure data is an array
       } catch (err) {
         console.error("Error fetching registrations:", err);

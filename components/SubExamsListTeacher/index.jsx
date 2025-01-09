@@ -98,10 +98,10 @@ function SubExamsListTeacher({ folderSlug, selectedExams, setSelectedExams, view
   useEffect(() => {
     if (folderSlug === undefined) return; // Wait until folderSlug is defined
 
-    console.log("folderSlug:", folderSlug);
+    // console.log("folderSlug:", folderSlug);
 
     const folder = examsData.find((exam) => exam.slug === folderSlug);
-    console.log("folder found:", folder);
+    // console.log("folder found:", folder);
 
     if (folder && folder.exams) {
       setExams(folder.exams);

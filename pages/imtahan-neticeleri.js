@@ -74,7 +74,7 @@ function ImtahanNeticeleri() {
     };
   }, [router]);
 
-  console.log(percentage, "percentage");
+  // console.log(percentage, "percentage");
 
   // If percentage is null, render ExamEndFail directly
   if (percentage === null) {

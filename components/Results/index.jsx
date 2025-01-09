@@ -113,7 +113,7 @@ function Results({ examSlug, searchTerm }) {
           completionDate: parseDate(item.finish_exam),
         }));
         setData(fetchedData);
-        console.log(fetchedData, "results data");
+        // console.log(fetchedData, "results data");
       } catch (err) {
         console.error("Error fetching results:", err);
         setError("Nəticələr alınarkən səhv baş verdi.");

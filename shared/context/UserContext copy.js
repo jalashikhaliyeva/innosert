@@ -122,12 +122,12 @@ function UserProvider({ children }) {
 
   const fetchUserData = useCallback(async () => {
     if (!token) {
-      console.log(token, "no token");
+      // console.log(token, "no token");
       setLoading(false);
       return;
     }
 
-    console.log(token, "setToken context");
+    // console.log(token, "setToken context");
     
     try {
       const response = await fetch("https://innocert-admin.markup.az/api/user", {
@@ -139,9 +139,9 @@ function UserProvider({ children }) {
 
       if (response.ok) {
         const userData = await response.json();
-              console.log(userData, "userData");
+              // console.log(userData, "userData");
         setUser(userData);
-        console.log(userData, "userData context");
+        // console.log(userData, "userData context");
       } else {
         toast.error("Failed to fetch user data");
         setUser(null);

@@ -17,7 +17,7 @@ import { getSession } from "next-auth/react";
 
 function ExamName({ examData, error }) {
   const { user } = useContext(UserContext);
-  console.log(user, "user");
+  // console.log(user, "user");
 
   // State for Register Modal
   const [isRegisterModalOpen, setRegisterModalOpen] = useState(false);
@@ -46,7 +46,7 @@ function ExamName({ examData, error }) {
     );
   }
 
-  console.log(examData, "examData");
+  // console.log(examData, "examData");
 
   return (
     <>

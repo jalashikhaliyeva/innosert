@@ -34,7 +34,7 @@ function Haqqimizda({ landingInfo, openRegisterModal }) {
     return <Spinner />;
   }
 
-  console.log(aboutInfo, "aboutInfo");
+  // console.log(aboutInfo, "aboutInfo");
 
   return (
     <>

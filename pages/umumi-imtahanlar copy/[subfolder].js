@@ -19,17 +19,17 @@ function SubImtahan() {
   }
 
   const openDeleteModal = () => {
-    console.log("deletemodal");
+    // console.log("deletemodal");
 
     // Your logic to open the delete modal
   };
   const openAddExamModal = () => {
-    console.log("addExamModal");
+    // console.log("addExamModal");
     // Your logic to open the add exam modal
   };
   const slugParam = router.query.subfolder;
 
-  console.log("slug in SubImtahan:", router.query.subfolder);
+  // console.log("slug in SubImtahan:", router.query.subfolder);
 
   return (
     <>

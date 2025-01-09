@@ -44,7 +44,7 @@ function ImtahanlarComponent({ viewMode, sortOption, id }) {
               exams: response.data.data, // Ensure this includes author fields
               folders: [], // No folders in the current data
             });
-            console.log(response.data, "response.data");
+            // console.log(response.data, "response.data");
           } else {
             setError(response.data.message || "Failed to fetch exams");
           }

@@ -13,7 +13,7 @@ function ExamListCompany({
   exams,
 }) {
   const { selectedCompany } = useContext(CompanyContext);
-  console.log(exams, "folders exam list company ");
+  // console.log(exams, "folders exam list company ");
   const examsData = exams;
 
   // State to manage selected exams

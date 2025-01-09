@@ -13,7 +13,7 @@ const FroalaEditorComponent = dynamic(() => import("react-froala-wysiwyg"), {
 
 function EditQuestionSection({ selectedOption }) {
   const { selectedCompany } = useContext(CompanyContext);
-  console.log(selectedCompany, "selectedCompany EditQuestionSection ");
+  // console.log(selectedCompany, "selectedCompany EditQuestionSection ");
 
   const [titleText, setTitleText] = useState("");
   const [conditionText, setConditionText] = useState("");

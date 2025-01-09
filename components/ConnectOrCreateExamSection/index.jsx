@@ -5,7 +5,7 @@ import Button from "../Button";
 import Image from "next/image";
 
 function ConnectOrCreateExamSection({ title }) {
-  console.log(title, "title connect or create");
+  // console.log(title, "title connect or create");
   const modifiedTitle = title?.title
     .replace(
       "iştirak et",

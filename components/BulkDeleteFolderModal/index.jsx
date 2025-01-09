@@ -24,7 +24,7 @@ function BulkDeleteFolderModal({ folders, closeModal, onDelete }) {
       const payload = { folder: folders.map((folder) => folder.id) };
 
       // Log payload to console to inspect data being sent
-      console.log("Data being sent to API:", payload);
+      // console.log("Data being sent to API:", payload);
 
       // Corrected API endpoint and payload structure
       const response = await axios.post(

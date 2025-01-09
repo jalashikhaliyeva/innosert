@@ -63,7 +63,7 @@ function Hesabatlar() {
           },
         })
         .then((response) => {
-          console.log(response.data.data, "response data report");
+          // console.log(response.data.data, "response data report");
           setReportData(response.data.data);
         })
         .catch((error) => {

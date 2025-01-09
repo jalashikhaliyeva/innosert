@@ -22,7 +22,7 @@ export default function MemberShip() {
     const fetchSettingInfo = async () => {
       try {
         const data = await getSettingInfo();
-        console.log(data.contact, "data footer");
+        // console.log(data.contact, "data footer");
         setSettingInfo(data.contact);
       } catch (error) {
         console.error("Failed to fetch setting info:", error);
@@ -104,7 +104,7 @@ export default function MemberShip() {
       phone: formData.phone,
     };
 
-    console.log(payload, "payload");
+    // console.log(payload, "payload");
 
     setIsSubmitting(true); // Start loading
 

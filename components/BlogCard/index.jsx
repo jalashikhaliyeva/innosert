@@ -93,7 +93,7 @@ function BlogGrid() {
       }
 
       const data = await response.json();
-      console.log(data.data, "response data");
+      // console.log(data.data, "response data");
 
       setBlogs(data.data);
       setMeta(data.meta);

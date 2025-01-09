@@ -17,7 +17,7 @@ const QuestionFiles = ({
   const [dropdownVisible, setDropdownVisible] = useState(null);
   const dropdownRef = useRef(null);
 
-  console.log(files, "files company question files");
+  // console.log(files, "files company question files");
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -33,13 +33,13 @@ const QuestionFiles = ({
   }, []);
 
   const handleCheckboxChange = (fileId, isChecked) => {
-    console.log(`File ID: ${fileId}, Checked: ${isChecked}`);
+    // console.log(`File ID: ${fileId}, Checked: ${isChecked}`);
     setSelectedFiles((prevSelectedFiles) => {
       if (isChecked) {
-        console.log("Adding to selectedFiles:", fileId);
+        // console.log("Adding to selectedFiles:", fileId);
         return [...prevSelectedFiles, fileId];
       } else {
-        console.log("Removing from selectedFiles:", fileId);
+        // console.log("Removing from selectedFiles:", fileId);
         return prevSelectedFiles.filter((id) => id !== fileId);
       }
     });

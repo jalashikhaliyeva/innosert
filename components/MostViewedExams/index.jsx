@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 
 function MostViwedExams({mostViewedExams}) {
   const { t } = useTranslation();
-  console.log(mostViewedExams, "mostViewedExams");
+  // console.log(mostViewedExams, "mostViewedExams");
   const data = mostViewedExams
   // const data = [
   //   { id: 1, image: "/img/Sertifikat1.png" },

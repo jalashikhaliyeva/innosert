@@ -96,7 +96,7 @@ const SubcategoryPage = () => {
         }
 
         const data = await response.json();
-        console.log(data.data, "data SubcategoryPage");
+        // console.log(data.data, "data SubcategoryPage");
 
         setExams(data.data); // Set exams from the API response
       } catch (error) {

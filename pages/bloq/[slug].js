@@ -36,7 +36,7 @@ function BlogPost() {
   const router = useRouter();
   const { slug } = router.query; // Changed from 'id' to 'slug'
 
-  console.log(router.query, "router.query");
+  // console.log(router.query, "router.query");
 
   // Optional: Handle cases where slug might not be immediately available
   if (!slug) {

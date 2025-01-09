@@ -44,16 +44,16 @@ function ImtahanRedakte() {
     examDetails,
   } = useContext(UserContext);
   const { t } = useTranslation();
-  console.log(examToEdit, "examToEdit");
-  console.log(examDetails, "examDetailsas");
+  // console.log(examToEdit, "examToEdit");
+  // console.log(examDetails, "examDetailsas");
 
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
   const { selectedCompany, selectedCategory, selectedSubcategory } =
     useContext(UserContext);
 
-  console.log(selectedCategory, "selectedCategory");
-  console.log(selectedSubcategory, "selectedSubcategory");
+  // console.log(selectedCategory, "selectedCategory");
+  // console.log(selectedSubcategory, "selectedSubcategory");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
@@ -81,7 +81,7 @@ function ImtahanRedakte() {
             },
           }
         );
-        console.log("API Response:", response.data);
+        // console.log("API Response:", response.data);
         const fetchedQuestions = response.data.data;
         setSelectedQuestionsForExam(
           fetchedQuestions.map((q) => ({
@@ -127,7 +127,7 @@ function ImtahanRedakte() {
         })),
       ];
 
-      console.log(combinedList, "combinedList");
+      // console.log(combinedList, "combinedList");
 
       // Map category names to their corresponding IDs
       const mappedCategoryIds = parsedCategory
@@ -216,14 +216,14 @@ function ImtahanRedakte() {
         question: formattedQuestions,
       };
 
-      console.log(requestBody, "requestBody");
+      // console.log(requestBody, "requestBody");
 
       const encodedSlug = examToEdit.id;
       const apiEndpoint = `https://innocert-admin.markup.az/api/exam/update/${encodedSlug}`;
 
       const response = await axios.post(apiEndpoint, requestBody, { headers });
 
-      console.log(response, "Response edit");
+      // console.log(response, "Response edit");
 
       enqueueSnackbar("İmtahan uğurla yeniləndi!", { variant: "success" });
 

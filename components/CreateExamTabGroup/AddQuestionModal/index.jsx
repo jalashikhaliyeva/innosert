@@ -50,10 +50,10 @@ function AddQuestionModal({ onClose }) {
       const response = await axios.get(endpoint, { headers });
 
       const fetchedFolders = response.data?.data?.folders || [];
-      console.log(fetchedFolders, "fetchedFolders");
+      // console.log(fetchedFolders, "fetchedFolders");
 
       const fetchedQuestions = response.data?.data?.questions || [];
-      console.log(fetchedQuestions, "fetchedQuestions");
+      // console.log(fetchedQuestions, "fetchedQuestions");
 
       setFiles(fetchedFolders);
       setQuestions(fetchedQuestions);

@@ -51,9 +51,9 @@ function ImtahanYarat() {
   const isFormValid =
     isGeneralInfoValid && isQuestionsValid && hasEnoughQuestions;
 
-  console.log(examDetails, "examDetails");
-  console.log(selectedQuestionsForExam, "selectedQuestionsForExam API conn");
-  console.log(isFormValid, "isFormValid");
+  // console.log(examDetails, "examDetails");
+  // console.log(selectedQuestionsForExam, "selectedQuestionsForExam API conn");
+  // console.log(isFormValid, "isFormValid");
 
   const { qovluq } = router.query;
   const slugParam = Array.isArray(qovluq) ? qovluq[qovluq.length - 1] : qovluq;
@@ -94,7 +94,7 @@ function ImtahanYarat() {
 
       const formattedQuestions = selectedQuestionsForExam.map((question) => {
         const formattedQuestion = { id: question.id };
-        console.log(formattedQuestion, "formattedQuestions");
+        // console.log(formattedQuestion, "formattedQuestions");
 
         if (
           question.minute !== undefined &&
@@ -114,7 +114,7 @@ function ImtahanYarat() {
         question: formattedQuestions,
       };
 
-      console.log("Request Body:", requestBody);
+      // console.log("Request Body:", requestBody);
 
       let apiEndpoint = "https://innocert-admin.markup.az/api/exam/create";
       if (slugParam) {
@@ -122,11 +122,11 @@ function ImtahanYarat() {
         apiEndpoint += `/${encodedSlug}`;
       }
 
-      console.log("API Endpoint:", apiEndpoint);
+      // console.log("API Endpoint:", apiEndpoint);
 
       const response = await axios.post(apiEndpoint, requestBody, { headers });
 
-      console.log("API Response:", response.data);
+      // console.log("API Response:", response.data);
       enqueueSnackbar("İmtahan uğurla yaradıldı!", { variant: "success" });
 
       updateExamDetails(null);

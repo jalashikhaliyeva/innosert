@@ -101,9 +101,9 @@ function ImtahanSehifesi() {
             },
           }
         );
-        console.log(clickedExam.slug , "cliked exam imtahan sehifesi");
+        // console.log(clickedExam.slug , "cliked exam imtahan sehifesi");
         
-        console.log(response.data, "imtahan sehifesi");
+        // console.log(response.data, "imtahan sehifesi");
         
 
         if (response.data.status) {
@@ -370,7 +370,7 @@ function ImtahanSehifesi() {
         answers: buildAnswersArray(),
       };
 
-      console.log(data, "data exam send");
+      // console.log(data, "data exam send");
 
       const response = await axios.post(
         `https://innocert-admin.markup.az/api/start-exam/${slug}`,
@@ -382,7 +382,7 @@ function ImtahanSehifesi() {
         }
       );
 
-      console.log(data, "data sent to finish exam");
+      // console.log(data, "data sent to finish exam");
 
       if (response.data.status) {
         const percentageData = response.data.data;
@@ -434,7 +434,7 @@ function ImtahanSehifesi() {
         );
 
         // Log the response to see its content
-        console.log("Response from API:", response);
+        // console.log("Response from API:", response);
 
         // Redirect to the results page
         setTimeout(() => {

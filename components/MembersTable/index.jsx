@@ -22,7 +22,7 @@ function MembersTable({
   // const { user } = useContext(CompanyContext);
   const { t } = useTranslation();
   const { selectedCompany } = useContext(CompanyContext);
-  console.log(selectedCompany, "selectedCompany in Uzvler of company");
+  // console.log(selectedCompany, "selectedCompany in Uzvler of company");
 
   // State declarations
   const [currentPage, setCurrentPage] = useState(0);
@@ -250,10 +250,10 @@ function MembersTable({
         );
 
         const responseData = await response.json();
-        console.log(responseData, "responseData delete");
+        // console.log(responseData, "responseData delete");
 
         if (response.ok) {
-          console.log(responseData, "response DELETE ");
+          // console.log(responseData, "response DELETE ");
           handleDelete(memberToDelete.id);
           closeDeleteModal();
         } else {

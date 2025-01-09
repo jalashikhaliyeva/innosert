@@ -34,7 +34,7 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
     const fetchQuestions = async () => {
       try {
         const token = localStorage.getItem("token");
-        console.log(examDetailsSingle.slug, "examDetailsSingle.name");
+        // console.log(examDetailsSingle.slug, "examDetailsSingle.name");
 
         const response = await axios.get(
           `https://innocert-admin.markup.az/api/exam/questions/${examDetailsSingle.slug}`,
@@ -44,7 +44,7 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
             },
           }
         );
-        console.log("API Response:", response.data);
+        // console.log("API Response:", response.data);
         setQuestions(response.data.data);
       } catch (error) {
         console.error("Error fetching questions:", error);
@@ -95,7 +95,7 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
   };
 
   const handleEdit = (item) => {
-    console.log("Edit item:", item);
+    // console.log("Edit item:", item); 
     // Implement your edit logic here
   };
 
@@ -130,7 +130,7 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
   };
 
   const handleSortOptionClick = (option) => {
-    console.log(`Selected sort option: ${option}`);
+    // console.log(`Selected sort option: ${option}`);
     setIsSortMenuOpen(false);
     // Implement sorting logic based on the selected option
   };

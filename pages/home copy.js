@@ -32,7 +32,7 @@ function Home() {
       slug: sub.slug, // assuming slug is available in subcategory data
     })),
   ];
-  console.log(combinedList, "combinedList home");
+  // console.log(combinedList, "combinedList home");
 
   const [examsByCategory, setExamsByCategory] = useState({});
   const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);

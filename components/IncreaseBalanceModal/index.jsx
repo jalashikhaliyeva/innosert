@@ -88,7 +88,7 @@ function IncreaseBalanceModal({ closeModal }) {
     const token = localStorage.getItem("token");
 
     // Log the data being sent
-    console.log("Sending data to API:", requestBody);
+    // console.log("Sending data to API:", requestBody);
 
     try {
       const response = await fetch(
@@ -106,7 +106,7 @@ function IncreaseBalanceModal({ closeModal }) {
       const responseData = await response.json();
 
       // Log the response from the API
-      console.log("Received response from API:", responseData);
+      // console.log("Received response from API:", responseData);
 
       if (
         responseData.status &&

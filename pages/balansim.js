@@ -36,7 +36,7 @@ export async function getServerSideProps(context) {
 function Balansim() {
   const { user } = useContext(UserContext);
 
-  console.log(user?.data.balance, "user balance");
+  // console.log(user?.data.balance, "user balance");
   const userBalance = user?.data?.balance;
 
   const { t } = useTranslation();

@@ -14,7 +14,7 @@ function AddSubFolderModal({ closeModal, addNewSubFolder }) {
   const { selectedCompany } = useContext(CompanyContext);
   // const { subfolder } = router.query; //? thats is slug
   const { slug } = router.query; //? thats is slug
-  console.log(router.query, "sub folder Query");
+  // console.log(router.query, "sub folder Query");
 
 // AddSubFolderModal.jsx
 const handleSubmit = async (e) => {
@@ -45,7 +45,7 @@ const handleSubmit = async (e) => {
       }
     );
 
-    console.log(response.data, "response add SUB folder modal");
+    // console.log(response.data, "response add SUB folder modal");
 
     // Pass the complete folder data to the parent
     const newSubFolder = response.data.data; // Adjust based on your API response structure

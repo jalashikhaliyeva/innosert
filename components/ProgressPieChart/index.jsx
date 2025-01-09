@@ -10,7 +10,7 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
   const [series, setSeries] = useState([]);
   const chartRef = useRef(null);
 
-  console.log({ correct, wrong, blank }, "Counts");
+  // console.log({ correct, wrong, blank }, "Counts");
 
   // Chart configuration options
   const options = {
@@ -136,7 +136,7 @@ const ProgressPieChart = ({ correct, wrong, blank }) => {
 
     // Update series
     if (c + w + b > 0) {
-      console.log("Updating series:", [c, w, b]);
+      // console.log("Updating series:", [c, w, b]);
       setSeries([c, w, b]);
     } else {
       // When all counts are zero, set 'wrong' to 1 to display a full red pie chart

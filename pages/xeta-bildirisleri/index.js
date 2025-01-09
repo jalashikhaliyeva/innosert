@@ -53,7 +53,7 @@ function XetaBildirisleri() {
           },
         })
         .then((response) => {
-          console.log("API response:", response.data.data);
+          // console.log("API response:", response.data.data);
           setReportData(response.data.data);
         })
         .catch((error) => {

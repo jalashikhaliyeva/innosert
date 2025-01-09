@@ -61,7 +61,7 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
         try {
           const landingData = await getLandingInfo(locale);
           const settingData = await getSettingInfo(locale);
-          console.log(settingData, "settingData");
+          // console.log(settingData, "settingData");
           
 
           const mappedSlides = settingData.category?.map((item) => ({
@@ -87,7 +87,7 @@ function Home({ openRegisterModal, openLoginModal, landingInfo, settingInfo }) {
     return <Spinner />;
   }
 
-  console.log(landingInfo, "landingInfo");
+  // console.log(landingInfo, "landingInfo");
   
 
   if (!mounted) {

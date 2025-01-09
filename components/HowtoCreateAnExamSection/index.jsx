@@ -2,7 +2,7 @@ import React from "react";
 import Container from "../Container";
 
 function HowtoCreateAnExamSection({ data }) {
-  console.log(data, "CreateAnExamSection");
+  // console.log(data, "CreateAnExamSection");
   const stripHtml = (html) => {
     const tempDiv = document.createElement("div");
     tempDiv.innerHTML = html;

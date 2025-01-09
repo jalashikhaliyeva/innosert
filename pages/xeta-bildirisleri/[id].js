@@ -61,7 +61,7 @@ function ReportsSingle() {
 
           if (response.ok) {
             const data = await response.json();
-            console.log(data.data, "data single report");
+            // console.log(data.data, "data single report");
 
             setReportData(data.data);
           } else {

@@ -8,7 +8,7 @@ import LoginModal from "../Login";
 function JoinButtonandPriceExam({ examData }) {
   const [modalType, setModalType] = useState(null); // 'examRules' or 'login'
   const { user, setClickedExam } = useContext(UserContext);
-  console.log(user, "user join modal");
+  // console.log(user, "user join modal");
 
   const handleButtonClick = (exam) => {
     setClickedExam(exam);
@@ -26,7 +26,7 @@ function JoinButtonandPriceExam({ examData }) {
   // Handlers for additional props
   const handleOpenRegisterModal = () => {
     // Implement registration modal logic here
-    console.log("Open Register Modal");
+    // console.log("Open Register Modal");
     // For example, you might set another state to open a RegisterModal
     // setModalType("register");
   };

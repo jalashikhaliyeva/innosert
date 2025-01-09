@@ -35,10 +35,10 @@ const NotificationsDropdown = () => {
         );
         if (response.data.status) {
           setNotifications(response?.data?.data?.notifications);
-          console.log(
-            response?.data?.data?.notifications,
-            "response.data.data.notifications"
-          );
+          // console.log(
+          //   response?.data?.data?.notifications,
+          //   "response.data.data.notifications"
+          // );
         }
       } catch (error) {
         console.error("Failed to fetch notifications:", error);

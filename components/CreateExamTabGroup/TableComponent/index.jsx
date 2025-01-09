@@ -18,7 +18,7 @@ function TableComponent({
   showActionButtons = false,
   showDeleteButton = false,
 }) {
-  console.log(questions, "QuestionsTableCompany from API add quest");
+  // console.log(questions, "QuestionsTableCompany from API add quest");
   const data = questions;
 
   const {
@@ -57,10 +57,10 @@ function TableComponent({
     });
 
     toast.success(`${selectedQuestions.length} question(s) added to the exam.`);
-    console.log(
-      selectedQuestionsWithTime,
-      "question(s) added to the exam with time"
-    );
+    // console.log(
+    //   selectedQuestionsWithTime,
+    //   "question(s) added to the exam with time"
+    // );
 
     setSelectedRows([]);
   };
@@ -182,7 +182,7 @@ function TableComponent({
 
   const router = useRouter();
   const handleEdit = (question) => {
-    console.log(question, "handle edit");
+    // console.log(question, "handle edit");
     setSelectedQuestion(question);
     router.push({
       pathname: "/sual-redakte",
@@ -190,7 +190,7 @@ function TableComponent({
   };
 
   const handleClick = (question) => {
-    console.log(question, "handle click");
+    // console.log(question, "handle click");
     setSelectedQuestion(question);
     router.push("/sual-haqqinda");
   };

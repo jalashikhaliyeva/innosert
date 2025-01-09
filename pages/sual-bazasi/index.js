@@ -74,7 +74,7 @@ function SualBazasi() {
         }
       );
 
-      console.log(response.data ,"folders");
+      // console.log(response.data ,"folders");
       
       setFiles(response.data.data.folders);
     } catch (error) {

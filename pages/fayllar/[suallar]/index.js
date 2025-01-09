@@ -54,7 +54,7 @@ function ImtahanSUallariTable() {
 
   const handleConfirmDelete = () => {
     // Implement delete logic here
-    console.log("Delete selected rows:", selectedRows);
+    // console.log("Delete selected rows:", selectedRows);
     setIsDeleteModalOpen(false); // Close modal after deletion
   };
 

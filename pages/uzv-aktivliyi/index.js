@@ -37,7 +37,7 @@ function UzvAktivliyi() {
   useEffect(() => {
     if (id) {
       // You can use the `id` here for fetching data or any other logic
-      console.log("ID from query:", id);
+      // console.log("ID from query:", id);
     }
   }, [id]);
 

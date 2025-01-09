@@ -38,8 +38,8 @@ function Imtahanlar({ openRegisterModal, openLoginModal }) {
   const { selectedCategory, selectedSubcategory, user } =
     useContext(UserContext);
   const [settingInfo, setSettingInfo] = useState([]);
-  console.log(selectedCategory, "category");
-  console.log(selectedSubcategory, "subcategory");
+  // console.log(selectedCategory, "category");
+  // console.log(selectedSubcategory, "subcategory");
   const router = useRouter();
   const lang = router.locale || "az";
 
@@ -73,7 +73,7 @@ function Imtahanlar({ openRegisterModal, openLoginModal }) {
         const data = await getSettingInfo(lang);
         const categories = data?.category || [];
         setSettingInfo(categories);
-        console.log(categories, "categories");
+        // console.log(categories, "categories");
       } catch (error) {
         console.error("Failed to fetch setting info:", error);
       }

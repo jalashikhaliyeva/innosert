@@ -5,7 +5,7 @@ import Image from "next/image";
 
 const ShareCertificatesSection = React.forwardRef(
   ({ openRegisterModal, certificates, title }, ref) => {
-    console.log(certificates, "certificates certificates component");
+    // console.log(certificates, "certificates certificates component");
 
     return (
       <div data-aos="fade-up"

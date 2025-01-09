@@ -16,7 +16,7 @@ import { useTranslation } from "next-i18next";
 function MyProfiles() {
   // const [user, setUser] = useState(null);
   const { user, setUser, fetchUserData } = useContext(UserContext);
-  console.log(user, " MyProfiles user teacher");
+  // console.log(user, " MyProfiles user teacher");
   const { t } = useTranslation();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -192,18 +192,18 @@ function MyProfiles() {
             },
           }
         );
-        console.log(response, "response teacher");
+        // console.log(response, "response teacher");
 
         if (response.ok) {
           const companiesData = await response.json();
-          console.log(companiesData, "companiesData hesab");
+          // console.log(companiesData, "companiesData hesab");
 
           setCompanies(companiesData.data || []);
         } else {
-          console.log("Failed to fetch companies");
+          // console.log("Failed to fetch companies");
         }
       } catch (error) {
-        console.log(`An error occurred: ${error.message}`);
+        // console.log(`An error occurred: ${error.message}`);
       }
     };
 
@@ -214,7 +214,7 @@ function MyProfiles() {
     const fetchUserData = async () => {
       const userToken = localStorage.getItem("token");
 
-      console.log(userToken, "user token profiles");
+      // console.log(userToken, "user token profiles");
 
       if (!userToken) {
         toast.error("İstifadəçi autentifikasiyadan keçməyib.");
@@ -234,7 +234,7 @@ function MyProfiles() {
 
         if (response.ok) {
           const userData = await response.json();
-          console.log(userData, "userData");
+          // console.log(userData, "userData");
 
           setUser(userData);
           setUsername(userData.data.username || "");

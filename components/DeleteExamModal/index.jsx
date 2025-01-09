@@ -16,7 +16,7 @@ function DeleteExamModal({ selectedItems, onDelete, onCancel }) {
     }
   };
 
-  console.log(selectedItems, "selectedItems");
+  // console.log(selectedItems, "selectedItems");
 
   // Separate selected items into exams and folders
   const exams = selectedItems
@@ -37,7 +37,7 @@ function DeleteExamModal({ selectedItems, onDelete, onCancel }) {
         folder: folders.length > 0 ? folders : [],
       };
 
-      console.log(payload, "payload");
+      // console.log(payload, "payload");
 
       const response = await axios.delete(url, {
         data: payload,

@@ -304,7 +304,7 @@ const HeaderInternal = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data, "response search");
+        // console.log(data, "response search");
         setSearchResults(data.exams || []);
       } else {
         console.error("Search API response error:", response.status);

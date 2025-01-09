@@ -41,11 +41,11 @@ function AuthHandler({ children }) {
           );
 
           const data = await response.json();
-          console.log(data, "auth handler");
+          // console.log(data, "auth handler");
 
           if (response.ok && data.data.token) {
             const backendToken = data.data.token;
-            console.log(backendToken, "backendToken");
+            // console.log(backendToken, "backendToken");
             
           
             // Wait for the token to be set before redirect

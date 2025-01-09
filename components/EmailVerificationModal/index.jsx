@@ -60,14 +60,14 @@ export default function PhoneVerificationModal({
       );
 
       const data = await response.json();
-      console.log(data, "phone verify");
+      // console.log(data, "phone verify");
 
       // Updated condition to check for "success" string
       if (response.ok && data?.status === "success") {
         // localStorage.setItem("resetToken", data.data.code);
         // console.log(data.data.code, "data phone verify");
 
-        console.log("Verification successful.");
+        // console.log("Verification successful.");
         toast.success(t("phoneVerify.verificationSuccess"));
         setPhone("");
 
@@ -75,14 +75,14 @@ export default function PhoneVerificationModal({
         onClose();
         onOpenOTPModal();
       } else {
-        console.log(
-          `Error: ${data.message || "Verification failed. Please try again."}`
-        );
+        // console.log(
+        //   `Error: ${data.message || "Verification failed. Please try again."}`
+        // );
         toast.error(t("phoneVerify.verificationFailed"));
       }
     } catch (error) {
       console.error("Error verifying phone:", error);
-      console.log("An unexpected error occurred. Please try again.");
+      // console.log("An unexpected error occurred. Please try again.");
       toast.warning(t("phoneVerify.unexpectedError"));
     }
   };

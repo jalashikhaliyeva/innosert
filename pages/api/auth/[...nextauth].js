@@ -47,7 +47,7 @@ export default NextAuth({
           });
     
 
-          console.log(res ,"response login");
+          // console.log(res ,"response login");
           
           const user = await res.json();
     
@@ -63,7 +63,7 @@ export default NextAuth({
             token: user.data.token,
           };
         } catch (error) {
-          console.log(res ,"response login");
+          // console.log(res ,"response login");
           throw new Error(error.message || "An error occurred during login");
         }
       },

@@ -27,7 +27,7 @@ export default function ResetPasswordModal({
     if (!otpCode) {
       toast.error("Token tapılmadı. Zəhmət olmasa yenidən cəhd edin.");
     } else {
-      console.log("Retrieved OTP Code from Context:", otpCode);
+      // console.log("Retrieved OTP Code from Context:", otpCode);
     }
   }, [otpCode]);
 
@@ -92,7 +92,7 @@ export default function ResetPasswordModal({
       );
 
       const data = await response.json();
-      console.log(data, "reset data");
+      // console.log(data, "reset data");
 
       if (!response.ok || data.status !== true) {
         console.error("Server Response:", data);

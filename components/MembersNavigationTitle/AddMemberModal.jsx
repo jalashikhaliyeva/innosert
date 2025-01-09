@@ -11,7 +11,7 @@ function AddMemberModal({ closeModal ,onMemberAdded }) {
   const [focusedInput, setFocusedInput] = useState(null);
   const [loading, setLoading] = useState(false);
   const { selectedCompany } = useContext(CompanyContext);
-  console.log(selectedCompany.id, "selectedCompany add member modal");
+  // console.log(selectedCompany.id, "selectedCompany add member modal");
 
   // Email validation function
   const isValidEmail = (email) => {
@@ -34,7 +34,7 @@ function AddMemberModal({ closeModal ,onMemberAdded }) {
         token,
         selectedCompany.id
       );
-      console.log("User added successfully:", response);
+      // console.log("User added successfully:", response);
 
       toast.success("İstifadəçi uğurla əlavə olundu!"); // Show success toast
       onMemberAdded();

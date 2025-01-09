@@ -2,7 +2,7 @@ import React from "react";
 import Container from "../Container";
 
 const AboutSection = ({ aboutInfo }) => {
-  console.log(aboutInfo?.details, "AboutSection details");
+  // console.log(aboutInfo?.details, "AboutSection details");
 
   if (!aboutInfo || !Array.isArray(aboutInfo.details)) {
     return <p>No details provided.</p>; // Handle undefined or invalid aboutInfo

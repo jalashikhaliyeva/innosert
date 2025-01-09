@@ -16,7 +16,7 @@ function QuestionsExamDetails({
   searchTerm,
   handleDeleteClick,
 }) {
-  console.log(questions, "QuestionsTableCompany from API add quest");
+  // console.log(questions, "QuestionsTableCompany from API add quest");
   // const data = questions;
 
   const { setSelectedQuestion } = useContext(UserContext);
@@ -47,7 +47,7 @@ function QuestionsExamDetails({
 
   // Handle edit action
   const handleEdit = (question) => {
-    console.log(question, "handle edit");
+    // console.log(question, "handle edit");
     setSelectedQuestion(question);
     router.push({
       pathname: "/sual-redakte",
@@ -56,7 +56,7 @@ function QuestionsExamDetails({
 
   // Handle row click to view question details
   const handleClick = (question) => {
-    console.log(question, "handle click");
+    // console.log(question, "handle click");
     setSelectedQuestion(question);
     router.push("/sual-haqqinda");
   };

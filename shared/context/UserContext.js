@@ -143,13 +143,13 @@ function UserProvider({ children }) {
 
   const fetchUserData = useCallback(async () => {
     if (!token) {
-      console.log(token, "no token");
+      // console.log(token, "no token");
       setLoading(false);
       return;
     }
 
 
-    console.log(token , "context token");
+    // console.log(token , "context token");
     
 
     try {

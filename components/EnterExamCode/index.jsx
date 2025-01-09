@@ -19,7 +19,7 @@ function EnterExamCode() {
         { code: code }
       );
       const { exam } = response.data;
-      console.log(response.data, "private response");
+      // console.log(response.data, "private response");
 
       setPrivateExam(exam);
       localStorage.setItem("privateExam", JSON.stringify(exam));

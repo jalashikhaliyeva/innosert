@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 function MemberActivityName({ memberActivitySingle }) {
   const { t } = useTranslation();
-  console.log(memberActivitySingle, "memberActivitySingle");
+  // console.log(memberActivitySingle, "memberActivitySingle");
 
   return (
     <div className="flex justify-between relative font-gilroy mb-6">

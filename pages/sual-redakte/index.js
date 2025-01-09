@@ -57,7 +57,7 @@ function SualRedakte() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [questionToDelete, setQuestionToDelete] = useState(null);
 
-  console.log(selectedQuestion, "selectedQuestion");
+  // console.log(selectedQuestion, "selectedQuestion");
 
   const typeMapping = {
     "Variantlı Sual": "Variantli sual",
@@ -235,7 +235,7 @@ function SualRedakte() {
       return;
     }
 
-    console.log("Data sent to API:", JSON.stringify(data, null, 2));
+    // console.log("Data sent to API:", JSON.stringify(data, null, 2));
     const isUpdating = selectedQuestion && selectedQuestion.id;
     const url = isUpdating
       ? `https://innocert-admin.markup.az/api/questions/${selectedQuestion.id}`

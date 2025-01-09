@@ -20,7 +20,7 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
     const fetchSettingInfo = async () => {
       try {
         const data = await getSettingInfo();
-        console.log(data.contact, "data footer");
+        // console.log(data.contact, "data footer");
 
         setContactInfo(data.contact);
         setSettingInfo(data.contact.map);

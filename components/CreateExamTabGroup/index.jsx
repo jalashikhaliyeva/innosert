@@ -8,7 +8,7 @@ import DeleteModal from "../DeleteModal";
 
 function CreateExamTabGroup({ isLoadingQuestions }) {
   const { selectedQuestionsForExam } = useContext(UserContext);
-  console.log(selectedQuestionsForExam, "selectedQuestionsForExam");
+  // console.log(selectedQuestionsForExam, "selectedQuestionsForExam");
 
   const [activeTab, setActiveTab] = useState("general");
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility

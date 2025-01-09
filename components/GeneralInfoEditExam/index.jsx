@@ -18,7 +18,7 @@ function GeneralInfoEditExam() {
   } = useContext(UserContext);
 
   const dropdownRef = useRef(null);
-  console.log(examDetails, "examDetailsss");
+  // console.log(examDetails, "examDetailsss");
 
   useEffect(() => {
     const isValid =

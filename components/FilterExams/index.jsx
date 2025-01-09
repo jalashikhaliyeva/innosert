@@ -18,7 +18,7 @@ function FilterCategories() {
     setIsCategoriesFilterValid,
   } = useContext(UserContext);
   const { t } = useTranslation();
-  console.log(filteredExams, "filteredExams");
+  // console.log(filteredExams, "filteredExams");
 
   const combinedList = [
     ...(selectedCategory || []).map((cat) => ({
@@ -204,7 +204,7 @@ function FilterCategories() {
       max_price: maxPrice || null,
       category_id: categoryIds,
     };
-    console.log("Data sent to API:", data);
+    // console.log("Data sent to API:", data);
 
     try {
       const response = await axios.post(
@@ -216,7 +216,7 @@ function FilterCategories() {
           },
         }
       );
-      console.log("Filtered Results:", response.data);
+      // console.log("Filtered Results:", response.data);
 
       const dataExams = response.data.exams;
       let examsArray = [];

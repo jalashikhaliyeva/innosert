@@ -35,7 +35,7 @@ function OTP({
     const formData = new FormData();
     formData.append("code", code);
     formData.append("phone", phone); // Send phone instead of email
-    console.log(formData, "formData");
+    // console.log(formData, "formData");
 
     try {
       const response = await fetch(
@@ -47,17 +47,17 @@ function OTP({
       );
 
       const data = await response.json();
-      console.log("Verification response:", data);
+      // console.log("Verification response:", data);
 
       if (response.ok && data?.status === "success") {
         toast.success("Kod uğurla təsdiqləndi!");
         setOtpCode(code);
-        console.log("Code verified successfully.");
+        // console.log("Code verified successfully.");
         onClose(); // Close the OTP modal
         onOpenResetPasswordModal(); // Open the ResetPasswordModal
       } else {
         toast.error("Kodun təsdiqi uğursuz oldu. Yenidən cəhd edin.");
-        console.log("Failed to verify the code. Please try again.");
+        // console.log("Failed to verify the code. Please try again.");
       }
     } catch (error) {
       console.error("Error verifying code:", error);
@@ -99,7 +99,7 @@ function OTP({
       );
 
       const data = await response.json();
-      console.log("Resend code response:", data);
+      // console.log("Resend code response:", data);
 
       if (response.ok && data?.status === true) {
         toast.success("Kod yenidən uğurla göndərildi!");
@@ -110,7 +110,7 @@ function OTP({
         toast.error(
           "Kodun yenidən göndərilməsi uğursuz oldu. Yenidən cəhd edin."
         );
-        console.log("Failed to resend the code. Please try again.");
+        // console.log("Failed to resend the code. Please try again.");
       }
     } catch (error) {
       console.error("Error resending code:", error);

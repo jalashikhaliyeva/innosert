@@ -16,7 +16,7 @@ function TitleCategoryExams({ categoryName, combinedList }) {
     }
   };
 
-  console.log(categoryName, "categoryName");
+  // console.log(categoryName, "categoryName");
 
   return (
     <div className="flex items-center justify-between py-5">

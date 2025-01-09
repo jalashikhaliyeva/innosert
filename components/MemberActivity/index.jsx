@@ -110,7 +110,7 @@ function MemberActivity({ data, searchTerm }) {
   const handleDetailNavigation = (userId) => {
     const selectedMember = data.find((item) => item.id === userId);
 
-    console.log(selectedMember); // Check the structure of each member in data
+    // console.log(selectedMember); // Check the structure of each member in data
 
     if (selectedMember) {
       setMemberActivitySingle(

@@ -10,7 +10,7 @@ function AddFolderModal({ closeModal, addNewFolder, fetchFiles }) {
   const [focusedInput, setFocusedInput] = useState(null);
   const { selectedCompany } = useContext(CompanyContext);
   const [loading, setLoading] = useState(false);
-console.log(selectedCompany, "selectedCompany folder");
+// console.log(selectedCompany, "selectedCompany folder");
 
   // AddFolderModal.jsx
   const handleSubmit = async (e) => {
@@ -34,7 +34,7 @@ console.log(selectedCompany, "selectedCompany folder");
           },
         }
       );
-      console.log(response.data, "response add folder modal");
+      // console.log(response.data, "response add folder modal");
 
       // Instead of adding the folder directly, re-fetch the files
       await fetchFiles();

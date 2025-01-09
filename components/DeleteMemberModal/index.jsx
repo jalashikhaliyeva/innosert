@@ -9,11 +9,11 @@ function DeleteMemberModal({ member, onCancel, onDelete }) {
     }
   };
   const { selectedCompany } = useContext(CompanyContext);
-  console.log(selectedCompany , "selectedCompany");
-  console.log(member , "member");
+  // console.log(selectedCompany , "selectedCompany");
+  // console.log(member , "member");
   
   const confirmDelete = async () => {
-    console.log(memberToDelete, "memberToDelete");
+    // console.log(memberToDelete, "memberToDelete");
     
     if (memberToDelete && memberToDelete.id) {
       try {
@@ -30,7 +30,7 @@ function DeleteMemberModal({ member, onCancel, onDelete }) {
         );
   
         if (response.ok) {
-          console.log(response, "response DELETE");
+          // console.log(response, "response DELETE");
   
           // Successfully deleted
           handleDelete(memberToDelete.id); // Update the UI

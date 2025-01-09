@@ -2,7 +2,7 @@ import React from "react";
 import Container from "../Container";
 
 function ReportDescription({servicesInfo}) {
-  console.log(servicesInfo, "servicesInfo");
+  // console.log(servicesInfo, "servicesInfo");
   
   return (
     <>

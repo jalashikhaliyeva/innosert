@@ -44,7 +44,7 @@ function BlogDetails({ dynamicName }) {
       }
 
       const data = await response.json();
-      console.log(data, "blog details");
+      // console.log(data, "blog details");
 
       if (data.status) {
         setBlog(data.data);

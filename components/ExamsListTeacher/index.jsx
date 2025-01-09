@@ -15,7 +15,7 @@ const ExamsListTeacher = ({
   openDeleteExamModal,
   openEditFolderModal,
 }) => {
-  console.log(exams, "exams examst list teacher");
+  // console.log(exams, "exams examst list teacher");
   const { examDetailsSingle, setExamDetailsSingle, examToEdit, setExamToEdit } =
     useContext(UserContext);
   const router = useRouter();
@@ -91,7 +91,7 @@ const ExamsListTeacher = ({
       // Navigate to the exam details
 
       setExamDetailsSingle(item);
-      console.log(item, "item exam to edit");
+      // console.log(item, "item exam to edit");
 
       router.push(`/imtahan-detallari`); // Assuming you want to pass the exam slug
     }

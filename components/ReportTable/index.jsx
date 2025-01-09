@@ -5,7 +5,7 @@ import { RiLoopLeftLine } from "react-icons/ri";
 import { useRouter } from "next/router";
 import { useTranslation } from "react-i18next";
 function ReportTable({ selectedRows, setSelectedRows, data }) {
-  console.log(data, "data report table");
+  // console.log(data, "data report table");
 
   const router = useRouter(); // Initialize useRouter hook
   const { t } = useTranslation();

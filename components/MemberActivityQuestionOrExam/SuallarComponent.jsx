@@ -117,7 +117,7 @@ function SuallarComponent({ id }) {
   // **Inspect the data (optional, for debugging)**
   useEffect(() => {
     if (!loading && !error) {
-      console.log("Fetched Data:", data);
+      // console.log("Fetched Data:", data);
     }
   }, [loading, error, data]);
 

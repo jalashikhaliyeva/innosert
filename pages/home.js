@@ -41,11 +41,11 @@ function Home() {
     setSearchExam,
     token,
   } = useContext(UserContext);
-  console.log(token, "token");
+  // console.log(token, "token");
 
   const { data: session, status } = useSession();
-  console.log(status, "status");
-  console.log(session, "session");
+  // console.log(status, "status");
+  // console.log(session, "session");
   const router = useRouter();
   const lang = router.locale || "az";
   const { t } = useTranslation();
@@ -95,7 +95,7 @@ function Home() {
         // 3) Use your Innocert token from context; fallback to session?.user.id if needed
         const finalToken = token || session?.user.id;
         if (!finalToken) {
-          console.log("No token found. This request will be unauthenticated.");
+          // console.log("No token found. This request will be unauthenticated.");
         }
 
         const response = await axios.get(

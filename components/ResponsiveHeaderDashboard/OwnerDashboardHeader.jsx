@@ -59,7 +59,7 @@ function OwnerDashboardHeader() {
   };
 
   const handleCompanyClick = (company) => {
-    console.log("Selected Company:", company);
+    // console.log("Selected Company:", company);
   };
 
   const handleCategoriesToggle = (e) => {
@@ -74,7 +74,7 @@ function OwnerDashboardHeader() {
   };
 
   const handleLogoutClick = () => {
-    console.log("Logout Clicked");
+    // console.log("Logout Clicked");
   };
 
   const handleSubmenuToggle = (category) => {
@@ -82,11 +82,11 @@ function OwnerDashboardHeader() {
   };
 
   const handleCategoryClick = (category) => {
-    console.log("Category Clicked:", category);
+    // console.log("Category Clicked:", category);
   };
 
   const handleSubcategoryClick = (categorySlug, subcategorySlug) => {
-    console.log("Subcategory Clicked:", categorySlug, subcategorySlug);
+    // console.log("Subcategory Clicked:", categorySlug, subcategorySlug);
   };
 
   const generateInitials = (firstName, lastName) => {

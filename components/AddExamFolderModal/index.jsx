@@ -5,7 +5,7 @@ import axios from "axios";
 import CompanyContext from "@/shared/context/CompanyContext";
 
 function AddExamFolderModal({ closeModal, addNewFolder }) {
-  console.log(addNewFolder, "addNewFolder");
+  // console.log(addNewFolder, "addNewFolder");
 
   const [folderName, setFolderName] = useState("");
   const [inputError, setInputError] = useState(false);
@@ -23,11 +23,11 @@ function AddExamFolderModal({ closeModal, addNewFolder }) {
 
     try {
       const token = localStorage.getItem("token");
-      console.log("Sending data:", { name: folderName });
-      console.log("Headers:", {
-        Authorization: `Bearer ${token}`,
-        "X-Company-ID": selectedCompany.id,
-      });
+      // console.log("Sending data:", { name: folderName });
+      // console.log("Headers:", {
+      //   Authorization: `Bearer ${token}`,
+      //   "X-Company-ID": selectedCompany.id,
+      // });
 
       const response = await axios.post(
         "https://innocert-admin.markup.az/api/exam-folder/create/",

@@ -99,8 +99,8 @@ function SubImtahan() {
   const fetchFolders = async () => {
     try {
       const token = localStorage.getItem("token");
-      console.log("Token:", token);
-      console.log("Slug Param:", slugParam);
+      // console.log("Token:", token);
+      // console.log("Slug Param:", slugParam);
 
       // Proceed only if token and slugParam are valid
       if (token && slugParam && selectedCompany?.id) {
@@ -113,7 +113,7 @@ function SubImtahan() {
             },
           }
         );
-        console.log("Fetched sub folders data:", response.data.data);
+        // console.log("Fetched sub folders data:", response.data.data);
         setFolders(response.data.data);
       } else {
         console.error("Token, Slug Param, or Company ID is missing");
@@ -137,7 +137,7 @@ function SubImtahan() {
     }
   };
 
-  console.log(folders, "setFolders");
+  // console.log(folders, "setFolders");
 
   // Handlers for adding, editing, and deleting folders
   const addNewFolder = (newFolder) => {

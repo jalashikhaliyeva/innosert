@@ -233,7 +233,7 @@ const QuestionFilesTeacher = ({
 
     const formattedDate = `${day} ${capitalizeFirstLetter(monthName)} ${year}`;
 
-    console.log(`Original Date: ${dateStr} | Formatted Date: ${formattedDate}`);
+    // console.log(`Original Date: ${dateStr} | Formatted Date: ${formattedDate}`);
 
     return formattedDate;
   };

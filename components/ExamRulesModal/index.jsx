@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import { IoWarningOutline } from "react-icons/io5";
 import styles from "./stye.module.css";
 import { useRouter } from "next/router";
@@ -7,8 +7,8 @@ import { toast } from "react-toastify"; // Import toast
 
 function ExamRulesModal({ onClose, onCancel }) {
   const { clickedExam, setPercentage } = useContext(UserContext);
-  console.log(clickedExam, "clickedExam modal");
-
+  // console.log(clickedExam, "clickedExam modal");
+  const modalRef = useRef(null);
   const router = useRouter(); // Initialize useRouter
   const handleBackgroundClick = (e) => {
     // Check if the user clicked outside the modal (by comparing the target and currentTarget)
@@ -30,7 +30,7 @@ function ExamRulesModal({ onClose, onCancel }) {
         const response = await fetch(
           `https://innocert-admin.markup.az/api/get-payment-exam/${clickedExam.slug}`,
           {
-            method: "POST", // Assuming GET; change to POST if needed
+            method: "POST", 
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
@@ -55,6 +55,15 @@ function ExamRulesModal({ onClose, onCancel }) {
             draggable: true,
             progress: undefined,
           });
+
+             // Request fullscreen
+        if (modalRef.current.requestFullscreen) {
+          await modalRef.current.requestFullscreen();
+        } else if (modalRef.current.webkitRequestFullscreen) { /* Safari */
+          await modalRef.current.webkitRequestFullscreen();
+        } else if (modalRef.current.msRequestFullscreen) { /* IE11 */
+          await modalRef.current.msRequestFullscreen();
+        }
           router.push("/imtahan-geri-sayim");
         } else if (
           typeof result.data.data === "object" &&
@@ -111,6 +120,7 @@ function ExamRulesModal({ onClose, onCancel }) {
 
   return (
     <div
+    ref={modalRef}
       onClick={handleBackgroundClick}
       className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]"
     >

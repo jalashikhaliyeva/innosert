@@ -95,7 +95,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
     if (!validateEmail(email)) {
       setInputError(true);
       toast.error(t("toastMessages.invalidEmail"));
-      console.log("invalidEmail");
+      // console.log("invalidEmail");
 
       return;
     }
@@ -123,7 +123,7 @@ export default function RegisterModal({ isOpen, onClose, onOpenLoginModal }) {
         processedMobile
       );
 
-      console.log("Server response:", data);
+      // console.log("Server response:", data);
 
       if (data?.status === "success") {
         const token = data.data.access_token;

@@ -58,7 +58,7 @@ function Neticelerim() {
         // Reverse the results to show latest first
         const reversedResults = [...response.data.data].reverse();
         setResults(reversedResults);
-        console.log(reversedResults, "results");
+        // console.log(reversedResults, "results");
 
         setLoading(false);
       } catch (err) {

@@ -50,7 +50,7 @@ function OTPRegister({
     };
 
     const body = JSON.stringify({ code: joinedCode });
-    console.log(body, "body");
+    // console.log(body, "body");
 
     try {
       const response = await fetch(
@@ -63,7 +63,7 @@ function OTPRegister({
       );
 
       const data = await response.json();
-      console.log("Verification response:", data);
+      // console.log("Verification response:", data);
 
       if (response.ok && data?.status === "success") {
         toast.success("Kod uğurla təsdiqləndi!");
@@ -72,7 +72,7 @@ function OTPRegister({
         router.push("/home");
       } else {
         toast.error("Kodun təsdiqi uğursuz oldu. Yenidən cəhd edin.");
-        console.log("Failed to verify the code. Please try again.");
+        // console.log("Failed to verify the code. Please try again.");
       }
     } catch (error) {
       console.error("Error verifying code:", error);
@@ -102,7 +102,7 @@ function OTPRegister({
       );
 
       const data = await response.json();
-      console.log("Resend code response:", data);
+      // console.log("Resend code response:", data);
 
       if (response.ok && data?.status === "success") {
         toast.success("Kod yenidən uğurla göndərildi!");
@@ -119,7 +119,7 @@ function OTPRegister({
         toast.error(
           "Kodun yenidən göndərilməsi uğursuz oldu. Yenidən cəhd edin."
         );
-        console.log("Failed to resend the code. Please try again.");
+        // console.log("Failed to resend the code. Please try again.");
       }
     } catch (error) {
       console.error("Error resending code:", error);

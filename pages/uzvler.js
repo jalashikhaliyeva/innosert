@@ -86,7 +86,7 @@ function Uzvler() {
       const token = localStorage.getItem("token");
       try {
         if (selectedCompany && selectedCompany.id) {
-          console.log("Fetching activity data...");
+          // console.log("Fetching activity data...");
           setActivityLoading(true);
           const response = await axios.get(
             "https://innocert-admin.markup.az/api/me/company-teachers-activity",
@@ -97,8 +97,8 @@ function Uzvler() {
               },
             }
           );
-          console.log("Successful response:", response.data);
-          console.log("Successful response:", response);
+          // console.log("Successful response:", response.data);
+          // console.log("Successful response:", response);
           setActivityData(response.data.data);
           setActivityLoading(false);
         }
@@ -117,19 +117,19 @@ function Uzvler() {
   const memberCount = data.length;
 
   const handleDeleteSelected = () => {
-    console.log("Deleting selected members:", selectedRows);
+    // console.log("Deleting selected members:", selectedRows);
     setSelectedRows([]); // Reset selectedRows after deletion
   };
 
   const handleDelete = (id) => {
-    console.log("Delete member with id:", id);
+    // console.log("Delete member with id:", id);
     setData((prevData) => prevData.filter((member) => member.id !== id));
     setSelectedRows((prevSelected) =>
       prevSelected.filter((rowId) => rowId !== id)
     );
   };
   const handleEdit = (id) => {
-    console.log("Edit member with id:", id);
+    // console.log("Edit member with id:", id);
   };
 
   const openModal = () => {
