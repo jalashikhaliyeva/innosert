@@ -30,7 +30,7 @@ function ExamRulesModal({ onClose, onCancel }) {
         const response = await fetch(
           `https://innocert-admin.markup.az/api/get-payment-exam/${clickedExam.slug}`,
           {
-            method: "POST", 
+            method: "POST",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${token}`,
@@ -39,6 +39,7 @@ function ExamRulesModal({ onClose, onCancel }) {
         );
 
         const result = await response.json();
+        console.log(result, "get payment exam api");
 
         if (
           result.status === true &&
@@ -56,14 +57,16 @@ function ExamRulesModal({ onClose, onCancel }) {
             progress: undefined,
           });
 
-             // Request fullscreen
-        if (modalRef.current.requestFullscreen) {
-          await modalRef.current.requestFullscreen();
-        } else if (modalRef.current.webkitRequestFullscreen) { /* Safari */
-          await modalRef.current.webkitRequestFullscreen();
-        } else if (modalRef.current.msRequestFullscreen) { /* IE11 */
-          await modalRef.current.msRequestFullscreen();
-        }
+          // Request fullscreen
+          if (modalRef.current.requestFullscreen) {
+            await modalRef.current.requestFullscreen();
+          } else if (modalRef.current.webkitRequestFullscreen) {
+            /* Safari */
+            await modalRef.current.webkitRequestFullscreen();
+          } else if (modalRef.current.msRequestFullscreen) {
+            /* IE11 */
+            await modalRef.current.msRequestFullscreen();
+          }
           router.push("/imtahan-geri-sayim");
         } else if (
           typeof result.data.data === "object" &&
@@ -120,7 +123,7 @@ function ExamRulesModal({ onClose, onCancel }) {
 
   return (
     <div
-    ref={modalRef}
+      ref={modalRef}
       onClick={handleBackgroundClick}
       className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]"
     >

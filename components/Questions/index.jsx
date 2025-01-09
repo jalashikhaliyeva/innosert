@@ -272,14 +272,23 @@ function Questions({
                     className="absolute z-20 mt-2 w-48 bg-white border rounded shadow-xl p-2"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    <label className="block hover:bg-gray-100 px-2 py-1 rounded">
-                      <input
-                        type="checkbox"
-                        checked={selectedRows.includes(item?.id)}
-                        onChange={() => handleCheckboxChange(item?.id)}
-                      />
-                      Asan
-                    </label>
+            <label className="block hover:bg-gray-100 px-2 py-1 rounded">
+  <input
+    className="mr-2"
+    type="checkbox"
+    checked={levelFilter.includes("Asan")}
+    onChange={(e) => {
+      const isChecked = e.target.checked;
+      setLevelFilter((prev) =>
+        isChecked
+          ? [...prev, "Asan"]
+          : prev.filter((level) => level !== "Asan")
+      );
+    }}
+  />
+  Asan
+</label>
+
                     <label className="block hover:bg-gray-100 px-2 py-1 rounded">
                       <input
                         className="mr-2"

@@ -103,9 +103,9 @@ function Registrations({ examSlug, searchTerm }) {
   if (loading) {
     return (
       <div className="w-full p-4 font-gilroy border border-borderTableCel rounded bg-white mt-3">
-        <p>
+        <div>
           <Spinner />
-        </p>
+        </div>
       </div>
     );
   }

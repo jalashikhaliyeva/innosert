@@ -126,9 +126,9 @@ function SuallarComponent({ id }) {
   // Render loading or error states
   if (loading)
     return (
-      <p>
+      <div>
         <Spinner />
-      </p>
+      </div>
     );
   if (error) return <p>Error fetching data: {error.message}</p>;
 

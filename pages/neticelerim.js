@@ -72,9 +72,9 @@ function Neticelerim() {
 
   if (loading)
     return (
-      <p>
+      <div>
         <Spinner />
-      </p>
+      </div>
     );
   if (error) return <p>Error loading results.</p>;
 

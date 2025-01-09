@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import YuklemelerimTable from "../BalanceYuklemeler"; // Ensure correct import path
 import { useTranslation } from "react-i18next";
+import Spinner from "../Spinner";
 
 const ParentComponent = () => {
   const { t } = useTranslation();
@@ -61,7 +62,7 @@ const ParentComponent = () => {
   );
 
   if (loading) {
-    return <div>{t("labels.loading")}</div>; // Display loading state
+    return <div><Spinner /></div>; // Display loading state
   }
 
   if (error) {

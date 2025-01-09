@@ -16,7 +16,6 @@ import { getSession } from "next-auth/react";
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
-  // If there is no NextAuth session, redirect to the index page
   if (!session) {
     return {
       redirect: {
@@ -26,11 +25,8 @@ export async function getServerSideProps(context) {
     };
   }
 
-  // If session exists, proceed with the page rendering
   return {
-    props: {
-      // You can pass any additional props here
-    },
+    props: {},
   };
 }
 
@@ -64,6 +60,7 @@ const isDurationZero = (duration) => {
 function ImtahanSehifesi() {
   const { clickedExam, setPercentage } = useContext(UserContext);
   const [examData, setExamData] = useState(null);
+  const [hasFetchedExam, setHasFetchedExam] = useState(false);
   const [loading, setLoading] = useState(true);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState([]);
@@ -92,6 +89,7 @@ function ImtahanSehifesi() {
   useEffect(() => {
     const fetchExamData = async () => {
       try {
+        setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
           `https://innocert-admin.markup.az/api/get-exam/${clickedExam.slug}`,
@@ -101,18 +99,16 @@ function ImtahanSehifesi() {
             },
           }
         );
-        // console.log(clickedExam.slug , "cliked exam imtahan sehifesi");
-        
-        // console.log(response.data, "imtahan sehifesi");
-        
-
-        if (response.data.status) {
-          let fetchedQuestions = response.data.data.question;
+  
+        // Check if the API returned success status and we got questions
+        if (response.data.status && response.data.data?.question?.length) {
           setExamData(response.data.data);
+          setHasFetchedExam(true);
+  
+          // Set the exam start time here
           setExamStartTime(new Date());
-          setUserAnswers(Array(fetchedQuestions.length).fill(null));
         } else {
-          console.error(response.data.message);
+          console.log("Exam not paid or no questions. Data:", response.data);
         }
       } catch (error) {
         console.error("Error fetching exam data:", error);
@@ -120,12 +116,12 @@ function ImtahanSehifesi() {
         setLoading(false);
       }
     };
-
-    if (clickedExam) {
+  
+    if (!hasFetchedExam && clickedExam?.slug) {
       fetchExamData();
     }
-  }, [clickedExam]);
-
+  }, [clickedExam, hasFetchedExam]);
+  
   const examDetails = examData?.exam;
   const questionsData = examData?.question;
   const currentQuestionData = questionsData?.[currentQuestion];
@@ -282,6 +278,7 @@ function ImtahanSehifesi() {
   };
 
   const formatDateTime = (date) => {
+    if (!date) return ""; // or return some default
     const pad = (n) => (n < 10 ? "0" + n : n);
     const day = pad(date.getDate());
     const month = pad(date.getMonth() + 1);
@@ -290,6 +287,7 @@ function ImtahanSehifesi() {
     const minutes = pad(date.getMinutes());
     return `${hours}:${minutes} ${day}.${month}.${year}`;
   };
+  
 
   const renderQuestionComponent = () => {
     const commonProps = {
@@ -382,7 +380,7 @@ function ImtahanSehifesi() {
         }
       );
 
-      // console.log(data, "data sent to finish exam");
+      console.log(data, "--start-exam api");
 
       if (response.data.status) {
         const percentageData = response.data.data;
