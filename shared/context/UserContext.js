@@ -148,9 +148,7 @@ function UserProvider({ children }) {
       return;
     }
 
-
     // console.log(token , "context token");
-    
 
     try {
       const response = await fetch(
@@ -194,19 +192,18 @@ function UserProvider({ children }) {
     }
   }, [token, fetchUserData, router.pathname]);
 
-// UserContext.js
-const login = useCallback(async (newToken) => {
-  try {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("token", newToken);
+  // UserContext.js
+  const login = useCallback(async (newToken) => {
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("token", newToken);
+      }
+      setToken(newToken);
+    } catch (error) {
+      console.error("Error storing token:", error);
+      throw error;
     }
-    setToken(newToken);
-  } catch (error) {
-    console.error("Error storing token:", error);
-    throw error;
-  }
-}, []);
-
+  }, []);
 
   const logout = useCallback(async () => {
     if (typeof window !== "undefined") {

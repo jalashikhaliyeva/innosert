@@ -41,7 +41,7 @@ function Home() {
     setSearchExam,
     token,
   } = useContext(UserContext);
-  // console.log(token, "token");
+  console.log(token, "token home");
 
   const { data: session, status } = useSession();
   // console.log(status, "status");
@@ -79,7 +79,7 @@ function Home() {
   };
 
   const handleLoginOrRulesClick = () => {
-    if (user) {
+    if (token) {
       setExamRulesModalOpen(true);
     } else {
       setLoginModalOpen(true);

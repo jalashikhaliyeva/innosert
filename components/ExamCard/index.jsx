@@ -13,11 +13,12 @@ import { useTranslation } from "react-i18next";
 function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
   const { t } = useTranslation();
   const router = useRouter();
-  const { user, setClickedExam } = useContext(UserContext); // Get user from UserContext
+  const { user, setClickedExam, token } = useContext(UserContext); // Get user from UserContext
   const { savedExams, addExamToSaved, removeExamFromSaved } = useSavedExams();
+  console.log(token, "token exam card");
 
   const formatDuration = (duration) => {
-    if (duration === "00:00:00") return ""; // Don't display if duration is "00:00:00"
+    if (duration === "00:00:00") return "";
 
     const [hours, minutes] = duration.split(":").map(Number);
     let formattedDuration = "";
@@ -37,7 +38,7 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
   };
 
   const handleBookmarkClick = (exam) => {
-    if (!user) {
+    if (!token) {
       openLoginModal(); // Open login modal if the user is not logged in
       return;
     }
@@ -51,10 +52,10 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
   };
 
   const handleLoginOrRulesClick = (exam) => {
-    // Set the clickedExam in context
+
     setClickedExam(exam);
 
-    if (user) {
+    if (token) {
       openRegisterModal();
     } else {
       openLoginModal();
@@ -72,12 +73,12 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
       <div className="block md:hidden">
         {!isMyExamsPage ? (
           <Swiper
-          spaceBetween={16}
-          slidesPerView="auto"
-          pagination={{ clickable: true }}
-          centeredSlides={false}
-          loop={false}
-          slideToClickedSlide={true}
+            spaceBetween={16}
+            slidesPerView="auto"
+            pagination={{ clickable: true }}
+            centeredSlides={false}
+            loop={false}
+            slideToClickedSlide={true}
           >
             {exams.map((exam) => {
               const isSaved = savedExams.find(
