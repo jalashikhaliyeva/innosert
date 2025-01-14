@@ -78,6 +78,9 @@ function SuallarComponent({ id }) {
             },
           }
         );
+
+        // console.log(response.data, "suallar component");
+        
         // Preprocess data to ensure 'time' and 'score' are numbers and strip HTML from 'title'
         const processedData = response.data.data.map((item) => ({
           ...item,

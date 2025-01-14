@@ -39,6 +39,9 @@ function ImtahanlarComponent({ viewMode, sortOption, id }) {
             }
           );
 
+          // console.log(response.data , "imtahanlar component");
+          
+
           if (response.data && response.data.status) {
             setExamsData({
               exams: response.data.data, // Ensure this includes author fields

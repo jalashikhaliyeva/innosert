@@ -27,14 +27,14 @@ const Breadcrumb = () => {
     "umumi-imtahanlar": "breadcrumbs.generalExams",
     "imtahan-detallari": "breadcrumbs.examDetails",
     "imtahan-redakte": "breadcrumbs.examEdit",
-    "privacy-policy":  "breadcrumbs.privacyPolicy"
+    "privacy-policy": "breadcrumbs.privacyPolicy",
     // Add more mappings as needed
   };
 
   const pathSegments = router.asPath
     .split("/")
     .filter((segment) => segment)
-    .map((segment) => decodeURIComponent(segment.split('?')[0])); // Remove query parameters
+    .map((segment) => decodeURIComponent(segment.split("?")[0])); // Remove query parameters
 
   const formatLabel = (segment) => {
     return segment
@@ -57,7 +57,8 @@ const Breadcrumb = () => {
       if (Array.isArray(translationKey)) {
         translationKey.forEach((key, subIndex) => {
           const label = t(key);
-          const isLastSubItem = isLast && subIndex === translationKey.length - 1;
+          const isLastSubItem =
+            isLast && subIndex === translationKey.length - 1;
 
           items.push(
             <div key={`${path}-${subIndex}`} className="flex items-center">

@@ -1,23 +1,22 @@
 import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
-import YuklemelerimTable from "../BalanceYuklemeler"; // Ensure correct import path
+import YuklemelerimTable from "../BalanceYuklemeler";
 import { useTranslation } from "react-i18next";
 import Spinner from "../Spinner";
 
 const ParentComponent = () => {
   const { t } = useTranslation();
-  const [showTable, setShowTable] = useState(true); // Toggle between tables
-  const [allData, setAllData] = useState([]); // Store all fetched data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const [showTable, setShowTable] = useState(true);
+  const [allData, setAllData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const [currentPage, setCurrentPage] = useState(0);
   const itemsPerPage = 5;
 
-  // Fetch data from API on component mount
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("token"); // Get token from localStorage
+      const token = localStorage.getItem("token");
       try {
         const response = await fetch(
           "https://innocert-admin.markup.az/api/me/balances",
@@ -43,13 +42,12 @@ const ParentComponent = () => {
     fetchData();
   }, []);
 
-  // Filter data for history and downloads
-  const historyData = allData.filter((item) => item.exam_id !== null);
+  const historyData = allData.filter((item) => item.exam_id !== null).reverse();
+
   const downloadsData = allData.filter(
     (item) => item.exam_id === null && item.type === "Balans artımı"
   );
 
-  // Pagination for history table
   const pageCount = Math.ceil(historyData.length / itemsPerPage);
 
   const handlePageClick = (selectedPage) => {
@@ -62,7 +60,11 @@ const ParentComponent = () => {
   );
 
   if (loading) {
-    return <div><Spinner /></div>; // Display loading state
+    return (
+      <div>
+        <Spinner />
+      </div>
+    );
   }
 
   if (error) {
@@ -70,7 +72,7 @@ const ParentComponent = () => {
       <div>
         {t("labels.error")}: {error}
       </div>
-    ); // Display error state
+    );
   }
 
   return (
@@ -95,10 +97,8 @@ const ParentComponent = () => {
         </button>
       </div>
 
-      {/* Conditionally Render Tables */}
       {showTable ? (
         <div className="w-full flex flex-col min-h-[400px]">
-          {/* History Table */}
           <div className="overflow-x-auto overflow-y-auto">
             <table className="min-w-full table-auto border-collapse">
               <thead>
@@ -162,7 +162,6 @@ const ParentComponent = () => {
             </table>
           </div>
 
-          {/* Pagination */}
           {pageCount > 1 && (
             <div className="flex justify-center mt-4 pb-9">
               <ReactPaginate

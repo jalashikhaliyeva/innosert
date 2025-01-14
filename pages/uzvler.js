@@ -84,6 +84,9 @@ function Uzvler() {
     // Fetch data from the company-teachers-activity API when activeView is "activity"
     const fetchActivityData = async () => {
       const token = localStorage.getItem("token");
+      // console.log(token, "token");
+      // console.log(selectedCompany.id, "selectedCompany.id");
+
       try {
         if (selectedCompany && selectedCompany.id) {
           // console.log("Fetching activity data...");
@@ -97,7 +100,8 @@ function Uzvler() {
               },
             }
           );
-          // console.log("Successful response:", response.data);
+
+          // console.log("uzvler js:", response.data);
           // console.log("Successful response:", response);
           setActivityData(response.data.data);
           setActivityLoading(false);
@@ -204,7 +208,10 @@ function Uzvler() {
       </div>
 
       {isModalOpen && (
-        <AddMemberModal closeModal={closeModal} onMemberAdded={handleMemberAdded} />
+        <AddMemberModal
+          closeModal={closeModal}
+          onMemberAdded={handleMemberAdded}
+        />
       )}
       {isDeleteModalOpen && (
         <DeleteMemberModal

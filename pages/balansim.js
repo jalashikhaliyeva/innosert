@@ -39,6 +39,8 @@ function Balansim() {
   // console.log(user?.data.balance, "user balance");
   const userBalance = user?.data?.balance;
 
+  console.log(userBalance, "userBalance");
+  
   const { t } = useTranslation();
   return (
     <>

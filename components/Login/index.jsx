@@ -83,7 +83,7 @@ export default function LoginModal({
 
       const session = await getSession();
       // console.log(session, "session get");
-      
+
       if (session && session.accessToken) {
         await login(session.accessToken);
       }
@@ -100,7 +100,7 @@ export default function LoginModal({
       setLoading(false);
     }
   };
-  
+
   const handleFocus = (input) => {
     setFocusedInput(input);
     setInputError(false);
@@ -277,7 +277,7 @@ export default function LoginModal({
                 </span>
                 <div className="flex-1 border-t border-gray-300"></div>
               </div>
-              <div className="flex justify-center gap-4 mt-6">
+              {/* <div className="flex justify-center gap-4 mt-6">
                 <button
                   type="button"
                   onClick={handleGoogleSignIn}
@@ -298,6 +298,16 @@ export default function LoginModal({
                   className="rounded-full bg-gray-100 p-4"
                 >
                   <FaFacebook className="h-8 w-8 fill-[#0866FF]" />
+                </button>
+              </div> */}
+              <div className="flex justify-center gap-4 mt-6">
+                <button
+                  type="button"
+                  onClick={handleGoogleSignIn}
+                  className="rounded-full  text-lg  text-grayButtonText bg-grayLineFooter hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed p-3 flex items-center gap-3 font-medium font-gilroy"
+                >
+                  <FcGoogle className="h-8 w-8" />
+                  Sign In with Google
                 </button>
               </div>
             </form>

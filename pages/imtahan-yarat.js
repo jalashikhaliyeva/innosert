@@ -51,9 +51,7 @@ function ImtahanYarat() {
   const isFormValid =
     isGeneralInfoValid && isQuestionsValid && hasEnoughQuestions;
 
-  // console.log(examDetails, "examDetails");
-  // console.log(selectedQuestionsForExam, "selectedQuestionsForExam API conn");
-  // console.log(isFormValid, "isFormValid");
+
 
   const { qovluq } = router.query;
   const slugParam = Array.isArray(qovluq) ? qovluq[qovluq.length - 1] : qovluq;
