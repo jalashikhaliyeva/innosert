@@ -307,7 +307,7 @@ export default function LoginModal({
                   className="rounded-full  text-lg  text-grayButtonText bg-grayLineFooter hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed p-3 flex items-center gap-3 font-medium font-gilroy"
                 >
                   <FcGoogle className="h-8 w-8" />
-                  Sign In with Google
+                  {t('signInWithGoogle')}
                 </button>
               </div>
             </form>

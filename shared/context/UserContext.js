@@ -13,7 +13,14 @@ const UserContext = createContext();
 
 function UserProvider({ children }) {
   const router = useRouter();
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    if (typeof window !== "undefined") {
+      const storedUser = localStorage.getItem("user");
+      return storedUser ? JSON.parse(storedUser) : null;
+    }
+    return null;
+  });
+
   const [token, setToken] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("token");
@@ -148,8 +155,6 @@ function UserProvider({ children }) {
       return;
     }
 
-    // console.log(token , "context token");
-
     try {
       const response = await fetch(
         "https://innocert-admin.markup.az/api/user",
@@ -163,8 +168,9 @@ function UserProvider({ children }) {
 
       if (response.ok) {
         const userData = await response.json();
-        console.log(userData, "userData");
         setUser(userData);
+        // Store it
+        localStorage.setItem("user", JSON.stringify(userData));
       } else {
         toast.error("Failed to fetch user data");
         setUser(null);
@@ -185,12 +191,12 @@ function UserProvider({ children }) {
       publicRoutes.includes(router.pathname) ||
       router.pathname.startsWith("/imtahanlar/");
 
-    if (token && !isPublicRoute) {
+    if (token) {
       fetchUserData();
     } else {
       setLoading(false);
     }
-  }, [token, fetchUserData, router.pathname]);
+  }, [token, fetchUserData]);
 
   // UserContext.js
   const login = useCallback(async (newToken) => {

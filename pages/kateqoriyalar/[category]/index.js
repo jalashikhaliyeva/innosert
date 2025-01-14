@@ -39,7 +39,7 @@ export async function getServerSideProps(context) {
 function CategoryPage() {
   const router = useRouter();
   const { category } = router.query;
-  const { user } = useContext(UserContext);
+  const { user  , token} = useContext(UserContext);
   const { t, i18n } = useTranslation();
   const lang = i18n.language || "az";
 
@@ -51,7 +51,7 @@ function CategoryPage() {
   const [sortOption, setSortOption] = useState(null); // New sort state
 
   const handleLoginOrRulesClick = () => {
-    if (user) {
+    if (token) {
       setExamRulesModalOpen(true);
     } else {
       setLoginModalOpen(true);

@@ -40,7 +40,7 @@ import withModalManagement from "@/shared/hoc/withModalManagement";
 function CategoryPage({ openRegisterModal, openLoginModal }) {
   const router = useRouter();
   const { t, i18n } = useTranslation();
-  const { user } = useContext(UserContext);
+  const { user, token } = useContext(UserContext);
   const { category } = router.query;
   const lang = i18n.language || "az";
 
@@ -151,7 +151,7 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
   };
 
   const handleLoginOrRulesClick = () => {
-    if (user) {
+    if (token) {
       setExamRulesModalOpen(true); // Open exam rules modal if logged in
     } else {
       setLoginModalOpen(true); // Open login modal if not logged in

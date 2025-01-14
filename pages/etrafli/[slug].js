@@ -16,7 +16,7 @@ import RegisterModal from "@/components/Register";
 import { getSession } from "next-auth/react";
 
 function ExamName({ examData, error }) {
-  const { user } = useContext(UserContext);
+  const { user , token} = useContext(UserContext);
   // console.log(user, "user");
 
   // State for Register Modal

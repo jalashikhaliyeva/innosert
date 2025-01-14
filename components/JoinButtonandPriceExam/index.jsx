@@ -7,12 +7,12 @@ import LoginModal from "../Login";
 
 function JoinButtonandPriceExam({ examData }) {
   const [modalType, setModalType] = useState(null); // 'examRules' or 'login'
-  const { user, setClickedExam } = useContext(UserContext);
+  const { user, setClickedExam  , token} = useContext(UserContext);
   // console.log(user, "user join modal");
 
   const handleButtonClick = (exam) => {
     setClickedExam(exam);
-    if (user) {
+    if (token) {
       setModalType("examRules");
     } else {
       setModalType("login");

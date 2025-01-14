@@ -37,7 +37,7 @@ export async function getServerSideProps(context) {
 }
 const SubcategoryPage = () => {
   const router = useRouter();
-  const { user } = useContext(UserContext);
+  const { user , token } = useContext(UserContext);
   const { category, subcategory } = router.query;
   const { t, i18n } = useTranslation();
   const lang = i18n.language || "az";
@@ -56,7 +56,7 @@ const SubcategoryPage = () => {
   };
 
   const handleLoginOrRulesClick = () => {
-    if (user) {
+    if (token) {
       setExamRulesModalOpen(true); // Open exam rules modal if logged in
     } else {
       setLoginModalOpen(true); // Open login modal if not logged in

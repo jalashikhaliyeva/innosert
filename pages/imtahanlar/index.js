@@ -35,7 +35,7 @@ import { getSession } from "next-auth/react";
 //   };
 // }
 function Imtahanlar({ openRegisterModal, openLoginModal }) {
-  const { selectedCategory, selectedSubcategory, user } =
+  const { selectedCategory, selectedSubcategory, user  , token} =
     useContext(UserContext);
   const [settingInfo, setSettingInfo] = useState([]);
   // console.log(selectedCategory, "category");
@@ -55,7 +55,7 @@ function Imtahanlar({ openRegisterModal, openLoginModal }) {
   };
 
   const handleLoginOrRulesClick = () => {
-    if (user) {
+    if (token) {
       setExamRulesModalOpen(true); // Open exam rules modal if logged in
     } else {
       setLoginModalOpen(true); // Open login modal if not logged in

@@ -57,7 +57,7 @@ function Kateqoriyalar({ openRegisterModal, openLoginModal }) {
   };
 
   const handleLoginOrRulesClick = () => {
-    if (user) {
+    if (token) {
       setExamRulesModalOpen(true); // Open exam rules modal if logged in
     } else {
       setLoginModalOpen(true); // Open login modal if not logged in
