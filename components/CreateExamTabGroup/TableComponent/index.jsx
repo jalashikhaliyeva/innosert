@@ -106,11 +106,11 @@ function TableComponent({
         selectedQuestionsForExam.length >= 10 && allTimesValid
       );
 
-      if (selectedQuestionsForExam.length >= 10 && !allTimesValid) {
-        toast.warning(
-          "Hər bir sual üçün ən azı bir sıfırdan fərqli vaxt dəyəri olmalıdır."
-        );
-      }
+      // if (selectedQuestionsForExam.length >= 10 && !allTimesValid) {
+      //   toast.warning(
+      //     "Hər bir sual üçün ən azı bir sıfırdan fərqli vaxt dəyəri olmalıdır."
+      //   );
+      // }
     }
   }, [selectedQuestionsForExam, timeForQuestion, setIsQuestionsValid]);
 
