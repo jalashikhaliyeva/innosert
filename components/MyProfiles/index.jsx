@@ -16,7 +16,7 @@ import { useTranslation } from "next-i18next";
 function MyProfiles() {
   // const [user, setUser] = useState(null);
   const { user, setUser, fetchUserData } = useContext(UserContext);
-  // console.log(user, " MyProfiles user teacher");
+  console.log(user, " MyProfiles user teacher");
   const [initialMobileApi, setInitialMobileApi] = useState("");
 
   const { t } = useTranslation();
@@ -73,6 +73,8 @@ function MyProfiles() {
       7
     )} ${mobile.slice(7, 9)}`;
   };
+  const isTeacher = user?.data?.roles === "Teacher";
+
 
   // Helper function to format mobile number for API submission
   const formatMobileForApi = (mobile) => {
@@ -621,12 +623,14 @@ function MyProfiles() {
                 {t("my_companies")}
               </button>
             </div>
-            <button
-              onClick={toggleModal}
-              className="bg-buttonPrimaryDefault w-[41%] md:w-[13%]  hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
-            >
-              <FaPlus className="mt-1 mr-2" /> {t("create_company")}
-            </button>
+            {!isTeacher && (
+        <button
+          onClick={toggleModal}
+          className="bg-buttonPrimaryDefault w-[41%] md:w-[13%] hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
+        >
+          <FaPlus className="mt-1 mr-2" /> {t("create_company")}
+        </button>
+      )}
           </>
         )}
       </div>

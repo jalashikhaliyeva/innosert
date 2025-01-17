@@ -14,7 +14,6 @@ import { useTranslation } from "react-i18next";
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
-  // If there is no NextAuth session, redirect to the index page
   if (!session) {
     return {
       redirect: {
@@ -26,9 +25,7 @@ export async function getServerSideProps(context) {
 
   // If session exists, proceed with the page rendering
   return {
-    props: {
-      // You can pass any additional props here
-    },
+    props: {},
   };
 }
 

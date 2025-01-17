@@ -51,8 +51,6 @@ function ImtahanYarat() {
   const isFormValid =
     isGeneralInfoValid && isQuestionsValid && hasEnoughQuestions;
 
-
-
   const { qovluq } = router.query;
   const slugParam = Array.isArray(qovluq) ? qovluq[qovluq.length - 1] : qovluq;
 
@@ -70,30 +68,29 @@ function ImtahanYarat() {
       }
       return;
     }
-
+  
     if (!selectedCompany) {
       enqueueSnackbar("Şirkət məlumatları mövcud deyil.", { variant: "error" });
       return;
     }
-
+  
     setIsSubmitting(true);
-
+  
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("Authentication token not found.");
       }
-
+  
       const headers = {
         Authorization: `Bearer ${token}`,
         "X-Company-ID": selectedCompany.id,
         "Content-Type": "application/json",
       };
-
+  
       const formattedQuestions = selectedQuestionsForExam.map((question) => {
         const formattedQuestion = { id: question.id };
-        // console.log(formattedQuestion, "formattedQuestions");
-
+  
         if (
           question.minute !== undefined &&
           question.minute !== null &&
@@ -103,33 +100,28 @@ function ImtahanYarat() {
           formattedQuestion.minute = String(question.minute);
           formattedQuestion.second = String(question.second);
         }
-
+  
         return formattedQuestion;
       });
-
+  
       const requestBody = {
         ...examDetails,
         question: formattedQuestions,
       };
-
-      // console.log("Request Body:", requestBody);
-
+  
       let apiEndpoint = "https://innocert-admin.markup.az/api/exam/create";
       if (slugParam) {
         const encodedSlug = encodeURIComponent(slugParam);
         apiEndpoint += `/${encodedSlug}`;
       }
-
-      // console.log("API Endpoint:", apiEndpoint);
-
+  
       const response = await axios.post(apiEndpoint, requestBody, { headers });
-
-      // console.log("API Response:", response.data);
+  
       enqueueSnackbar("İmtahan uğurla yaradıldı!", { variant: "success" });
-
+  
       updateExamDetails(null);
       setSelectedQuestionsForExam([]);
-
+  
       router.push("/umumi-imtahanlar");
     } catch (err) {
       console.error("API Error:", err);
@@ -141,7 +133,7 @@ function ImtahanYarat() {
       setIsSubmitting(false);
     }
   };
-
+  
   return (
     <>
       <Head>

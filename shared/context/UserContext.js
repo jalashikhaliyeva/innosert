@@ -37,7 +37,13 @@ function UserProvider({ children }) {
   const [examToEdit, setExamToEdit] = useState(null);
   const [memberActivitySingle, setMemberActivitySingle] = useState(null);
   const [filteredExams, setFilteredExams] = useState(null);
-  const [examDetails, setExamDetails] = useState(null);
+  const [examDetails, setExamDetails] = useState(() => {
+    if (typeof window !== "undefined") {
+      const storedExamDetails = localStorage.getItem("examDetails");
+      return storedExamDetails ? JSON.parse(storedExamDetails) : {};
+    }
+    return {};
+  });
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [selectedQuestionsForExam, setSelectedQuestionsForExam] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -47,6 +53,8 @@ function UserProvider({ children }) {
   const [searchExam, setSearchExam] = useState(false);
   const [privateExam, setPrivateExam] = useState(false);
   const [isQuestionsValid, setIsQuestionsValid] = useState(false);
+
+  
 
   useEffect(() => {
     if (typeof window !== "undefined") {

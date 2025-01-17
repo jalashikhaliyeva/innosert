@@ -43,6 +43,9 @@ function ImtahanRedakte() {
     isQuestionsValid,
     examDetails,
   } = useContext(UserContext);
+
+  console.log(examToEdit, "examToEdit");
+
   const { t } = useTranslation();
   // console.log(examToEdit, "examToEdit");
   // console.log(examDetails, "examDetailsas");
@@ -61,6 +64,7 @@ function ImtahanRedakte() {
   const isFormValid = isGeneralInfoValid && isQuestionsValid;
   const { qovluq } = router.query;
   const slugParam = examToEdit.slug;
+  console.log(slugParam, "slugParam");
 
   useEffect(() => {
     const fetchQuestions = async () => {
@@ -72,16 +76,14 @@ function ImtahanRedakte() {
         }
 
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/exam/questions/${encodeURIComponent(
-            examToEdit.slug
-          )}`,
+          `https://innocert-admin.markup.az/api/exam/questions/${slugParam}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
           }
         );
-        // console.log("API Response:", response.data);
+
         const fetchedQuestions = response.data.data;
         setSelectedQuestionsForExam(
           fetchedQuestions.map((q) => ({
@@ -107,7 +109,6 @@ function ImtahanRedakte() {
     };
 
     if (examToEdit) {
-      // Parse category if it's a JSON string
       const parsedCategory =
         typeof examToEdit.category === "string"
           ? JSON.parse(examToEdit.category)
