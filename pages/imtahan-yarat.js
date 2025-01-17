@@ -88,6 +88,8 @@ function ImtahanYarat() {
         "Content-Type": "application/json",
       };
   
+      console.log(headers, "headers");
+  
       const formattedQuestions = selectedQuestionsForExam.map((question) => {
         const formattedQuestion = { id: question.id };
   
@@ -104,10 +106,21 @@ function ImtahanYarat() {
         return formattedQuestion;
       });
   
+      // Destructure duration from examDetails
+      const { duration, ...otherExamDetails } = examDetails;
+  
+      // Initialize requestBody with otherExamDetails and questions
       const requestBody = {
-        ...examDetails,
+        ...otherExamDetails,
         question: formattedQuestions,
       };
+  
+      // Conditionally add duration if it's not an empty string
+      if (duration !== "") {
+        requestBody.duration = duration;
+      }
+  
+      console.log(requestBody, "requestBody ");
   
       let apiEndpoint = "https://innocert-admin.markup.az/api/exam/create";
       if (slugParam) {
@@ -116,6 +129,7 @@ function ImtahanYarat() {
       }
   
       const response = await axios.post(apiEndpoint, requestBody, { headers });
+      console.log(response.data, "exam response");
   
       enqueueSnackbar("İmtahan uğurla yaradıldı!", { variant: "success" });
   
@@ -133,6 +147,7 @@ function ImtahanYarat() {
       setIsSubmitting(false);
     }
   };
+  
   
   return (
     <>
