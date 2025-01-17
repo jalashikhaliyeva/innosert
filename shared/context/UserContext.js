@@ -97,6 +97,10 @@ function UserProvider({ children }) {
   }, []);
 
   const updateExamDetails = (details) => {
+    // Prevent setting price to NaN
+    if (details && typeof details.price === 'number' && isNaN(details.price)) {
+      details.price = "";
+    }
     setExamDetails(details);
   };
 

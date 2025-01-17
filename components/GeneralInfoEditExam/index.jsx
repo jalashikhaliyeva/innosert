@@ -22,7 +22,10 @@ function GeneralInfoEditExam() {
 
   useEffect(() => {
     const isValid =
-      examDetails && examDetails.name && examDetails.desc && examDetails.duration;
+      examDetails &&
+      examDetails.name &&
+      examDetails.desc &&
+      examDetails.duration;
     setIsGeneralInfoValid(!!isValid);
   }, [examDetails, setIsGeneralInfoValid]);
 
@@ -178,7 +181,7 @@ function GeneralInfoEditExam() {
         examDetails.name || "",
         examDetails.desc || "",
         "",
-        examDetails.price !== undefined
+        examDetails.price !== undefined && !isNaN(examDetails.price)
           ? examDetails.price.toString() + " ₼"
           : "",
         examDetails.duration || "00:00:00",
@@ -236,21 +239,21 @@ function GeneralInfoEditExam() {
     }
 
     setIsGeneralInfoValid(isFormValid);
+    const priceValue = parseFloat(examPrice.replace("₼", "").trim());
 
-    if (isFormValid && !hasSubmitted && selectedItems.length > 0) {
-      const payload = {
-        name: examName,
-        desc: examDesc,
-        price: parseFloat(examPrice.replace("₼", "").trim()),
-        code: isKodlu ? code : null,
-        ...(timeForQuestion === false && { duration: examDuration }),
-        category_id: selectedItems.map((item) => item.id),
-      };
+    // Always update examDetails with current form data
+    const payload = {
+      name: examName || "",
+      desc: examDesc || "",
+      price: !isNaN(priceValue) ? priceValue : "",
+      code: isKodlu ? code : "",
+      duration: timeForQuestion === false ? examDuration : "",
+      category_id: selectedItems.map((item) => item.id),
+    };
 
-      updateExamDetails(payload);
+    updateExamDetails(payload);
 
-      setHasSubmitted(true);
-    }
+    setHasSubmitted(true);
   }, [
     values,
     selectedItems,
@@ -293,8 +296,8 @@ function GeneralInfoEditExam() {
               <FaPen className="text-gray200 mr-3 group-hover:text-gray800" />
               <textarea
                 ref={textareaRefs[0]}
-                placeholder="Lorem consectetur. Velit molestie turpis pulvinar sit interdum pharetra. Posuere ut quam netus id est ut"
-                className="text-black placeholder-gray200 w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
+                placeholder="İmtahanın adını daxil edin"
+                className="text-black placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
                 rows={1}
                 value={values[0]}
                 onChange={(e) => handleValueChange(0, e.target.value)}
@@ -310,8 +313,8 @@ function GeneralInfoEditExam() {
               <FaPen className="text-gray200 mr-3 group-hover:text-gray800" />
               <textarea
                 ref={textareaRefs[1]}
-                placeholder="Lorem consectetur. Velit molestie turpis pulvinar sit interdum pharetra. Posuere ut quam netus id est ut"
-                className="text-black placeholder-gray200 w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
+                placeholder="İmtahan haqqında məlumat daxil edin"
+                className="text-black placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
                 rows={1}
                 value={values[1]}
                 onChange={(e) => handleValueChange(1, e.target.value)}
@@ -411,8 +414,8 @@ function GeneralInfoEditExam() {
               <FaPen className="text-gray200 mr-3 group-hover:text-gray800" />
               <textarea
                 ref={textareaRefs[3]}
-                placeholder="100 ₼"
-                className="text-black font-gilroy placeholder-gray200 w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
+                placeholder="İmtahan qiymətini daxil edin"
+                className="text-black font-gilroy placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
                 rows={1}
                 value={values[3]}
                 onChange={(e) => handlePriceChange(3, e.target.value)}
@@ -478,7 +481,7 @@ function GeneralInfoEditExam() {
                 <input
                   ref={textareaRefs[4]}
                   placeholder="00:00:00"
-                  className="text-black font-gilroy placeholder-gray200 w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault"
+                  className="text-black font-gilroy placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault"
                   value={values[4]}
                   onChange={(e) => handleTimeChange(4, e)}
                   onKeyDown={handleTimeKeyDown}
@@ -546,7 +549,7 @@ function GeneralInfoEditExam() {
                 />
                 <input
                   type="text"
-                  className="text-black font-gilroy placeholder-gray200 w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault"
+                  className="text-black font-gilroy placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault"
                   value={code}
                   readOnly
                 />
