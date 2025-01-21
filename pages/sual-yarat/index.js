@@ -74,7 +74,7 @@ function SualYarat() {
   ]);
 
   // Initialize counters for dynamic IDs
-  const [nextOptionId, setNextOptionId] = useState(4); 
+  const [nextOptionId, setNextOptionId] = useState(4);
   const [nextQuestionId, setNextQuestionId] = useState(4);
 
   const stripHtml = (html) => {
@@ -165,7 +165,9 @@ function SualYarat() {
       // Validate that all kombinasiyaOptions have text
       for (let option of kombinasiyaOptions) {
         if (!option.text) {
-          toast.error("Zəhmət olmasa bütün kombinasiya seçimlərini daxil edin.");
+          toast.error(
+            "Zəhmət olmasa bütün kombinasiya seçimlərini daxil edin."
+          );
           return;
         }
       }
@@ -229,15 +231,18 @@ function SualYarat() {
       return;
     }
 
-    fetch(`https://innocert-admin.markup.az/api/questions/create/${lastQuery}`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-Company-ID": selectedCompany?.id,
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    })
+    fetch(
+      `https://innocert-admin.markup.az/api/questions/create/${lastQuery}`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Company-ID": selectedCompany?.id,
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+      }
+    )
       .then((response) => response.json())
       .then((body) => {
         if (body.status === true) {
@@ -296,7 +301,10 @@ function SualYarat() {
           onSave={handleSave}
         />
 
-        <EditOrPreviewTitle activeView={activeView} setActiveView={setActiveView} />
+        <EditOrPreviewTitle
+          activeView={activeView}
+          setActiveView={setActiveView}
+        />
 
         {activeView === "edit" ? (
           <>

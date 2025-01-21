@@ -332,5 +332,9 @@
     "unexpectedError": "Gözlənilməz xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
     "confirm": "Təsdiqlə",
     "placeholder": "Telefon nömrəsini daxil edin"
-  }
+  },
+  "questionsAdded": "{{count}} sual imtahana əlavə olundu.",
+  "questionRemoved": "Sual imtahandan silindi.",
+  "examUpdate": "İmtahan uğurla yeniləndi!",
+  "examCreate": "İmtahan uğurla yaradıldı!"
 }

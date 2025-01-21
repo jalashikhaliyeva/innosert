@@ -43,22 +43,23 @@ function ImtahanRedakte() {
     isGeneralInfoValid,
     isQuestionsValid,
     examDetails,
+    selectedCompany,
     selectedCategory,
     selectedSubcategory,
-    setExamToEdit,
   } = useContext(UserContext);
-  console.log(examToEdit, "examToEdit");
+console.log(examToEdit, "examToEdit");
 
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState("general");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
 
   const isFormValid = isGeneralInfoValid && isQuestionsValid;
   const { slug: slugParam } = examToEdit || {};
+  console.log(slugParam, "slugParam");
+
   const isFetchingRef = useRef(false); // To prevent multiple fetches
 
   useEffect(() => {
@@ -70,9 +71,7 @@ function ImtahanRedakte() {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
-          enqueueSnackbar("Authentication token not found.", {
-            variant: "error",
-          });
+          enqueueSnackbar("Authentication token not found.", { variant: "error" });
           return;
         }
 
@@ -89,7 +88,10 @@ function ImtahanRedakte() {
           }
         );
 
-        const fetchedQuestions = response.data.data || [];
+        const fetchedQuestions = response.data.data;
+        console.log(fetchedQuestions, "fetchedQuestions");
+        console.log(response.data, "response");
+
         setSelectedQuestionsForExam(
           fetchedQuestions.map((q) => ({
             id: q.id,
@@ -212,34 +214,21 @@ function ImtahanRedakte() {
         return formattedQuestion;
       });
 
-      // Extract code and duration separately for custom handling
-      const { code, duration, ...otherDetails } = examDetails;
+      const { code, ...otherDetails } = examDetails;
 
-      // Conditionally add 'duration' only if it's not an empty string
       const requestBody = {
         ...otherDetails,
         ...(code ? { code } : {}),
-        ...(duration !== "" ? { duration } : {}),
         question: formattedQuestions,
       };
-      console.log(requestBody, "requestBody");
 
       const examId = examToEdit.id; // Renamed for clarity
       const apiEndpoint = `https://innocert-admin.markup.az/api/exam/update/${examId}`;
 
-      await axios.post(apiEndpoint, requestBody, { headers });
-      updateExamDetails({
-        name: "",
-        desc: "",
-        price: "",
-        duration: "",
-        code: "",
-        category_id: [],
-      });
-      setSelectedQuestionsForExam([]);
-      setExamToEdit(null);
+      const response = await axios.post(apiEndpoint, requestBody, { headers });
 
-      enqueueSnackbar(t("examUpdate"), { variant: "success" });
+      enqueueSnackbar("İmtahan uğurla yeniləndi!", { variant: "success" });
+
       router.push("/umumi-imtahanlar");
     } catch (err) {
       console.error("API Error:", err);
@@ -250,11 +239,6 @@ function ImtahanRedakte() {
     } finally {
       setIsSubmitting(false);
     }
-  };
-  const handleApplyGeneralInfo = () => {
-    // e.g. you can call GeneralInfoEditExam’s local function via ref,
-    // or if you store the local state in a parent variable, do it here
-    // updateExamDetails({ ...someLocalStateInParent });
   };
 
   return (
@@ -267,12 +251,7 @@ function ImtahanRedakte() {
           onSubmit={handleSubmit}
           isSubmitting={isSubmitting}
         />
-        <CreateExamTabGroup
-          isLoadingQuestions={isLoadingQuestions}
-          activeTab={activeTab}
-          onSwitchToQuestions={handleApplyGeneralInfo}
-          setActiveTab={setActiveTab}
-        />
+        <CreateExamTabGroup isLoadingQuestions={isLoadingQuestions} />
       </Container>
     </>
   );

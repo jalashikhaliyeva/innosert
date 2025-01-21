@@ -113,14 +113,14 @@ const Breadcrumb = () => {
 
   return (
     <div className="flex flex-wrap md:flex-nowrap flex-row gap-3 mb-6 mt-24 md:mt-32">
-      {/* Static home link */}
+   
       <Link href="/home">
         <span className="font-gilroy text-base font-normal leading-6 text-grayText hover:text-textSecondaryDefault cursor-pointer transition-colors duration-300 ease-in-out">
           {t("breadcrumbs.home")}
         </span>
       </Link>
 
-      {/* Render static separator and profile link only if showProfile is true */}
+   
       {showProfile && (
         <>
           <span className="font-gilroy text-base font-normal leading-6 text-grayText mx-2">
@@ -134,7 +134,7 @@ const Breadcrumb = () => {
         </>
       )}
 
-      {/* Render dynamic breadcrumb items */}
+    
       {breadcrumbItems}
     </div>
   );

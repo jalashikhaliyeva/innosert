@@ -328,5 +328,9 @@
     "unexpectedError": "An unexpected error occurred. Please try again.",
     "confirm": "Confirm",
     "placeholder": "Enter phone number"
-  }
+  },
+  "questionsAdded": "{{count}} question added to the exam.",
+  "questionRemoved": "Question removed from the exam.",
+  "examUpdate": "The exam was successfully updated!",
+  "examCreate": "The exam was successfully created!"
 }

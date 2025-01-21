@@ -175,7 +175,7 @@ function EditQuestionSection({
                   dangerouslySetInnerHTML={{
                     __html:
                       conditionText ||
-                      "İstifadəçi təcrübəsinin əsas qurucusu və davamçısı kim sayılır?",
+                      "Sual şərtini  əlavə edin",
                   }}
                 />
               ) : (

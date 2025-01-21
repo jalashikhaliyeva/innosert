@@ -35,8 +35,8 @@ import axios from "axios";
 const HeaderInternal = () => {
   const { user, setSelectedCategory, setSelectedSubcategory , token } =
     useContext(UserContext);
-    console.log(user, "user header");
-    console.log(token, "token header");
+    // console.log(user, "user header");
+    // console.log(token, "token header");
     
   const { t } = useTranslation();
   const router = useRouter();

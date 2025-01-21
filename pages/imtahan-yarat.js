@@ -53,7 +53,8 @@ function ImtahanYarat() {
 
   const { qovluq } = router.query;
   const slugParam = Array.isArray(qovluq) ? qovluq[qovluq.length - 1] : qovluq;
-
+  const [activeTab, setActiveTab] = useState("general");
+  const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
   const handleSubmit = async () => {
     if (!isFormValid) {
       if (!hasEnoughQuestions) {
@@ -68,31 +69,31 @@ function ImtahanYarat() {
       }
       return;
     }
-  
+
     if (!selectedCompany) {
       enqueueSnackbar("Şirkət məlumatları mövcud deyil.", { variant: "error" });
       return;
     }
-  
+
     setIsSubmitting(true);
-  
+
     try {
       const token = localStorage.getItem("token");
       if (!token) {
         throw new Error("Authentication token not found.");
       }
-  
+
       const headers = {
         Authorization: `Bearer ${token}`,
         "X-Company-ID": selectedCompany.id,
         "Content-Type": "application/json",
       };
-  
+
       console.log(headers, "headers");
-  
+
       const formattedQuestions = selectedQuestionsForExam.map((question) => {
         const formattedQuestion = { id: question.id };
-  
+
         if (
           question.minute !== undefined &&
           question.minute !== null &&
@@ -102,40 +103,40 @@ function ImtahanYarat() {
           formattedQuestion.minute = String(question.minute);
           formattedQuestion.second = String(question.second);
         }
-  
+
         return formattedQuestion;
       });
-  
+
       // Destructure duration from examDetails
       const { duration, ...otherExamDetails } = examDetails;
-  
+
       // Initialize requestBody with otherExamDetails and questions
       const requestBody = {
         ...otherExamDetails,
         question: formattedQuestions,
       };
-  
+
       // Conditionally add duration if it's not an empty string
       if (duration !== "") {
         requestBody.duration = duration;
       }
-  
+
       console.log(requestBody, "requestBody ");
-  
+
       let apiEndpoint = "https://innocert-admin.markup.az/api/exam/create";
       if (slugParam) {
         const encodedSlug = encodeURIComponent(slugParam);
         apiEndpoint += `/${encodedSlug}`;
       }
-  
+
       const response = await axios.post(apiEndpoint, requestBody, { headers });
       console.log(response.data, "exam response");
-  
-      enqueueSnackbar("İmtahan uğurla yaradıldı!", { variant: "success" });
-  
+
+      enqueueSnackbar(t("examCreate"), { variant: "success" });
+
       updateExamDetails(null);
       setSelectedQuestionsForExam([]);
-  
+
       router.push("/umumi-imtahanlar");
     } catch (err) {
       console.error("API Error:", err);
@@ -147,8 +148,12 @@ function ImtahanYarat() {
       setIsSubmitting(false);
     }
   };
-  
-  
+  const handleApplyGeneralInfo = () => {
+    // e.g. you can call GeneralInfoEditExam’s local function via ref,
+    // or if you store the local state in a parent variable, do it here
+    // updateExamDetails({ ...someLocalStateInParent });
+  };
+
   return (
     <>
       <Head>
@@ -163,7 +168,12 @@ function ImtahanYarat() {
           isSubmitting={isSubmitting}
           hasEnoughQuestions={hasEnoughQuestions}
         />
-        <CreateExamTabGroup />
+        <CreateExamTabGroup
+          isLoadingQuestions={isLoadingQuestions}
+          activeTab={activeTab}
+          onSwitchToQuestions={handleApplyGeneralInfo}
+          setActiveTab={setActiveTab}
+        />
       </Container>
     </>
   );

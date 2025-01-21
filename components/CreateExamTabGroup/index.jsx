@@ -6,11 +6,16 @@ import { UserContext } from "@/shared/context/UserContext";
 import TableComponent from "./TableComponent";
 import DeleteModal from "../DeleteModal";
 
-function CreateExamTabGroup({ isLoadingQuestions }) {
+function CreateExamTabGroup({
+  isLoadingQuestions,
+  activeTab,
+  setActiveTab,
+  onSwitchToQuestions,
+}) {
   const { selectedQuestionsForExam } = useContext(UserContext);
   // console.log(selectedQuestionsForExam, "selectedQuestionsForExam");
 
-  const [activeTab, setActiveTab] = useState("general");
+  // const [activeTab, setActiveTab] = useState("general");
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
 
   // State for selected rows in the table
@@ -113,9 +118,17 @@ function CreateExamTabGroup({ isLoadingQuestions }) {
 
           <button
             className={`text-lg px-4 py-2 rounded-lg flex gap-2 items-center ${
-              isActiveQuestions ? "bg-blue100 text-blue400" : "text-neutral700"
+              activeTab === "questions"
+                ? "bg-blue100 text-blue400"
+                : "text-neutral700"
             }`}
-            onClick={() => setActiveTab("questions")}
+            onClick={() => {
+              // Call the parent's function (apply changes) before switching tab
+              if (onSwitchToQuestions) {
+                onSwitchToQuestions();
+              }
+              setActiveTab("questions");
+            }}
           >
             <svg
               width="24"

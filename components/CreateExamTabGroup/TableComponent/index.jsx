@@ -9,6 +9,7 @@ import { FiRefreshCw } from "react-icons/fi";
 import { UserContext } from "@/shared/context/UserContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 
 function TableComponent({
   selectedRows,
@@ -20,7 +21,7 @@ function TableComponent({
 }) {
   // console.log(questions, "QuestionsTableCompany from API add quest");
   const data = questions;
-
+  const { t } = useTranslation();
   const {
     setSelectedQuestion,
     selectedQuestionsForExam,
@@ -56,7 +57,8 @@ function TableComponent({
       return [...prevSelectedQuestions, ...newUniqueQuestions];
     });
 
-    toast.success(`${selectedQuestions.length} question(s) added to the exam.`);
+    toast.success(t('questionsAdded', { count: selectedQuestions.length }));
+
     // console.log(
     //   selectedQuestionsWithTime,
     //   "question(s) added to the exam with time"
@@ -129,7 +131,7 @@ function TableComponent({
       return updatedTimes;
     });
 
-    toast.success("Question removed from the exam.");
+    toast.success(t("questionRemoved"));
   };
 
   const levelColors = {

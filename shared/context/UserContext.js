@@ -10,6 +10,14 @@ import { useRouter } from "next/router";
 import OTPRegister from "@/components/OTP-register";
 
 const UserContext = createContext();
+const initialExamDetailsState = {
+  name: "",
+  desc: "",
+  price: "",
+  duration: "",
+  code: "",
+  category_id: [],
+};
 
 function UserProvider({ children }) {
   const router = useRouter();
@@ -102,6 +110,15 @@ function UserProvider({ children }) {
       details.price = "";
     }
     setExamDetails(details);
+  };
+  const resetExamContext = () => {
+    setExamDetails(initialExamDetailsState);
+    setSelectedQuestionsForExam([]);
+    setExamToEdit(null);
+    // If you also want to clear from localStorage:
+    localStorage.removeItem("examDetails");
+    localStorage.removeItem("selectedQuestionsForExam");
+    // etc.
   };
 
   useEffect(() => {
@@ -292,6 +309,7 @@ function UserProvider({ children }) {
         logout,
         updateExamDetails,
         loading,
+        resetExamContext,
       }}
     >
       {children}
