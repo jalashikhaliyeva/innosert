@@ -16,7 +16,7 @@ import Head from "next/head";
 import { useTranslation } from "react-i18next";
 
 function ImtahanDetallari() {
-  const { user, examDetailsSingle , setExamToEdit } = useContext(UserContext);
+  const { user, examDetailsSingle, setExamToEdit } = useContext(UserContext);
   console.log(examDetailsSingle, "examDetailsSingle");
   const { t } = useTranslation();
   // console.log(user.data.roles, "user imtahan detallari");
@@ -38,9 +38,21 @@ function ImtahanDetallari() {
   const openDeleteModal = () => setIsDeleteModalOpen(true);
   const closeDeleteModal = () => setIsDeleteModalOpen(false);
 
+  const isExamOwner = (examAuthor) => {
+    const currentUserName = `${user?.data.first_name || ""} ${
+      user?.data.last_name || ""
+    }`.trim();
+    return examAuthor?.trim() === currentUserName;
+  };
+
+  const userIsAuthor =
+    examDetailsSingle.type === "exam"
+      ? isExamOwner(examDetailsSingle.author)
+      : true;
+
   return (
     <>
-     <Head>
+      <Head>
         <title>{t("breadcrumbs.examDetails")}</title>
       </Head>
       <div className="hidden lg:block ">
@@ -58,7 +70,11 @@ function ImtahanDetallari() {
         <div className="w-full md:w-[80%] bg-boxGrayBodyColor">
           <InternalContainer>
             <Breadcrumb />
-            <ExamDetailsTabGroup examDetailsSingle={examDetailsSingle}     setExamToEdit={setExamToEdit} />
+            <ExamDetailsTabGroup
+              userIsAuthor={userIsAuthor}
+              examDetailsSingle={examDetailsSingle}
+              setExamToEdit={setExamToEdit}
+            />
           </InternalContainer>
         </div>
       </div>

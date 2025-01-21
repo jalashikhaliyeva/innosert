@@ -106,9 +106,7 @@ const ExamsListTeacher = ({
     }
   };
 
-  // Determine if the current user is the author of the exam
-  // (i.e., only show edit/delete if they match).
-  // Here we assume `author` matches  `first_name last_name`.
+
   const isExamOwner = (examAuthor) => {
     const currentUserName = `${user?.data.first_name || ""} ${
       user?.data.last_name || ""

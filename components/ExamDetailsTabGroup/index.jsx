@@ -17,7 +17,7 @@ import QuestionsExamDetails from "../CreateExamTabGroup/QuestionsExamDetail";
 import DeleteModal from "@/components/DeleteQuestionModal"; // Ensure correct path
 import { toast } from "react-toastify"; // For toast notifications
 
-function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
+function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit, userIsAuthor }) {
   const [activeTab, setActiveTab] = useState("general");
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false);
   const [questions, setQuestions] = useState([]);
@@ -154,7 +154,9 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
         <h2 className="font-gilroy text-xl sm:text-2xl font-medium leading-6 sm:leading-8">
           İmtahanlarım
         </h2>
-        {activeTab === "general" ? (
+        
+        {/* Conditional Rendering for "Redaktə et" Button and Search Input */}
+        {activeTab === "general" && userIsAuthor && (
           <button
             className="flex items-center justify-center gap-2 py-2 px-3 sm:py-3 sm:px-4 h-10 sm:h-11 text-white leading-6 rounded-md bg-buttonPrimaryDefault hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary font-gilroy"
             onClick={() => {
@@ -165,7 +167,9 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
             <FaPen />
             <span className="text-sm sm:text-base">Redaktə et</span>
           </button>
-        ) : (
+        )}
+
+        {activeTab !== "general" && (
           <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 relative">
             {/* Search Input */}
             <div className="flex items-center w-[70%] md:w-full hover:bg-gray-100 bg-bodyColor border border-inputBorder rounded-lg px-2 py-1 sm:px-3 sm:py-2 focus-within:border-inputRingFocus overflow-hidden z-10">
@@ -181,6 +185,7 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit }) {
           </div>
         )}
       </div>
+
       <div className="flex flex-wrap sm:flex-row gap-2 sm:gap-4 mb-4 sm:mb-6">
         {[
           { label: "Ümumi məlumat", key: "general" },

@@ -21,6 +21,7 @@ import OwnerDashboardHeader from "@/components/ResponsiveHeaderDashboard/OwnerDa
 import CompanySidebar from "@/components/CompanySidebar";
 import EditExamFolderModal from "@/components/EditExamFolderModal"; // Ensure this import exists
 import { getSession } from "next-auth/react";
+import Spinner from "@/components/Spinner";
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
@@ -196,11 +197,11 @@ function SubImtahan() {
   }, [router.isReady, slugParam, selectedCompany]);
 
   if (!router.isReady) {
-    return <div>Loading...</div>;
+    return <><Spinner /></>;
   }
 
   if (loading) {
-    return <div>Loading folders...</div>;
+    return <><Spinner /></>;
   }
 
   if (error) {

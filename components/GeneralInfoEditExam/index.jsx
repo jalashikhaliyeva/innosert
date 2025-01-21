@@ -144,17 +144,19 @@ function GeneralInfoEditExam() {
   };
 
   // 7) Kodlu or Kodsuz
-  const handleRadioCode = (isKodlu) => {
-    if (isKodlu) {
-      // user chooses "Kodlu" => generate code if none
-      if (!examDetails.code) {
-        updateExamField("code", generateRandomCode());
-      }
-    } else {
-      // user chooses "Kodsuz" => remove code
-      updateExamField("code", "");
+// 7) Kodlu or Kodsuz
+const handleRadioCode = (isKodlu) => {
+  if (isKodlu) {
+    // User chooses "Kodlu" => generate code if none
+    if (!examDetails.code) {
+      updateExamField("code", generateRandomCode());
     }
-  };
+  } else {
+    // User chooses "Kodsuz" => set code to an empty string
+    updateExamField("code", "");
+  }
+};
+
 
   // 8) If user clicks the key icon => generate a fresh code
   const handleRegenerateCode = () => {
@@ -184,9 +186,9 @@ function GeneralInfoEditExam() {
     });
   }, [
     examDetails?.name,
-    examDetails.desc,
-    examDetails.price,
-    examDetails.duration,
+    examDetails?.desc,
+    examDetails?.price,
+    examDetails?.duration,
   ]);
 
   // (Optional) Validation check each time examDetails changes
@@ -194,8 +196,8 @@ function GeneralInfoEditExam() {
     const { name, desc, price, code, category_id, duration } = examDetails;
 
     // Basic checks
-    const examNameValid = !!name.trim();
-    const examDescValid = !!desc.trim();
+    const examNameValid = !!name?.trim();
+    const examDescValid = !!desc?.trim();
     const categoriesValid = category_id && category_id.length > 0;
     const priceValid = price !== "";
     const codeValid = true; // We can refine if "Kodlu" is chosen.
@@ -245,7 +247,7 @@ function GeneralInfoEditExam() {
                 placeholder="İmtahanın adını daxil edin"
                 className="text-black placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
                 rows={1}
-                value={examDetails.name || ""}
+                value={examDetails?.name || ""}
                 onChange={(e) => handleNameChange(e.target.value)}
               />
             </div>
@@ -263,7 +265,7 @@ function GeneralInfoEditExam() {
                 placeholder="İmtahan haqqında məlumat daxil edin"
                 className="text-black placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
                 rows={1}
-                value={examDetails.desc || ""}
+                value={examDetails?.desc || ""}
                 onChange={(e) => handleDescChange(e.target.value)}
               />
             </div>
