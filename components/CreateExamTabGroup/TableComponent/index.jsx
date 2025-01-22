@@ -57,7 +57,7 @@ function TableComponent({
       return [...prevSelectedQuestions, ...newUniqueQuestions];
     });
 
-    toast.success(t('questionsAdded', { count: selectedQuestions.length }));
+    toast.success(t("questionsAdded", { count: selectedQuestions.length }));
 
     // console.log(
     //   selectedQuestionsWithTime,
@@ -571,7 +571,8 @@ function TableComponent({
                       onClick={() => handleClick(item)}
                       className="px-4 py-2 relative group cursor-pointer"
                     >
-                      {displayedTitle}
+                    {displayedTitle.replace(/&nbsp;/g, ' ')}
+
 
                       <div className="absolute !text-xs bottom-full left-1/2 transform -translate-x-1/2 -translate-y-2 whitespace-nowrap bg-white border text-black  px-3 py-1 rounded shadow-shadow3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                         <div dangerouslySetInnerHTML={{ __html: item.title }} />
