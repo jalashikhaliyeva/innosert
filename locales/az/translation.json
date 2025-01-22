@@ -337,5 +337,7 @@
   "questionRemoved": "Sual imtahandan silindi.",
   "examUpdate": "İmtahan uğurla yeniləndi!",
   "examCreate": "İmtahan uğurla yaradıldı!",
-  "notValid": "Form etibarlı deyil. Zəhmət olmasa məlumatlarınızı yoxlayın."
+  "notValid": "Form etibarlı deyil. Zəhmət olmasa məlumatlarınızı yoxlayın.",
+"otp-verification": "OTP doğrulaması tələb olunur. Zəhmət olmasa OTP-ni tamamlayın."
+
 }

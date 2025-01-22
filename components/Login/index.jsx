@@ -99,7 +99,8 @@ export default function LoginModal({
         onClose();
         router.push("/home");
       } else {
-        toast.info("OTP verification required. Please complete OTP.");
+        // toast.info("OTP verification required. Please complete OTP.");
+        toast.info(t("otp-verification"));
         // We simply close modal; OTPModalManager in UserContext will trigger the OTP modal if sv=0
         onClose();
       }

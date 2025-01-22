@@ -333,5 +333,7 @@
   "questionRemoved": "Question removed from the exam.",
   "examUpdate": "The exam was successfully updated!",
   "examCreate": "The exam was successfully created!",
-  "notValid": "Form is not valid. Please check your inputs."
+  "notValid": "Form is not valid. Please check your inputs.",
+  "otp-verification":"OTP verification required. Please complete OTP."
+
 }
