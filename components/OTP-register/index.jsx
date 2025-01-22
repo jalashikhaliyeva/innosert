@@ -1,8 +1,11 @@
-import React, { useState, useEffect, useRef } from "react";
+// components/OTP-register.jsx
+
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HiOutlineArrowLeft } from "react-icons/hi";
 import { useRouter } from "next/router";
+import { UserContext } from "@/shared/context/UserContext";
 
 function OTPRegister({
   isOpen,
@@ -14,9 +17,10 @@ function OTPRegister({
 }) {
   const [code, setCode] = useState(Array(6).fill(""));
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [timer, setTimer] = useState(20); // Initialize with 20 seconds
+  const [timer, setTimer] = useState(20);
   const router = useRouter();
   const inputRefs = useRef([]);
+  const { completeVerification } = useContext(UserContext);
 
   // Handle input changes and auto-focus next input
   const handleInputChange = (e, index) => {
@@ -37,7 +41,6 @@ function OTPRegister({
   // Verify the OTP code
   const handleVerifyCode = async (e) => {
     e.preventDefault();
-
     const joinedCode = code.join("");
     if (joinedCode.length !== 6) {
       toast.error("Zəhmət olmasa, bütün xanaları doldurun.");
@@ -50,7 +53,6 @@ function OTPRegister({
     };
 
     const body = JSON.stringify({ code: joinedCode });
-    // console.log(body, "body");
 
     try {
       const response = await fetch(
@@ -63,16 +65,23 @@ function OTPRegister({
       );
 
       const data = await response.json();
-      // console.log("Verification response:", data);
 
       if (response.ok && data?.status === "success") {
         toast.success("Kod uğurla təsdiqləndi!");
+
+        // *** Mark user as fully verified with token2 ***
+        await completeVerification(token);
+
+        // Optionally open reset password modal, if that is your flow
+        if (onOpenResetPasswordModal) {
+          onOpenResetPasswordModal();
+        }
+
         onClose();
-        onOpenResetPasswordModal();
+        // Now that user is fully verified, push to /home
         router.push("/home");
       } else {
         toast.error("Kodun təsdiqi uğursuz oldu. Yenidən cəhd edin.");
-        // console.log("Failed to verify the code. Please try again.");
       }
     } catch (error) {
       console.error("Error verifying code:", error);
@@ -102,24 +111,19 @@ function OTPRegister({
       );
 
       const data = await response.json();
-      // console.log("Resend code response:", data);
 
       if (response.ok && data?.status === "success") {
         toast.success("Kod yenidən uğurla göndərildi!");
         setCode(Array(6).fill(""));
-
         if (inputRefs.current[0]) {
           inputRefs.current[0].focus();
         }
-
-        // Reset timer and disable button for 20 seconds
         setIsButtonDisabled(true);
         setTimer(20);
       } else {
         toast.error(
           "Kodun yenidən göndərilməsi uğursuz oldu. Yenidən cəhd edin."
         );
-        // console.log("Failed to resend the code. Please try again.");
       }
     } catch (error) {
       console.error("Error resending code:", error);
@@ -129,10 +133,8 @@ function OTPRegister({
     }
   };
 
-  // Timer effect to handle countdown
   useEffect(() => {
     let interval = null;
-
     if (isOpen && timer > 0) {
       interval = setInterval(() => {
         setTimer((prevTimer) => prevTimer - 1);
@@ -140,7 +142,6 @@ function OTPRegister({
     } else if (isOpen && timer === 0) {
       setIsButtonDisabled(false);
     }
-
     return () => {
       if (interval) clearInterval(interval);
     };
@@ -168,19 +169,7 @@ function OTPRegister({
 
   return (
     <>
-      {/* <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      /> */}
-
+      {/* <ToastContainer ... /> */}
       <div
         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
         onClick={handleOutsideClick}
@@ -196,14 +185,6 @@ function OTPRegister({
           >
             &times;
           </button>
-
-          {/* <div className="flex items-center mb-6">
-            <HiOutlineArrowLeft
-              className="text-2xl text-buttonPrimaryDefault cursor-pointer"
-              onClick={onBack}
-              aria-label="Back"
-            />
-          </div> */}
 
           <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-buttonPrimaryDefault">
             OTP

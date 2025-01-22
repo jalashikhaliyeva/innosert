@@ -15,6 +15,7 @@ import {
   HiOutlineEyeOff,
 } from "react-icons/hi";
 import { UserContext } from "@/shared/context/UserContext";
+
 export default function LoginModal({
   isOpen,
   onClose,
@@ -22,7 +23,7 @@ export default function LoginModal({
   onForgotPasswordClick,
 }) {
   const [email, setEmail] = useState("");
-  const { login } = useContext(UserContext); // This can be removed if you fully integrate with NextAuth
+  const { login, fetchUserData } = useContext(UserContext);
   const { t } = useTranslation();
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -81,16 +82,27 @@ export default function LoginModal({
         throw new Error(result.error);
       }
 
-      const session = await getSession();
-      console.log(session, "session get");
-
-      if (session && session.accessToken) {
-        await login(session.accessToken);
+      // Get the NextAuth session
+      const nextAuthSession = await getSession();
+      if (!nextAuthSession?.accessToken) {
+        throw new Error(t("toastMessages.loginFailed"));
       }
 
-      toast.success(t("toastMessages.loginSuccess"));
-      onClose();
-      router.push("/home");
+      // 1) Store the token in UserContext but do NOT go to /home yet
+      await login(nextAuthSession.accessToken);
+
+      // 2) Immediately fetch user data with newly stored token
+      const userData = await fetchUserData(nextAuthSession.accessToken);
+      // 3) If user is verified, route to /home; otherwise remain here
+      if (userData?.data?.sv === 1) {
+        toast.success(t("toastMessages.loginSuccess"));
+        onClose();
+        router.push("/home");
+      } else {
+        toast.info("OTP verification required. Please complete OTP.");
+        // We simply close modal; OTPModalManager in UserContext will trigger the OTP modal if sv=0
+        onClose();
+      }
     } catch (error) {
       console.error("Error logging in:", error);
       toast.error(error.message || t("toastMessages.loginFailed"));
@@ -109,7 +121,7 @@ export default function LoginModal({
   const handleGoogleSignIn = () => {
     localStorage.setItem("googleSignIn", "true");
     signIn("google", {
-      callbackUrl: "/home",
+      callbackUrl: "/", // <--- changed to stay on index, not /home
       prompt: "select_account",
     });
   };
@@ -277,55 +289,21 @@ export default function LoginModal({
                 </span>
                 <div className="flex-1 border-t border-gray-300"></div>
               </div>
-              {/* <div className="flex justify-center gap-4 mt-6">
-                <button
-                  type="button"
-                  onClick={handleGoogleSignIn}
-                  className="rounded-full bg-gray-100 p-4"
-                >
-                  <FcGoogle className="h-8 w-8" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => signIn("linkedin", { callbackUrl: "/home" })}
-                  className="rounded-full bg-gray-100 p-4"
-                >
-                  <FaLinkedin className="h-8 w-8 fill-[#0A66C2]" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => signIn("facebook")}
-                  className="rounded-full bg-gray-100 p-4"
-                >
-                  <FaFacebook className="h-8 w-8 fill-[#0866FF]" />
-                </button>
-              </div> */}
               <div className="flex justify-center gap-4 mt-6">
                 <button
                   type="button"
                   onClick={handleGoogleSignIn}
-                  className="rounded-full  text-lg  text-grayButtonText bg-grayLineFooter hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed p-3 flex items-center gap-3 font-medium font-gilroy"
+                  className="rounded-full text-lg text-grayButtonText bg-grayLineFooter hover:bg-buttonSecondaryHover active:bg-buttonSecondaryPressed p-3 flex items-center gap-3 font-medium font-gilroy"
                 >
                   <FcGoogle className="h-8 w-8" />
-                  {t('signInWithGoogle')}
+                  {t("signInWithGoogle")}
                 </button>
               </div>
             </form>
           </div>
         </div>
       )}
-      {/* <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      /> */}
+      {/* <ToastContainer ... /> */}
     </>
   );
 }

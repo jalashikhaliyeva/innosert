@@ -1,3 +1,5 @@
+// shared/context/UserContext.jsx
+
 import React, {
   createContext,
   useState,
@@ -35,8 +37,16 @@ function UserProvider({ children }) {
     }
     return null;
   });
-  const [loading, setLoading] = useState(true);
 
+  // NEW: second token, only set after OTP is done
+  const [token2, setToken2] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("token2");
+    }
+    return null;
+  });
+
+  const [loading, setLoading] = useState(true);
   const [lastQuery, setLastQuery] = useState(null);
   const [examDetailsSingle, setExamDetailsSingle] = useState(null);
   const [percentage, setPercentage] = useState(null);
@@ -109,6 +119,7 @@ function UserProvider({ children }) {
     }
     setExamDetails(details);
   };
+
   const resetExamContext = () => {
     setExamDetails(initialExamDetailsState);
     setSelectedQuestionsForExam([]);
@@ -116,7 +127,6 @@ function UserProvider({ children }) {
     // If you also want to clear from localStorage:
     localStorage.removeItem("examDetails");
     localStorage.removeItem("selectedQuestionsForExam");
-    // etc.
   };
 
   useEffect(() => {
@@ -175,59 +185,54 @@ function UserProvider({ children }) {
     }
   }, [examDetails]);
 
-  const fetchUserData = useCallback(async () => {
-    if (!token) {
-      // console.log(token, "no token");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch(
-        "https://innocert-admin.markup.az/api/user",
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log(user , "user");
-      
-      if (response.ok) {
-        const userData = await response.json();
-        setUser(userData);
-        // Store it
-        localStorage.setItem("user", JSON.stringify(userData));
-      } else {
-        toast.error("Failed to fetch user data");
-        setUser(null);
+  // Modified fetchUserData that returns the user data
+  const fetchUserData = useCallback(
+    async (givenToken) => {
+      const effectiveToken = givenToken || token;
+      if (!effectiveToken) {
+        setLoading(false);
+        return null;
       }
-    } catch (error) {
-      toast.error(`An error occurred: ${error.message}`);
-      setUser(null);
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+      try {
+        const response = await fetch(
+          "https://innocert-admin.markup.az/api/user",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${effectiveToken}`,
+            },
+          }
+        );
+
+        if (response.ok) {
+          const userData = await response.json();
+          setUser(userData);
+          localStorage.setItem("user", JSON.stringify(userData));
+          return userData;
+        } else {
+          toast.error("Failed to fetch user data");
+          setUser(null);
+          return null;
+        }
+      } catch (error) {
+        toast.error(`An error occurred: ${error.message}`);
+        setUser(null);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [token]
+  );
 
   useEffect(() => {
-    // Public routes: index ('/'), haqqimizda ('/haqqimizda'), imtahanlar ('/imtahanlar'), imtahanlar/[slug] ('/imtahanlar/:slug')
-    const publicRoutes = ["/", "/haqqimizda", "/imtahanlar"];
-    // Check if current route is public
-    const isPublicRoute =
-      publicRoutes.includes(router.pathname) ||
-      router.pathname.startsWith("/imtahanlar/");
-
     if (token) {
-      fetchUserData();
+      fetchUserData(token);
     } else {
       setLoading(false);
     }
   }, [token, fetchUserData]);
 
-  // UserContext.js
   const login = useCallback(async (newToken) => {
     try {
       if (typeof window !== "undefined") {
@@ -238,6 +243,14 @@ function UserProvider({ children }) {
       console.error("Error storing token:", error);
       throw error;
     }
+  }, []);
+
+  // Once OTP is successfully verified, we set token2
+  const completeVerification = useCallback(async (verifiedToken) => {
+    if (typeof window !== "undefined") {
+      localStorage.setItem("token2", verifiedToken);
+    }
+    setToken2(verifiedToken);
   }, []);
 
   const logout = useCallback(async () => {
@@ -256,15 +269,13 @@ function UserProvider({ children }) {
         }
         localStorage.removeItem("token");
       }
-      
-      // Also remove the user object:
       localStorage.removeItem("user");
+      localStorage.removeItem("token2");
     }
-  
     setToken(null);
+    setToken2(null);
     setUser(null);
   }, []);
-  
 
   return (
     <UserContext.Provider
@@ -273,6 +284,8 @@ function UserProvider({ children }) {
         setUser,
         token,
         setToken,
+        token2,
+        setToken2,
         lastQuery,
         setLastQuery,
         selectedQuestion,
@@ -313,6 +326,7 @@ function UserProvider({ children }) {
         login,
         logout,
         updateExamDetails,
+        completeVerification, // new
         loading,
         resetExamContext,
       }}
@@ -328,13 +342,8 @@ function OTPModalManager() {
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
   useEffect(() => {
-    // If user data is loaded, user is NOT social, and sv=0 => open OTP modal
-    if (
-      !loading &&
-      user &&
-      user?.data?.is_social === false &&
-      user?.data?.sv === 0
-    ) {
+    // Show OTP modal ONLY if user is normal (is_social=false) and sv=0
+    if (!loading && user && user?.data?.is_social === false && user?.data?.sv === 0) {
       setIsOtpModalOpen(true);
     } else {
       setIsOtpModalOpen(false);

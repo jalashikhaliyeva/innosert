@@ -1,3 +1,5 @@
+// components/AuthHandler.jsx
+
 import { useEffect, useContext } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
@@ -7,7 +9,7 @@ import { UserContext } from "@/shared/context/UserContext";
 
 function AuthHandler({ children }) {
   const { data: session, status } = useSession();
-  const { login } = useContext(UserContext);
+  const { login, fetchUserData } = useContext(UserContext);
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -18,39 +20,37 @@ function AuthHandler({ children }) {
     let initiatedProvider = null;
 
     socialProviders.forEach((provider) => {
-      if (localStorage.getItem(`${provider}SignIn`) === "true") {
+      if (typeof window !== "undefined" && localStorage.getItem(`${provider}SignIn`) === "true") {
         initiatedProvider = provider;
       }
     });
 
     if (status === "authenticated" && initiatedProvider) {
+      // This means user used social login
       const sendUserData = async () => {
         try {
-          const response = await fetch(
-            "https://innocert-admin.markup.az/api/social-register",
-            {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: session?.user.id
-                  ? `Bearer ${session.user.id}`
-                  : undefined,
-              },
-              body: JSON.stringify(session.user),
-            }
-          );
+          const response = await fetch("https://innocert-admin.markup.az/api/social-register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: session?.user.id ? `Bearer ${session.user.id}` : undefined,
+            },
+            body: JSON.stringify(session.user),
+          });
 
           const data = await response.json();
-          // console.log(data, "auth handler");
-
-          if (response.ok && data.data.token) {
+          if (response.ok && data?.data?.token) {
             const backendToken = data.data.token;
-            // console.log(backendToken, "backendToken");
-            
-          
-            // Wait for the token to be set before redirect
+
+            // 1) Store the token in your UserContext (but no OTP for social!)
             await login(backendToken);
-          
+
+            // 2) Optionally fetch user data if needed
+            //    But even if user.sv=0, skip OTP & go home
+            //    If you prefer to check user data, you can do so:
+            // const userData = await fetchUserData(backendToken);
+
+            // 3) Just go home (since no OTP for social)
             router.push("/home");
           } else {
             console.error("Failed to get token from backend API:", data);
@@ -60,13 +60,15 @@ function AuthHandler({ children }) {
           console.error("Error in sendUserData:", error);
           toast.warning(t("toastMessages.generalError"));
         } finally {
-          // Clean up
-          localStorage.removeItem(`${initiatedProvider}SignIn`);
+          // Clean up localStorage
+          if (typeof window !== "undefined") {
+            localStorage.removeItem(`${initiatedProvider}SignIn`);
+          }
         }
       };
       sendUserData();
     }
-  }, [status, session, login, router, t]);
+  }, [status, session, login, fetchUserData, router, t]);
 
   return children;
 }
