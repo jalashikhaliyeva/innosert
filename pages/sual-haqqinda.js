@@ -36,7 +36,7 @@ export async function getServerSideProps(context) {
 function ImtahanSualiSingle() {
   const { user } = useContext(UserContext);
   const { selectedQuestion } = useContext(UserContext);
-  // console.log(selectedQuestion, "setSelectedQuestion");
+  console.log(selectedQuestion, "setSelectedQuestion");
 
   return (
     <>

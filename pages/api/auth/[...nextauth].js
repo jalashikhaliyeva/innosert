@@ -32,29 +32,42 @@ export default NextAuth({
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "Email", type: "email", placeholder: "your-email@example.com" },
+        email: {
+          label: "Email",
+          type: "email",
+          placeholder: "your-email@example.com",
+        },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials, req) {
         try {
-          const res = await fetch("https://innocert-admin.markup.az/api/login", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: credentials.email,
-              password: credentials.password,
-            }),
-          });
-    
+          const res = await fetch(
+            "https://innocert-admin.markup.az/api/login",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                email: credentials.email,
+                password: credentials.password,
+              }),
+            }
+          );
 
-          // console.log(res ,"response login");
-          
+          console.log(res ,"response login");
+
           const user = await res.json();
-    
+              console.log("Parsed user:", user);
+
           if (!res.ok || !user?.data?.token) {
             throw new Error(user.message || "Login failed");
           }
-    
+
+          if (typeof setIsSocialLogin === "function") {
+            setIsSocialLogin(data.is_social);
+          }
+
+        
+
           // Return the user object with necessary fields
           return {
             id: user.data.user.id,

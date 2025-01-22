@@ -62,6 +62,8 @@ function UserProvider({ children }) {
   const [privateExam, setPrivateExam] = useState(false);
   const [isQuestionsValid, setIsQuestionsValid] = useState(false);
 
+  
+
   useEffect(() => {
     if (typeof window !== "undefined") {
       const storedToken = localStorage.getItem("token");
@@ -104,7 +106,7 @@ function UserProvider({ children }) {
 
   const updateExamDetails = (details) => {
     // Prevent setting price to NaN
-    if (details && typeof details.price === "number" && isNaN(details.price)) {
+    if (details && typeof details.price === 'number' && isNaN(details.price)) {
       details.price = "";
     }
     setExamDetails(details);
@@ -193,8 +195,6 @@ function UserProvider({ children }) {
         }
       );
 
-      console.log(user , "user");
-      
       if (response.ok) {
         const userData = await response.json();
         setUser(userData);
@@ -256,15 +256,10 @@ function UserProvider({ children }) {
         }
         localStorage.removeItem("token");
       }
-      
-      // Also remove the user object:
-      localStorage.removeItem("user");
     }
-  
     setToken(null);
     setUser(null);
   }, []);
-  
 
   return (
     <UserContext.Provider
@@ -328,13 +323,8 @@ function OTPModalManager() {
   const [isOtpModalOpen, setIsOtpModalOpen] = useState(false);
 
   useEffect(() => {
-    // If user data is loaded, user is NOT social, and sv=0 => open OTP modal
-    if (
-      !loading &&
-      user &&
-      user?.data?.is_social === false &&
-      user?.data?.sv === 0
-    ) {
+    // If user data is loaded and sv=0, open OTP modal
+    if (!loading && user && user?.data?.sv == 0) {
       setIsOtpModalOpen(true);
     } else {
       setIsOtpModalOpen(false);
@@ -360,3 +350,4 @@ function OTPModalManager() {
 }
 
 export { UserContext, UserProvider };
+

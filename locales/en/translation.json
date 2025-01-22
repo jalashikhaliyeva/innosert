@@ -332,5 +332,6 @@
   "questionsAdded": "{{count}} question added to the exam.",
   "questionRemoved": "Question removed from the exam.",
   "examUpdate": "The exam was successfully updated!",
-  "examCreate": "The exam was successfully created!"
+  "examCreate": "The exam was successfully created!",
+  "notValid": "Form is not valid. Please check your inputs."
 }

@@ -16,7 +16,7 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useRouter } from "next/router";
 import axios from "axios";
-import DeleteModal from "@/components/DeleteQuestionModal"; // Ensure correct path
+import DeleteModal from "@/components/DeleteQuestionModal"; 
 import { getSession } from "next-auth/react";
 export async function getServerSideProps(context) {
   const session = await getSession(context);
@@ -172,30 +172,37 @@ function SualRedakte() {
       level_id: level_id,
       score: score,
     };
-
-    if (data.type_id === 1) {
+  
+    if (data.type_id === 1) { // Variantli sual
       if (answers.length === 0) {
         toast.error("Zəhmət olmasa cavabları daxil edin.");
         return;
       }
+  
+      const hasCorrectAnswer = answers.some(answer => answer.correct);
+      if (!hasCorrectAnswer) {
+        toast.error("Zəhmət olmasa ən azı bir düzgün cavabı seçin.");
+        return;
+      }
+  
       data.answers = answers.map((answer) => ({
         id: answer.idInApi,
         answer: answer.text,
         right: answer.correct,
       }));
-    } else if (data.type_id === 2) {
+    } else if (data.type_id === 2) { // Açıq sual
       if (!openAnswer) {
         toast.error("Zəhmət olmasa cavabı daxil edin.");
         return;
       }
       data.answer = openAnswer;
-    } else if (data.type_id === 3) {
+    } else if (data.type_id === 3) { // Kombinasiya sualı
       const groupedAnswersMap = new Map();
-
+  
       kombinasiyaQuestions.forEach((question) => {
         const key = question.questionText;
         const keyId = question.idInApi || null;
-
+  
         if (!groupedAnswersMap.has(key)) {
           groupedAnswersMap.set(key, {
             id: keyId,
@@ -203,7 +210,7 @@ function SualRedakte() {
             values: [],
           });
         }
-
+  
         question.selectedOptions.forEach((optionId) => {
           const option = kombinasiyaOptions.find((opt) => opt.id === optionId);
           if (option) {
@@ -220,10 +227,11 @@ function SualRedakte() {
           }
         });
       });
-
+  
       data.answers = Array.from(groupedAnswersMap.values());
     }
-
+  
+    // Check if all required fields are filled
     if (
       !data.title ||
       !data.question ||
@@ -234,13 +242,13 @@ function SualRedakte() {
       toast.error("Zəhmət olmasa bütün sahələri doldurun.");
       return;
     }
-
-    // console.log("Data sent to API:", JSON.stringify(data, null, 2));
+  
+    // Proceed with API call
     const isUpdating = selectedQuestion && selectedQuestion.id;
     const url = isUpdating
       ? `https://innocert-admin.markup.az/api/questions/${selectedQuestion.id}`
       : `https://innocert-admin.markup.az/api/questions/create/${lastQuery}`;
-
+  
     fetch(url, {
       method: "POST",
       headers: {
@@ -280,7 +288,7 @@ function SualRedakte() {
         toast.error(error.message);
       });
   };
-
+  
   const resetForm = () => {
     setTitleText("");
     setConditionText("");

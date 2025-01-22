@@ -4,9 +4,9 @@ import WarningQuestion from "../WarningQuestion";
 function Combination({ selectedQuestion }) {
   // Group answers by their question key
   const groupedQuestions = selectedQuestion.answers.reduce((acc, answer) => {
-    const key = answer.key.replace(/<[^>]+>/g, ""); // Remove any HTML tags from the question text
+    const key = answer?.key?.replace(/<[^>]+>/g, ""); // Remove any HTML tags from the question text
     if (!acc[key]) acc[key] = [];
-    acc[key].push(answer.value.replace(/<[^>]+>/g, "")); // Add the answer value and remove HTML tags
+    acc[key].push(answer?.value?.replace(/<[^>]+>/g, "")); // Add the answer value and remove HTML tags
     return acc;
   }, {});
 

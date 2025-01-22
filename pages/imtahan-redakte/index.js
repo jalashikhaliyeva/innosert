@@ -176,9 +176,10 @@ function ImtahanRedakte() {
 
   const handleSubmit = async () => {
     if (!isFormValid) {
-      enqueueSnackbar("Form is not valid. Please check your inputs.", {
+      enqueueSnackbar(t("notValid"), {
         variant: "error",
       });
+
       return;
     }
 

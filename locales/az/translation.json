@@ -336,5 +336,6 @@
   "questionsAdded": "{{count}} sual imtahana əlavə olundu.",
   "questionRemoved": "Sual imtahandan silindi.",
   "examUpdate": "İmtahan uğurla yeniləndi!",
-  "examCreate": "İmtahan uğurla yaradıldı!"
+  "examCreate": "İmtahan uğurla yaradıldı!",
+  "notValid": "Form etibarlı deyil. Zəhmət olmasa məlumatlarınızı yoxlayın."
 }

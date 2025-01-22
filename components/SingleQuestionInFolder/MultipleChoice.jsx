@@ -1,6 +1,8 @@
 import React from "react";
 
 function MultipleChoice({ selectedQuestion }) {
+  console.log(selectedQuestion, "multiple");
+  
   return (
     <div className="py-10 px-6 md:px-20 lg:px-40 bg-white shadow-createBox flex flex-col justify-center rounded-lg">
       <h2

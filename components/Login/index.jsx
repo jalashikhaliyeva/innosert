@@ -82,7 +82,7 @@ export default function LoginModal({
       }
 
       const session = await getSession();
-      // console.log(session, "session get");
+      console.log(session, "session get");
 
       if (session && session.accessToken) {
         await login(session.accessToken);
