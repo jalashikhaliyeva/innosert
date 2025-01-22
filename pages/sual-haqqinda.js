@@ -56,7 +56,9 @@ function ImtahanSualiSingle() {
         <div className="w-full md:w-[80%]">
           <InternalContainer>
             <Breadcrumb />
-            <QuestionSingleNavigationTitle selectedQuestion={selectedQuestion} />
+            <QuestionSingleNavigationTitle
+              selectedQuestion={selectedQuestion}
+            />
             <AboutQuestionBoxes selectedQuestion={selectedQuestion} />
             <SingleQuestionInFolder selectedQuestion={selectedQuestion} />
           </InternalContainer>
