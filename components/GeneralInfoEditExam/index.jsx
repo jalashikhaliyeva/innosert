@@ -286,8 +286,8 @@ const handleRadioCode = (isKodlu) => {
                 }
               >
                 {/* Selected items */}
-                {examDetails.category_id && examDetails.category_id.length > 0 ? (
-                  examDetails.category_id.map((id) => {
+                {examDetails?.category_id && examDetails?.category_id.length > 0 ? (
+                  examDetails?.category_id.map((id) => {
                     const foundItem = combinedList.find((item) => item.id === id);
                     return foundItem ? (
                       <div
@@ -373,7 +373,7 @@ const handleRadioCode = (isKodlu) => {
                 className="text-black font-gilroy placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault resize-none overflow-hidden"
                 rows={1}
                 value={
-                  examDetails.price ? `${examDetails.price} ₼` : ""
+                  examDetails?.price ? `${examDetails?.price} ₼` : ""
                 }
                 onChange={(e) => handlePriceChange(e.target.value)}
               />
@@ -474,7 +474,7 @@ const handleRadioCode = (isKodlu) => {
                   type="radio"
                   name="sixth-options"
                   className="form-radio"
-                  checked={!examDetails.code}
+                  checked={!examDetails?.code}
                   onChange={() => handleRadioCode(false)}
                 />
                 <span className="text-base font-gilroy">Kodsuz</span>
@@ -484,7 +484,7 @@ const handleRadioCode = (isKodlu) => {
                   type="radio"
                   name="sixth-options"
                   className="form-radio"
-                  checked={!!examDetails.code}
+                  checked={!!examDetails?.code}
                   onChange={() => handleRadioCode(true)}
                 />
                 <span className="text-base font-gilroy">Kodlu</span>
@@ -492,7 +492,7 @@ const handleRadioCode = (isKodlu) => {
             </div>
 
             {/* If Kodlu => show code input */}
-            {examDetails.code && (
+            {examDetails?.code && (
               <div className="group flex py-3 px-4 items-center border border-buttonPrimaryDefault rounded-lg w-[160px] hover:border-inputBorderHover hover:bg-inputBgHover bg-inputBgDefault">
                 <FaKey
                   className="text-gray200 mr-3 group-hover:text-gray800 cursor-pointer"
@@ -501,7 +501,7 @@ const handleRadioCode = (isKodlu) => {
                 <input
                   type="text"
                   className="text-black font-gilroy placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault"
-                  value={examDetails.code}
+                  value={examDetails?.code}
                   readOnly
                 />
               </div>
