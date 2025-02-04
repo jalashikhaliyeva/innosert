@@ -5,6 +5,8 @@ import { useTranslation } from "react-i18next";
 import ProgressPieChartResults from "../ProgressPieChartResults";
 
 function CardResult({ data }) {
+  console.log(data, "data result");
+
   const router = useRouter();
   const { t } = useTranslation();
 
@@ -13,10 +15,11 @@ function CardResult({ data }) {
   };
 
   return (
-    <div className="p-5 w-full md:w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed">
+    <div className="p-5 w-full md:w-[29.2%] bg-white rounded-xl border border-buttonGhostPressed min-h-[350px]">
+      {/* Card Content */}
       <div className="flex flex-row items-center gap-2">
         <img
-          className="size-10 object-cover rounded-full"
+          className="size-10 object-contain rounded-2xl"
           src={data.company_logo}
           alt="company-logo"
         />
@@ -31,12 +34,19 @@ function CardResult({ data }) {
         <span className="relative after:absolute after:left-0 after:-bottom-1 after:w-0 after:h-[2px] after:bg-blue-200 after:transition-all after:duration-300 hover:after:w-full">
           {data.exam}
         </span>
+        {data.percentage === 0 &&
+          data.totalScore === 0 &&
+          data.wrong === 0 &&
+          data.correct === 0 && (
+            <p className="font-gilroy text-sm text-inputRingError font-normal leading-6">
+              {t("terms.excluded")}
+            </p>
+          )}
       </div>
       <div className="flex flex-col items-center justify-center">
         <p className="font-gilroy text-xl text-grayButtonText font-normal leading-6">
           {data.created_at}
         </p>
-        {/* Pass the individual counts instead of percentage */}
         <ProgressPieChartResults
           correct={data.correct}
           wrong={data.wrong}

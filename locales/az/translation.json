@@ -60,7 +60,8 @@
   "terms": {
     "correct": "Düz",
     "wrong": "Səhv",
-    "empty": "Boş"
+    "empty": "Boş",
+     "excluded": "Kenarlaşdırılıb"
   },
   "messages": {
     "noPaidExam": "Heç bir ödənişli imtahan tapılmadı.",

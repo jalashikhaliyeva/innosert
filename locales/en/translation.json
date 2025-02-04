@@ -60,7 +60,8 @@
   "terms": {
     "correct": "Correct",
     "wrong": "Wrong",
-    "empty": "Empty"
+    "empty": "Empty",
+    "excluded": "Excluded"
   },
   "messages": {
     "noPaidExam": "No paid exams found.",
