@@ -46,6 +46,7 @@ const ParentComponent = () => {
   const downloadsData = allData.filter(
     (item) => item.exam_id === null && item.type === "Balans artımı"
   );
+  const reversedDownloadsData = [...downloadsData].reverse();
 
   const pageCount = Math.ceil(historyData.length / itemsPerPage);
 
@@ -190,7 +191,7 @@ const ParentComponent = () => {
           )}
         </div>
       ) : (
-        <YuklemelerimTable data={downloadsData} />
+        <YuklemelerimTable data={reversedDownloadsData} />
       )}
     </div>
   );

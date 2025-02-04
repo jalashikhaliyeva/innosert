@@ -99,7 +99,7 @@ function Imtahanlarim() {
             }
           );
           const result = await response.json();
-          // console.log(result.data, "paid exams");
+          console.log(result, "paid exams");
 
           if (result.status) {
             setExams(result.data);
