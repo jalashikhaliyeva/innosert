@@ -13,7 +13,7 @@ import axios from "axios";
 import FinishExamModal from "@/components/FinishExam/FinishExamModal";
 import Spinner from "@/components/Spinner";
 import { getSession } from "next-auth/react";
-import { ToastContainer, toast } from 'react-toastify';
+import { ToastContainer, toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 export async function getServerSideProps(context) {
   const session = await getSession(context);
@@ -30,15 +30,12 @@ export async function getServerSideProps(context) {
 
   // 2) We do a server-side fetch to check if the user is verified
   //    Usually you'd pass the user's token from session.accessToken or similar.
-  const userResponse = await fetch(
-    "https://api.innosert.az/api/user",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`, // or wherever your token is
-      },
-    }
-  );
+  const userResponse = await fetch("https://api.innosert.az/api/user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`, // or wherever your token is
+    },
+  });
 
   if (!userResponse.ok) {
     // If the fetch fails, treat it like "not verified"
@@ -70,10 +67,6 @@ export async function getServerSideProps(context) {
     },
   };
 }
-
-
-
-
 
 const parseDuration = (durationStr) => {
   if (typeof durationStr !== "string") return 0;
@@ -119,7 +112,7 @@ function ImtahanSehifesi() {
   const [examFinishTime, setExamFinishTime] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
-    const { t } = useTranslation();
+  const { t } = useTranslation();
   const stripHtml = (html) => {
     const tmp = document.createElement("DIV");
     tmp.innerHTML = html;
@@ -138,9 +131,9 @@ function ImtahanSehifesi() {
       // toast.info("Right-click is disabled on this page.");
       toast.info(t("contextMenuDisabled"));
     };
-  
+
     document.addEventListener("contextmenu", handleContextMenu);
-    
+
     return () => {
       document.removeEventListener("contextmenu", handleContextMenu);
     };
@@ -158,12 +151,15 @@ function ImtahanSehifesi() {
             },
           }
         );
-  
+
+        console.log(response.data.data, "exam questions");
+        
+
         // Check if the API returned success status and we got questions
         if (response.data.status && response.data.data?.question?.length) {
           setExamData(response.data.data);
           setHasFetchedExam(true);
-  
+
           // Set the exam start time here
           setExamStartTime(new Date());
         } else {
@@ -175,12 +171,12 @@ function ImtahanSehifesi() {
         setLoading(false);
       }
     };
-  
+
     if (!hasFetchedExam && clickedExam?.slug) {
       fetchExamData();
     }
   }, [clickedExam, hasFetchedExam]);
-  
+
   const examDetails = examData?.exam;
   const questionsData = examData?.question;
   const currentQuestionData = questionsData?.[currentQuestion];
@@ -346,7 +342,6 @@ function ImtahanSehifesi() {
     const minutes = pad(date.getMinutes());
     return `${hours}:${minutes} ${day}.${month}.${year}`;
   };
-  
 
   const renderQuestionComponent = () => {
     const commonProps = {

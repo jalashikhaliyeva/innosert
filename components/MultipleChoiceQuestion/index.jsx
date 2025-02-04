@@ -1,5 +1,7 @@
 import React from "react";
+import { toast } from "react-toastify"; // Make sure to import toast
 import WarningQuestion from "../WarningQuestion";
+import { useTranslation } from "react-i18next";
 
 function MultipleChoiceQuestion({
   questionData,
@@ -9,21 +11,44 @@ function MultipleChoiceQuestion({
 }) {
   // Ensure userAnswer is always an array
   const selectedAnswers = Array.isArray(userAnswer) ? userAnswer : [];
+  const { t } = useTranslation();
+  // Maximum allowed selections (provided by the question's "count" property)
+  const maxSelections = questionData.count || 0;
 
   const handleOptionToggle = (optionId) => {
+    // If only one selection is allowed, just update the selection:
+    if (maxSelections === 1) {
+      // If the clicked option is already selected, you might want to allow unselecting.
+      // Uncomment the next lines if you want to toggle off on a re-click.
+      //
+      // if (selectedAnswers[0] === optionId) {
+      //   setUserAnswer([]);
+      //   return;
+      // }
+      // Otherwise, select the new answer.
+      setUserAnswer([optionId]);
+      return;
+    }
+
+    // For multiple selections:
     if (selectedAnswers.includes(optionId)) {
       // If option is already selected, remove it
       const updatedAnswers = selectedAnswers.filter((id) => id !== optionId);
       setUserAnswer(updatedAnswers);
     } else {
-      // If option is not selected, add it
+      // If the maximum selection count is reached, do not add a new selection
+      if (selectedAnswers.length >= maxSelections) {
+        toast.warning(t("toastMessages.maximumChoiceSelection"));
+        return;
+      }
+      // Otherwise, add the option to the selected answers
       const updatedAnswers = [...selectedAnswers, optionId];
       setUserAnswer(updatedAnswers);
     }
   };
 
   return (
-    <div className="py-6 px-4 mb-9 min-h-[500px] sm:py-10 sm:px-8 lg:px-40 w-full sm:w-[90%] lg:w-[75%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col  mx-auto rounded-lg">
+    <div className="py-6 px-4 mb-9 min-h-[500px] sm:py-10 sm:px-8 lg:px-40 w-full sm:w-[90%] lg:w-[75%] mt-8 sm:mt-12 lg:mt-16 bg-white shadow-Cardshadow flex flex-col mx-auto rounded-lg">
       <WarningQuestion
         questionId={questionData.id}
         onSubmitReport={onSubmitReport}

@@ -241,7 +241,8 @@
     "generalError": "Xəta baş verdi. Zəhmət olmasa yenidən cəhd edin.",
     "folderUpdated": "Qovluq adı uğurla yeniləndi!",
     "examUpdated": "İmtahan uğurla yeniləndi!",
-    "invalidEmail": "Zəhmət olmasa düzgün email daxil edin."
+    "invalidEmail": "Zəhmət olmasa düzgün email daxil edin.",
+    "maximumChoiceSelection": "Maksimum seçim sayına çatdınız."
   },
   "uiElements": {
     "rememberMe": "Hesabımı yadda saxla",
