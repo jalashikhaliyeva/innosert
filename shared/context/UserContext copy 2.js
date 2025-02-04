@@ -186,7 +186,7 @@ function UserProvider({ children }) {
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/user",
+        "https://api.innosert.az/api/user",
         {
           method: "GET",
           headers: {
@@ -245,7 +245,7 @@ function UserProvider({ children }) {
       const storedToken = localStorage.getItem("token");
       if (storedToken) {
         try {
-          await fetch("https://innocert-admin.markup.az/api/logout", {
+          await fetch("https://api.innosert.az/api/logout", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${storedToken}`,

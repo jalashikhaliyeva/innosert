@@ -9,6 +9,8 @@ import { useRouter } from "next/router";
 import { UserContext } from "@/shared/context/UserContext";
 import { useSavedExams } from "@/shared/context/SavedExamsContext";
 import { useTranslation } from "react-i18next";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
   const { t } = useTranslation();
@@ -46,13 +48,14 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
     const isSaved = savedExams.find((savedExam) => savedExam.id === exam.id);
     if (isSaved) {
       removeExamFromSaved(exam.id);
+      toast.info(t("exam.removed"));
     } else {
       addExamToSaved(exam);
+      toast.success(t("exam.saved"));
     }
   };
 
   const handleLoginOrRulesClick = (exam) => {
-
     setClickedExam(exam);
 
     if (token) {
@@ -323,14 +326,14 @@ function ExamCard({ widthClass, openLoginModal, openRegisterModal, exams }) {
                     height={37}
                   />
                 </div>
-                <div className="pb-6">
+                <div className="">
                   <div className="flex gap-2">
                     <Image
                       src={exam.company_logo}
                       alt="Handex Logo"
                       width={40}
                       height={40}
-                      className="object-contain rounded-full"
+                      className="object-contain "
                     />
                     <h3 className="font-gilroy items-center justify-center flex text-base text-grayText70">
                       {exam.company}

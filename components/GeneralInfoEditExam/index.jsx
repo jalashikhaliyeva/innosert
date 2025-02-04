@@ -193,7 +193,7 @@ const handleRadioCode = (isKodlu) => {
 
   // (Optional) Validation check each time examDetails changes
   useEffect(() => {
-    const { name, desc, price, code, category_id, duration } = examDetails;
+    const { name, desc, price, code, category_id, duration } = examDetails || {};
 
     // Basic checks
     const examNameValid = !!name?.trim();
@@ -434,7 +434,7 @@ const handleRadioCode = (isKodlu) => {
                 <input
                   placeholder="00:00:00"
                   className="text-black font-gilroy placeholder-inputPlaceholderText w-full bg-transparent group-hover:text-gray800 focus:outline-none focus:border-buttonPrimaryDefault"
-                  value={examDetails.duration || ""}
+                  value={examDetails?.duration || ""}
                   onChange={handleDurationChange}
                   onKeyDown={(e) => {
                     // only allow digits

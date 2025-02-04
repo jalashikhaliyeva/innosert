@@ -334,6 +334,11 @@
   "examUpdate": "The exam was successfully updated!",
   "examCreate": "The exam was successfully created!",
   "notValid": "Form is not valid. Please check your inputs.",
-  "otp-verification":"OTP verification required. Please complete OTP."
+  "otp-verification":"OTP verification required. Please complete OTP.",
+  "exam": {
+    "saved": "The exam was successfully saved!",
+    "removed": "The exam has been removed from bookmarks."
+  },
+  "contextMenuDisabled": "Right-click is disabled on this page."
 
 }

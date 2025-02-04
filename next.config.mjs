@@ -18,7 +18,7 @@ const nextConfig = {
   },
   reactStrictMode: true,
   images: {
-    domains: ["innocert-admin.markup.az"], // Add your external domain here
+    domains: ['api.innosert.az'],
   },
   i18n: {
     locales: ['az', 'en', 'ru'], // The languages you support

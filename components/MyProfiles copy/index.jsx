@@ -107,7 +107,7 @@ function MyProfiles() {
       }
 
       const profileResponse = await fetch(
-        "https://innocert-admin.markup.az/api/me/update",
+        "https://api.innosert.az/api/me/update",
         {
           method: "POST",
           headers: {
@@ -184,7 +184,7 @@ function MyProfiles() {
 
       try {
         const response = await fetch(
-          "https://innocert-admin.markup.az/api/companies",
+          "https://api.innosert.az/api/companies",
           {
             method: "GET",
             headers: {
@@ -223,7 +223,7 @@ function MyProfiles() {
 
       try {
         const response = await fetch(
-          "https://innocert-admin.markup.az/api/user",
+          "https://api.innosert.az/api/user",
           {
             method: "GET",
             headers: {
@@ -246,7 +246,7 @@ function MyProfiles() {
           const userImage = userData.data.image;
           if (
             !userImage ||
-            userImage === "https://innocert-admin.markup.az" ||
+            userImage === "https://api.innosert.az" ||
             userImage.endsWith("null") ||
             userImage.endsWith("/")
           ) {
@@ -269,7 +269,7 @@ function MyProfiles() {
   const getImageSrc = () => {
     if (
       !imagePreview ||
-      imagePreview === "https://innocert-admin.markup.az" ||
+      imagePreview === "https://api.innosert.az" ||
       imagePreview.endsWith("null") ||
       imagePreview.endsWith("/")
     ) {
@@ -318,7 +318,7 @@ function MyProfiles() {
       formData.append("delete_image", "true");
 
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/me/remove-image",
+        "https://api.innosert.az/api/me/remove-image",
         {
           method: "POST",
           headers: {
@@ -429,7 +429,7 @@ function MyProfiles() {
     try {
       // Make the API request
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/me/password/change",
+        "https://api.innosert.az/api/me/password/change",
         {
           method: "POST",
           headers: {
@@ -520,7 +520,7 @@ function MyProfiles() {
       }
 
       const companyResponse = await fetch(
-        "https://innocert-admin.markup.az/api/company/create",
+        "https://api.innosert.az/api/company/create",
         {
           method: "POST",
           headers: {

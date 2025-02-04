@@ -23,16 +23,12 @@ export async function getServerSideProps(context) {
   }
 
   // 2) We do a server-side fetch to check if the user is verified
-  //    Usually you'd pass the user's token from session.accessToken or similar.
-  const userResponse = await fetch(
-    "https://innocert-admin.markup.az/api/user",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`, // or wherever your token is
-      },
-    }
-  );
+  const userResponse = await fetch("https://api.innosert.az/api/user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`,
+    },
+  });
 
   if (!userResponse.ok) {
     // If the fetch fails, treat it like "not verified"
@@ -59,14 +55,17 @@ export async function getServerSideProps(context) {
   // 4) If everything's OK, let them proceed
   return {
     props: {
-      // pass anything you want to the component
       userBalance: userData?.data?.balance || 0,
     },
   };
 }
+
 function ImtahanNeticeleri() {
   const { percentage } = useContext(UserContext);
   const router = useRouter();
+
+  // If percentage is null, assign default values
+  const examData = percentage || { correct: 0, wrong: 0, blank: 0, percentage: 0 };
 
   useEffect(() => {
     // Handler for the popstate event
@@ -108,20 +107,13 @@ function ImtahanNeticeleri() {
     };
   }, [router]);
 
-  // console.log(percentage, "percentage");
-
-  // If percentage is null, render ExamEndFail directly
-  if (percentage === null) {
-    return <ExamEndFail percentage={percentage} />;
-  }
-
   return (
     <>
       <ExamResultHeader />
-      {percentage.percentage > 30 ? (
-        <ExamEndSuccess percentage={percentage} />
+      {examData.percentage > 30 ? (
+        <ExamEndSuccess percentage={examData} />
       ) : (
-        <ExamEndFail percentage={percentage} />
+        <ExamEndFail percentage={examData} />
       )}
     </>
   );

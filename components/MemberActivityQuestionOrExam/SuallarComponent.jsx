@@ -69,8 +69,8 @@ function SuallarComponent({ id }) {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          // `https://innocert-admin.markup.az/api/me/company-teachers-activity/questions/147`,
-          `https://innocert-admin.markup.az/api/me/company-teachers-activity/questions/${id}`,
+       
+          `https://api.innosert.az/api/me/company-teachers-activity/questions/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

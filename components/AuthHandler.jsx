@@ -29,7 +29,7 @@ function AuthHandler({ children }) {
       // This means user used social login
       const sendUserData = async () => {
         try {
-          const response = await fetch("https://innocert-admin.markup.az/api/social-register", {
+          const response = await fetch("https://api.innosert.az/api/social-register", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

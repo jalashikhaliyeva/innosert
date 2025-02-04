@@ -130,7 +130,7 @@ function UserProvider({ children }) {
     // console.log(token, "setToken context");
     
     try {
-      const response = await fetch("https://innocert-admin.markup.az/api/user", {
+      const response = await fetch("https://api.innosert.az/api/user", {
         method: "GET",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -177,7 +177,7 @@ function UserProvider({ children }) {
       const storedToken = localStorage.getItem("token");
       if (storedToken) {
         try {
-          await fetch('https://innocert-admin.markup.az/api/logout', {
+          await fetch('https://api.innosert.az/api/logout', {
             method: 'GET',
             headers: {
               Authorization: `Bearer ${storedToken}`,

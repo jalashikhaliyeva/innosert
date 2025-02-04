@@ -44,8 +44,8 @@ function AddQuestionModal({ onClose }) {
       }
 
       const endpoint = folderPath
-        ? `https://innocert-admin.markup.az/api/questions/folder/${folderPath}`
-        : "https://innocert-admin.markup.az/api/questions/folder/";
+        ? `https://api.innosert.az/api/questions/folder/${folderPath}`
+        : "https://api.innosert.az/api/questions/folder/";
 
       const response = await axios.get(endpoint, { headers });
 

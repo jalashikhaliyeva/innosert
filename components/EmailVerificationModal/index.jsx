@@ -47,7 +47,7 @@ export default function PhoneVerificationModal({
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/password/mobile",
+        "https://api.innosert.az/api/password/mobile",
         {
           method: "POST",
           headers: {
@@ -69,7 +69,7 @@ export default function PhoneVerificationModal({
 
         // console.log("Verification successful.");
         toast.success(t("phoneVerify.verificationSuccess"));
-        setPhone("");
+        // setPhone("");
 
         // setPhoneForOTP(phone);
         onClose();
@@ -153,9 +153,10 @@ export default function PhoneVerificationModal({
                 value={phone}
                 onChange={(e) => {
                   const sanitizedValue = e.target.value.replace(/\D/g, ""); // Remove non-digits
-                  setPhone(sanitizedValue);
+                  setPhone(sanitizedValue); // Update context
                   setPhoneError(false);
                 }}
+                
                 onKeyDown={handleKeyDown} // Optional: Prevent non-digit key presses
                 onFocus={() => {
                   setIsFocused(true);

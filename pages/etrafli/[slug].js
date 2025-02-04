@@ -98,7 +98,7 @@ export async function getServerSideProps(context) {
 
   try {
     const res = await fetch(
-      `https://innocert-admin.markup.az/api/exam/${slug}`
+      `https://api.innosert.az/api/exam/${slug}`
     );
 
     if (!res.ok) {

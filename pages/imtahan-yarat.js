@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
   // 2) We do a server-side fetch to check if the user is verified
   //    Usually you'd pass the user's token from session.accessToken or similar.
   const userResponse = await fetch(
-    "https://innocert-admin.markup.az/api/user",
+    "https://api.innosert.az/api/user",
     {
       method: "GET",
       headers: {
@@ -158,7 +158,7 @@ function ImtahanYarat() {
 
       console.log(requestBody, "requestBody ");
 
-      let apiEndpoint = "https://innocert-admin.markup.az/api/exam/create";
+      let apiEndpoint = "https://api.innosert.az/api/exam/create";
       if (slugParam) {
         const encodedSlug = encodeURIComponent(slugParam);
         apiEndpoint += `/${encodedSlug}`;

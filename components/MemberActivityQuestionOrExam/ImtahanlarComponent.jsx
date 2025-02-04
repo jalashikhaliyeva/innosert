@@ -29,8 +29,8 @@ function ImtahanlarComponent({ viewMode, sortOption, id }) {
         setError(null);
         try {
           const response = await axios.get(
-            `https://innocert-admin.markup.az/api/me/company-teachers-activity/exams/${id}`,
-            // `https://innocert-admin.markup.az/api/me/company-teachers-activity/exams/147`,
+            `https://api.innosert.az/api/me/company-teachers-activity/exams/${id}`,
+           
             {
               headers: {
                 Authorization: `Bearer ${token}`,

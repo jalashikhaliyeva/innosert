@@ -77,7 +77,7 @@ export default function ResetPasswordModal({
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/password/reset",
+        "https://api.innosert.az/api/password/reset",
         {
           method: "POST",
           headers: {

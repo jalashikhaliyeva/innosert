@@ -56,7 +56,7 @@ function OTPRegister({
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/verify-mobile",
+        "https://api.innosert.az/api/verify-mobile",
         {
           method: "POST",
           headers,
@@ -103,7 +103,7 @@ function OTPRegister({
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/resend-verify",
+        "https://api.innosert.az/api/resend-verify",
         {
           method: "GET",
           headers,

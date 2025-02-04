@@ -40,7 +40,7 @@ function EditFolderModal({ folder, closeModal, onFolderUpdate }) {
     try {
       const token = localStorage.getItem("token");
       const response = await axios.post(
-        `https://innocert-admin.markup.az/api/folder/${folder.id}`,
+        `https://api.innosert.az/api/folder/${folder.id}`,
         { name: folderName },
         {
           headers: {

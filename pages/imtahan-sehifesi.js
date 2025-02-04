@@ -13,6 +13,8 @@ import axios from "axios";
 import FinishExamModal from "@/components/FinishExam/FinishExamModal";
 import Spinner from "@/components/Spinner";
 import { getSession } from "next-auth/react";
+import { ToastContainer, toast } from 'react-toastify';
+import { useTranslation } from "react-i18next";
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
@@ -29,7 +31,7 @@ export async function getServerSideProps(context) {
   // 2) We do a server-side fetch to check if the user is verified
   //    Usually you'd pass the user's token from session.accessToken or similar.
   const userResponse = await fetch(
-    "https://innocert-admin.markup.az/api/user",
+    "https://api.innosert.az/api/user",
     {
       method: "GET",
       headers: {
@@ -68,6 +70,10 @@ export async function getServerSideProps(context) {
     },
   };
 }
+
+
+
+
 
 const parseDuration = (durationStr) => {
   if (typeof durationStr !== "string") return 0;
@@ -113,6 +119,7 @@ function ImtahanSehifesi() {
   const [examFinishTime, setExamFinishTime] = useState(null);
   const [timeRemaining, setTimeRemaining] = useState(null);
   const [isFinishModalOpen, setIsFinishModalOpen] = useState(false);
+    const { t } = useTranslation();
   const stripHtml = (html) => {
     const tmp = document.createElement("DIV");
     tmp.innerHTML = html;
@@ -126,12 +133,25 @@ function ImtahanSehifesi() {
   };
 
   useEffect(() => {
+    const handleContextMenu = (e) => {
+      e.preventDefault();
+      // toast.info("Right-click is disabled on this page.");
+      toast.info(t("contextMenuDisabled"));
+    };
+  
+    document.addEventListener("contextmenu", handleContextMenu);
+    
+    return () => {
+      document.removeEventListener("contextmenu", handleContextMenu);
+    };
+  }, []);
+  useEffect(() => {
     const fetchExamData = async () => {
       try {
         setLoading(true);
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/get-exam/${clickedExam.slug}`,
+          `https://api.innosert.az/api/get-exam/${clickedExam.slug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -410,7 +430,7 @@ function ImtahanSehifesi() {
       // console.log(data, "data exam send");
 
       const response = await axios.post(
-        `https://innocert-admin.markup.az/api/start-exam/${slug}`,
+        `https://api.innosert.az/api/start-exam/${slug}`,
         data,
         {
           headers: {
@@ -461,7 +481,7 @@ function ImtahanSehifesi() {
         };
 
         const response = await axios.post(
-          `https://innocert-admin.markup.az/api/start-exam/${slug}`,
+          `https://api.innosert.az/api/start-exam/${slug}`,
           emptyData,
           {
             headers: {

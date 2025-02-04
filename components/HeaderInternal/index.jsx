@@ -294,7 +294,7 @@ const HeaderInternal = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/search",
+        "https://api.innosert.az/api/search",
         {
           method: "POST",
           headers: {

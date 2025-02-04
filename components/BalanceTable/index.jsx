@@ -3,7 +3,6 @@ import ReactPaginate from "react-paginate";
 import YuklemelerimTable from "../BalanceYuklemeler";
 import { useTranslation } from "react-i18next";
 import Spinner from "../Spinner";
-
 const ParentComponent = () => {
   const { t } = useTranslation();
   const [showTable, setShowTable] = useState(true);
@@ -19,7 +18,7 @@ const ParentComponent = () => {
       const token = localStorage.getItem("token");
       try {
         const response = await fetch(
-          "https://innocert-admin.markup.az/api/me/balances",
+          "https://api.innosert.az/api/me/balances",
           {
             headers: {
               Authorization: `Bearer ${token}`,

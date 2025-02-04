@@ -71,7 +71,7 @@ function SubFolderSUallarToplusu() {
 
       try {
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/questions/folder/${subfolder}`,
+          `https://api.innosert.az/api/questions/folder/${subfolder}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

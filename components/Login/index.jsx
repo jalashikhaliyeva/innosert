@@ -105,8 +105,12 @@ export default function LoginModal({
         onClose();
       }
     } catch (error) {
-      console.error("Error logging in:", error);
-      toast.error(error.message || t("toastMessages.loginFailed"));
+      // console.log("Error logging in:", error);
+      const message =
+        typeof error.message === "string" && error.message !== "[object Object]"
+          ? error.message
+          : t("toastMessages.loginFailed");
+      toast.error(message);
       setEmail("");
       setPassword("");
     } finally {

@@ -30,7 +30,7 @@ function DeleteExamModal({ selectedItems, onDelete, onCancel }) {
     setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const url = "https://innocert-admin.markup.az/api/exam/bulk-destroy";
+      const url = "https://api.innosert.az/api/exam/bulk-destroy";
 
       const payload = {
         exams: exams.length > 0 ? exams : [],

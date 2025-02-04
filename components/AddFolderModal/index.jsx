@@ -25,7 +25,7 @@ function AddFolderModal({ closeModal, addNewFolder, fetchFiles }) {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        "https://innocert-admin.markup.az/api/folder/create/",
+        "https://api.innosert.az/api/folder/create/",
         { name: folderName },
         {
           headers: {

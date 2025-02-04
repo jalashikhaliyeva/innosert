@@ -35,7 +35,7 @@ const handleSubmit = async (e) => {
 
     // Updated request to pass folderName in the body and include the last slug segment in the URL
     const response = await axios.post(
-      `https://innocert-admin.markup.az/api/folder/create/${folderPath}`,
+      `https://api.innosert.az/api/folder/create/${folderPath}`,
       { name: folderName }, // Pass the subfolder name in the body
       {
         headers: {

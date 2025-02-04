@@ -63,7 +63,7 @@ function Home() {
         }
 
         const response = await axios.get(
-          "https://innocert-admin.markup.az/api/get-all-exams",
+          "https://api.innosert.az/api/get-all-exams",
           {
             headers: {
               Authorization: `Bearer ${token}`,

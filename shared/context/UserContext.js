@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import OTPRegister from "@/components/OTP-register";
 
+
 const UserContext = createContext();
 const initialExamDetailsState = {
   name: "",
@@ -55,12 +56,13 @@ function UserProvider({ children }) {
   const [examToEdit, setExamToEdit] = useState(null);
   const [memberActivitySingle, setMemberActivitySingle] = useState(null);
   const [filteredExams, setFilteredExams] = useState(null);
-  const [examDetails, setExamDetails] = useState(() => {
-    if (typeof window !== "undefined") {
-      const storedExamDetails = localStorage.getItem("examDetails");
-      return storedExamDetails ? JSON.parse(storedExamDetails) : {};
-    }
-    return {};
+  const [examDetails, setExamDetails] = useState({
+    name: "",
+    desc: "",
+    price: "",
+    duration: "00:00:00",
+    code: "",
+    category_id: [],
   });
   const [selectedQuestion, setSelectedQuestion] = useState(null);
   const [selectedQuestionsForExam, setSelectedQuestionsForExam] = useState([]);
@@ -70,6 +72,7 @@ function UserProvider({ children }) {
   const [isGeneralInfoValid, setIsGeneralInfoValid] = useState(false);
   const [searchExam, setSearchExam] = useState(false);
   const [privateExam, setPrivateExam] = useState(false);
+  const [phone, setPhone] = useState("");
   const [isQuestionsValid, setIsQuestionsValid] = useState(false);
 
   useEffect(() => {
@@ -194,15 +197,12 @@ function UserProvider({ children }) {
         return null;
       }
       try {
-        const response = await fetch(
-          "https://innocert-admin.markup.az/api/user",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${effectiveToken}`,
-            },
-          }
-        );
+        const response = await fetch("https://api.innosert.az/api/user", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${effectiveToken}`,
+          },
+        });
 
         if (response.ok) {
           const userData = await response.json();
@@ -258,7 +258,7 @@ function UserProvider({ children }) {
       const storedToken = localStorage.getItem("token");
       if (storedToken) {
         try {
-          await fetch("https://innocert-admin.markup.az/api/logout", {
+          await fetch("https://api.innosert.az/api/logout", {
             method: "GET",
             headers: {
               Authorization: `Bearer ${storedToken}`,
@@ -329,6 +329,8 @@ function UserProvider({ children }) {
         completeVerification, // new
         loading,
         resetExamContext,
+        phone,
+        setPhone,
       }}
     >
       {children}
@@ -343,7 +345,12 @@ function OTPModalManager() {
 
   useEffect(() => {
     // Show OTP modal ONLY if user is normal (is_social=false) and sv=0
-    if (!loading && user && user?.data?.is_social === false && user?.data?.sv === 0) {
+    if (
+      !loading &&
+      user &&
+      user?.data?.is_social === false &&
+      user?.data?.sv === 0
+    ) {
       setIsOtpModalOpen(true);
     } else {
       setIsOtpModalOpen(false);

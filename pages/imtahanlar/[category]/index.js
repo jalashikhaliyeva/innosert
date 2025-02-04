@@ -60,7 +60,7 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
         const token =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
         const response = await fetch(
-          `https://innocert-admin.markup.az/api/exams/${category}`,
+          `https://api.innosert.az/api/exams/${category}`,
           {
             method: "GET",
             headers: {

@@ -238,7 +238,7 @@ function MembersTable({
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `https://innocert-admin.markup.az/api/me/deleteUser/${memberToDelete.id}`,
+          `https://api.innosert.az/api/me/deleteUser/${memberToDelete.id}`,
           {
             method: "DELETE",
             headers: {

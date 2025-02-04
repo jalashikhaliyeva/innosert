@@ -54,7 +54,7 @@ const SubcategoryPage = ({
         const token =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
         const response = await fetch(
-          `https://innocert-admin.markup.az/api/exams/${category}/${subcategory}`,
+          `https://api.innosert.az/api/exams/${category}/${subcategory}`,
           {
             method: "GET",
             headers: {

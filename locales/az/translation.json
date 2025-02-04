@@ -338,6 +338,10 @@
   "examUpdate": "İmtahan uğurla yeniləndi!",
   "examCreate": "İmtahan uğurla yaradıldı!",
   "notValid": "Form etibarlı deyil. Zəhmət olmasa məlumatlarınızı yoxlayın.",
-"otp-verification": "OTP doğrulaması tələb olunur. Zəhmət olmasa OTP-ni tamamlayın."
-
+  "otp-verification": "OTP doğrulaması tələb olunur. Zəhmət olmasa OTP-ni tamamlayın.",
+  "exam": {
+    "saved": "İmtahan uğurla yadda saxlanıldı!",
+    "removed": "İmtahan yaddaşdan silindi."
+  },
+  "contextMenuDisabled": "Bu səhifədə sağ klik etmək mümkün deyil."
 }

@@ -12,6 +12,7 @@ import { useTranslation } from "next-i18next";
 const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
   const [settingInfo, setSettingInfo] = useState(null);
   const [contactInfo, setContactInfo] = useState(null);
+  const [socialMedia, setSocialMedia] = useState(null);
   const router = useRouter();
   const { t } = useTranslation();
   const { user } = useContext(UserContext);
@@ -20,10 +21,11 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
     const fetchSettingInfo = async () => {
       try {
         const data = await getSettingInfo();
-        // console.log(data.contact, "data footer");
+        console.log(data, "data footer");
 
         setContactInfo(data.contact);
         setSettingInfo(data.contact.map);
+        setSocialMedia(data.social_links);
       } catch (error) {
         console.error("Failed to fetch setting info:", error);
       }
@@ -62,31 +64,24 @@ const Footer = React.forwardRef(({ scrollToFaq }, ref) => {
             />
           </Link>
           <div className="flex gap-5">
-            {/* Social Media Icons */}
-            <a
-              href="https://www.instagram.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Instagram"
-            >
-              <FaInstagram className="text-neutralWhite w-6 h-6 hover:text-blue-400 transition-colors" />
-            </a>
-            <a
-              href="https://www.facebook.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Facebook"
-            >
-              <FaFacebookF className="text-neutralWhite w-6 h-6 hover:text-blue-400 transition-colors" />
-            </a>
-            <a
-              href="https://www.linkedin.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="LinkedIn"
-            >
-              <FaLinkedinIn className="text-neutralWhite w-6 h-6 hover:text-blue-400 transition-colors" />
-            </a>
+            {socialMedia?.length > 0 &&
+              socialMedia.map((item, index) => (
+                <a
+                  key={index}
+                  href={item.link.startsWith("http") ? item.link : `https://${item.link}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Social Link ${index + 1}`}
+                >
+                  <Image
+                    src={item.image}
+                    alt={`Social Media ${index + 1}`}
+                    width={24}
+                    height={24}
+                    className="hover:opacity-75 transition-opacity"
+                  />
+                </a>
+              ))}
           </div>
         </div>
 

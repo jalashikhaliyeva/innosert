@@ -15,7 +15,7 @@ function EnterExamCode() {
     e.preventDefault(); // Prevent any default form behavior
     try {
       const response = await axios.post(
-        "https://innocert-admin.markup.az/api/private-exam",
+        "https://api.innosert.az/api/private-exam",
         { code: code }
       );
       const { exam } = response.data;

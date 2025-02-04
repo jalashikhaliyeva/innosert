@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from "react";
-import { IoWarningOutline } from "react-icons/io5";
+import { IoClose, IoWarningOutline } from "react-icons/io5";
 import styles from "./stye.module.css";
 import { useRouter } from "next/router";
 import { UserContext } from "@/shared/context/UserContext";
@@ -28,7 +28,7 @@ function ExamRulesModal({ onClose, onCancel }) {
       try {
         const token = localStorage.getItem("token");
         const response = await fetch(
-          `https://innocert-admin.markup.az/api/get-payment-exam/${clickedExam.slug}`,
+          `https://api.innosert.az/api/get-payment-exam/${clickedExam.slug}`,
           {
             method: "POST",
             headers: {
@@ -127,7 +127,7 @@ function ExamRulesModal({ onClose, onCancel }) {
       onClick={handleBackgroundClick}
       className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-[999]"
     >
-      <div className="bg-boxGrayBodyColor rounded-3xl shadow-shadow3 p-[40px] w-[492px] mx-4 md:mx-0 ">
+      <div className="bg-boxGrayBodyColor relative rounded-3xl shadow-shadow3 p-[40px] w-[492px] mx-4 md:mx-0 ">
         {/* Icon */}
         <div className="flex justify-center mb-4">
           <div className="flex items-center justify-center w-16 h-16 rounded-full ">
@@ -147,6 +147,12 @@ function ExamRulesModal({ onClose, onCancel }) {
             </svg>
           </div>
         </div>
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 focus:outline-none"
+        >
+          <IoClose size={24} />
+        </button>
 
         {/* Title */}
         <h3 className="relative flex items-center justify-center font-medium leading-8 font-gilroy text-2xl text-gray-900">
@@ -163,17 +169,24 @@ function ExamRulesModal({ onClose, onCancel }) {
           }}
         >
           <p>
-            1. Düzgünləşdirilmiş məlumatlar – Bütün verilənlər düzgün və tam
+            1. İmtahanın məbləği balansınızdan çıxılacaq. Əgər balansınızda
+            kifayət qədər vəsait yoxdursa, balans artırma səhifəsinə
+            yönləndiriləcəksiniz. <br />
+            2. İmtahan sahəsindən iki dəfə çıxdıqda imtahandan
+            uzaqlaşdırılacaqsınız, pulunuz geri qaytarılmayacaq və sizə
+            sertifikat verilməyəcək. <br />
+            3. Süni intellekt (AI) istifadə etmək qadağandır. <br />
+            4. Düzgünləşdirilmiş məlumatlar – Bütün verilənlər düzgün və tam
             şəkildə toplanmalıdır. <br />
-            2. Şəbəkə təhlükəsizliyi – Şəbəkə təhlükəsizliyinə riayət olunmalı
+            5. Şəbəkə təhlükəsizliyi – Şəbəkə təhlükəsizliyinə riayət olunmalı
             və şifrələnmə istifadəsi vacibdir. <br />
-            3. Doğrulama sistemi – İstifadəçilər daxil olduqda doğrulama
+            6. Doğrulama sistemi – İstifadəçilər daxil olduqda doğrulama
             (authentication) prosesi tətbiq edilməlidir. <br />
-            4. Quraşdırma tələbləri – Bütün qurğular ən son proqram təminatı və
+            7. Quraşdırma tələbləri – Bütün qurğular ən son proqram təminatı və
             təhlükəsizlik yeniləmələri ilə quraşdırılmalıdır. <br />
-            5. Bağlantı sürəti – Bağlantı sürətinə nəzarət edilməli və minimal
+            8. Bağlantı sürəti – Bağlantı sürətinə nəzarət edilməli və minimal
             kəsinti ilə işləməsi təmin olunmalıdır. <br />
-            6. Yedəkləmə siyasəti – Məlumatların təhlükəsizliyi üçün mütəmadi
+            9. Yedəkləmə siyasəti – Məlumatların təhlükəsizliyi üçün mütəmadi
             yedəkləmə siyasəti tətbiq edilməlidir. <br />
           </p>
         </div>
@@ -202,6 +215,7 @@ function ExamRulesModal({ onClose, onCancel }) {
           style={{ fontFamily: "Gilroy" }}
         >
           <svg
+            className="size-6"
             width="16"
             height="16"
             viewBox="0 0 16 16"
@@ -215,7 +229,7 @@ function ExamRulesModal({ onClose, onCancel }) {
               fill="#3366FF"
             />
           </svg>
-          İmtahan şərtlərini diqqətlə oxuyun
+          Düyməyə klik etdikdə dərhal imtahan səhifəsinə yönləndiriləcəksiniz.
         </button>
 
         {/* Action Button */}

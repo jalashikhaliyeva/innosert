@@ -6,6 +6,8 @@ import { FaLinkedin, FaFacebook } from "react-icons/fa6"; // Import LinkedIn and
 import { FcGoogle } from "react-icons/fc";
 import { UserContext } from "@/shared/context/UserContext";
 import { useSavedExams } from "@/shared/context/SavedExamsContext";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 function ExamDetails({ examData, openLoginModal }) {
   const { user } = useContext(UserContext); // Get user from UserContext
@@ -55,8 +57,10 @@ function ExamDetails({ examData, openLoginModal }) {
     // Toggle bookmark status
     if (isSaved) {
       removeExamFromSaved(examData.exam.id);
+      toast.info(t("exam.removed"));
     } else {
       addExamToSaved(examData.exam);
+      toast.success(t("exam.saved"));
     }
   };
 

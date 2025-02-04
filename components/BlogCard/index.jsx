@@ -78,7 +78,7 @@ function BlogGrid() {
       const token = localStorage.getItem("token");
 
       const response = await fetch(
-        `https://innocert-admin.markup.az/api/blogs?page=${page}`,
+        `https://api.innosert.az/api/blogs?page=${page}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

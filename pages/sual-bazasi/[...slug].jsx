@@ -76,7 +76,7 @@ const DynamicSubFolderPage = () => {
 
     try {
       await axios.delete(
-        `https://innocert-admin.markup.az/api/questions/${questionToDelete}`,
+        `https://api.innosert.az/api/questions/${questionToDelete}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -122,7 +122,7 @@ const DynamicSubFolderPage = () => {
 
       try {
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/questions/folder/${folderPath}`,
+          `https://api.innosert.az/api/questions/folder/${folderPath}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import Link from "next/link";
 import Button from "../Button";
 import { MdKeyboardArrowRight, MdLogin } from "react-icons/md";
@@ -19,6 +19,7 @@ import LanguageSwitcher from "@/shared/LanguageSwitcher";
 import { useTranslation } from "react-i18next";
 import OTP from "../OTP";
 import PhoneVerificationModal from "../EmailVerificationModal";
+import { UserContext } from "@/shared/context/UserContext";
 // import { useRouter } from "next/router";
 const Header = ({
   openRegisterModal,
@@ -47,6 +48,7 @@ const Header = ({
   const subCategories = settingInfo?.filter((cat) => cat.category_id !== 0);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const modalRef = useRef(null);
+  const { phone } = useContext(UserContext);
 
   // Fetch settings (header, footer, etc.) info
   useEffect(() => {
@@ -541,6 +543,7 @@ const Header = ({
             onClose={handleOTPModalClose}
             onBack={handleBackToRegister} // Pass the back function
             email={emailForOTP}
+            phone={phone} 
             onOpenResetPasswordModal={handleOpenResetPasswordModal}
           />
         </div>

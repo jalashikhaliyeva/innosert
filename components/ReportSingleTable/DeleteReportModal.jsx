@@ -37,7 +37,7 @@ function DeleteReportModal({ onCancel, onDelete, actionType, selectedId }) {
 
       // API call to update the report status with headers
       await axios.post(
-        `https://innocert-admin.markup.az/api/report-question/${selectedId}`,
+        `https://api.innosert.az/api/report-question/${selectedId}`,
         { status },
         {
           headers: {

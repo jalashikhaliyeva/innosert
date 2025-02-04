@@ -5,23 +5,20 @@ import { HiOutlineArrowLeft } from "react-icons/hi";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function OTP({
-  isOpen,
-  onClose,
-  onBack,
-  onOpenResetPasswordModal,
-}) {
-  const { phone , setOtpCode } = useContext(UserContext); // Retrieve phone from context
+function OTP({ isOpen, onClose, onBack, onOpenResetPasswordModal }) {
+  const { phone, setOtpCode } = useContext(UserContext);
   const [code, setCode] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true); // State to manage button disabled state
   const [timer, setTimer] = useState(0); // State to manage the timer
+  console.log(phone, "phone");
 
   const inputRefs = useRef([]);
 
   const handleInputChange = (e, index) => {
     const value = e.target.value;
-    setCode((prevCode) =>
-      prevCode.substr(0, index) + value + prevCode.substr(index + 1)
+    setCode(
+      (prevCode) =>
+        prevCode.substr(0, index) + value + prevCode.substr(index + 1)
     );
 
     if (value.length === 1 && index < inputRefs.current.length - 1) {
@@ -31,23 +28,30 @@ function OTP({
 
   const handleVerifyCode = async (e) => {
     e.preventDefault();
+    const body = {
+      code: code,
+      phone: phone,
+    };
+    console.log(body, "body");
 
-    const formData = new FormData();
-    formData.append("code", code);
-    formData.append("phone", phone); // Send phone instead of email
+    // const formData = new FormData();
+    // formData.append("code", code);
+    // formData.append("phone", phone);
+    // console.log([...formData.entries()], "formData entr");
+
     // console.log(formData, "formData");
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/password/verify-code",
+        "https://api.innosert.az/api/password/verify-code",
         {
           method: "POST",
-          body: formData,
+          body: JSON.stringify(body),
         }
       );
 
       const data = await response.json();
-      // console.log("Verification response:", data);
+      console.log("Verification response:", data);
 
       if (response.ok && data?.status === "success") {
         toast.success("Kod uğurla təsdiqləndi!");
@@ -86,9 +90,11 @@ function OTP({
   const handleResendCode = async () => {
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/password/email",
+        "https://api.innosert.az/api/resend-verify",
+        // "https://api.innosert.az/api/password/email",
+
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
           },
@@ -99,7 +105,7 @@ function OTP({
       );
 
       const data = await response.json();
-      // console.log("Resend code response:", data);
+      console.log("Resend code response:", data);
 
       if (response.ok && data?.status === true) {
         toast.success("Kod yenidən uğurla göndərildi!");
@@ -130,8 +136,6 @@ function OTP({
 
   return (
     <>
-
-
       <div
         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
         onClick={handleOutsideClick}

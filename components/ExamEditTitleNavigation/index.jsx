@@ -82,10 +82,10 @@ function ExamEditTitleNavigation({onSubmit}) {
             </ul>
           </div>
         </div> */}
-        <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap">
+        {/* <button className="flex items-center justify-center gap-2 py-3 px-4 h-11 text-white leading-6 rounded-md bg-errorButtonDefault hover:bg-errorButtonHover active:bg-errorButtonPressed whitespace-nowrap">
           <FaRegTrashAlt className="text-white w-4 h-4" />
           Sualı sil
-        </button>
+        </button> */}
 
         <button
           onClick={onSubmit} 

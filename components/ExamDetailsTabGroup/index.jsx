@@ -37,7 +37,7 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit, userIsAuthor })
         // console.log(examDetailsSingle.slug, "examDetailsSingle.name");
 
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/exam/questions/${examDetailsSingle.slug}`,
+          `https://api.innosert.az/api/exam/questions/${examDetailsSingle.slug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -72,7 +72,7 @@ function ExamDetailsTabGroup({ examDetailsSingle, setExamToEdit, userIsAuthor })
 
     try {
       await axios.delete(
-        `https://innocert-admin.markup.az/api/questions/${questionToDelete}`,
+        `https://api.innosert.az/api/questions/${questionToDelete}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

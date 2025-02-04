@@ -25,7 +25,7 @@ function QuestionsTableCompany() {
         // if (!token || !selectedCompany) return;
 
         const response = await axios.get(
-          "https://innocert-admin.markup.az/api/all-questions",
+          "https://api.innosert.az/api/all-questions",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -645,7 +645,7 @@ function QuestionsTableCompany() {
                   {/* Custom numbering */}
                   <td className="flex items-center gap-3 px-4 py-2">
                     {item.photo &&
-                    item.photo !== "https://innocert-admin.markup.az" ? (
+                    item.photo !== "https://api.innosert.az" ? (
                       <img
                         src={item.photo}
                         alt={item.username}

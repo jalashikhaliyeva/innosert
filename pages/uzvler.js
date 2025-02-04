@@ -55,7 +55,7 @@ function Uzvler() {
     try {
       if (selectedCompany && selectedCompany.id) {
         const response = await axios.get(
-          "https://innocert-admin.markup.az/api/me/company-teachers",
+          "https://api.innosert.az/api/me/company-teachers",
           {
             headers: {
               "X-Company-ID": selectedCompany.id,
@@ -92,7 +92,7 @@ function Uzvler() {
           // console.log("Fetching activity data...");
           setActivityLoading(true);
           const response = await axios.get(
-            "https://innocert-admin.markup.az/api/me/company-teachers-activity",
+            "https://api.innosert.az/api/me/company-teachers-activity",
             {
               headers: {
                 "X-Company-ID": selectedCompany.id,

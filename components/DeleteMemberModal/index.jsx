@@ -18,7 +18,7 @@ function DeleteMemberModal({ member, onCancel, onDelete }) {
     if (memberToDelete && memberToDelete.id) {
       try {
         const response = await fetch(
-          `https://innocert-admin.markup.az/api/me/deleteUser/${member.id}`,
+          `https://api.innosert.az/api/me/deleteUser/${member.id}`,
           {
             method: "DELETE",
             headers: {

@@ -26,7 +26,7 @@ const NotificationsDropdown = () => {
     const fetchNotifications = async () => {
       try {
         const response = await axios.get(
-          "https://innocert-admin.markup.az/api/user",
+          "https://api.innosert.az/api/user",
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -91,7 +91,7 @@ const NotificationsDropdown = () => {
     const token = localStorage.getItem("token");
     try {
       await axios.post(
-        `https://innocert-admin.markup.az/api/me/notifications/view/${id}`,
+        `https://api.innosert.az/api/me/notifications/view/${id}`,
         {},
         {
           headers: {

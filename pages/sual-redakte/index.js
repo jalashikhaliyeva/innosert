@@ -246,8 +246,8 @@ function SualRedakte() {
     // Proceed with API call
     const isUpdating = selectedQuestion && selectedQuestion.id;
     const url = isUpdating
-      ? `https://innocert-admin.markup.az/api/questions/${selectedQuestion.id}`
-      : `https://innocert-admin.markup.az/api/questions/create/${lastQuery}`;
+      ? `https://api.innosert.az/api/questions/${selectedQuestion.id}`
+      : `https://api.innosert.az/api/questions/create/${lastQuery}`;
   
     fetch(url, {
       method: "POST",
@@ -312,7 +312,7 @@ function SualRedakte() {
 
     try {
       await axios.delete(
-        `https://innocert-admin.markup.az/api/questions/${questionToDelete}`,
+        `https://api.innosert.az/api/questions/${questionToDelete}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

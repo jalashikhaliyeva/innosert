@@ -100,7 +100,7 @@ function Results({ examSlug, searchTerm }) {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/exam/result/${examSlug}`,
+          `https://api.innosert.az/api/exam/result/${examSlug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

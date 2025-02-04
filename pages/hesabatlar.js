@@ -28,7 +28,7 @@ export async function getServerSideProps(context) {
   // 2) We do a server-side fetch to check if the user is verified
   //    Usually you'd pass the user's token from session.accessToken or similar.
   const userResponse = await fetch(
-    "https://innocert-admin.markup.az/api/user",
+    "https://api.innosert.az/api/user",
     {
       method: "GET",
       headers: {
@@ -91,7 +91,7 @@ function Hesabatlar() {
     if (token) {
       // Make the API call to fetch reports
       axios
-        .get("https://innocert-admin.markup.az/api/me/reports", {
+        .get("https://api.innosert.az/api/me/reports", {
           headers: {
             Authorization: `Bearer ${token}`,
             "X-Company-ID": selectedCompany.id,

@@ -232,7 +232,7 @@ function SualYarat() {
     }
 
     fetch(
-      `https://innocert-admin.markup.az/api/questions/create/${lastQuery}`,
+      `https://api.innosert.az/api/questions/create/${lastQuery}`,
       {
         method: "POST",
         headers: {

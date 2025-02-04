@@ -80,7 +80,7 @@ console.log(examToEdit, "examToEdit");
         }
 
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/exam/questions/${slugParam}`,
+          `https://api.innosert.az/api/exam/questions/${slugParam}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -223,7 +223,7 @@ console.log(examToEdit, "examToEdit");
       };
 
       const examId = examToEdit.id; // Renamed for clarity
-      const apiEndpoint = `https://innocert-admin.markup.az/api/exam/update/${examId}`;
+      const apiEndpoint = `https://api.innosert.az/api/exam/update/${examId}`;
 
       const response = await axios.post(apiEndpoint, requestBody, { headers });
 

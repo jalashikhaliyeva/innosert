@@ -29,7 +29,7 @@ export async function getServerSideProps(context) {
   // 2) We do a server-side fetch to check if the user is verified
   //    Usually you'd pass the user's token from session.accessToken or similar.
   const userResponse = await fetch(
-    "https://innocert-admin.markup.az/api/user",
+    "https://api.innosert.az/api/user",
     {
       method: "GET",
       headers: {
@@ -116,7 +116,7 @@ function ImtahanRedakte() {
         }
 
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/exam/questions/${slugParam}`,
+          `https://api.innosert.az/api/exam/questions/${slugParam}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -261,7 +261,7 @@ function ImtahanRedakte() {
       console.log(requestBody, "requestBody");
 
       const examId = examToEdit.id; // Renamed for clarity
-      const apiEndpoint = `https://innocert-admin.markup.az/api/exam/update/${examId}`;
+      const apiEndpoint = `https://api.innosert.az/api/exam/update/${examId}`;
 
       await axios.post(apiEndpoint, requestBody, { headers });
       updateExamDetails({

@@ -122,7 +122,7 @@ function ImtahanYarat() {
   
       console.log(requestBody, "requestBody ");
   
-      let apiEndpoint = "https://innocert-admin.markup.az/api/exam/create";
+      let apiEndpoint = "https://api.innosert.az/api/exam/create";
       if (slugParam) {
         const encodedSlug = encodeURIComponent(slugParam);
         apiEndpoint += `/${encodedSlug}`;

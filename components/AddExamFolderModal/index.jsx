@@ -30,7 +30,7 @@ function AddExamFolderModal({ closeModal, addNewFolder }) {
       // });
 
       const response = await axios.post(
-        "https://innocert-admin.markup.az/api/exam-folder/create/",
+        "https://api.innosert.az/api/exam-folder/create/",
         { name: folderName },
         {
           headers: {

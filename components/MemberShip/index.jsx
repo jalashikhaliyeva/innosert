@@ -110,7 +110,7 @@ export default function MemberShip() {
 
     try {
       const response = await axios.post(
-        "https://innocert-admin.markup.az/api/cooperations",
+        "https://api.innosert.az/api/cooperations",
         payload
       );
 

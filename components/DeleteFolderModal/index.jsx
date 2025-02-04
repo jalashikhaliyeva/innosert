@@ -16,7 +16,7 @@ function DeleteFolderModal({ folder, closeModal, onDelete }) {
     try {
       const token = localStorage.getItem("token");
       await axios.delete(
-        `https://innocert-admin.markup.az/api/folder/${folder.id}`,
+        `https://api.innosert.az/api/folder/${folder.id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -28,7 +28,7 @@ function BulkDeleteFolderModal({ folders, closeModal, onDelete }) {
 
       // Corrected API endpoint and payload structure
       const response = await axios.post(
-        "https://innocert-admin.markup.az/api/folder-bulk-delete",
+        "https://api.innosert.az/api/folder-bulk-delete",
         { folder: folders.map((folder) => folder.id) }, // Correct key: 'folder'
         {
           headers: {

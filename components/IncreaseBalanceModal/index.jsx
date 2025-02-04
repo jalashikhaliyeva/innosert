@@ -92,7 +92,7 @@ function IncreaseBalanceModal({ closeModal }) {
 
     try {
       const response = await fetch(
-        "https://innocert-admin.markup.az/api/me/add-balance",
+        "https://api.innosert.az/api/me/add-balance",
         {
           method: "POST",
           headers: {

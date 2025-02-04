@@ -208,7 +208,7 @@ function FilterCategories() {
 
     try {
       const response = await axios.post(
-        "https://innocert-admin.markup.az/api/filter",
+        "https://api.innosert.az/api/filter",
         data,
         {
           headers: {

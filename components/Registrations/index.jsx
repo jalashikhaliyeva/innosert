@@ -78,7 +78,7 @@ function Registrations({ examSlug, searchTerm }) {
       try {
         const token = localStorage.getItem("token");
         const response = await axios.get(
-          `https://innocert-admin.markup.az/api/exam/register/${examSlug}`,
+          `https://api.innosert.az/api/exam/register/${examSlug}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

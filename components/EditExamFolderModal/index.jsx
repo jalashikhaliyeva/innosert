@@ -42,7 +42,7 @@ function EditExamFolderModal({ folder, item, closeModal, onFolderUpdate }) {
 
     try {
       const token = localStorage.getItem("token");
-      const url = `https://innocert-admin.markup.az/api/exam-folder/${folder.slug}`;
+      const url = `https://api.innosert.az/api/exam-folder/${folder.slug}`;
       // console.log("API URL:", url);
       // console.log("Payload:", { name: folderName });
 
