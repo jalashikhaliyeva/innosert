@@ -283,31 +283,31 @@ const HeaderInternal = () => {
 
   // Handle search input changes and fetch results
   const handleSearchChange = async (e) => {
-    const query = e.target.value.trim();
-    setSearchValue(query);
-
-    if (query.length === 0) {
+    // Save the raw input value (with spaces)
+    const value = e.target.value;
+    setSearchValue(value);
+  
+    // Only perform search if the value (ignoring leading/trailing spaces) is not empty
+    if (value.trim().length === 0) {
       setSearchResults([]);
       return;
     }
-
+  
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(
-        "https://api.innosert.az/api/search",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({ search: query }),
-        }
-      );
-
+      // Use the trimmed value for the API call if desired
+      const query = value.trim();
+      const response = await fetch("https://api.innosert.az/api/search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ search: query }),
+      });
+  
       if (response.ok) {
         const data = await response.json();
-        // console.log(data, "response search");
         setSearchResults(data.exams || []);
       } else {
         console.error("Search API response error:", response.status);
@@ -318,6 +318,7 @@ const HeaderInternal = () => {
       setSearchResults([]);
     }
   };
+  
 
   // Handle mouse enter on dropdown
   const handleDropdownMouseEnter = () => {
