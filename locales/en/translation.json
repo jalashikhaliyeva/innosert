@@ -64,6 +64,7 @@
   },
   "messages": {
     "noPaidExam": "No paid exams found.",
+    "noSavedExam": "There are no saved exams.",
     "noSelectedExam": "No selected exams found.",
     "noExamsForUser": "No exams are available for this user.",
     "errorsInQuestion": "Errors in the question"

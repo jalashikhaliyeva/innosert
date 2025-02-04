@@ -64,6 +64,7 @@
   },
   "messages": {
     "noPaidExam": "Heç bir ödənişli imtahan tapılmadı.",
+    "noSavedExam": "Seçilmiş imtahan yoxdur.",
     "noSelectedExam": "Heç bir seçilmiş imtahan tapılmadı.",
     "noExamsForUser": "Bu istifadəçi üçün imtahan mövcud deyil.",
     "errorsInQuestion": "sualında xətalar"
