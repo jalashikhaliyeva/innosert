@@ -20,8 +20,13 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 
 function MyApp({ Component, pageProps }) {
   const [loading, setLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const [selectedCompany, setSelectedCompany] = useState(null);
   const router = useRouter();
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     AOS.init({ duration: 1300, once: true });
@@ -83,18 +88,20 @@ function MyApp({ Component, pageProps }) {
                     <ErrorBoundary>
                       {loading ? <Spinner /> : <Component {...pageProps} />}
                     </ErrorBoundary>
-                    <ToastContainer
-                      position="top-right"
-                      autoClose={5000}
-                      hideProgressBar={false}
-                      newestOnTop={false}
-                      closeOnClick
-                      rtl={false}
-                      pauseOnFocusLoss
-                      draggable
-                      pauseOnHover
-                      theme="light"
-                    />
+      
+                      <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick={true}
+                        rtl={false}
+                        pauseOnFocusLoss={true}
+                        draggable={true}
+                        pauseOnHover={true}
+                        theme="light"
+                      />
+               
                   </AuthGate>
                 </CompanyContext.Provider>
               </ViewCountProvider>

@@ -32,23 +32,27 @@ function OTP({ isOpen, onClose, onBack, onOpenResetPasswordModal }) {
       code: code,
       phone: phone,
     };
-    console.log(body, "body");
+    console.log(body, "body verify code");
 
-    // const formData = new FormData();
-    // formData.append("code", code);
-    // formData.append("phone", phone);
+    const formData = new FormData();
+    formData.append("code", code);
+    formData.append("phone", phone);
     // console.log([...formData.entries()], "formData entr");
 
-    // console.log(formData, "formData");
+    console.log(formData, "formData");
 
     try {
       const response = await fetch(
         "https://api.innosert.az/api/password/verify-code",
         {
           method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
           body: JSON.stringify(body),
         }
       );
+      
 
       const data = await response.json();
       console.log("Verification response:", data);
@@ -159,7 +163,7 @@ function OTP({ isOpen, onClose, onBack, onOpenResetPasswordModal }) {
           </div>
 
           <h2 className="font-gilroy text-2xl font-medium leading-8 mb-6 text-center text-buttonPrimaryDefault">
-            OTP
+            OTP12
           </h2>
           <p className="text-center font-gilroy text-grayButtonText text-base mb-4">
             Parol təsdiqlənməsi üçün nömrəyə göndərilən OTP kodunu daxil edin

@@ -169,18 +169,18 @@ export default function PhoneVerificationModal({
                     : isFocused
                     ? "border-inputRingFocus"
                     : "border-inputBorder"
-                } bg-grayTextColor rounded-md text-sm font-gilroy  text-textSecondaryDefault font-medium focus:outline-none ${
+                } bg-grayTextColor rounded-md text-sm font-gilroy  text-textSecondaryDefault placeholder:text-grayTextinBox placeholder:text-base placeholder:font-normal font-medium focus:outline-none ${
                   phoneError
                     ? "focus:border-red-500"
                     : "focus:border-inputRingFocus"
                 }`}
-                placeholder={t("phoneVerify.placeholder")}
+                placeholder={"55 555 55 55"}
                 maxLength={9} // Assuming 9 digits for the phone number
               />
             </div>
             {/* Error message outside the relative container */}
             {phoneError && !isFocused && (
-              <p className="text-red-500 text-sm mt-1">
+              <p className="text-red-500 text-sm font-gilroy mt-1">
                 {t("phoneVerify.invalidPhone")}
               </p>
             )}

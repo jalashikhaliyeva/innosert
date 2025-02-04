@@ -11,7 +11,6 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/router";
 import OTPRegister from "@/components/OTP-register";
 
-
 const UserContext = createContext();
 const initialExamDetailsState = {
   name: "",
@@ -72,6 +71,7 @@ function UserProvider({ children }) {
   const [isGeneralInfoValid, setIsGeneralInfoValid] = useState(false);
   const [searchExam, setSearchExam] = useState(false);
   const [privateExam, setPrivateExam] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
   const [phone, setPhone] = useState("");
   const [isQuestionsValid, setIsQuestionsValid] = useState(false);
 
@@ -331,6 +331,8 @@ function UserProvider({ children }) {
         resetExamContext,
         phone,
         setPhone,
+        otpCode,
+        setOtpCode,
       }}
     >
       {children}

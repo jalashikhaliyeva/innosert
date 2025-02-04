@@ -13,14 +13,13 @@ function OTPRegister({
   onBack,
   email,
   onOpenResetPasswordModal,
-  token,
 }) {
   const [code, setCode] = useState(Array(6).fill(""));
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [timer, setTimer] = useState(20);
   const router = useRouter();
   const inputRefs = useRef([]);
-  const { completeVerification } = useContext(UserContext);
+  const { completeVerification, token } = useContext(UserContext);
 
   // Handle input changes and auto-focus next input
   const handleInputChange = (e, index) => {
@@ -53,6 +52,7 @@ function OTPRegister({
     };
 
     const body = JSON.stringify({ code: joinedCode });
+    console.log(body, "body otp register");
 
     try {
       const response = await fetch(
@@ -90,7 +90,7 @@ function OTPRegister({
       );
     }
 
-    // Disable the resend button and start the timer again
+    // Disable the resend button and restart the timer
     setIsButtonDisabled(true);
     setTimer(20);
   };
@@ -111,9 +111,10 @@ function OTPRegister({
       );
 
       const data = await response.json();
+      console.log(data, "resend data");
 
       if (response.ok && data?.status === "success") {
-        toast.success("Kod yenidən uğurla göndərildi!");
+        toast.success("Kod uğurla göndərildi!");
         setCode(Array(6).fill(""));
         if (inputRefs.current[0]) {
           inputRefs.current[0].focus();
@@ -133,6 +134,7 @@ function OTPRegister({
     }
   };
 
+  // Countdown timer effect for enabling the resend button
   useEffect(() => {
     let interval = null;
     if (isOpen && timer > 0) {
@@ -147,15 +149,11 @@ function OTPRegister({
     };
   }, [timer, isOpen]);
 
-  // Initialize the timer when the modal opens
+  // When modal opens, reset inputs and immediately request to resend the OTP code.
   useEffect(() => {
     if (isOpen) {
-      setIsButtonDisabled(true);
-      setTimer(20);
-      setCode(Array(6).fill(""));
-      if (inputRefs.current[0]) {
-        inputRefs.current[0].focus();
-      }
+      // Immediately trigger the resend code request
+      handleResendCode();
     }
   }, [isOpen]);
 
@@ -169,7 +167,6 @@ function OTPRegister({
 
   return (
     <>
-      {/* <ToastContainer ... /> */}
       <div
         className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-[999]"
         onClick={handleOutsideClick}

@@ -347,7 +347,7 @@ function SualYarat() {
           />
         )}
       </Container>
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 }
