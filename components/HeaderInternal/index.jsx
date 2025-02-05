@@ -1012,7 +1012,7 @@ const HeaderInternal = () => {
                                       height={24}
                                       src={company.logo}
                                       alt={company.name}
-                                      className="w-6 h-6 rounded-full mr-4 object-cover"
+                                      className="w-6 h-6 rounded-full mr-4 object-contain"
                                     />
                                   ) : (
                                     <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-base font-gilroy font-bold mr-4">
