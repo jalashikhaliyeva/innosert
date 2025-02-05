@@ -33,11 +33,11 @@ import { useTranslation } from "next-i18next";
 import axios from "axios";
 
 const HeaderInternal = () => {
-  const { user, setSelectedCategory, setSelectedSubcategory , token } =
+  const { user, setSelectedCategory, setSelectedSubcategory, token } =
     useContext(UserContext);
-    // console.log(user, "user header");
-    // console.log(token, "token header");
-    
+  // console.log(user, "user header");
+  // console.log(token, "token header");
+
   const { t } = useTranslation();
   const router = useRouter();
   const lang = router.locale || "az";
@@ -286,13 +286,13 @@ const HeaderInternal = () => {
     // Save the raw input value (with spaces)
     const value = e.target.value;
     setSearchValue(value);
-  
+
     // Only perform search if the value (ignoring leading/trailing spaces) is not empty
     if (value.trim().length === 0) {
       setSearchResults([]);
       return;
     }
-  
+
     try {
       const token = localStorage.getItem("token");
       // Use the trimmed value for the API call if desired
@@ -305,7 +305,7 @@ const HeaderInternal = () => {
         },
         body: JSON.stringify({ search: query }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         setSearchResults(data.exams || []);
@@ -318,7 +318,6 @@ const HeaderInternal = () => {
       setSearchResults([]);
     }
   };
-  
 
   // Handle mouse enter on dropdown
   const handleDropdownMouseEnter = () => {

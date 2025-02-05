@@ -27,7 +27,7 @@ const SubcategoryPage = ({
 }) => {
   const { t, i18n } = useTranslation();
   const router = useRouter();
-  const { user , token } = useContext(UserContext);
+  const { user, token } = useContext(UserContext);
   const { category, subcategory } = router.query;
 
   const faqRef = useRef(null);
@@ -39,28 +39,31 @@ const SubcategoryPage = ({
   const [exams, setExams] = useState([]);
   const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
   const [isLoginModalOpen, setLoginModalOpen] = useState(false);
-  const [currentPage, setCurrentPage] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0); // react-paginate is zero-indexed
+  const [pageCount, setPageCount] = useState(0);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null); // Added error state
-  const [sortOption, setSortOption] = useState(null); // New sort state
+  const [error, setError] = useState(null);
+  const [sortOption, setSortOption] = useState(null);
 
-  const examsPerPage = 8;
   const lang = i18n.language || "az";
 
-  // Fetch exams based on category and subcategory slugs
+  // Fetch exams from the API based on category, subcategory, and page number
   useEffect(() => {
     const fetchExams = async () => {
+      setLoading(true);
       try {
-        const token =
+        const storedToken =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
         const response = await fetch(
-          `https://api.innosert.az/api/exams/${category}/${subcategory}`,
+          `https://api.innosert.az/api/exams/${category}/${subcategory}?page=${
+            currentPage + 1
+          }`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: token ? `Bearer ${token}` : "",
-              "Accept-Language": lang, // Include language header if needed
+              Authorization: storedToken ? `Bearer ${storedToken}` : "",
+              "Accept-Language": lang,
             },
           }
         );
@@ -70,13 +73,19 @@ const SubcategoryPage = ({
         }
 
         const data = await response.json();
-        // console.log(data.data, "data SubcategoryPage");
+        console.log(data.data, "data SubcategoryPage");
 
-        // Ensure data.data is an array
+        // Set exams from the API response (ensure it’s an array)
         if (Array.isArray(data.data)) {
           setExams(data.data);
         } else {
           setExams([]);
+        }
+        // Set the total page count using the API's pagination metadata
+        if (data.meta && data.meta.last_page) {
+          setPageCount(data.meta.last_page);
+        } else {
+          setPageCount(0);
         }
       } catch (error) {
         console.error("Failed to fetch exams:", error);
@@ -84,18 +93,19 @@ const SubcategoryPage = ({
           t("errors.fetch_exams_failed") ||
             "İmtahanlar yüklənərkən bir xəta baş verdi."
         );
-        setExams([]); // Ensure exams is an empty array on error
+        setExams([]);
+        setPageCount(0);
       } finally {
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false);
       }
     };
 
     if (category && subcategory) {
       fetchExams();
     }
-  }, [category, subcategory, lang, t]);
+  }, [category, subcategory, lang, t, currentPage]);
 
-  // Fetch landing and setting info
+  // Fetch landing and setting info (if needed)
   useEffect(() => {
     const fetchData = async (locale) => {
       try {
@@ -122,13 +132,12 @@ const SubcategoryPage = ({
     }
   }, [router.locale]);
 
-  // Handle sorting
+  // Handle sorting on the current page's exams
   const handleSortOptionClick = (option) => {
     setSortOption(option);
     setCurrentPage(0); // Reset to first page when sorting changes
   };
 
-  // Apply sorting based on sortOption
   const sortedExams = useMemo(() => {
     if (!sortOption) return exams;
 
@@ -152,18 +161,11 @@ const SubcategoryPage = ({
     return sorted;
   }, [exams, sortOption]);
 
-  // Pagination logic based on sorted exams
-  const pageCount = Math.ceil((sortedExams.length || 0) / examsPerPage);
-
+  // Handle page changes via ReactPaginate
   const handlePageClick = (data) => {
     setCurrentPage(data.selected);
-    window.scrollTo(0, 0); // Optional: Scroll to the top after pagination
+    window.scrollTo(0, 0);
   };
-
-  const paginateExams = sortedExams.slice(
-    currentPage * examsPerPage,
-    (currentPage + 1) * examsPerPage
-  );
 
   if (!landingInfo || !settingInfo) {
     return <Spinner />;
@@ -177,9 +179,9 @@ const SubcategoryPage = ({
 
   const handleLoginOrRulesClick = () => {
     if (token) {
-      setExamRulesModalOpen(true); // Open exam rules modal if logged in
+      setExamRulesModalOpen(true);
     } else {
-      setLoginModalOpen(true); // Open login modal if not logged in
+      setLoginModalOpen(true);
     }
   };
 
@@ -187,12 +189,6 @@ const SubcategoryPage = ({
     <div>
       <Head>
         <title>{t("labels.exams")}</title>
-        {/* Optional: Add meta tags if needed */}
-        {/* <meta name="description" content={landingInfo?.metatags?.meta_desc} />
-        <meta
-          name="keywords"
-          content={landingInfo?.metatags?.meta_keywords || "default, keywords"}
-        /> */}
       </Head>
       <Header
         openRegisterModal={openRegisterModal}
@@ -211,7 +207,7 @@ const SubcategoryPage = ({
         <Container>
           <SortTitleExams
             category={subcategory}
-            onSortOptionClick={handleSortOptionClick} // Pass the handler here
+            onSortOptionClick={handleSortOptionClick}
           />
 
           {loading ? (
@@ -228,9 +224,9 @@ const SubcategoryPage = ({
                 openLoginModal={handleLoginOrRulesClick}
                 openRegisterModal={handleLoginOrRulesClick}
                 widthClass="w-[23.8%]"
-                exams={paginateExams} // Display paginated and sorted exams
+                exams={sortedExams} // Use the (sorted) exams returned from the API
               />
-              {/* Pagination */}
+              {/* Render pagination if there is more than one page */}
               {pageCount > 1 && (
                 <ReactPaginate
                   previousLabel={"<"}
@@ -283,19 +279,8 @@ const SubcategoryPage = ({
   );
 };
 
-// Fetch landing and setting info on server side
+// Fetch landing and setting info on the server side
 export async function getServerSideProps(context) {
-  // const session = await getSession(context);
-
-  //   // If there is no NextAuth session, redirect to the index page
-  //   if (!session) {
-  //     return {
-  //       redirect: {
-  //         destination: "/",
-  //         permanent: false,
-  //       },
-  //     };
-  //   }
   const lang = context.locale || "az";
   try {
     const landingInfo = await getLandingInfo(lang);

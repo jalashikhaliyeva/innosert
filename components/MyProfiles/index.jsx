@@ -647,7 +647,7 @@ function MyProfiles() {
                     height={64}
                     src={imagePreview}
                     alt="Profile"
-                    className="w-16 h-16 rounded-full mr-4 object-cover"
+                    className="w-16 h-16 rounded-full mr-4 object-contain"
                   />
                 ) : (
                   <div className="w-16 h-16 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-2xl font-gilroy font-bold mr-4">
@@ -715,7 +715,7 @@ function MyProfiles() {
                             height={220}
                             src={imagePreview}
                             alt="Profile Large"
-                            className="w-full h-[370px] rounded-lg object-cover"
+                            className="w-full h-[370px] rounded-lg object-contain"
                           />
                         ) : (
                           <div className="w-48 h-48 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center text-4xl font-bold">
@@ -884,7 +884,7 @@ function MyProfiles() {
                             height={220}
                             src={imagePreview}
                             alt="Profile Large"
-                            className="w-full h-[370px] rounded-lg object-cover"
+                            className="w-full h-[370px] rounded-lg object-contain"
                           />
                         ) : (
                           <div className="w-48 h-48 bg-gray-200 text-gray-600 rounded-lg flex items-center justify-center text-4xl font-bold">
@@ -1095,7 +1095,7 @@ function MyProfiles() {
                               height={64}
                               src={company.logo}
                               alt={`${company.name} Logo`}
-                              className="w-16 h-16 rounded-full object-cover mr-4"
+                              className="w-16 h-16 rounded-full object-contain mr-4"
                             />
 
                             <div>
@@ -1152,7 +1152,7 @@ function MyProfiles() {
                                       height={64}
                                       src={company.logo}
                                       alt={`${company.name} Logo`}
-                                      className="w-48 h-40 rounded-2xl mr-4 object-cover"
+                                      className="w-48 h-40 rounded-2xl mr-4 object-contain"
                                     />
                                   ) : (
                                     <div className="w-16 h-16 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-2xl font-gilroy font-bold mr-4">

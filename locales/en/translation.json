@@ -342,5 +342,11 @@
     "saved": "The exam was successfully saved!",
     "removed": "The exam has been removed from bookmarks."
   },
-  "contextMenuDisabled": "Right-click is disabled on this page."
+  "contextMenuDisabled": "Right-click is disabled on this page.",
+  "examDuration": "Exam duration",
+  "numberOfQuestions": "Number of questions",
+  "saved": "Saved",
+  "share": "Share",
+  "copied": "Copied",
+  "copy": "Copy"
 }

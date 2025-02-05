@@ -15,58 +15,49 @@ import { UserContext } from "@/shared/context/UserContext";
 import Head from "next/head";
 import { useTranslation } from "react-i18next";
 import withModalManagement from "@/shared/hoc/withModalManagement";
-// import { getSession } from "next-auth/react";
-// export async function getServerSideProps(context) {
-//   const session = await getSession(context);
-
-//   // If there is no NextAuth session, redirect to the index page
-//   if (!session) {
-//     return {
-//       redirect: {
-//         destination: "/",
-//         permanent: false,
-//       },
-//     };
-//   }
-
-//   // If session exists, proceed with the page rendering
-//   return {
-//     props: {
-//       // You can pass any additional props here
-//     },
-//   };
-// }
 
 function CategoryPage({ openRegisterModal, openLoginModal }) {
   const router = useRouter();
   const { t, i18n } = useTranslation();
-  const { user, token } = useContext(UserContext);
+  const { token } = useContext(UserContext);
   const { category } = router.query;
   const lang = i18n.language || "az";
 
+  // States for exams and pagination
   const [exams, setExams] = useState([]);
-  const [currentPage, setCurrentPage] = useState(0);
-  const examsPerPage = 8;
-  const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
-  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0); // react-paginate is zero-indexed
+  const [pageCount, setPageCount] = useState(0); // total pages as provided by the API
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortOption, setSortOption] = useState(null); // New sort state
+  
+  // Sorting state (client-side sorting on the current page)
+  const [sortOption, setSortOption] = useState(null);
 
-  // Fetch exams based on category slug
+  // States for modals
+  const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
+
+  // When the category changes, reset the current page to the first one.
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [category]);
+
+  // Fetch exams from API based on category and page number
   useEffect(() => {
     const fetchExams = async () => {
+      setLoading(true);
       try {
-        const token =
+        const storedToken =
           typeof window !== "undefined" ? localStorage.getItem("token") : null;
+        // Note: API page numbers are 1-indexed, so we add 1 to currentPage.
         const response = await fetch(
-          `https://api.innosert.az/api/exams/${category}`,
+          `https://api.innosert.az/api/exams/${category}?page=${currentPage + 1}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: token ? `Bearer ${token}` : "",
-              "Accept-Language": lang, // Include language header if needed
+              Authorization: storedToken ? `Bearer ${storedToken}` : "",
+              "Accept-Language": lang,
             },
           }
         );
@@ -76,35 +67,39 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
         }
 
         const data = await response.json();
-        // console.log(data.data, "data CategoryPage");
+        console.log(data.data, "data CategoryPage");
 
-        // Ensure data.data is an array
+        // Set the exams (ensure it’s an array)
         if (Array.isArray(data.data)) {
           setExams(data.data);
         } else {
           setExams([]);
         }
+        // Use the pagination meta from the API to set total pages
+        if (data.meta && data.meta.last_page) {
+          setPageCount(data.meta.last_page);
+        } else {
+          setPageCount(0);
+        }
       } catch (error) {
         console.error("Failed to fetch exams:", error);
-        setError(t("errors.fetch_exams_failed") || "İmtahanlar yüklənərkən bir xəta baş verdi.");
-        setExams([]); // Ensure exams is an empty array on error
+        setError(
+          t("errors.fetch_exams_failed") ||
+            "İmtahanlar yüklənərkən bir xəta baş verdi."
+        );
+        setExams([]);
+        setPageCount(0);
       } finally {
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false);
       }
     };
 
     if (category) {
       fetchExams();
     }
-  }, [category, lang, t]);
+  }, [category, lang, t, currentPage]);
 
-  // Handle sorting
-  const handleSortOptionClick = (option) => {
-    setSortOption(option);
-    setCurrentPage(0); // Reset to first page when sorting changes
-  };
-
-  // Apply sorting based on sortOption
+  // Client-side sorting on the current page’s exams
   const sortedExams = useMemo(() => {
     if (!sortOption) return exams;
 
@@ -117,14 +112,10 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
         sorted.sort((a, b) => b.price - a.price);
         break;
       case "new_to_old":
-        sorted.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
+        sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         break;
       case "old_to_new":
-        sorted.sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
-        );
+        sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
         break;
       default:
         break;
@@ -132,17 +123,18 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
     return sorted;
   }, [exams, sortOption]);
 
-  const pageCount = Math.ceil((sortedExams.length || 0) / examsPerPage);
-
-  const handlePageClick = (data) => {
-    setCurrentPage(data.selected);
-    window.scrollTo(0, 0); // Optional: Scroll to the top after pagination
+  // Handle sort option change
+  const handleSortOptionClick = (option) => {
+    setSortOption(option);
+    // Optionally, reset to the first page when sorting changes
+    setCurrentPage(0);
   };
 
-  const paginateExams = sortedExams.slice(
-    currentPage * examsPerPage,
-    (currentPage + 1) * examsPerPage
-  );
+  // Handle pagination clicks from ReactPaginate
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+    window.scrollTo(0, 0); // Scroll to the top after page change
+  };
 
   // Function to close both modals
   const closeModals = () => {
@@ -150,11 +142,12 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
     setLoginModalOpen(false);
   };
 
+  // Open the exam rules modal if logged in, or login modal if not
   const handleLoginOrRulesClick = () => {
     if (token) {
-      setExamRulesModalOpen(true); // Open exam rules modal if logged in
+      setExamRulesModalOpen(true);
     } else {
-      setLoginModalOpen(true); // Open login modal if not logged in
+      setLoginModalOpen(true);
     }
   };
 
@@ -162,12 +155,6 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
     <main>
       <Head>
         <title>{t("labels.exams")}</title>
-        {/* Optional: Add meta tags if needed */}
-        {/* <meta name="description" content={landingInfo?.metatags?.meta_desc} />
-        <meta
-          name="keywords"
-          content={landingInfo?.metatags?.meta_keywords || "default, keywords"}
-        /> */}
       </Head>
       <Header
         openRegisterModal={openRegisterModal}
@@ -180,7 +167,7 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
         <Container>
           <SortTitleExams
             category={category}
-            onSortOptionClick={handleSortOptionClick} // Pass the handler here
+            onSortOptionClick={handleSortOptionClick}
           />
 
           {loading ? (
@@ -197,9 +184,9 @@ function CategoryPage({ openRegisterModal, openLoginModal }) {
                 openLoginModal={handleLoginOrRulesClick}
                 openRegisterModal={handleLoginOrRulesClick}
                 widthClass="w-[23.8%]"
-                exams={paginateExams} // Display paginated and sorted exams
+                exams={sortedExams} // Use the (sorted) exams from the current API page
               />
-              {/* Pagination */}
+              {/* Render pagination only if there is more than one page */}
               {pageCount > 1 && (
                 <ReactPaginate
                   previousLabel={"<"}

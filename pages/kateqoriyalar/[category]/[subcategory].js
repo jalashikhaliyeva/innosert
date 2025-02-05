@@ -15,6 +15,8 @@ import ExamRulesModal from "@/components/ExamRulesModal";
 import LoginModal from "@/components/Login";
 import Head from "next/head";
 import { getSession } from "next-auth/react";
+import ReactPaginate from "react-paginate";
+
 export async function getServerSideProps(context) {
   const session = await getSession(context);
 
@@ -28,20 +30,15 @@ export async function getServerSideProps(context) {
     };
   }
 
-  // 2) We do a server-side fetch to check if the user is verified
-  //    Usually you'd pass the user's token from session.accessToken or similar.
-  const userResponse = await fetch(
-    "https://api.innosert.az/api/user",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`, // or wherever your token is
-      },
-    }
-  );
+  // 2) Server-side fetch to check if the user is verified.
+  const userResponse = await fetch("https://api.innosert.az/api/user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`, // or wherever your token is stored
+    },
+  });
 
   if (!userResponse.ok) {
-    // If the fetch fails, treat it like "not verified"
     return {
       redirect: {
         destination: "/",
@@ -62,27 +59,34 @@ export async function getServerSideProps(context) {
     };
   }
 
-  // 4) If everything's OK, let them proceed
+  // 4) Everything's OK – let them proceed.
   return {
     props: {
-      // pass anything you want to the component
       userBalance: userData?.data?.balance || 0,
     },
   };
 }
+
 const SubcategoryPage = () => {
   const router = useRouter();
-  const { user , token } = useContext(UserContext);
+  const { user, token } = useContext(UserContext);
   const { category, subcategory } = router.query;
   const { t, i18n } = useTranslation();
   const lang = i18n.language || "az";
 
+  // State for exams, loading, error and sorting
   const [exams, setExams] = useState([]);
-  const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
-  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [sortOption, setSortOption] = useState(null); // New sort state
+  const [sortOption, setSortOption] = useState(null);
+
+  // States for pagination (ReactPaginate is zero-indexed)
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+
+  // States for modals
+  const [isExamRulesModalOpen, setExamRulesModalOpen] = useState(false);
+  const [isLoginModalOpen, setLoginModalOpen] = useState(false);
 
   // Function to close both modals
   const closeModals = () => {
@@ -103,24 +107,26 @@ const SubcategoryPage = () => {
     setSortOption(option);
   };
 
-  // Fetch exams based on category and subcategory slugs
+  // Fetch exams from the API based on category, subcategory and current page
   useEffect(() => {
     const fetchExams = async () => {
-      if (!category || !subcategory) return; // Wait until category and subcategory are available
+      if (!category || !subcategory) return; // Wait until both parameters are available
 
+      setLoading(true);
       try {
-        const token = localStorage.getItem("token");
-        if (!token) {
+        const storedToken = localStorage.getItem("token");
+        if (!storedToken) {
           throw new Error(t("authentication_token_not_found"));
         }
 
+        // API pages are assumed to be 1-indexed
         const response = await fetch(
-          `https://api.innosert.az/api/exams/${category}/${subcategory}`,
+          `https://api.innosert.az/api/exams/${category}/${subcategory}?page=${currentPage + 1}`,
           {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${storedToken}`,
               "Accept-Language": lang,
             },
           }
@@ -131,23 +137,30 @@ const SubcategoryPage = () => {
         }
 
         const data = await response.json();
-        // console.log(data.data, "data SubcategoryPage");
-
         setExams(data.data); // Set exams from the API response
+
+        // Set total page count using API pagination metadata
+        if (data.meta && data.meta.last_page) {
+          setPageCount(data.meta.last_page);
+        } else {
+          setPageCount(0);
+        }
       } catch (error) {
         console.error("Failed to fetch exams:", error);
         setError(
-          error.response?.data?.message || error.message || t("an_error_occurred")
+          error.response?.data?.message ||
+            error.message ||
+            t("an_error_occurred")
         );
       } finally {
-        setLoading(false); // Set loading to false once data is fetched
+        setLoading(false);
       }
     };
 
     fetchExams();
-  }, [category, subcategory, lang, t]);
+  }, [category, subcategory, lang, t, currentPage]);
 
-  // Apply sorting based on sortOption
+  // Apply sorting based on sortOption for the current page's exams
   const sortedExams = React.useMemo(() => {
     if (!sortOption) return exams;
 
@@ -160,20 +173,22 @@ const SubcategoryPage = () => {
         sorted.sort((a, b) => b.price - a.price);
         break;
       case "new_to_old":
-        sorted.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
+        sorted.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
         break;
       case "old_to_new":
-        sorted.sort(
-          (a, b) => new Date(a.created_at) - new Date(b.created_at)
-        );
+        sorted.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
         break;
       default:
         break;
     }
     return sorted;
   }, [exams, sortOption]);
+
+  // Handle page changes from ReactPaginate
+  const handlePageClick = (data) => {
+    setCurrentPage(data.selected);
+    window.scrollTo(0, 0);
+  };
 
   return (
     <div>
@@ -186,7 +201,7 @@ const SubcategoryPage = () => {
         <Container>
           <SortTitleExams
             category={subcategory}
-            onSortOptionClick={handleSortOptionClick} // Pass the handler here
+            onSortOptionClick={handleSortOptionClick}
           />
           {loading ? (
             <div className="flex justify-center items-center h-64">
@@ -197,12 +212,48 @@ const SubcategoryPage = () => {
               <p className="text-red-500">{error}</p>
             </div>
           ) : sortedExams?.length > 0 ? (
-            <ExamCard
-              exams={sortedExams} // Pass the sorted exams
-              openLoginModal={handleLoginOrRulesClick}
-              openRegisterModal={handleLoginOrRulesClick}
-              widthClass="w-[23.8%]"
-            />
+            <>
+              <ExamCard
+                exams={sortedExams}
+                openLoginModal={handleLoginOrRulesClick}
+                openRegisterModal={handleLoginOrRulesClick}
+                widthClass="w-[23.8%]"
+              />
+              {/* Render ReactPaginate only if more than one page is available */}
+              {pageCount > 1 && (
+                <ReactPaginate
+                  previousLabel={"<"}
+                  nextLabel={">"}
+                  breakLabel={"..."}
+                  pageCount={pageCount}
+                  marginPagesDisplayed={2}
+                  pageRangeDisplayed={5}
+                  onPageChange={handlePageClick}
+                  containerClassName="flex justify-center items-center gap-2 w-full mt-6"
+                  pageClassName="inline-block"
+                  pageLinkClassName="block bg-boxGrayBodyColor text-grayButtonText rounded-md px-3 py-1 hover:bg-gray-200 font-gilroy"
+                  activeClassName="bg-grayLineFooter text-buttonPrimaryDefault font-gilroy"
+                  previousClassName={currentPage === 0 ? "text-gray-300" : ""}
+                  previousLinkClassName={
+                    currentPage === 0 ? "cursor-not-allowed" : ""
+                  }
+                  previousLinkStyle={
+                    currentPage === 0 ? { cursor: "not-allowed" } : {}
+                  }
+                  nextClassName={
+                    currentPage === pageCount - 1 ? "text-gray-300" : ""
+                  }
+                  nextLinkClassName={
+                    currentPage === pageCount - 1 ? "cursor-not-allowed" : ""
+                  }
+                  nextLinkStyle={
+                    currentPage === pageCount - 1
+                      ? { cursor: "not-allowed" }
+                      : {}
+                  }
+                />
+              )}
+            </>
           ) : (
             <p className="text-center flex items-center justify-center font-gilroy text-lg text-gray-500 pb-72">
               &quot;{subcategory}&quot; {t("no_exams_available_for_category")}

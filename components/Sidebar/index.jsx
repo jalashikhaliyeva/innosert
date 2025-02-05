@@ -129,7 +129,7 @@ function Sidebar() {
                           height={40}
                           src={company.logo}
                           alt={company.name}
-                          className="w-10 h-10 rounded-full mr-4 object-cover"
+                          className="w-10 h-10 rounded-full mr-4 object-contain"
                         />
                       ) : (
                         <div className="w-10 h-10 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-lg font-gilroy font-bold mr-4">

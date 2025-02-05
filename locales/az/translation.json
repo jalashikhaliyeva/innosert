@@ -61,7 +61,7 @@
     "correct": "Düz",
     "wrong": "Səhv",
     "empty": "Boş",
-     "excluded": "Kenarlaşdırılıb"
+    "excluded": "Kenarlaşdırılıb"
   },
   "messages": {
     "noPaidExam": "Heç bir ödənişli imtahan tapılmadı.",
@@ -346,5 +346,11 @@
     "saved": "İmtahan uğurla yadda saxlanıldı!",
     "removed": "İmtahan yaddaşdan silindi."
   },
-  "contextMenuDisabled": "Bu səhifədə sağ klik etmək mümkün deyil."
+  "contextMenuDisabled": "Bu səhifədə sağ klik etmək mümkün deyil.",
+  "examDuration": "İmtahan müddəti",
+  "numberOfQuestions": "Sual sayı",
+  "saved": "Yadda saxlanılıb",
+  "share": "Paylaş",
+  "copied": "Kopyalandı",
+  "copy": "Kopyala"
 }

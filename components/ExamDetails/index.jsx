@@ -8,12 +8,12 @@ import { UserContext } from "@/shared/context/UserContext";
 import { useSavedExams } from "@/shared/context/SavedExamsContext";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useTranslation } from "react-i18next";
 
 function ExamDetails({ examData, openLoginModal }) {
   const { user } = useContext(UserContext); // Get user from UserContext
   const { savedExams, addExamToSaved, removeExamFromSaved } = useSavedExams();
-
-  // State for Share Modal
+  const { t } = useTranslation();
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const [currentURL, setCurrentURL] = useState("");
   const [copySuccess, setCopySuccess] = useState(false);
@@ -113,7 +113,9 @@ function ExamDetails({ examData, openLoginModal }) {
             <h2 className="font-gilroy text-lg font-semibold leading-normal text-textSecondaryDefault">
               {formatDuration(examData.exam.duration)}
             </h2>
-            <p className="font-gilroy text-sm text-gray200">İmtahan müddəti</p>
+            <p className="font-gilroy text-sm text-gray200">
+              {t("examDuration")}
+            </p>
           </div>
         </div>
       )}
@@ -123,7 +125,9 @@ function ExamDetails({ examData, openLoginModal }) {
           <h2 className="font-gilroy text-lg font-semibold leading-normal text-textSecondaryDefault">
             {examData.exam.count}
           </h2>
-          <p className="font-gilroy text-sm text-gray200">Sual sayı</p>
+          <p className="font-gilroy text-sm text-gray200">
+            {t("numberOfQuestions")}
+          </p>
         </div>
       </div>
 
@@ -140,7 +144,7 @@ function ExamDetails({ examData, openLoginModal }) {
         )}
         <div className="flex flex-col">
           <h2 className="font-gilroy text-lg font-semibold leading-normal text-textSecondaryDefault group-hover:text-textHoverBlue transition-colors duration-300">
-            {isSaved ? "Yadda saxlanılıb" : "Yadda saxla"}
+            {isSaved ? t("saved") : t("save")}
           </h2>
         </div>
       </button>
@@ -154,7 +158,7 @@ function ExamDetails({ examData, openLoginModal }) {
         <BsShare className="size-7 text-3xl flex items-center justify-center text-textSecondaryDefault group-hover:text-textHoverBlue transition-colors duration-300" />
         <div className="flex flex-col">
           <h2 className="font-gilroy text-lg font-semibold leading-normal text-textSecondaryDefault group-hover:text-textHoverBlue transition-colors duration-300">
-            Paylaş
+            {t("share")}
           </h2>
         </div>
       </button>
@@ -171,7 +175,7 @@ function ExamDetails({ examData, openLoginModal }) {
           >
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-medium font-gilroy text-textSecondaryDefault">
-                Paylaş
+                {t("share")}
               </h2>
               <button
                 onClick={closeShareModal}
@@ -213,7 +217,7 @@ function ExamDetails({ examData, openLoginModal }) {
                 className="absolute font-gilroy right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 bg-buttonPrimaryDefault text-white rounded hover:bg-buttonPrimaryHover transition-colors duration-300"
                 onClick={copyToClipboard}
               >
-                {copySuccess ? "Kopyalandı" : "Kopyala"}
+                {copySuccess ? t("copied") : t("copy")}
               </button>
             </div>
           </div>
