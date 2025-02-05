@@ -75,7 +75,6 @@ function MyProfiles() {
   };
   const isTeacher = user?.data?.roles === "Teacher";
 
-
   // Helper function to format mobile number for API submission
   const formatMobileForApi = (mobile) => {
     const digits = mobile.replace(/\D/g, ""); // Remove all non-digit characters
@@ -102,37 +101,51 @@ function MyProfiles() {
 
   const handleSave = async (e) => {
     e.preventDefault();
-  
+
     const userToken = localStorage.getItem("token");
-  
+
     if (!userToken) {
       toast.error("İstifadəçi doğrulanmayıb. Yenidən daxil olun.");
       return;
     }
-  
-    setLoading(true); // Start loading state
-  
+
+    // Always require these fields
+    if (!username.trim() || !email.trim() || !firstName.trim()) {
+      toast.error("Bütün sahələri doldurun.");
+      return;
+    }
+
+    // When user.data.sv is not 0, require lastName (Soyad) and mobile (Nömrə)
+    if (user?.data?.sv !== 0) {
+      if (!lastName.trim() || !mobile.trim()) {
+        toast.error("Soyad və nömrə sahələri məcburidir.");
+        return;
+      }
+    }
+
+    setLoading(true);
+
     try {
       const formData = new FormData();
       formData.append("username", username);
       formData.append("email", email);
       formData.append("first_name", firstName);
       formData.append("last_name", lastName);
-      
+
       // Format the mobile number for API submission
       const formattedMobile = formatMobileForApi(mobile);
-      
+
       // Append the mobile number only if it has been changed
       if (formattedMobile !== initialMobileApi) {
         formData.append("mobile", formattedMobile);
       }
-  
+
       if (image) {
         formData.append("image", image);
       } else if (!imagePreview && user?.data?.profilePicture) {
         formData.append("delete_image", "true");
       }
-  
+
       const profileResponse = await fetch(
         "https://api.innosert.az/api/me/update",
         {
@@ -143,12 +156,11 @@ function MyProfiles() {
           body: formData,
         }
       );
-  
+
       const profileData = await profileResponse.json();
-  
+
       if (profileResponse.ok) {
         toast.success("Profil uğurla yeniləndi!");
-  
         setUser((prevUser) => ({
           ...prevUser,
           data: {
@@ -157,20 +169,20 @@ function MyProfiles() {
             email,
             first_name: firstName,
             last_name: lastName,
-            // Update the mobile number only if it was changed
-            mobile: formattedMobile !== initialMobileApi ? formattedMobile : prevUser.data.mobile,
+            mobile:
+              formattedMobile !== initialMobileApi
+                ? formattedMobile
+                : prevUser.data.mobile,
             image: image ? profileData?.data?.image : imagePreview,
           },
         }));
-  
-        // Update the initial mobile number if it was changed
+
         if (formattedMobile !== initialMobileApi) {
           setInitialMobileApi(formattedMobile);
         }
-  
-        // Fetch updated user data from the server
+
         fetchUserData();
-  
+
         if (!imagePreview) {
           setImage(null);
           setImagePreview("");
@@ -181,10 +193,9 @@ function MyProfiles() {
     } catch (error) {
       toast.error(`Xəta baş verdi: ${error.message}`);
     } finally {
-      setLoading(false); // Stop loading state after the request is complete
+      setLoading(false);
     }
   };
-  
 
   const toggleDropdown = (companyId) => {
     const dropdown = formRefs.current[companyId];
@@ -207,15 +218,12 @@ function MyProfiles() {
       }
 
       try {
-        const response = await fetch(
-          "https://api.innosert.az/api/companies",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          }
-        );
+        const response = await fetch("https://api.innosert.az/api/companies", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
         // console.log(response, "response teacher");
 
         if (response.ok) {
@@ -237,42 +245,39 @@ function MyProfiles() {
   useEffect(() => {
     const fetchUserData = async () => {
       const userToken = localStorage.getItem("token");
-  
+
       // console.log(userToken, "user token profiles");
-  
+
       if (!userToken) {
         toast.error("İstifadəçi autentifikasiyadan keçməyib.");
         return;
       }
-  
+
       try {
-        const response = await fetch(
-          "https://api.innosert.az/api/user",
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${userToken}`,
-            },
-          }
-        );
-  
+        const response = await fetch("https://api.innosert.az/api/user", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${userToken}`,
+          },
+        });
+
         if (response.ok) {
           const userData = await response.json();
           // console.log(userData, "userData");
-  
+
           setUser(userData);
           setUsername(userData.data.username || "");
           setEmail(userData.data.email || "");
           setFirstName(userData.data.first_name || "");
           setLastName(userData.data.last_name || "");
-          
+
           // Store the initial mobile number in API format
           const mobileApi = userData.data.mobile || "";
           setInitialMobileApi(mobileApi);
-          
+
           // Format the mobile number for display
           setMobile(formatMobileForDisplay(mobileApi));
-  
+
           const userImage = userData.data.image;
           if (
             !userImage ||
@@ -291,10 +296,9 @@ function MyProfiles() {
         toast.error(`An error occurred: ${error.message}`);
       }
     };
-  
+
     fetchUserData();
   }, []);
-  
 
   const getImageSrc = () => {
     if (
@@ -624,13 +628,13 @@ function MyProfiles() {
               </button>
             </div>
             {!isTeacher && (
-        <button
-          onClick={toggleModal}
-          className="bg-buttonPrimaryDefault w-[41%] md:w-[13%] hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
-        >
-          <FaPlus className="mt-1 mr-2" /> {t("create_company")}
-        </button>
-      )}
+              <button
+                onClick={toggleModal}
+                className="bg-buttonPrimaryDefault w-[41%] md:w-[13%] hover:bg-buttonPrimaryHover active:bg-buttonPressedPrimary text-white px-4 py-2 rounded-lg font-gilroy mr-4 flex"
+              >
+                <FaPlus className="mt-1 mr-2" /> {t("create_company")}
+              </button>
+            )}
           </>
         )}
       </div>
@@ -647,7 +651,7 @@ function MyProfiles() {
                     height={64}
                     src={imagePreview}
                     alt="Profile"
-                    className="w-16 h-16 rounded-full mr-4 object-contain"
+                    className="w-16 h-16 rounded-full mr-4 object-cover"
                   />
                 ) : (
                   <div className="w-16 h-16 bg-gray-200 text-gray-600 rounded-full flex items-center justify-center text-2xl font-gilroy font-bold mr-4">
@@ -803,10 +807,10 @@ function MyProfiles() {
                             type="text"
                             value={lastName}
                             onChange={(e) => setLastName(e.target.value)}
+                            required={user?.data?.sv !== 0} // Required only if sv is not 0
                             className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
                           />
                         </div>
-
                         <div className="mb-4">
                           <label className="block text-gray-700">
                             {t("email")}
@@ -826,6 +830,7 @@ function MyProfiles() {
                             mask="+994 99 999 99 99"
                             value={mobile}
                             onChange={(e) => setMobile(e.target.value)}
+                            required={user?.data?.sv !== 0} // Required only if sv is not 0
                             className="mt-2 py-3 px-4 w-full border rounded-lg font-gilroy text-base bg-bodyColor focus:border-inputRingFocus hover:bg-inputBgHover hover:border-inputBorderHover focus:outline-none"
                             placeholder="Mobil nömrə"
                           />
