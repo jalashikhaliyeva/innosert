@@ -5,7 +5,7 @@ import CompanyContext from "@/shared/context/CompanyContext";
 
 function DeleteReportModal({ onCancel, onDelete, actionType, selectedId }) {
   console.log(selectedId, "selectedId");
-  const { selectedCompany , token } = useContext(CompanyContext);
+  const { selectedCompany, token } = useContext(CompanyContext);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -15,27 +15,16 @@ function DeleteReportModal({ onCancel, onDelete, actionType, selectedId }) {
     }
   };
 
-  // Define the confirmation message based on the action type
   const confirmationMessage =
     actionType === "Düzəliş edildi"
       ? "Düzəliş edilməyinə əminsinizmi?"
       : "Xəta olmadığına əminsinizmi?";
 
-  // Handle delete action and API call
   const handleDelete = async () => {
     setIsLoading(true);
     setError(null);
     try {
-      // Retrieve auth token from local storage
-      // const authToken = localStorage.getItem("token");
-      // if (!authToken) {
-      //   throw new Error("Authentication token not found.");
-      // }
-
-      // Determine status based on actionType
       const status = actionType === "Düzəliş edildi" ? 1 : 0;
-
-      // API call to update the report status with headers
       await axios.post(
         `https://api.innosert.az/api/report-question/${selectedId}`,
         { status },
@@ -47,7 +36,6 @@ function DeleteReportModal({ onCancel, onDelete, actionType, selectedId }) {
         }
       );
 
-      // Call onDelete callback after successful API call
       onDelete();
     } catch (error) {
       console.error("Failed to update report status:", error);

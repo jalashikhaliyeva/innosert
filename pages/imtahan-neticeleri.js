@@ -110,7 +110,7 @@ function ImtahanNeticeleri() {
   return (
     <>
       <ExamResultHeader />
-      {examData.percentage > 30 ? (
+      {examData.percentage > 70 ? (
         <ExamEndSuccess percentage={examData} />
       ) : (
         <ExamEndFail percentage={examData} />
