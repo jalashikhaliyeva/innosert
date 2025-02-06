@@ -5,9 +5,10 @@ import { motion } from "framer-motion";
 // Dynamically import react-apexcharts to prevent SSR issues
 const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
 
-const ProgressPieChartResults = ({ correct, wrong, empty }) => {
+const ProgressPieChartResults = ({ correct, wrong, empty,percentage }) => {
   const [series, setSeries] = useState([]); // Initialize as empty
   const chartRef = useRef(null); // Reference to the chart container
+console.log({percentage},"percentage");
 
   // console.log({ correct, wrong, empty }, "Counts");
 
@@ -55,11 +56,9 @@ const ProgressPieChartResults = ({ correct, wrong, empty }) => {
               showAlways: true,
               label: "",
               formatter: () => {
-                const total = correct + wrong + empty;
-                const percentage =
-                  total === 0 ? 0 : Math.round((correct / total) * 100);
                 return `${percentage}%`;
-              }, // Display Correct Answers percentage
+              },
+              
               style: {
                 fontSize: "20px",
                 fontWeight: "bold",

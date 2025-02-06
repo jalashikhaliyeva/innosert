@@ -51,6 +51,7 @@ function CardResult({ data }) {
           correct={data.correct}
           wrong={data.wrong}
           empty={data.blank}
+          percentage={data.percentage}
         />
       </div>
       <div>
