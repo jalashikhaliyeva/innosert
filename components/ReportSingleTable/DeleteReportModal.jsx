@@ -5,7 +5,7 @@ import CompanyContext from "@/shared/context/CompanyContext";
 
 function DeleteReportModal({ onCancel, onDelete, actionType, selectedId }) {
   console.log(selectedId, "selectedId");
-  const { selectedCompany } = useContext(CompanyContext);
+  const { selectedCompany , token } = useContext(CompanyContext);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -27,10 +27,10 @@ function DeleteReportModal({ onCancel, onDelete, actionType, selectedId }) {
     setError(null);
     try {
       // Retrieve auth token from local storage
-      const authToken = localStorage.getItem("token");
-      if (!authToken) {
-        throw new Error("Authentication token not found.");
-      }
+      // const authToken = localStorage.getItem("token");
+      // if (!authToken) {
+      //   throw new Error("Authentication token not found.");
+      // }
 
       // Determine status based on actionType
       const status = actionType === "Düzəliş edildi" ? 1 : 0;
@@ -41,7 +41,7 @@ function DeleteReportModal({ onCancel, onDelete, actionType, selectedId }) {
         { status },
         {
           headers: {
-            Authorization: `Bearer ${authToken}`,
+            Authorization: `Bearer ${token}`,
             "X-Company-ID": selectedCompany.id,
           },
         }

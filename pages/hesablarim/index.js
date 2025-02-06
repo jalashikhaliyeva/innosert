@@ -13,7 +13,6 @@ import { useTranslation } from "react-i18next";
 
 export async function getServerSideProps(context) {
   const session = await getSession(context);
-
   // 1) If there's no NextAuth session, not logged in => redirect to '/'
   if (!session) {
     return {
@@ -26,15 +25,12 @@ export async function getServerSideProps(context) {
 
   // 2) We do a server-side fetch to check if the user is verified
   //    Usually you'd pass the user's token from session.accessToken or similar.
-  const userResponse = await fetch(
-    "https://api.innosert.az/api/user",
-    {
-      method: "GET",
-      headers: {
-        Authorization: `Bearer ${session.accessToken}`, // or wherever your token is
-      },
-    }
-  );
+  const userResponse = await fetch("https://api.innosert.az/api/user", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${session.accessToken}`, // or wherever your token is
+    },
+  });
 
   if (!userResponse.ok) {
     // If the fetch fails, treat it like "not verified"

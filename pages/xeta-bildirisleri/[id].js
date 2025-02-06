@@ -76,8 +76,7 @@ function ReportsSingle() {
   const { id } = router.query;
   const { selectedCompany } = useContext(CompanyContext);
   const [reportData, setReportData] = useState(null);
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
-
+  const [searchTerm, setSearchTerm] = useState("");
   useEffect(() => {
     const fetchReportData = async () => {
       if (id && selectedCompany) {
