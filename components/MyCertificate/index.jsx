@@ -1,7 +1,7 @@
 import Image from "next/image";
 import styles from "./Certificate.module.css";
 
-const Certificate = ({ username, exam, date, seriya, percentage }) => {
+const MyCertificate = ({ username, exam, date, seriya, percentage }) => {
   return (
     <div className={styles.certificateContainer}>
       <Image
@@ -9,9 +9,6 @@ const Certificate = ({ username, exam, date, seriya, percentage }) => {
         alt="Certificate"
         layout="fill"
         objectFit="contain"
-        unoptimized
-        priority
-        crossOrigin="anonymous"
         className={styles.certificateBg}
       />
 
@@ -22,9 +19,6 @@ const Certificate = ({ username, exam, date, seriya, percentage }) => {
             alt="Innosert Logo"
             width={80}
             height={20}
-            unoptimized
-            priority
-            crossOrigin="anonymous"
             className={styles.certificateLogo}
           />
           <Image
@@ -32,9 +26,6 @@ const Certificate = ({ username, exam, date, seriya, percentage }) => {
             alt="Handex Logo"
             width={80}
             height={20}
-            unoptimized
-            priority
-            crossOrigin="anonymous"
             className={styles.certificateLogo}
           />
         </div>
@@ -42,11 +33,11 @@ const Certificate = ({ username, exam, date, seriya, percentage }) => {
         <h3 className={styles.name}>{username}</h3>
         <hr className={styles.separator} />
         <h4 className={styles.course}>{exam}</h4>
-        <p className={styles.description}>
+        {/* <p className={styles.description}>
           Bu sertifikat imtahandan uğurla keçdiyi üçün İnnosert platforması
           tərəfindən təqdim edilmişdir.
-        </p>
-        <div className="flex flex-col pt-1  md:pt-8">
+        </p> */}
+        <div className="flex flex-col pt-1">
           <p className={styles.date}>Tarix: {date}</p>
           <p className={styles.certNo}>Sertifikat №: {seriya}</p>
         </div>
@@ -59,4 +50,4 @@ const Certificate = ({ username, exam, date, seriya, percentage }) => {
   );
 };
 
-export default Certificate;
+export default MyCertificate;

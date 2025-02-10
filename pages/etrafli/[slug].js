@@ -16,7 +16,7 @@ import RegisterModal from "@/components/Register";
 import { getSession } from "next-auth/react";
 
 function ExamName({ examData, error }) {
-  const { user , token} = useContext(UserContext);
+  const { user, token } = useContext(UserContext);
   // console.log(user, "user");
 
   // State for Register Modal
@@ -69,8 +69,7 @@ function ExamName({ examData, error }) {
 
             <JoinButtonandPriceExam examData={examData} />
           </div>
-
-          <div className="w-full md:w-[50%] flex justify-end">
+          <div className="w-full md:w-[50%] flex justify-center md:justify-end flex-shrink-0">
             <CertificateExampleAbout />
           </div>
         </div>
@@ -97,9 +96,7 @@ export async function getServerSideProps(context) {
   const { slug } = context.params; // Extract slug from the URL parameters
 
   try {
-    const res = await fetch(
-      `https://api.innosert.az/api/exam/${slug}`
-    );
+    const res = await fetch(`https://api.innosert.az/api/exam/${slug}`);
 
     if (!res.ok) {
       throw new Error("Failed to fetch data");

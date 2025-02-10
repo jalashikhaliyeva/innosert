@@ -70,10 +70,42 @@ h6 {
   font-style: normal;
 }
 
+
+
+
+@font-face {
+  font-family: "Palladio";
+  src: url("/fonts/palladio/P052-Roman.ttf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+
+@font-face {
+  font-family: "Palladio Bold";
+  src: url("/fonts/palladio/P052-Bold.ttf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+
+
+@font-face {
+  font-family: "Transcend";
+  src: url("/fonts/Transcend/Transcend/Transcend Bold.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+
+
 /* @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"); */
 :root {
   /* --fontPoppins: "Poppins", sans-serif; */
   --fontGilroy: "Gilroy", sans-serif;
+  --fontPalladio: "Palladio", serif;
+  --fontPalladioBold: "Palladio Bold", serif;
+  --fontTranscend: "Transcend", serif;
   --normalFontWeight: normal;
   --boldFontWeight: bold;
   --buttonDefaultPrimary: #2b3e4f;

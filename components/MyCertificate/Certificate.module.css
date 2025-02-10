@@ -36,17 +36,20 @@
 }
 
 .title {
-    font-size: 48px;
-    padding-top: 33px;
-    padding-bottom: 23px;
+    font-size: 28px;
+    padding-top: 13px;
+    padding-bottom: 13px;
     color: #253F51;
     font-family: var(--fontTranscend) !important;
     font-weight: 500;
     line-height: normal;
 }
 
+.separator{ 
+    width: 140px;
+}
 .name {
-    font-size: 34px;
+    font-size: 24px;
     color: #253F51;
     font-family: var(--fontPalladioBold) !important;
     font-weight: 600;
@@ -54,20 +57,21 @@
 
 .course {
     color: #253F51;
-    font-size: 24px;
+    font-size: 20px;
     font-family: var(--fontPalladio) !important;
 }
 
 .description {
     color: #253F51;
-    font-size: 14px;
-    padding-top: 10px;
+    font-size: 12px;
+    padding-top: 4px;
     font-family: var(--fontPalladio) !important;
     max-width: 388px;
 }
 
 .date,
 .certNo {
+    padding-top: 0 !important;
     color: #253F51;
     font-size: 12px;
     font-family: var(--fontPalladio) !important;
@@ -75,14 +79,14 @@
 
 .badge {
     position: absolute;
-    right: 25px;
-    bottom: 120px;
+    right: -5px;
+    bottom: 56px;
     width: 83px;
     height: 83px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 28px;
+    font-size: 18px;
     color: white;
     font-weight: bold;
     border-radius: 50%;

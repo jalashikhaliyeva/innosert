@@ -1,17 +1,19 @@
 import Image from "next/image";
 import React from "react";
+import Certificate from "../Certificate";
 
 function CertificateExampleAbout() {
+  const certificateData = {
+    username: "Qurbanov Elton",
+    exam: "Microsoft Excel",
+    date: "11 Dekabr 2024",
+    seriya: "000000",
+    percentage: 85,
+  };
   return (
-    <div className="flex">
-      <Image
-        src="/img/Certifcate.png"
-        width={800}
-        height={500}
-        alt="Certificate"
-        className="object-contain shadow-certificate"
-      />
-    </div>
+    <div style={{ width: "660px", maxWidth: "100%" }}>
+    <Certificate {...certificateData} />
+  </div>
   );
 }
 
