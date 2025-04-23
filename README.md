@@ -1,4 +1,4 @@
-# 🚀 InnoSert - Professional Certification Platform
+#  InnoSert - Professional Certification Platform
 
 
 A Next.js certification platform where users can register, companies can create secure exams, and users earn shareable certificates.
